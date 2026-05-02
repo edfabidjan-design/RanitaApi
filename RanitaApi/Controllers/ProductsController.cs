@@ -46,7 +46,26 @@ namespace RanitaApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.Category)
+                .Where(p => p.Id == id)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Price,
+                    p.Stock,
+                    p.Description,
+                    p.ImageUrl,
+                    p.CategoryId,
+                    Category = p.Category == null ? null : new
+                    {
+                        p.Category.Id,
+                        p.Category.Name
+                    }
+                })
+                .FirstOrDefaultAsync();
+
             if (product == null)
                 return NotFound();
 
@@ -117,6 +136,43 @@ namespace RanitaApi.Controllers
 
             return Ok(product);
         }
+
+
+        // ✅ UPDATE avec FormData en POST
+        [HttpPost("update/{id}")]
+        public async Task<IActionResult> UpdatePost(int id, [FromForm] Product updated, IFormFile? image)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+                return NotFound();
+
+            product.Name = updated.Name;
+            product.Price = updated.Price;
+            product.Stock = updated.Stock;
+            product.Description = updated.Description;
+            product.CategoryId = updated.CategoryId;
+
+            if (image != null)
+            {
+                var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                if (!Directory.Exists(imagesFolder))
+                    Directory.CreateDirectory(imagesFolder);
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var filePath = Path.Combine(imagesFolder, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await image.CopyToAsync(stream);
+
+                product.ImageUrl = "/images/" + fileName;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(product);
+        }
+
 
         // ✅ DELETE
         [HttpDelete("{id}")]
