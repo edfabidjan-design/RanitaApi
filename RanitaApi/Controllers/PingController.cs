@@ -3,13 +3,13 @@
 namespace RanitaApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("ping")]
     public class PingController : ControllerBase
     {
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(new { message = "Ranita API OK 🚀" });
+            return Ok("pong");
         }
     }
 }
