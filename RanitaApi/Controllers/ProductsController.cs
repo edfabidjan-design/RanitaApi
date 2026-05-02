@@ -20,7 +20,10 @@ namespace RanitaApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _context.Products
+                .Include(p => p.Category)
+                .ToListAsync();
+
             return Ok(products);
         }
 
@@ -39,6 +42,13 @@ namespace RanitaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Product product)
         {
+            if (product.CategoryId == null || product.CategoryId <= 0)
+                return BadRequest("Catégorie obligatoire.");
+
+            var categoryExists = await _context.Categories.AnyAsync(c => c.Id == product.CategoryId);
+            if (!categoryExists)
+                return BadRequest("Catégorie introuvable.");
+
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
@@ -57,6 +67,7 @@ namespace RanitaApi.Controllers
             product.Price = updated.Price;
             product.Stock = updated.Stock;
             product.Description = updated.Description;
+            product.CategoryId = updated.CategoryId;
 
             await _context.SaveChangesAsync();
 
