@@ -1,6 +1,9 @@
-@RanitaApi_HostAddress = http://localhost:5185
+POST https://ranita-api.onrender.com/api/products
+Content-Type: application/json
 
-GET {{RanitaApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+{
+  "name": "Télévision Samsung",
+  "price": 250000,
+  "stock": 5,
+  "description": "Smart TV 43 pouces"
+}
