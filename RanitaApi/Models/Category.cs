@@ -1,12 +1,14 @@
 ﻿using System.Text.Json.Serialization;
-using RanitaApi.Models;
 
-public class Category
+namespace RanitaApi.Models
 {
-    public int Id { get; set; }
+    public class Category
+    {
+        public int Id { get; set; }
 
-    public string Name { get; set; } = "";
+        public string Name { get; set; } = "";
 
-    [JsonIgnore]
-    public List<Product> Products { get; set; } = new();
+        [JsonIgnore]
+        public List<Product> Products { get; set; } = new();
+    }
 }
