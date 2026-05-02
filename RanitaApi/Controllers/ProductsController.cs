@@ -22,6 +22,20 @@ namespace RanitaApi.Controllers
         {
             var products = await _context.Products
                 .Include(p => p.Category)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Price,
+                    p.Stock,
+                    p.Description,
+                    p.CategoryId,
+                    Category = p.Category == null ? null : new
+                    {
+                        p.Category.Id,
+                        p.Category.Name
+                    }
+                })
                 .ToListAsync();
 
             return Ok(products);
