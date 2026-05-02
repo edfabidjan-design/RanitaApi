@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ranita Admin - Catégories</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <h1>Administration des catégories</h1>
+
+    <form id="categoryForm">
+        <input type="hidden" id="categoryId" />
+
+        <input type="text" id="categoryName" placeholder="Nom de la catégorie" required />
+
+        <button type="submit">Enregistrer</button>
+        <button type="button" id="resetBtn">Réinitialiser</button>
+    </form>
+
+    <hr />
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="categoriesTable"></tbody>
+    </table>
+
+    <script>
+    const apiUrl = "/api/categories";
+
+    const form = document.getElementById("categoryForm");
+    const categoryId = document.getElementById("categoryId");
+    const categoryName = document.getElementById("categoryName");
+    const categoriesTable = document.getElementById("categoriesTable");
+    const resetBtn = document.getElementById("resetBtn");
+
+    async function loadCategories() {
+      const res = await fetch(apiUrl);
+      const categories = await res.json();
+
+      categoriesTable.innerHTML = "";
+
+      categories.forEach(c => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${c.id}</td>
+          <td>${c.name}</td>
+          <td>
+            <button onclick="editCategory(${c.id}, '${c.name}')">Modifier</button>
+            <button onclick="deleteCategory(${c.id})">Supprimer</button>
+          </td>
+        `;
+
+        categoriesTable.appendChild(tr);
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: categoryName.value
+      };
+
+      if (categoryId.value) {
+        await fetch(`${apiUrl}/${categoryId.value}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+      } else {
+        await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+      }
+
+      resetForm();
+      loadCategories();
+    });
+
+    function editCategory(id, name) {
+      categoryId.value = id;
+      categoryName.value = name;
+    }
+
+    async function deleteCategory(id) {
+      if (!confirm("Supprimer cette catégorie ?")) return;
+
+      await fetch(`${apiUrl}/${id}`, {
+        method: "DELETE"
+      });
+
+      loadCategories();
+    }
+
+    function resetForm() {
+      categoryId.value = "";
+      categoryName.value = "";
+    }
+
+    resetBtn.addEventListener("click", resetForm);
+
+    loadCategories();
+    </script>
+</body>
+</html>

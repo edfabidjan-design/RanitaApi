@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ranita - Produits</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <h1>Ranita Market</h1>
+
+    <form>
+        <input type="text" id="searchInput" placeholder="Rechercher un produit..." />
+
+        <select id="categoryFilter">
+            <option value="">Toutes les catégories</option>
+        </select>
+    </form>
+
+    <div id="productsGrid"></div>
+
+    <script>
+    const productsApi = "/api/products";
+    const categoriesApi = "/api/categories";
+
+    let allProducts = [];
+
+    const productsGrid = document.getElementById("productsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+
+    async function loadCategories() {
+      const res = await fetch(categoriesApi);
+      const categories = await res.json();
+
+      categories.forEach(c => {
+        categoryFilter.innerHTML += `
+          <option value="${c.id}">${c.name}</option>
+        `;
+      });
+    }
+
+    async function loadProducts() {
+      const res = await fetch(productsApi);
+      allProducts = await res.json();
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const search = searchInput.value.toLowerCase();
+      const selectedCategory = categoryFilter.value;
+
+      const filtered = allProducts.filter(p => {
+        const matchSearch = p.name.toLowerCase().includes(search);
+        const matchCategory = !selectedCategory || String(p.categoryId) === selectedCategory;
+        return matchSearch && matchCategory;
+      });
+
+      productsGrid.innerHTML = "";
+
+      filtered.forEach(p => {
+        productsGrid.innerHTML += `
+          <div class="product-card">
+            <div class="product-img">
+              ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}">` : `<span>Aucune image</span>`}
+            </div>
+
+            <h3>${p.name}</h3>
+            <p>${p.description || ""}</p>
+            <strong>${Number(p.price).toLocaleString()} FCFA</strong>
+            <small>${p.category?.name || ""}</small>
+
+            <button>Ajouter au panier</button>
+          </div>
+        `;
+      });
+    }
+
+    searchInput.addEventListener("input", renderProducts);
+    categoryFilter.addEventListener("change", renderProducts);
+
+    loadCategories();
+    loadProducts();
+    </script>
+</body>
+</html>

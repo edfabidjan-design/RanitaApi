@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ranita Admin - Produits</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <h1>Administration des produits</h1>
+
+    <form id="productForm">
+        <input type="hidden" id="productId" />
+
+        <input type="text" id="productName" placeholder="Nom du produit" required />
+        <input type="number" id="productPrice" placeholder="Prix" required />
+        <input type="file" id="imageFile" />
+        <input type="text" id="productDescription" placeholder="Description" />
+
+        <select id="categoryId" required>
+            <option value="">-- Choisir une catégorie --</option>
+        </select>
+
+        <button type="submit">Enregistrer</button>
+        <button type="button" id="resetBtn">Réinitialiser</button>
+    </form>
+
+    <hr />
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Catégorie</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="productsTable"></tbody>
+    </table>
+
+    <script>
+    const productsApi = "/api/products";
+    const categoriesApi = "/api/categories";
+
+    const form = document.getElementById("productForm");
+    const productId = document.getElementById("productId");
+    const productName = document.getElementById("productName");
+    const productPrice = document.getElementById("productPrice");
+    const imageFile = document.getElementById("imageFile");
+    const productDescription = document.getElementById("productDescription");
+    const categoryId = document.getElementById("categoryId");
+    const productsTable = document.getElementById("productsTable");
+    const resetBtn = document.getElementById("resetBtn");
+
+    async function loadCategories() {
+      const res = await fetch(categoriesApi);
+      const categories = await res.json();
+
+      categoryId.innerHTML = `<option value="">-- Choisir une catégorie --</option>`;
+
+      categories.forEach(c => {
+        categoryId.innerHTML += `
+          <option value="${c.id}">${c.name}</option>
+        `;
+      });
+    }
+        imageFile.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // supprimer ancienne preview si existe
+            const oldPreview = document.getElementById("previewImg");
+            if (oldPreview) oldPreview.remove();
+
+            const preview = document.createElement("img");
+            preview.id = "previewImg";
+            preview.src = URL.createObjectURL(file);
+            preview.style.width = "80px";
+            preview.style.marginTop = "10px";
+
+            document.getElementById("productForm").appendChild(preview);
+        });
+
+    async function loadProducts() {
+      const res = await fetch(productsApi);
+      const products = await res.json();
+
+      productsTable.innerHTML = "";
+
+      products.forEach(p => {
+        const catName = p.categoryName || p.category?.name || "";
+
+        productsTable.innerHTML += `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.name}</td>
+            <td>${p.price}</td>
+            <td>${catName}</td>
+            <td>
+              ${p.imageUrl ? `<img src="${p.imageUrl}" width="60" />` : ""}
+            </td>
+            <td>
+              <button onclick="editProduct(${p.id}, '${escapeText(p.name)}', ${p.price}, '${escapeText(p.imageUrl || "")}', '${escapeText(p.description || "")}', ${p.categoryId || 0})">Modifier</button>
+              <button onclick="deleteProduct(${p.id})">Supprimer</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const fileInput = document.getElementById("imageFile");
+
+            const formData = new FormData();
+            formData.append("Name", productName.value);
+            formData.append("Price", productPrice.value);
+            formData.append("Description", productDescription.value);
+            formData.append("CategoryId", categoryId.value);
+
+            if (fileInput.files.length > 0) {
+                formData.append("image", fileInput.files[0]);
+            }
+
+            if (productId.value) {
+                await fetch(`${productsApi}/${productId.value}`, {
+                    method: "PUT",
+                    body: formData
+                });
+            } else {
+                await fetch(productsApi, {
+                    method: "POST",
+                    body: formData
+                });
+            }
+
+            resetForm();
+            loadProducts();
+        });
+
+
+        function editProduct(id, name, price, imageUrl, description, catId) {
+            productId.value = id;
+            productName.value = name;
+            productPrice.value = price;
+            productDescription.value = description;
+            categoryId.value = catId;
+        }
+
+    async function deleteProduct(id) {
+      if (!confirm("Supprimer ce produit ?")) return;
+
+      await fetch(`${productsApi}/${id}`, {
+        method: "DELETE"
+      });
+
+      loadProducts();
+    }
+
+        function resetForm() {
+            productId.value = "";
+            productName.value = "";
+            productPrice.value = "";
+            productDescription.value = "";
+            categoryId.value = "";
+            imageFile.value = "";
+
+            const oldPreview = document.getElementById("previewImg");
+            if (oldPreview) oldPreview.remove();
+        }
+
+    function escapeText(value) {
+      return String(value).replaceAll("'", "\\'");
+    }
+
+    resetBtn.addEventListener("click", resetForm);
+
+    loadCategories();
+    loadProducts();
+    </script>
+</body>
+</html>
