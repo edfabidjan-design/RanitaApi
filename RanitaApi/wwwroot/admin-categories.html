@@ -31,7 +31,11 @@
     </table>
 
     <script>
-    const apiUrl = "/api/categories";
+
+        const API_BASE = "https://ranita-api.onrender.com/api";
+
+        const categoriesApi = `${API_BASE}/categories`;
+        const productsApi = `${API_BASE}/products`;
 
     const form = document.getElementById("categoryForm");
     const categoryId = document.getElementById("categoryId");
