@@ -41,8 +41,10 @@
     </table>
 
     <script>
-    const productsApi = "/api/products";
-    const categoriesApi = "/api/categories";
+        const API_BASE = "https://ranita-api.onrender.com/api";
+
+        const productsApi = `${API_BASE}/products`;
+        const categoriesApi = `${API_BASE}/categories`;
 
     const form = document.getElementById("productForm");
     const productId = document.getElementById("productId");
@@ -113,32 +115,35 @@
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const fileInput = document.getElementById("imageFile");
-
             const formData = new FormData();
             formData.append("Name", productName.value);
             formData.append("Price", productPrice.value);
             formData.append("Description", productDescription.value);
             formData.append("CategoryId", categoryId.value);
 
-            if (fileInput.files.length > 0) {
-                formData.append("image", fileInput.files[0]);
+            if (imageFile.files.length > 0) {
+                formData.append("image", imageFile.files[0]);
             }
 
-            if (productId.value) {
-                await fetch(`${productsApi}/${productId.value}`, {
-                    method: "PUT",
-                    body: formData
-                });
-            } else {
-                await fetch(productsApi, {
-                    method: "POST",
-                    body: formData
-                });
+            const url = productId.value
+                ? `${productsApi}/update/${productId.value}`
+                : productsApi;
+
+            const method = "POST";
+
+            const res = await fetch(url, {
+                method: method,
+                body: formData
+            });
+
+            if (!res.ok) {
+                const err = await res.text();
+                alert("Erreur : " + err);
+                return;
             }
 
             resetForm();
-            loadProducts();
+            await loadProducts();
         });
 
 
