@@ -33,12 +33,16 @@ try
     using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.Migrate();
+
+        db.Database.ExecuteSqlRaw("""
+            ALTER TABLE "Products"
+            ADD COLUMN IF NOT EXISTS "ImageUrl" text NOT NULL DEFAULT '';
+        """);
     }
 }
 catch (Exception ex)
 {
-    Console.WriteLine("Migration error: " + ex.Message);
+    Console.WriteLine("DB fix error: " + ex.Message);
 }
 
 app.Run();
