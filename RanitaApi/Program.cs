@@ -17,12 +17,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         }
     ));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowRanitaShop", policy =>
+    {
+        policy.WithOrigins(
+                "https://ranita-shop.com",
+                "https://www.ranita-shop.com"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 
 app.UseStaticFiles(); // ✅ permet d’ouvrir les fichiers HTML dans wwwroot
+
+app.UseCors("AllowRanitaShop");
 
 app.UseAuthorization();
 
