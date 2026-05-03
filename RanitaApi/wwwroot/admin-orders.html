@@ -31,6 +31,16 @@
 
         const ordersTable = document.getElementById("ordersTable");
 
+        function getStatusClass(status) {
+            switch (status) {
+                case "En attente": return "status-pending";
+                case "Validée": return "status-validated";
+                case "Livrée": return "status-delivered";
+                case "Annulée": return "status-cancelled";
+                default: return "";
+            }
+        }
+
         async function loadOrders() {
             const res = await fetch(ordersApi);
             const orders = await res.json();
@@ -58,6 +68,9 @@
                         <td>
                             <button onclick='showDetails(${JSON.stringify(o.items)})'>Voir</button>
                         </td>
+
+                        <td>
+                        <select class="${getStatusClass(o.status)}" onchange="updateStatus(${o.id}, this.value)">
                     </tr>
                 `;
             });

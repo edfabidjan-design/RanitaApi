@@ -153,3 +153,24 @@ td button {
     margin-bottom: 12px;
     color: #6b7280;
 }
+
+
+.status-pending {
+    background: orange;
+    color: white;
+}
+
+.status-validated {
+    background: blue;
+    color: white;
+}
+
+.status-delivered {
+    background: green;
+    color: white;
+}
+
+.status-cancelled {
+    background: red;
+    color: white;
+}

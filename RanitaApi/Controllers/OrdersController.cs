@@ -95,10 +95,25 @@ namespace RanitaApi.Controllers
         [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
                 return NotFound();
+
+            // ✅ Si on annule une commande qui n'était pas déjà annulée
+            if (status == "Annulée" && order.Status != "Annulée")
+            {
+                foreach (var item in order.Items)
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product != null)
+                    {
+                        product.Stock += item.Quantity;
+                    }
+                }
+            }
 
             order.Status = status;
 
