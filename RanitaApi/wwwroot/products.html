@@ -63,7 +63,7 @@
         productsGrid.innerHTML += `
           <div class="product-card">
             <div class="product-img">
-              <img src="${p.imageUrl || 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
+             <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
             </div>
 
             <h3>${p.name}</h3>
