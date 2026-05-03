@@ -19,8 +19,10 @@
     <div id="productsGrid"></div>
 
     <script>
-    const productsApi = "/api/products";
-    const categoriesApi = "/api/categories";
+        const API_BASE = "https://ranita-api.onrender.com/api";
+
+        const productsApi = `${API_BASE}/products`;
+        const categoriesApi = `${API_BASE}/categories`;
 
     let allProducts = [];
 
@@ -61,7 +63,7 @@
         productsGrid.innerHTML += `
           <div class="product-card">
             <div class="product-img">
-              ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}">` : `<span>Aucune image</span>`}
+              <img src="${p.imageUrl || 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
             </div>
 
             <h3>${p.name}</h3>

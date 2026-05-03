@@ -42,7 +42,7 @@ public class AuthController : ControllerBase
 
     private string GenerateJwtToken(User user)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SUPER_SECRET_KEY_123"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("RANITA_SUPER_SECRET_KEY_2026_ADMIN_AUTHENTICATION_123456789");
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
