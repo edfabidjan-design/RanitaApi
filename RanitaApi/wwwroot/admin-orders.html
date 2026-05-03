@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ranita Admin - Commandes</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <h1>Administration des commandes</h1>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Téléphone</th>
+                <th>Adresse</th>
+                <th>Paiement</th>
+                <th>Total</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+        <tbody id="ordersTable"></tbody>
+    </table>
+
+    <script>
+        const API_BASE = "https://ranita-api.onrender.com/api";
+        const ordersApi = `${API_BASE}/orders`;
+
+        const ordersTable = document.getElementById("ordersTable");
+
+        async function loadOrders() {
+            const res = await fetch(ordersApi);
+            const orders = await res.json();
+
+            ordersTable.innerHTML = "";
+
+            orders.forEach(o => {
+                ordersTable.innerHTML += `
+                    <tr>
+                        <td>${o.id}</td>
+                        <td>${o.customerName}</td>
+                        <td>${o.customerPhone}</td>
+                        <td>${o.customerAddress}</td>
+                        <td>${o.paymentMethod}</td>
+                        <td>${Number(o.total).toLocaleString()} FCFA</td>
+                        <td>
+                            <select onchange="updateStatus(${o.id}, this.value)">
+                                <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+                                <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+                                <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+                                <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+                            </select>
+                        </td>
+                        <td>${new Date(o.createdAt).toLocaleString()}</td>
+                        <td>
+                            <button onclick='showDetails(${JSON.stringify(o.items)})'>Voir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function updateStatus(id, status) {
+            const res = await fetch(`${ordersApi}/${id}/status`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(status)
+            });
+
+            if (!res.ok) {
+                alert("Erreur changement statut");
+                return;
+            }
+
+            alert("Statut mis à jour");
+        }
+
+        function showDetails(items) {
+            let text = "Produits commandés :\n\n";
+
+            items.forEach(i => {
+                text += `${i.productName} x ${i.quantity} = ${Number(i.price * i.quantity).toLocaleString()} FCFA\n`;
+            });
+
+            alert(text);
+        }
+
+        loadOrders();
+    </script>
+</body>
+</html>
