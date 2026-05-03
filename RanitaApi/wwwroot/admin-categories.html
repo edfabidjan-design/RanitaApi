@@ -32,6 +32,13 @@
 
     <script>
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            window.location.href = "admin-login.html";
+        }
+
+
         const API_BASE = "https://ranita-api.onrender.com/api";
 
         const categoriesApi = `${API_BASE}/categories`;

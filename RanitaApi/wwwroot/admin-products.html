@@ -41,6 +41,13 @@
     </table>
 
     <script>
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            window.location.href = "admin-login.html";
+        }
+
         const API_BASE = "https://ranita-api.onrender.com/api";
 
         const productsApi = `${API_BASE}/products`;
@@ -126,10 +133,10 @@
             }
 
             const url = productId.value
-                ? `${productsApi}/update/${productId.value}`
+                ? `${productsApi}/${productId.value}`
                 : productsApi;
 
-            const method = "POST";
+            const method = productId.value ? "PUT" : "POST";
 
             const res = await fetch(url, {
                 method: method,

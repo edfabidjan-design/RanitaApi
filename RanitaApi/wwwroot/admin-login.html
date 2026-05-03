@@ -1,0 +1,32 @@
+﻿<h2>Connexion Admin</h2>
+
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Connexion</button>
+
+<script>
+const API = "https://ranita-api.onrender.com/api";
+
+async function login() {
+    const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        })
+    });
+
+    if(!res.ok){
+        alert("Erreur login");
+        return;
+    }
+
+    const data = await res.json();
+
+    localStorage.setItem("token", data.token);
+
+    window.location.href = "admin-products.html";
+}
+</script>
