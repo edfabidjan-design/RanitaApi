@@ -7,24 +7,31 @@
 </head>
 <body>
 
-    <header class="products-header">
-        <div>
-            <h1>Nos produits</h1>
-            <p>Découvrez les articles disponibles sur Ranita Market</p>
-        </div>
+    <main class="products-page">
 
-        <a href="cart.html" class="cart-link">🛒 Panier</a>
-    </header>
+        <header class="products-header">
+            <div class="products-title">
+                <h1>Nos produits</h1>
+                <p>Découvrez les articles disponibles sur Ranita Market</p>
+            </div>
 
-    <section class="products-toolbar">
-        <input type="text" id="searchInput" placeholder="Rechercher un produit..." />
+            <a href="cart.html" class="cart-link">
+                🛒 Panier (<span id="cartCount">0</span>)
+            </a>
 
-        <select id="categoryFilter">
-            <option value="">Toutes les catégories</option>
-        </select>
-    </section>
+        </header>
 
-    <div id="productsGrid"></div>
+        <section class="products-toolbar">
+            <input type="text" id="searchInput" placeholder="Rechercher un produit..." />
+
+            <select id="categoryFilter">
+                <option value="">Toutes les catégories</option>
+            </select>
+        </section>
+
+        <div id="productsGrid"></div>
+
+    </main>
 
     <script>
         const API_BASE = "https://ranita-api.onrender.com/api";
@@ -56,6 +63,12 @@
             renderProducts();
         }
 
+        function updateCartCount() {
+            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById("cartCount").textContent = total;
+        }
+
+
         function addToCart(id) {
             const product = allProducts.find(p => p.id === id);
 
@@ -74,6 +87,12 @@
 
             localStorage.setItem("cart", JSON.stringify(cart));
             alert("Produit ajouté au panier !");
+
+            updateCartCount();
+        }
+
+        function openProductDetails(id) {
+            window.location.href = `product-details.html?id=${id}`;
         }
 
         function renderProducts() {
@@ -90,23 +109,23 @@
 
             filtered.forEach(p => {
                 productsGrid.innerHTML += `
-                        <div class="product-card">
-                            <div class="product-img">
-                                <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
-                            </div>
+    <div class="product-card" onclick="openProductDetails(${p.id})">
+        <div class="product-img">
+            <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
+        </div>
 
-                            <h3>${p.name}</h3>
-                            <p>${p.description || ""}</p>
-                            <strong>${Number(p.price).toLocaleString()} FCFA</strong>
-                            <small>${p.category?.name || ""}</small>
-                            <small>Stock : ${p.stock}</small>
+        <h3>${p.name}</h3>
+        <p>${p.description || ""}</p>
+        <strong>${Number(p.price).toLocaleString()} FCFA</strong>
+        <small>${p.category?.name || ""}</small>
+        <small>Stock : ${p.stock}</small>
 
-                            ${p.stock <= 0
-                        ? `<button disabled class="btn-disabled">Rupture de stock</button>`
-                        : `<button class="btn-buy" onclick="addToCart(${p.id})">Ajouter au panier</button>`
+        ${p.stock <= 0
+                        ? `<button disabled class="btn-disabled" onclick="event.stopPropagation()">Rupture de stock</button>`
+                        : `<button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">Ajouter au panier</button>`
                     }
-                        </div>
-                    `;
+    </div>
+`;
             });
         }
 

@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détail produit</title>
+    <link rel="stylesheet" href="products.css">
+</head>
+<body>
+
+    <div class="product-details" id="productDetails"></div>
+
+    <script>
+const API_BASE = "https://ranita-api.onrender.com/api";
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+async function loadProduct() {
+    const res = await fetch(`${API_BASE}/products/${id}`);
+    const p = await res.json();
+
+    document.getElementById("productDetails").innerHTML = `
+        <div style="max-width:900px;margin:auto;background:white;padding:20px;border-radius:16px;">
+            <img src="${p.imageUrl}" style="width:100%;max-height:400px;object-fit:cover;border-radius:12px">
+
+            <h1>${p.name}</h1>
+            <p>${p.description || ""}</p>
+
+            <h2 style="color:#f97316">${Number(p.price).toLocaleString()} FCFA</h2>
+
+            <p><strong>Catégorie :</strong> ${p.category?.name || ""}</p>
+            <p><strong>Stock :</strong> ${p.stock}</p>
+
+            <button onclick="addToCart(${p.id})">Ajouter au panier</button>
+        </div>
+    `;
+}
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function addToCart(id) {
+    const existing = cart.find(p => p.id === id);
+
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({ id, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Ajouté au panier !");
+}
+
+loadProduct();
+    </script>
+
+</body>
+</html>

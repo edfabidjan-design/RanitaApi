@@ -68,6 +68,7 @@
     padding: 15px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
     .product-card:hover {
@@ -138,4 +139,19 @@
     border-radius: 10px;
     font-weight: 600;
     cursor: not-allowed;
+}
+
+.products-page {
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+.products-title {
+    text-align: center;
+    flex: 1;
+}
+
+.products-toolbar {
+    margin-left: auto;
+    margin-right: auto;
 }
