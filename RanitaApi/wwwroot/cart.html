@@ -10,7 +10,14 @@
 
     <div id="cartContainer"></div>
 
+
     <h2 id="totalAmount">Total : 0 FCFA</h2>
+
+    <a href="checkout.html">
+        <button>Passer la commande</button>
+    </a>
+
+    <button onclick="clearCart()">Vider le panier</button>
 
     <button onclick="clearCart()">Vider le panier</button>
     <a href="products.html">
@@ -38,19 +45,20 @@
                 total += item.price * item.quantity;
 
                 cartContainer.innerHTML += `
-                    <div class="product-card">
-                        <img src="${item.imageUrl ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/120'}" width="120">
-                        <h3>${item.name}</h3>
-                        <p>${Number(item.price).toLocaleString()} FCFA</p>
+                        <div class="product-card">
+                            <img src="${item.imageUrl ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/120'}" width="120">
+                            <h3>${item.name}</h3>
+                            <p>${Number(item.price).toLocaleString()} FCFA</p>
 
-                        <button onclick="changeQty(${item.id}, -1)">-</button>
-                        <strong>${item.quantity}</strong>
-                        <button onclick="changeQty(${item.id}, 1)">+</button>
+                            <button onclick="changeQty(${item.id}, -1)">-</button>
+                            <strong>${item.quantity}</strong>
+                            <button onclick="changeQty(${item.id}, 1)">+</button>
 
-                        <p>Sous-total : ${Number(item.price * item.quantity).toLocaleString()} FCFA</p>
-                        <button onclick="removeItem(${item.id})">Supprimer</button>
-                    </div>
-                `;
+                            <p>Sous-total : ${Number(item.price * item.quantity).toLocaleString()} FCFA</p>
+
+                            <button onclick="removeItem(${item.id})">Supprimer</button>
+                        </div>
+                    `;
             });
 
             totalAmount.textContent = "Total : " + Number(total).toLocaleString() + " FCFA";
