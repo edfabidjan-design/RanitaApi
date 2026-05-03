@@ -6,6 +6,7 @@ using RanitaApi.Models;
 using System.Security.Cryptography;
 using System.Text;
 
+
 [ApiController]
 [Route("api/client-auth")]
 public class ClientAuthController : ControllerBase
@@ -24,6 +25,12 @@ public class ClientAuthController : ControllerBase
         var hash = sha.ComputeHash(bytes);
         return Convert.ToBase64String(hash);
     }
+    string GenerateCode()
+    {
+        var rnd = new Random();
+        return rnd.Next(100000, 999999).ToString();
+    }
+
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(ClientRegisterDto dto)
@@ -62,5 +69,52 @@ public class ClientAuthController : ControllerBase
             name = client.FullName,
             email = client.Email
         });
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+    {
+        var client = await _context.Clients
+            .FirstOrDefaultAsync(x => x.Email == dto.Email);
+
+        if (client == null)
+            return Ok("Si le compte existe, un code a été envoyé.");
+
+        var code = GenerateCode();
+
+        client.ResetCode = code;
+        client.ResetCodeExpiresAt = DateTime.UtcNow.AddMinutes(10);
+
+        await _context.SaveChangesAsync();
+
+        // 👉 TEMPORAIRE (dev)
+        Console.WriteLine($"RESET CODE for {client.Email}: {code}");
+
+        return Ok("Code envoyé.");
+    }
+
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+    {
+        var client = await _context.Clients
+            .FirstOrDefaultAsync(x => x.Email == dto.Email);
+
+        if (client == null)
+            return BadRequest("Compte introuvable");
+
+        if (client.ResetCode != dto.Code)
+            return BadRequest("Code invalide");
+
+        if (client.ResetCodeExpiresAt < DateTime.UtcNow)
+            return BadRequest("Code expiré");
+
+        client.PasswordHash = HashPassword(dto.NewPassword);
+        client.ResetCode = null;
+        client.ResetCodeExpiresAt = null;
+
+        await _context.SaveChangesAsync();
+
+        return Ok("Mot de passe réinitialisé");
     }
 }
