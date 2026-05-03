@@ -155,3 +155,52 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.thank-you-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thank-you-card {
+    max-width: 560px;
+    background: white;
+    padding: 40px;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(0,0,0,.08);
+}
+
+.success-icon {
+    font-size: 54px;
+    margin-bottom: 18px;
+}
+
+.thank-you-card h1 {
+    margin: 0 0 14px;
+    font-size: 32px;
+    color: #111827;
+}
+
+.thank-you-card p {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.thank-you-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.secondary-link {
+    text-decoration: none;
+    color: #047857;
+    background: #ecfdf5;
+    padding: 11px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+}
