@@ -6,22 +6,23 @@
     <link rel="stylesheet" href="products.css">
 </head>
 <body>
-    <h1>Ranita Market</h1>
 
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h1>Ranita Market</h1>
+    <header class="products-header">
+        <div>
+            <h1>Nos produits</h1>
+            <p>Découvrez les articles disponibles sur Ranita Market</p>
+        </div>
 
-        <a href="cart.html">
-            <button>🛒 Panier</button>
-        </a>
-    </div>
-    <form>
+        <a href="cart.html" class="cart-link">🛒 Panier</a>
+    </header>
+
+    <section class="products-toolbar">
         <input type="text" id="searchInput" placeholder="Rechercher un produit..." />
 
         <select id="categoryFilter">
             <option value="">Toutes les catégories</option>
         </select>
-    </form>
+    </section>
 
     <div id="productsGrid"></div>
 
@@ -44,8 +45,8 @@
 
             categories.forEach(c => {
                 categoryFilter.innerHTML += `
-              <option value="${c.id}">${c.name}</option>
-            `;
+                        <option value="${c.id}">${c.name}</option>
+                    `;
             });
         }
 
@@ -57,6 +58,7 @@
 
         function addToCart(id) {
             const product = allProducts.find(p => p.id === id);
+
             if (!product || product.stock <= 0) {
                 alert("Produit en rupture de stock.");
                 return;
@@ -71,7 +73,6 @@
             }
 
             localStorage.setItem("cart", JSON.stringify(cart));
-
             alert("Produit ajouté au panier !");
         }
 
@@ -89,23 +90,23 @@
 
             filtered.forEach(p => {
                 productsGrid.innerHTML += `
-              <div class="product-card">
-                <div class="product-img">
-                 <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
-                </div>
+                        <div class="product-card">
+                            <div class="product-img">
+                                <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
+                            </div>
 
-                <h3>${p.name}</h3>
-                <p>${p.description || ""}</p>
-                <strong>${Number(p.price).toLocaleString()} FCFA</strong>
-                <small>${p.category?.name || ""}</small>
-                <small>Stock : ${p.stock}</small>
+                            <h3>${p.name}</h3>
+                            <p>${p.description || ""}</p>
+                            <strong>${Number(p.price).toLocaleString()} FCFA</strong>
+                            <small>${p.category?.name || ""}</small>
+                            <small>Stock : ${p.stock}</small>
 
-                ${p.stock <= 0
-                        ? `<button disabled style="background:#999;cursor:not-allowed;">Rupture de stock</button>`
-                        : `<button onclick="addToCart(${p.id})">Ajouter au panier</button>`
-}
-              </div>
-            `;
+                            ${p.stock <= 0
+                        ? `<button disabled class="btn-disabled">Rupture de stock</button>`
+                        : `<button class="btn-buy" onclick="addToCart(${p.id})">Ajouter au panier</button>`
+                    }
+                        </div>
+                    `;
             });
         }
 
