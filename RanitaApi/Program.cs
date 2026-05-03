@@ -44,7 +44,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapControllers();
+
 
 
 try
@@ -98,35 +98,41 @@ catch (Exception ex)
 }
 
 
-using (var scope = app.Services.CreateScope())
+try
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    // 🔥 Création des tables si elles n'existent pas
-    db.Database.ExecuteSqlRaw(@"
-        CREATE TABLE IF NOT EXISTS ""Orders"" (
-            ""Id"" SERIAL PRIMARY KEY,
-            ""CustomerName"" TEXT,
-            ""CustomerPhone"" TEXT,
-            ""CustomerAddress"" TEXT,
-            ""PaymentMethod"" TEXT,
-            ""Total"" NUMERIC(18,2),
-            ""Status"" TEXT,
-            ""CreatedAt"" TIMESTAMP
-        );
-    ");
+        db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS ""Orders"" (
+                ""Id"" SERIAL PRIMARY KEY,
+                ""CustomerName"" TEXT,
+                ""CustomerPhone"" TEXT,
+                ""CustomerAddress"" TEXT,
+                ""PaymentMethod"" TEXT,
+                ""Total"" NUMERIC(18,2),
+                ""Status"" TEXT,
+                ""CreatedAt"" TIMESTAMP
+            );
+        ");
 
-    db.Database.ExecuteSqlRaw(@"
-        CREATE TABLE IF NOT EXISTS ""OrderItems"" (
-            ""Id"" SERIAL PRIMARY KEY,
-            ""OrderId"" INT REFERENCES ""Orders""(""Id"") ON DELETE CASCADE,
-            ""ProductId"" INT,
-            ""ProductName"" TEXT,
-            ""Price"" NUMERIC(18,2),
-            ""Quantity"" INT,
-            ""ImageUrl"" TEXT
-        );
-    ");
+        db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS ""OrderItems"" (
+                ""Id"" SERIAL PRIMARY KEY,
+                ""OrderId"" INT REFERENCES ""Orders""(""Id"") ON DELETE CASCADE,
+                ""ProductId"" INT,
+                ""ProductName"" TEXT,
+                ""Price"" NUMERIC(18,2),
+                ""Quantity"" INT,
+                ""ImageUrl"" TEXT
+            );
+        ");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Orders table error: " + ex.Message);
 }
 
 
