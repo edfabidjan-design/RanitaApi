@@ -20,17 +20,24 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login(User login)
+    public IActionResult Login([FromBody] User login)
     {
-        var user = _context.Users
-            .FirstOrDefault(u => u.Username == login.Username && u.Password == login.Password);
+        try
+        {
+            var user = _context.Users
+                .FirstOrDefault(u => u.Username == login.Username && u.Password == login.Password);
 
-        if (user == null)
-            return Unauthorized("Identifiants incorrects");
+            if (user == null)
+                return Unauthorized("Identifiants incorrects");
 
-        var token = GenerateJwtToken(user);
+            var token = GenerateJwtToken(user);
 
-        return Ok(new { token });
+            return Ok(new { token });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     private string GenerateJwtToken(User user)

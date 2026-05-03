@@ -19,7 +19,8 @@ async function login() {
     });
 
     if(!res.ok){
-        alert("Erreur login");
+        const err = await res.text();
+        alert("Erreur login : " + err);
         return;
     }
 
