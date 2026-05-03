@@ -8,7 +8,8 @@
         public string CustomerPhone { get; set; } = "";
         public string CustomerAddress { get; set; } = "";
         public string PaymentMethod { get; set; } = "";
-
+        public int? ClientId { get; set; }
+        public Client? Client { get; set; }
         public decimal Total { get; set; }
 
         public string Status { get; set; } = "En attente";

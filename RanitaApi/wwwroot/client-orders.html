@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes commandes - Ranita</title>
+    <link rel="stylesheet" href="products.css">
+</head>
+<body>
+
+    <main class="products-page">
+        <header class="products-header">
+            <div>
+                <h1>Mes commandes</h1>
+                <p>Consultez l’historique de vos commandes Ranita Market</p>
+            </div>
+
+            <a href="products.html" class="cart-link">Retour boutique</a>
+        </header>
+
+        <div id="ordersContainer"></div>
+    </main>
+
+    <script>
+const API_BASE = "https://ranita-api.onrender.com/api";
+const client = JSON.parse(localStorage.getItem("client"));
+
+const container = document.getElementById("ordersContainer");
+
+if (!client) {
+    alert("Veuillez vous connecter pour voir vos commandes.");
+    window.location.href = "login.html";
+}
+
+async function loadOrders() {
+    const res = await fetch(`${API_BASE}/client-orders/${client.id}`);
+
+    if (!res.ok) {
+        container.innerHTML = "<p>Impossible de charger vos commandes.</p>";
+        return;
+    }
+
+    const orders = await res.json();
+
+    if (orders.length === 0) {
+        container.innerHTML = `
+            <div class="empty-card">
+                <h2>Aucune commande</h2>
+                <p>Vous n’avez pas encore passé de commande.</p>
+                <a href="products.html" class="cart-link">Découvrir les produits</a>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = orders.map(o => `
+        <div class="order-card">
+            <div class="order-head">
+                <div>
+                    <h2>Commande #${o.id}</h2>
+                    <p>${new Date(o.createdAt).toLocaleDateString()}</p>
+                </div>
+                <span class="order-status">${o.status || "En attente"}</span>
+            </div>
+
+            <p><strong>Paiement :</strong> ${o.paymentMethod}</p>
+            <p><strong>Livraison :</strong> ${o.customerAddress}</p>
+
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Qté</th>
+                        <th>Prix</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${o.items.map(i => `
+                        <tr>
+                            <td>${i.productName}</td>
+                            <td>${i.quantity}</td>
+                            <td>${Number(i.unitPrice).toLocaleString()} FCFA</td>
+                            <td>${Number(i.total).toLocaleString()} FCFA</td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+
+            <h3>Total : ${Number(o.totalAmount).toLocaleString()} FCFA</h3>
+        </div>
+    `).join("");
+}
+
+loadOrders();
+    </script>
+
+</body>
+</html>

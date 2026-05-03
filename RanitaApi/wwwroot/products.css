@@ -204,3 +204,53 @@
     border-radius: 10px;
     font-weight: 700;
 }
+
+.order-card,
+.empty-card {
+    background: white;
+    padding: 22px;
+    border-radius: 18px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.07);
+}
+
+.order-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+    .order-head h2 {
+        margin: 0;
+    }
+
+    .order-head p {
+        margin: 6px 0 0;
+        color: #6b7280;
+    }
+
+.order-status {
+    background: #ecfdf5;
+    color: #047857;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+}
+
+    .order-table th,
+    .order-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+    }
+
+    .order-table th {
+        background: #f9fafb;
+    }s
