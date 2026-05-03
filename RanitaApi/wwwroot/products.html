@@ -8,6 +8,13 @@
 <body>
     <h1>Ranita Market</h1>
 
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>Ranita Market</h1>
+
+        <a href="cart.html">
+            <button>🛒 Panier</button>
+        </a>
+    </div>
     <form>
         <input type="text" id="searchInput" placeholder="Rechercher un produit..." />
 
@@ -24,64 +31,81 @@
         const productsApi = `${API_BASE}/products`;
         const categoriesApi = `${API_BASE}/categories`;
 
-    let allProducts = [];
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let allProducts = [];
 
-    const productsGrid = document.getElementById("productsGrid");
-    const searchInput = document.getElementById("searchInput");
-    const categoryFilter = document.getElementById("categoryFilter");
+        const productsGrid = document.getElementById("productsGrid");
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
 
-    async function loadCategories() {
-      const res = await fetch(categoriesApi);
-      const categories = await res.json();
+        async function loadCategories() {
+            const res = await fetch(categoriesApi);
+            const categories = await res.json();
 
-      categories.forEach(c => {
-        categoryFilter.innerHTML += `
-          <option value="${c.id}">${c.name}</option>
-        `;
-      });
-    }
+            categories.forEach(c => {
+                categoryFilter.innerHTML += `
+              <option value="${c.id}">${c.name}</option>
+            `;
+            });
+        }
 
-    async function loadProducts() {
-      const res = await fetch(productsApi);
-      allProducts = await res.json();
-      renderProducts();
-    }
+        async function loadProducts() {
+            const res = await fetch(productsApi);
+            allProducts = await res.json();
+            renderProducts();
+        }
 
-    function renderProducts() {
-      const search = searchInput.value.toLowerCase();
-      const selectedCategory = categoryFilter.value;
+        function addToCart(id) {
+            const product = allProducts.find(p => p.id === id);
 
-      const filtered = allProducts.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(search);
-        const matchCategory = !selectedCategory || String(p.categoryId) === selectedCategory;
-        return matchSearch && matchCategory;
-      });
+            const existing = cart.find(p => p.id === id);
 
-      productsGrid.innerHTML = "";
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
 
-      filtered.forEach(p => {
-        productsGrid.innerHTML += `
-          <div class="product-card">
-            <div class="product-img">
-             <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
-            </div>
+            localStorage.setItem("cart", JSON.stringify(cart));
 
-            <h3>${p.name}</h3>
-            <p>${p.description || ""}</p>
-            <strong>${Number(p.price).toLocaleString()} FCFA</strong>
-            <small>${p.category?.name || ""}</small>
+            alert("Produit ajouté au panier !");
+        }
 
-            <button>Ajouter au panier</button>
-          </div>
-        `;
-      });
-    }
+        function renderProducts() {
+            const search = searchInput.value.toLowerCase();
+            const selectedCategory = categoryFilter.value;
 
-    searchInput.addEventListener("input", renderProducts);
-    categoryFilter.addEventListener("change", renderProducts);
+            const filtered = allProducts.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search);
+                const matchCategory = !selectedCategory || String(p.categoryId) === selectedCategory;
+                return matchSearch && matchCategory;
+            });
 
-    loadCategories();
-    loadProducts();
+            productsGrid.innerHTML = "";
+
+            filtered.forEach(p => {
+                productsGrid.innerHTML += `
+              <div class="product-card">
+                <div class="product-img">
+                 <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
+                </div>
+
+                <h3>${p.name}</h3>
+                <p>${p.description || ""}</p>
+                <strong>${Number(p.price).toLocaleString()} FCFA</strong>
+                <small>${p.category?.name || ""}</small>
+
+                <button onclick="addToCart(${p.id})">Ajouter au panier</button>
+              </div>
+            `;
+            });
+        }
+
+        searchInput.addEventListener("input", renderProducts);
+        categoryFilter.addEventListener("change", renderProducts);
+
+        loadCategories();
+        loadProducts();
     </script>
 </body>
 </html>

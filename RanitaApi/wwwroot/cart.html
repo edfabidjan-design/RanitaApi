@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ranita - Panier</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <h1>Mon panier</h1>
+
+    <div id="cartContainer"></div>
+
+    <h2 id="totalAmount">Total : 0 FCFA</h2>
+
+    <button onclick="clearCart()">Vider le panier</button>
+    <a href="products.html">
+        <button>Continuer les achats</button>
+    </a>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        const cartContainer = document.getElementById("cartContainer");
+        const totalAmount = document.getElementById("totalAmount");
+
+        function renderCart() {
+            cartContainer.innerHTML = "";
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = "<p>Votre panier est vide.</p>";
+                totalAmount.textContent = "Total : 0 FCFA";
+                return;
+            }
+
+            let total = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+
+                cartContainer.innerHTML += `
+                    <div class="product-card">
+                        <img src="${item.imageUrl ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/120'}" width="120">
+                        <h3>${item.name}</h3>
+                        <p>${Number(item.price).toLocaleString()} FCFA</p>
+
+                        <button onclick="changeQty(${item.id}, -1)">-</button>
+                        <strong>${item.quantity}</strong>
+                        <button onclick="changeQty(${item.id}, 1)">+</button>
+
+                        <p>Sous-total : ${Number(item.price * item.quantity).toLocaleString()} FCFA</p>
+                        <button onclick="removeItem(${item.id})">Supprimer</button>
+                    </div>
+                `;
+            });
+
+            totalAmount.textContent = "Total : " + Number(total).toLocaleString() + " FCFA";
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(p => p.id === id);
+            if (!item) return;
+
+            item.quantity += delta;
+
+            if (item.quantity <= 0) {
+                cart = cart.filter(p => p.id !== id);
+            }
+
+            saveCart();
+        }
+
+        function removeItem(id) {
+            cart = cart.filter(p => p.id !== id);
+            saveCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            saveCart();
+        }
+
+        function saveCart() {
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>
