@@ -51,7 +51,18 @@ namespace RanitaApi.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return Ok(order);
+            return Ok(new
+            {
+                order.Id,
+                order.CustomerName,
+                order.CustomerPhone,
+                order.CustomerAddress,
+                order.PaymentMethod,
+                order.Total,
+                order.Status,
+                order.CreatedAt,
+                order.Items
+            });
         }
 
         // ✅ Liste des commandes (admin)
