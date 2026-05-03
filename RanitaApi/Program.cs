@@ -47,21 +47,37 @@ app.MapControllers();
 app.MapControllers();
 
 
-using (var scope = app.Services.CreateScope())
+try
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    if (!db.Users.Any())
+    using (var scope = app.Services.CreateScope())
     {
-        db.Users.Add(new User
-        {
-            Username = "admin",
-            Password = "1234"
-        });
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        db.SaveChanges();
+        db.Database.ExecuteSqlRaw("""
+            CREATE TABLE IF NOT EXISTS "Users" (
+                "Id" SERIAL PRIMARY KEY,
+                "Username" text NOT NULL,
+                "Password" text NOT NULL
+            );
+        """);
+
+        if (!db.Users.Any())
+        {
+            db.Users.Add(new User
+            {
+                Username = "admin",
+                Password = "1234"
+            });
+
+            db.SaveChanges();
+        }
     }
 }
+catch (Exception ex)
+{
+    Console.WriteLine("User seed error: " + ex.Message);
+}
+
 
 
 try
