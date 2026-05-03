@@ -75,6 +75,10 @@
             }
 
             localStorage.removeItem("cart");
+            const data = await res.json(); // ton API doit retourner l'order
+
+            localStorage.setItem("lastOrderId", data.id);
+
             window.location.href = "thank-you.html";
         });
     </script>

@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Connexion</title>
+    <link rel="stylesheet" href="products.css">
+</head>
+<body>
+
+    <h1>Connexion</h1>
+
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Mot de passe" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <p><a href="forgot-password.html">Mot de passe oublié ?</a></p>
+
+    <script>
+const API = "https://ranita-api.onrender.com/api/client-auth";
+
+document.getElementById("loginForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const res = await fetch(`${API}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: email.value,
+            password: password.value
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data);
+        return;
+    }
+
+    localStorage.setItem("client", JSON.stringify(data));
+
+    alert("Connexion réussie !");
+    window.location.href = "products.html";
+});
+    </script>
+
+</body>
+</html>>

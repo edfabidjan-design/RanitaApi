@@ -13,6 +13,8 @@
 
             <h1>Merci pour votre commande !</h1>
 
+            <p id="orderNumber"></p>
+
             <p>
                 Votre commande a été enregistrée avec succès.
                 Notre équipe vous contactera rapidement pour la confirmation et la livraison.
@@ -24,6 +26,15 @@
             </div>
         </div>
     </main>
+
+    <script>
+        const orderId = localStorage.getItem("lastOrderId");
+
+        if (orderId) {
+            document.getElementById("orderNumber").textContent =
+                "Numéro de commande : #" + orderId;
+        }
+    </script>
 
 </body>
 </html>
