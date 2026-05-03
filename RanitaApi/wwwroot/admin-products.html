@@ -115,7 +115,8 @@
               ${p.imageUrl ? `<img src="${p.imageUrl}" width="60" />` : ""}
             </td>
             <td>
-             <button onclick="editProduct(${p.id}, '${escapeText(p.name)}', ${p.price}, '${escapeText(p.imageUrl || "")}', '${escapeText(p.description || "")}', ${p.categoryId || 0}, ${p.stock})">
+            <button onclick="editProduct(${p.id}, '${escapeText(p.name)}', ${p.price}, '${escapeText(p.imageUrl || "")}', '${escapeText(p.description || "")}', ${p.categoryId || 0}, ${p.stock})">Modifier</button>
+<button onclick="deleteProduct(${p.id})">Supprimer</button>
               <button onclick="deleteProduct(${p.id})">Supprimer</button>
             </td>
           </tr>
@@ -185,6 +186,7 @@
             productDescription.value = "";
             categoryId.value = "";
             imageFile.value = "";
+            productStock.value = "";
 
             const oldPreview = document.getElementById("previewImg");
             if (oldPreview) oldPreview.remove();
