@@ -28,5 +28,32 @@ namespace RanitaApi.Controllers
             _context.SaveChanges();
             return Ok(category);
         }
+    
+
+    [HttpPut("{id}")]
+        public IActionResult Put(int id, Category updated)
+        {
+            var category = _context.Categories.Find(id);
+            if (category == null)
+                return NotFound();
+
+            category.Name = updated.Name;
+            _context.SaveChanges();
+
+            return Ok(category);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var category = _context.Categories.Find(id);
+            if (category == null)
+                return NotFound();
+
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+
+            return Ok("Supprimé");
+        }
     }
 }
