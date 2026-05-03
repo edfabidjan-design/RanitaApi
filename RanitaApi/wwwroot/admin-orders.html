@@ -57,20 +57,18 @@
                         <td>${o.paymentMethod}</td>
                         <td>${Number(o.total).toLocaleString()} FCFA</td>
                         <td>
-                            <select onchange="updateStatus(${o.id}, this.value)">
-                                <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                                <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-                                <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-                                <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-                            </select>
-                        </td>
+    <select class="${getStatusClass(o.status)}" onchange="updateStatus(${o.id}, this.value)">
+        <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+        <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+        <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+        <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+    </select>
+</td>
                         <td>${new Date(o.createdAt).toLocaleString()}</td>
                         <td>
                             <button onclick='showDetails(${JSON.stringify(o.items)})'>Voir</button>
                         </td>
 
-                        <td>
-                        <select class="${getStatusClass(o.status)}" onchange="updateStatus(${o.id}, this.value)">
                     </tr>
                 `;
             });
