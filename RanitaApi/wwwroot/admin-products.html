@@ -13,6 +13,7 @@
 
         <input type="text" id="productName" placeholder="Nom du produit" required />
         <input type="number" id="productPrice" placeholder="Prix" required />
+        <input type="number" id="productStock" placeholder="Stock" required />
         <input type="file" id="imageFile" />
         <input type="text" id="productDescription" placeholder="Description" />
 
@@ -32,6 +33,7 @@
                 <th>ID</th>
                 <th>Nom</th>
                 <th>Prix</th>
+                <th>Stock</th>
                 <th>Catégorie</th>
                 <th>Image</th>
                 <th>Actions</th>
@@ -57,6 +59,7 @@
     const productId = document.getElementById("productId");
     const productName = document.getElementById("productName");
     const productPrice = document.getElementById("productPrice");
+    const productStock = document.getElementById("productStock");
     const imageFile = document.getElementById("imageFile");
     const productDescription = document.getElementById("productDescription");
     const categoryId = document.getElementById("categoryId");
@@ -106,12 +109,13 @@
             <td>${p.id}</td>
             <td>${p.name}</td>
             <td>${p.price}</td>
+            <td>${p.stock}</td>
             <td>${catName}</td>
             <td>
               ${p.imageUrl ? `<img src="${p.imageUrl}" width="60" />` : ""}
             </td>
             <td>
-              <button onclick="editProduct(${p.id}, '${escapeText(p.name)}', ${p.price}, '${escapeText(p.imageUrl || "")}', '${escapeText(p.description || "")}', ${p.categoryId || 0})">Modifier</button>
+             <button onclick="editProduct(${p.id}, '${escapeText(p.name)}', ${p.price}, '${escapeText(p.imageUrl || "")}', '${escapeText(p.description || "")}', ${p.categoryId || 0}, ${p.stock})">
               <button onclick="deleteProduct(${p.id})">Supprimer</button>
             </td>
           </tr>
@@ -125,6 +129,7 @@
             const formData = new FormData();
             formData.append("Name", productName.value);
             formData.append("Price", productPrice.value);
+            formData.append("Stock", productStock.value);
             formData.append("Description", productDescription.value);
             formData.append("CategoryId", categoryId.value);
 
@@ -154,10 +159,11 @@
         });
 
 
-        function editProduct(id, name, price, imageUrl, description, catId) {
+        function editProduct(id, name, price, imageUrl, description, catId, stock) {
             productId.value = id;
             productName.value = name;
             productPrice.value = price;
+            productStock.value = stock;
             productDescription.value = description;
             categoryId.value = catId;
         }

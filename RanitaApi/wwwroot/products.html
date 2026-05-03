@@ -57,6 +57,10 @@
 
         function addToCart(id) {
             const product = allProducts.find(p => p.id === id);
+            if (!product || product.stock <= 0) {
+                alert("Produit en rupture de stock.");
+                return;
+            }
 
             const existing = cart.find(p => p.id === id);
 
@@ -94,8 +98,12 @@
                 <p>${p.description || ""}</p>
                 <strong>${Number(p.price).toLocaleString()} FCFA</strong>
                 <small>${p.category?.name || ""}</small>
+                <small>Stock : ${p.stock}</small>
 
-                <button onclick="addToCart(${p.id})">Ajouter au panier</button>
+                ${p.stock <= 0
+                        ? `<button disabled style="background:#999;cursor:not-allowed;">Rupture de stock</button>`
+                        : `<button onclick="addToCart(${p.id})">Ajouter au panier</button>`
+}
               </div>
             `;
             });
