@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace RanitaApi.Controllers
 {
@@ -85,15 +87,21 @@ namespace RanitaApi.Controllers
 
             if (image != null)
             {
-                var fileName = Guid.NewGuid() + Path.GetExtension(image.FileName);
-                var filePath = Path.Combine("wwwroot/images", fileName);
+                var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+                var cloudinary = new Cloudinary(cloudinaryUrl);
+                cloudinary.Api.Secure = true;
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                await using var stream = image.OpenReadStream();
+
+                var uploadParams = new ImageUploadParams
                 {
-                    await image.CopyToAsync(stream);
-                }
+                    File = new FileDescription(image.FileName, stream),
+                    Folder = "ranita-products"
+                };
 
-                product.ImageUrl = "/images/" + fileName;
+                var uploadResult = await cloudinary.UploadAsync(uploadParams);
+
+                product.ImageUrl = uploadResult.SecureUrl.ToString();
             }
 
             _context.Products.Add(product);
@@ -116,21 +124,25 @@ namespace RanitaApi.Controllers
             product.Description = updated.Description;
             product.CategoryId = updated.CategoryId;
 
-            if (image != null)
-            {
-                var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                if (image != null)
+                {
+                    var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+                    var cloudinary = new Cloudinary(cloudinaryUrl);
+                    cloudinary.Api.Secure = true;
 
-                if (!Directory.Exists(imagesFolder))
-                    Directory.CreateDirectory(imagesFolder);
+                    await using var stream = image.OpenReadStream();
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                var filePath = Path.Combine(imagesFolder, fileName);
+                    var uploadParams = new ImageUploadParams
+                    {
+                        File = new FileDescription(image.FileName, stream),
+                        Folder = "ranita-products"
+                    };
 
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await image.CopyToAsync(stream);
+                    var uploadResult = await cloudinary.UploadAsync(uploadParams);
 
-                product.ImageUrl = "/images/" + fileName;
-            }
+                    product.ImageUrl = uploadResult.SecureUrl.ToString();
+                }
+            
 
             await _context.SaveChangesAsync();
 
