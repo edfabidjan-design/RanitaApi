@@ -6,7 +6,7 @@
 <button onclick="login()">Connexion</button>
 
 <script>
-const API = "https://ranita-api.onrender.com/api";
+    const API = "/api";
 
 async function login() {
     const res = await fetch(`${API}/auth/login`, {
