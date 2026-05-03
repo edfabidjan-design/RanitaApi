@@ -31,6 +31,7 @@
     </a>
 
     <script>
+        const API_BASE = "/api";
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const orderTotal = document.getElementById("orderTotal");
         const checkoutForm = document.getElementById("checkoutForm");
@@ -41,7 +42,7 @@
 
         orderTotal.textContent = "Total : " + calculateTotal().toLocaleString() + " FCFA";
 
-        checkoutForm.addEventListener("submit", (e) => {
+        checkoutForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             if (cart.length === 0) {
@@ -55,14 +56,25 @@
                 customerPhone: document.getElementById("customerPhone").value,
                 customerAddress: document.getElementById("customerAddress").value,
                 paymentMethod: document.getElementById("paymentMethod").value,
-                total: calculateTotal(),
-                items: cart
+                items: cart.map(item => ({
+                    productId: item.id,
+                    quantity: item.quantity
+                }))
             };
 
-            console.log("Commande :", order);
+            const res = await fetch(`${API_BASE}/orders`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(order)
+            });
+
+            if (!res.ok) {
+                const err = await res.text();
+                alert("Erreur commande : " + err);
+                return;
+            }
 
             localStorage.removeItem("cart");
-
             alert("Commande confirmée avec succès !");
             window.location.href = "products.html";
         });
