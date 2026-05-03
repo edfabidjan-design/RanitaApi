@@ -44,7 +44,7 @@
     const resetBtn = document.getElementById("resetBtn");
 
     async function loadCategories() {
-      const res = await fetch(apiUrl);
+        const res = await fetch(categoriesApi);
       const categories = await res.json();
 
       categoriesTable.innerHTML = "";
@@ -73,13 +73,13 @@
       };
 
       if (categoryId.value) {
-        await fetch(`${apiUrl}/${categoryId.value}`, {
+          await fetch(`${categoriesApi}/${categoryId.value}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         });
       } else {
-        await fetch(apiUrl, {
+          await fetch(categoriesApi, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
@@ -98,7 +98,7 @@
     async function deleteCategory(id) {
       if (!confirm("Supprimer cette catégorie ?")) return;
 
-      await fetch(`${apiUrl}/${id}`, {
+        await fetch(`${categoriesApi}/${id}`, {
         method: "DELETE"
       });
 
