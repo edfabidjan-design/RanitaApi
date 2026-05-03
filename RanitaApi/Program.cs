@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
+using RanitaApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,26 @@ app.UseCors("AllowRanitaShop");
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapControllers();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (!db.Users.Any())
+    {
+        db.Users.Add(new User
+        {
+            Username = "admin",
+            Password = "1234"
+        });
+
+        db.SaveChanges();
+    }
+}
+
 
 try
 {
