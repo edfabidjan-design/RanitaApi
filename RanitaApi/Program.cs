@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
-
+using RanitaApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 
-
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(

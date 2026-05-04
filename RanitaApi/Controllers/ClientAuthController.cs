@@ -5,7 +5,7 @@ using RanitaApi.DTO;
 using RanitaApi.Models;
 using System.Security.Cryptography;
 using System.Text;
-
+using RanitaApi.Services;
 
 [ApiController]
 [Route("api/client-auth")]
