@@ -2,55 +2,89 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Détail produit</title>
+    <title>Détail produit - Ranita</title>
     <link rel="stylesheet" href="products.css">
 </head>
 <body>
 
-    <div class="product-details" id="productDetails"></div>
+    <header class="site-header">
+        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
+        <nav>
+            <a href="products.html">Produits</a>
+            <a href="cart.html">Panier</a>
+        </nav>
+    </header>
+
+    <main class="product-details" id="productDetails"></main>
 
     <script>
-const API_BASE = "https://ranita-api.onrender.com/api";
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+        const API_BASE = "https://ranita-api.onrender.com/api";
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
 
-async function loadProduct() {
-    const res = await fetch(`${API_BASE}/products/${id}`);
-    const p = await res.json();
+        let currentProduct = null;
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    document.getElementById("productDetails").innerHTML = `
-        <div style="max-width:900px;margin:auto;background:white;padding:20px;border-radius:16px;">
-            <img src="${p.imageUrl}" style="width:100%;max-height:400px;object-fit:cover;border-radius:12px">
+        async function loadProduct() {
+            const res = await fetch(`${API_BASE}/products/${id}`);
 
-            <h1>${p.name}</h1>
-            <p>${p.description || ""}</p>
+            if (!res.ok) {
+                document.getElementById("productDetails").innerHTML = "<p>Produit introuvable.</p>";
+                return;
+            }
 
-            <h2 style="color:#f97316">${Number(p.price).toLocaleString()} FCFA</h2>
+            currentProduct = await res.json();
 
-            <p><strong>Catégorie :</strong> ${p.category?.name || ""}</p>
-            <p><strong>Stock :</strong> ${p.stock}</p>
+            document.getElementById("productDetails").innerHTML = `
+            <section class="product-detail-card">
+                <img src="${currentProduct.imageUrl || 'https://via.placeholder.com/600x400?text=Ranita'}" alt="${currentProduct.name}">
 
-            <button onclick="addToCart(${p.id})">Ajouter au panier</button>
-        </div>
-    `;
-}
+                <div>
+                    <h1>${currentProduct.name}</h1>
+                    <p>${currentProduct.description || ""}</p>
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+                    <h2>${Number(currentProduct.price).toLocaleString()} FCFA</h2>
 
-function addToCart(id) {
-    const existing = cart.find(p => p.id === id);
+                    <p><strong>Catégorie :</strong> ${currentProduct.category?.name || ""}</p>
+                    <p><strong>Stock :</strong> ${currentProduct.stock}</p>
 
-    if (existing) {
-        existing.quantity++;
-    } else {
-        cart.push({ id, quantity: 1 });
-    }
+                    ${currentProduct.stock <= 0
+                    ? `<button class="btn-disabled" disabled>Rupture de stock</button>`
+                    : `<button class="btn-buy" onclick="addToCart()">Ajouter au panier</button>`
+                }
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Ajouté au panier !");
-}
+                    <br><br>
+                    <a href="products.html" class="secondary-link">Retour aux produits</a>
+                </div>
+            </section>
+        `;
+        }
 
-loadProduct();
+        function addToCart() {
+            if (!currentProduct || currentProduct.stock <= 0) {
+                alert("Produit en rupture de stock.");
+                return;
+            }
+
+            const existing = cart.find(p => p.id === currentProduct.id);
+
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({
+                    id: currentProduct.id,
+                    name: currentProduct.name,
+                    price: currentProduct.price,
+                    imageUrl: currentProduct.imageUrl,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("Produit ajouté au panier !");
+        }
+
+        loadProduct();
     </script>
 
 </body>

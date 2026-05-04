@@ -77,3 +77,32 @@ button {
         .auth-links a:hover {
             text-decoration: underline;
         }
+
+
+.auth-card p {
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.auth-logo:hover {
+    color: #047857;
+}
+
+button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+@media (max-width: 500px) {
+    body {
+        padding: 18px;
+    }
+
+    .auth-card {
+        padding: 26px;
+    }
+
+    h1, h2 {
+        font-size: 26px;
+    }
+}

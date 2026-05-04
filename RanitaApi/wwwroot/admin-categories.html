@@ -6,120 +6,138 @@
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <h1>Creation des catégories</h1>
 
-    <form id="categoryForm">
-        <input type="hidden" id="categoryId" />
+    <header class="admin-header">
+        <div class="logo" onclick="location.href='admin-dashboard.html'">
+            🛒 Ranita Admin
+        </div>
 
-        <input type="text" id="categoryName" placeholder="Nom de la catégorie" required />
+        <nav>
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="admin-products.html">Produits</a>
+            <a href="admin-orders.html">Commandes</a>
+            <a href="admin-categories.html" class="active">Catégories</a>
+        </nav>
 
-        <button type="submit">Enregistrer</button>
-        <button type="button" id="resetBtn">Réinitialiser</button>
-    </form>
+        <button onclick="logout()">Déconnexion</button>
+    </header>
 
-    <hr />
+    <div class="admin-container">
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="categoriesTable"></tbody>
-    </table>
+        <h1>Création des catégories</h1>
+
+        <form id="categoryForm">
+            <input type="hidden" id="categoryId" />
+            <input type="text" id="categoryName" placeholder="Nom de la catégorie" required />
+            <button type="submit">Enregistrer</button>
+            <button type="button" id="resetBtn">Réinitialiser</button>
+        </form>
+
+        <hr />
+
+        <table border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="categoriesTable"></tbody>
+        </table>
+
+    </div>
 
     <script>
-
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("adminToken");
 
         if (!token) {
             window.location.href = "admin-login.html";
         }
 
+        function logout() {
+            localStorage.removeItem("adminToken");
+            window.location.href = "admin-login.html";
+        }
 
         const API_BASE = "https://ranita-api.onrender.com/api";
-
         const categoriesApi = `${API_BASE}/categories`;
-        const productsApi = `${API_BASE}/products`;
 
-    const form = document.getElementById("categoryForm");
-    const categoryId = document.getElementById("categoryId");
-    const categoryName = document.getElementById("categoryName");
-    const categoriesTable = document.getElementById("categoriesTable");
-    const resetBtn = document.getElementById("resetBtn");
+        const form = document.getElementById("categoryForm");
+        const categoryId = document.getElementById("categoryId");
+        const categoryName = document.getElementById("categoryName");
+        const categoriesTable = document.getElementById("categoriesTable");
+        const resetBtn = document.getElementById("resetBtn");
 
-    async function loadCategories() {
-        const res = await fetch(categoriesApi);
-      const categories = await res.json();
+        async function loadCategories() {
+            const res = await fetch(categoriesApi);
+            const categories = await res.json();
 
-      categoriesTable.innerHTML = "";
+            categoriesTable.innerHTML = "";
 
-      categories.forEach(c => {
-        const tr = document.createElement("tr");
+            categories.forEach(c => {
+                const tr = document.createElement("tr");
 
-        tr.innerHTML = `
-          <td>${c.id}</td>
-          <td>${c.name}</td>
-          <td>
-            <button onclick="editCategory(${c.id}, '${c.name}')">Modifier</button>
-            <button onclick="deleteCategory(${c.id})">Supprimer</button>
-          </td>
-        `;
+                tr.innerHTML = `
+                    <td>${c.id}</td>
+                    <td>${c.name}</td>
+                    <td>
+                        <button onclick="editCategory(${c.id}, '${c.name}')">Modifier</button>
+                        <button onclick="deleteCategory(${c.id})">Supprimer</button>
+                    </td>
+                `;
 
-        categoriesTable.appendChild(tr);
-      });
-    }
+                categoriesTable.appendChild(tr);
+            });
+        }
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-      const data = {
-        name: categoryName.value
-      };
+            const data = { name: categoryName.value };
 
-      if (categoryId.value) {
-          await fetch(`${categoriesApi}/${categoryId.value}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
+            if (categoryId.value) {
+                await fetch(`${categoriesApi}/${categoryId.value}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+            } else {
+                await fetch(categoriesApi, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+            }
+
+            resetForm();
+            loadCategories();
         });
-      } else {
-          await fetch(categoriesApi, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-      }
 
-      resetForm();
-      loadCategories();
-    });
+        function editCategory(id, name) {
+            categoryId.value = id;
+            categoryName.value = name;
+        }
 
-    function editCategory(id, name) {
-      categoryId.value = id;
-      categoryName.value = name;
-    }
+        async function deleteCategory(id) {
+            if (!confirm("Supprimer cette catégorie ?")) return;
 
-    async function deleteCategory(id) {
-      if (!confirm("Supprimer cette catégorie ?")) return;
+            await fetch(`${categoriesApi}/${id}`, {
+                method: "DELETE"
+            });
 
-        await fetch(`${categoriesApi}/${id}`, {
-        method: "DELETE"
-      });
+            loadCategories();
+        }
 
-      loadCategories();
-    }
+        function resetForm() {
+            categoryId.value = "";
+            categoryName.value = "";
+        }
 
-    function resetForm() {
-      categoryId.value = "";
-      categoryName.value = "";
-    }
+        resetBtn.addEventListener("click", resetForm);
 
-    resetBtn.addEventListener("click", resetForm);
-
-    loadCategories();
+        loadCategories();
     </script>
+
 </body>
 </html>

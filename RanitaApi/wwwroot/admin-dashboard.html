@@ -7,15 +7,30 @@
 </head>
 <body>
 
-    <h1>Dashboard Admin</h1>
-    <p>Bienvenue dans l’espace administration Ranita.</p>
+    <header class="admin-header">
+        <div class="logo">🛒 Ranita Admin</div>
 
-    <div>
-        <a href="admin-products.html"><button>Produits</button></a>
-        <a href="admin-categories.html"><button>Catégories</button></a>
-        <a href="admin-orders.html"><button>Commandes</button></a>
-        <a href="admin-users.html"><button>Utilisateurs</button></a>
+        <nav>
+            <a href="admin-dashboard.html" class="active">Dashboard</a>
+            <a href="admin-products.html">Produits</a>
+            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-orders.html">Commandes</a>
+        </nav>
+
         <button onclick="logout()">Déconnexion</button>
+    </header>
+
+    <div class="admin-container">
+
+        <h1>Dashboard</h1>
+        <p>Bienvenue dans l’espace administration Ranita</p>
+
+        <div class="cards">
+            <a href="admin-products.html" class="card">📦 Produits</a>
+            <a href="admin-categories.html" class="card">📁 Catégories</a>
+            <a href="admin-orders.html" class="card">🧾 Commandes</a>
+        </div>
+
     </div>
 
     <script>

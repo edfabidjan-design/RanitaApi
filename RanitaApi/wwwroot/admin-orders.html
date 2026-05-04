@@ -6,29 +6,55 @@
     <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <h1>Traitement des commandes</h1>
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Client</th>
-                <th>Téléphone</th>
-                <th>Adresse</th>
-                <th>Paiement</th>
-                <th>Total</th>
-                <th>Statut</th>
-                <th>Date</th>
-                <th>Détails</th>
-            </tr>
-        </thead>
-        <tbody id="ordersTable"></tbody>
-    </table>
+    <header class="admin-header">
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
+
+        <nav>
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="admin-products.html">Produits</a>
+            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-orders.html" class="active">Commandes</a>
+        </nav>
+
+        <button onclick="logout()">Déconnexion</button>
+    </header>
+
+    <div class="admin-container">
+        <h1>Traitement des commandes</h1>
+
+        <table border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Téléphone</th>
+                    <th>Adresse</th>
+                    <th>Paiement</th>
+                    <th>Total</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    <th>Détails</th>
+                </tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+        </table>
+    </div>
 
     <script>
+        const token = localStorage.getItem("adminToken");
+
+        if (!token) {
+            window.location.href = "admin-login.html";
+        }
+
+        function logout() {
+            localStorage.removeItem("adminToken");
+            window.location.href = "admin-login.html";
+        }
+
         const API_BASE = "https://ranita-api.onrender.com/api";
         const ordersApi = `${API_BASE}/orders`;
-
         const ordersTable = document.getElementById("ordersTable");
 
         function getStatusClass(status) {
@@ -49,28 +75,27 @@
 
             orders.forEach(o => {
                 ordersTable.innerHTML += `
-                    <tr>
-                        <td>${o.id}</td>
-                        <td>${o.customerName}</td>
-                        <td>${o.customerPhone}</td>
-                        <td>${o.customerAddress}</td>
-                        <td>${o.paymentMethod}</td>
-                        <td>${Number(o.total).toLocaleString()} FCFA</td>
-                        <td>
-    <select class="${getStatusClass(o.status)}" onchange="updateStatus(${o.id}, this.value)">
-        <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-        <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-        <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-        <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-    </select>
-</td>
-                        <td>${new Date(o.createdAt).toLocaleString()}</td>
-                        <td>
-                            <button onclick='showDetails(${JSON.stringify(o.items)})'>Voir</button>
-                        </td>
-
-                    </tr>
-                `;
+                <tr>
+                    <td>${o.id}</td>
+                    <td>${o.customerName}</td>
+                    <td>${o.customerPhone}</td>
+                    <td>${o.customerAddress}</td>
+                    <td>${o.paymentMethod}</td>
+                    <td>${Number(o.total).toLocaleString()} FCFA</td>
+                    <td>
+                        <select class="${getStatusClass(o.status)}" onchange="updateStatus(${o.id}, this.value)">
+                            <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+                            <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+                            <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+                            <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+                        </select>
+                    </td>
+                    <td>${new Date(o.createdAt).toLocaleString()}</td>
+                    <td>
+                        <button onclick='showDetails(${JSON.stringify(o.items)})'>Voir</button>
+                    </td>
+                </tr>
+            `;
             });
         }
 
@@ -101,5 +126,6 @@
 
         loadOrders();
     </script>
+
 </body>
 </html>
