@@ -1,32 +1,51 @@
-﻿<h2>Connexion Admin</h2>
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
 
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
+    <div class="auth-card">
 
-<button onclick="login()">Connexion</button>
+        <div class="auth-logo" onclick="location.href='index.html'">
+            🛒 Ranita Market
+        </div>
 
-<script>
-    const API = "https://ranita-api.onrender.com/api";
+        <h2>Connexion Admin</h2>
 
-async function login() {
-    const res = await fetch(`${API}/auth/login`, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            username: document.getElementById("username").value,
-            password: document.getElementById("password").value
-        })
-    });
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
 
-    if(!res.ok){
-        const err = await res.text();
-        alert("Erreur login : " + err);
-        return;
-    }
+        <button onclick="login()">Connexion</button>
 
-    const data = await res.json();
+    </div>
 
-    localStorage.setItem("adminToken", data.token);
-    window.location.href = "admin-dashboard.html";
-}
-</script>
+    <script>
+        const API = "https://ranita-api.onrender.com/api";
+
+        async function login() {
+            const res = await fetch(`${API}/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: username.value,
+                    password: password.value
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.text();
+                alert(err);
+                return;
+            }
+
+            const data = await res.json();
+
+            localStorage.setItem("adminToken", data.token);
+            window.location.href = "admin-dashboard.html";
+        }
+    </script>
+
+</body>
+</html>

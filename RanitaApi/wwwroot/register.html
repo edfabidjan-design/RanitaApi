@@ -2,20 +2,32 @@
 <html>
 <head>
     <title>Créer un compte</title>
-    <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="auth.css">
 </head>
 <body>
 
-    <h1>Créer un compte</h1>
+    <div class="auth-card">
 
-    <form id="registerForm">
-        <input type="text" id="name" placeholder="Nom complet" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="tel" id="phone" placeholder="Téléphone">
-        <input type="password" id="password" placeholder="Mot de passe" required>
+        <div class="auth-logo" onclick="location.href='index.html'">
+            🛒 Ranita Market
+        </div>
 
-        <button type="submit">Créer mon compte</button>
-    </form>
+        <h2>Créer un compte</h2>
+
+        <form id="registerForm">
+            <input type="text" id="name" placeholder="Nom complet" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="tel" id="phone" placeholder="Téléphone">
+            <input type="password" id="password" placeholder="Mot de passe" required>
+
+            <button type="submit">Créer mon compte</button>
+        </form>
+
+        <div class="auth-links">
+            <a href="login.html">Déjà un compte ? Se connecter</a>
+        </div>
+
+    </div>
 
     <script>
         const API = "https://ranita-api.onrender.com/api/client-auth";
@@ -23,19 +35,14 @@
         document.getElementById("registerForm").addEventListener("submit", async e => {
             e.preventDefault();
 
-            const fullName = document.getElementById("name").value.trim();
-            const emailValue = document.getElementById("email").value.trim();
-            const phoneValue = document.getElementById("phone").value.trim();
-            const passwordValue = document.getElementById("password").value.trim();
-
             const res = await fetch(`${API}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    fullName: fullName,
-                    email: emailValue,
-                    phone: phoneValue,
-                    password: passwordValue
+                    fullName: name.value,
+                    email: email.value,
+                    phone: phone.value,
+                    password: password.value
                 })
             });
 
@@ -46,7 +53,7 @@
                 return;
             }
 
-            alert("Compte créé avec succès !");
+            alert("Compte créé !");
             window.location.href = "login.html";
         });
     </script>
