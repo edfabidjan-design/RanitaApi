@@ -10,6 +10,12 @@
     position: sticky;
     top: 0;
     z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
 }
 
     .site-header nav a:hover {
@@ -273,14 +279,7 @@
 
 
 
-.site-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 22px 36px;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
-}
+
 
 .site-logo {
     font-size: 24px;
@@ -360,26 +359,7 @@
         text-decoration: none;
     }
 
-@media (max-width: 768px) {
-    .site-header {
-        padding: 16px;
-        flex-direction: column;
-        gap: 12px;
-    }
 
-    .hero-home {
-        margin: 16px;
-        padding: 30px;
-    }
-
-        .hero-home h1 {
-            font-size: 32px;
-        }
-
-    .home-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 .badge {
     position: absolute;
@@ -398,106 +378,10 @@
     color: #6b7280;
 }
 
-@media (max-width: 600px) {
-    #productsGrid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
 
 
-/* RESPONSIVE MOBILE PRO */
-@media (max-width: 768px) {
 
-    body {
-        padding: 12px;
-    }
 
-    /* HEADER */
-    .site-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-        .site-header nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-            .site-header nav a {
-                margin-left: 0;
-                font-size: 14px;
-            }
-
-    /* TITRE */
-    .products-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-        .products-header h1 {
-            font-size: 24px;
-        }
-
-        .products-header p {
-            font-size: 13px;
-        }
-
-    /* TOOLBAR */
-    .products-toolbar {
-        flex-direction: column;
-        max-width: 100%;
-    }
-
-        .products-toolbar input,
-        .products-toolbar select {
-            width: 100%;
-        }
-
-    /* GRID PRODUITS */
-    #productsGrid {
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-    }
-
-    .product-card {
-        padding: 10px;
-    }
-
-    .product-img {
-        height: 140px;
-    }
-
-    .product-card strong {
-        font-size: 16px;
-    }
-
-    /* HERO */
-    .hero-home {
-        flex-direction: column;
-        text-align: left;
-        padding: 25px;
-    }
-
-        .hero-home h1 {
-            font-size: 26px;
-        }
-
-        .hero-home p {
-            font-size: 14px;
-        }
-
-    /* GRID HOME */
-    .home-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* TABLE COMMANDES */
-    .order-table {
-        font-size: 13px;
-    }
-}
 
 /* PETIT MOBILE */
 @media (max-width: 480px) {
@@ -572,56 +456,11 @@
     background: #ef4444;
 }
 
-@media (max-width: 768px) {
-    .cart-item {
-        grid-template-columns: 90px 1fr;
-    }
-
-        .cart-item img {
-            width: 90px;
-            height: 90px;
-        }
-
-        .qty-actions,
-        .cart-item .btn-danger {
-            grid-column: 1 / -1;
-        }
-
-    .cart-summary {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
 
 
 
-@media (max-width: 768px) {
-    .checkout-page {
-        padding: 18px;
-        align-items: flex-start;
-    }
 
-    .checkout-card {
-        padding: 24px;
-        border-radius: 18px;
-    }
 
-        .checkout-card h1 {
-            font-size: 26px;
-        }
-
-        .checkout-card input,
-        .checkout-card select,
-        .checkout-card button {
-            width: 100%;
-        }
-
-        .checkout-card .secondary-link {
-            display: block;
-            text-align: center;
-            margin-top: 14px;
-        }
-}
 
 
 .checkout-page {
@@ -645,27 +484,7 @@
 
 
 
-@media (max-width: 768px) {
-    .order-head {
-        flex-direction: column;
-        align-items: flex-start;
-    }
 
-    .order-table {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    .order-card {
-        padding: 18px;
-    }
-
-    .products-page {
-        padding: 0 14px;
-    }
-}
 
 .toast {
     position: fixed;
@@ -682,17 +501,7 @@
 
 
 /* FIX FINAL RESPONSIVE RANITA */
-.site-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 22px 36px;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
-}
+
 
 .products-page {
     max-width: 1250px;
@@ -701,15 +510,16 @@
 }
 
 @media (max-width: 768px) {
+
     body {
         padding: 0;
     }
 
     .site-header {
-        padding: 16px;
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+        padding: 14px;
     }
 
         .site-header nav {
@@ -723,40 +533,26 @@
                 font-size: 14px;
             }
 
+    .products-page {
+        padding: 0 14px;
+    }
+
     .products-header {
         flex-direction: column;
         align-items: flex-start;
-        padding-top: 16px;
     }
 
     .products-toolbar {
         flex-direction: column;
-        max-width: 100%;
+        width: 100%;
     }
 
         .products-toolbar input,
         .products-toolbar select {
             width: 100%;
-            box-sizing: border-box;
         }
 
     #productsGrid {
         grid-template-columns: 1fr 1fr;
-        gap: 14px;
-    }
-
-    .product-img {
-        height: 140px;
-    }
-
-    .cart-summary {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-
-@media (max-width: 480px) {
-    #productsGrid {
-        grid-template-columns: 1fr;
     }
 }
