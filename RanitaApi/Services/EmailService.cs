@@ -1,7 +1,7 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using System.Net.Mail;
+
 
 namespace RanitaApi.Services
 {
@@ -36,7 +36,7 @@ namespace RanitaApi.Services
                 "
             };
 
-            using var smtp = new SmtpClient();
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
 
             await smtp.ConnectAsync(
                 _config["Smtp:Host"],

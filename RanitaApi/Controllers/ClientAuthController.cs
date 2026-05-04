@@ -12,10 +12,12 @@ using RanitaApi.Services;
 public class ClientAuthController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly EmailService _emailService;
 
-    public ClientAuthController(AppDbContext context)
+    public ClientAuthController(AppDbContext context, EmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     string HashPassword(string password)
