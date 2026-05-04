@@ -37,11 +37,12 @@ namespace RanitaApi.Services
             };
 
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            smtp.Timeout = 20000; // 20 secondes
 
             await smtp.ConnectAsync(
                 _config["Smtp:Host"],
                 int.Parse(_config["Smtp:Port"]!),
-                SecureSocketOptions.StartTls
+               SecureSocketOptions.SslOnConnect
             );
 
             await smtp.AuthenticateAsync(
