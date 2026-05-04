@@ -135,12 +135,45 @@ try
                 ""ImageUrl"" TEXT
             );
         ");
+
     }
 }
 catch (Exception ex)
 {
     Console.WriteLine("Orders table error: " + ex.Message);
 }
+
+
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS ""Clients"" (
+                ""Id"" SERIAL PRIMARY KEY,
+                ""FullName"" TEXT NOT NULL,
+                ""Email"" TEXT NOT NULL UNIQUE,
+                ""Phone"" TEXT,
+                ""PasswordHash"" TEXT NOT NULL,
+                ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW(),
+                ""ResetCode"" TEXT,
+                ""ResetCodeExpiresAt"" TIMESTAMP
+            );
+        ");
+
+        db.Database.ExecuteSqlRaw(@"
+            ALTER TABLE ""Orders""
+            ADD COLUMN IF NOT EXISTS ""ClientId"" INT NULL;
+        ");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Clients table error: " + ex.Message);
+}
+
 
 
 app.Run();
