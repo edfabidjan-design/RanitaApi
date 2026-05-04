@@ -18,32 +18,37 @@
     </form>
 
     <script>
-const API = "https://ranita-api.onrender.com/api/client-auth";
+        const API = "https://ranita-api.onrender.com/api/client-auth";
 
-document.getElementById("registerForm").addEventListener("submit", async e => {
-    e.preventDefault();
+        document.getElementById("registerForm").addEventListener("submit", async e => {
+            e.preventDefault();
 
-    const res = await fetch(`${API}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            fullName: name.value,
-            email: email.value,
-            phone: phone.value,
-            password: password.value
-        })
-    });
+            const fullName = document.getElementById("name").value.trim();
+            const emailValue = document.getElementById("email").value.trim();
+            const phoneValue = document.getElementById("phone").value.trim();
+            const passwordValue = document.getElementById("password").value.trim();
 
-    const text = await res.text();
+            const res = await fetch(`${API}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    fullName: fullName,
+                    email: emailValue,
+                    phone: phoneValue,
+                    password: passwordValue
+                })
+            });
 
-    if (!res.ok) {
-        alert(text);
-        return;
-    }
+            const text = await res.text();
 
-    alert("Compte créé !");
-    window.location.href = "login.html";
-});
+            if (!res.ok) {
+                alert(text);
+                return;
+            }
+
+            alert("Compte créé avec succès !");
+            window.location.href = "login.html";
+        });
     </script>
 
 </body>
