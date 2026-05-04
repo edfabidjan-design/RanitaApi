@@ -90,7 +90,15 @@ public class ClientAuthController : ControllerBase
         await _context.SaveChangesAsync();
 
         // 👉 TEMPORAIRE (dev)
-        await _emailService.SendResetCodeAsync(client.Email, code);
+        try
+        {
+            await _emailService.SendResetCodeAsync(client.Email, code);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("SMTP ERROR: " + ex.ToString());
+            return StatusCode(500, "SMTP ERROR: " + ex.Message);
+        }
 
         return Ok("Code envoyé.");
     }
