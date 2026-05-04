@@ -82,6 +82,12 @@ public class ClientAuthController : ControllerBase
         if (client == null)
             return Ok("Si le compte existe, un code a été envoyé.");
 
+        if (client.ResetCodeExpiresAt.HasValue &&
+            client.ResetCodeExpiresAt.Value > DateTime.UtcNow.AddMinutes(9))
+        {
+            return BadRequest("Veuillez patienter avant de redemander un code.");
+        }
+
         var code = GenerateCode();
 
         client.ResetCode = code;
@@ -89,20 +95,18 @@ public class ClientAuthController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        // 👉 TEMPORAIRE (dev)
         try
         {
             await _emailService.SendResetCodeAsync(client.Email, code);
         }
         catch (Exception ex)
         {
-            Console.WriteLine("SMTP ERROR: " + ex.ToString());
-            return StatusCode(500, "SMTP ERROR: " + ex.Message);
+            Console.WriteLine("BREVO ERROR: " + ex.ToString());
+            return StatusCode(500, "BREVO ERROR: " + ex.Message);
         }
 
         return Ok("Code envoyé.");
     }
-
 
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)

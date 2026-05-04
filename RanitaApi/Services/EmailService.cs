@@ -28,10 +28,19 @@ namespace RanitaApi.Services
                 },
                 subject = "Code de réinitialisation - Ranita Market",
                 htmlContent = $@"
-                    <h2>Ranita Market</h2>
-                    <p>Votre code de réinitialisation est :</p>
-                    <h1>{code}</h1>
-                    <p>Ce code expire dans 10 minutes.</p>"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:20px;border-radius:10px;text-align:center'>
+    <h2 style='color:#059669'>Ranita Market</h2>
+    <p>Vous avez demandé une réinitialisation de mot de passe.</p>
+    <p>Voici votre code :</p>
+    <h1 style='letter-spacing:5px;color:#f97316'>{code}</h1>
+    <p style='color:#777'>Ce code expire dans 10 minutes.</p>
+    <hr/>
+    <p style='font-size:12px;color:#aaa'>
+      Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
+    </p>
+  </div>
+</div>"
             };
 
             var request = new HttpRequestMessage(
