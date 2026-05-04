@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ranita Admin - Dashboard</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+
+    <h1>Dashboard Admin</h1>
+    <p>Bienvenue dans l’espace administration Ranita.</p>
+
+    <div>
+        <a href="admin-products.html"><button>Produits</button></a>
+        <a href="admin-orders.html"><button>Commandes</button></a>
+        <a href="admin-users.html"><button>Utilisateurs</button></a>
+        <button onclick="logout()">Déconnexion</button>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("adminToken");
+
+        if (!token) {
+            window.location.href = "admin-login.html";
+        }
+
+        function logout() {
+            localStorage.removeItem("adminToken");
+            window.location.href = "admin-login.html";
+        }
+    </script>
+
+</body>
+</html>l>

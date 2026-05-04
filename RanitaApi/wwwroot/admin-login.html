@@ -6,7 +6,7 @@
 <button onclick="login()">Connexion</button>
 
 <script>
-    const API = "/api";
+    const API = "https://ranita-api.onrender.com/api";
 
 async function login() {
     const res = await fetch(`${API}/auth/login`, {
@@ -26,8 +26,7 @@ async function login() {
 
     const data = await res.json();
 
-    localStorage.setItem("token", data.token);
-
-    window.location.href = "admin-products.html";
+    localStorage.setItem("adminToken", data.token);
+    window.location.href = "admin-dashboard.html";
 }
 </script>
