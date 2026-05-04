@@ -1,13 +1,12 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
-
+﻿using System.Text;
+using System.Text.Json;
 
 namespace RanitaApi.Services
 {
     public class EmailService
     {
         private readonly IConfiguration _config;
+        private readonly HttpClient _http = new HttpClient();
 
         public EmailService(IConfiguration config)
         {
@@ -16,50 +15,42 @@ namespace RanitaApi.Services
 
         public async Task SendResetCodeAsync(string toEmail, string code)
         {
-            var email = new MimeMessage();
-
-            email.From.Add(new MailboxAddress(
-                _config["Smtp:FromName"],
-                _config["Smtp:User"]
-            ));
-
-            email.To.Add(MailboxAddress.Parse(toEmail));
-            email.Subject = "Code de réinitialisation - Ranita Market";
-
-            email.Body = new TextPart("html")
+            var payload = new
             {
-                Text = $@"
-                    <h2>Réinitialisation du mot de passe</h2>
-                    <p>Votre code est :</p>
+                sender = new
+                {
+                    name = _config["Brevo:SenderName"],
+                    email = _config["Brevo:SenderEmail"]
+                },
+                to = new[]
+                {
+                    new { email = toEmail }
+                },
+                subject = "Code de réinitialisation - Ranita Market",
+                htmlContent = $@"
+                    <h2>Ranita Market</h2>
+                    <p>Votre code de réinitialisation est :</p>
                     <h1>{code}</h1>
-                    <p>Ce code expire dans 10 minutes.</p>
-                "
+                    <p>Ce code expire dans 10 minutes.</p>"
             };
 
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            smtp.Timeout = 20000; // 20 secondes
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "https://api.brevo.com/v3/smtp/email"
+            );
 
-            try
-            {
-                await smtp.ConnectAsync(
-                    _config["Smtp:Host"],
-                    int.Parse(_config["Smtp:Port"]!),
-                    SecureSocketOptions.SslOnConnect
-                );
+            request.Headers.Add("api-key", _config["Brevo:ApiKey"]);
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json"
+            );
 
-                await smtp.AuthenticateAsync(
-                    _config["Smtp:User"],
-                    _config["Smtp:Password"]
-                );
+            var response = await _http.SendAsync(request);
+            var result = await response.Content.ReadAsStringAsync();
 
-                await smtp.SendAsync(email);
-                await smtp.DisconnectAsync(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("SMTP ERROR DETAIL: " + ex.ToString());
-                throw;
-            }
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("BREVO ERROR: " + result);
         }
     }
 }
