@@ -53,6 +53,14 @@ app.MapControllers();
 
 
 
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/index.html");
+    return Task.CompletedTask;
+});
+
+
+
 
 try
 {
