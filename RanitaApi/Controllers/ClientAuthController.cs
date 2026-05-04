@@ -90,7 +90,7 @@ public class ClientAuthController : ControllerBase
         await _context.SaveChangesAsync();
 
         // 👉 TEMPORAIRE (dev)
-        Console.WriteLine($"RESET CODE for {client.Email}: {code}");
+        await _emailService.SendResetCodeAsync(client.Email, code);
 
         return Ok("Code envoyé.");
     }
