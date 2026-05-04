@@ -23,23 +23,24 @@
     <div class="admin-container">
         <h1>Traitement des commandes</h1>
 
-        <table border="1" cellpadding="8">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Client</th>
-                    <th>Téléphone</th>
-                    <th>Adresse</th>
-                    <th>Paiement</th>
-                    <th>Total</th>
-                    <th>Statut</th>
-                    <th>Date</th>
-                    <th>Détails</th>
-                </tr>
-            </thead>
-            <tbody id="ordersTable"></tbody>
-        </table>
-    </div>
+        <div class="table-wrap">
+            <table border="1" cellpadding="8">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Téléphone</th>
+                        <th>Adresse</th>
+                        <th>Paiement</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th>Détails</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTable"></tbody>
+            </table>
+        </div>
 
     <script>
         const token = localStorage.getItem("adminToken");

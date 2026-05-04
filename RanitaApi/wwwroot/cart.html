@@ -3,26 +3,31 @@
 <head>
     <meta charset="UTF-8" />
     <title>Ranita - Panier</title>
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="products.css">
 </head>
 <body>
-    <h1>Mon panier</h1>
 
-    <div id="cartContainer"></div>
+    <header class="site-header">
+        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
+        <nav>
+            <a href="products.html">Produits</a>
+            <a href="cart.html">Panier</a>
+        </nav>
+    </header>
 
+    <main class="cart-page">
+        <h1>Mon panier</h1>
 
-    <h2 id="totalAmount">Total : 0 FCFA</h2>
+        <div id="cartContainer"></div>
 
-    <a href="checkout.html">
-        <button>Passer la commande</button>
-    </a>
+        <div class="cart-summary">
+            <h2 id="totalAmount">Total : 0 FCFA</h2>
 
-   
-
-    <button onclick="clearCart()">Vider le panier</button>
-    <a href="products.html">
-        <button>Continuer les achats</button>
-    </a>
+            <a href="checkout.html" class="cart-link">Passer la commande</a>
+            <button onclick="clearCart()" class="btn-danger">Vider le panier</button>
+            <a href="products.html" class="secondary-link">Continuer les achats</a>
+        </div>
+    </main>
 
     <script>
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -34,7 +39,7 @@
             cartContainer.innerHTML = "";
 
             if (cart.length === 0) {
-                cartContainer.innerHTML = "<p>Votre panier est vide.</p>";
+                cartContainer.innerHTML = `<div class="empty-card"><p>Votre panier est vide.</p></div>`;
                 totalAmount.textContent = "Total : 0 FCFA";
                 return;
             }
@@ -45,20 +50,24 @@
                 total += item.price * item.quantity;
 
                 cartContainer.innerHTML += `
-                        <div class="product-card">
-                            <img src="${item.imageUrl ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/120'}" width="120">
-                            <h3>${item.name}</h3>
-                            <p>${Number(item.price).toLocaleString()} FCFA</p>
+                <div class="cart-item">
+                    <img src="${item.imageUrl ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/120'}" alt="${item.name}">
 
-                            <button onclick="changeQty(${item.id}, -1)">-</button>
-                            <strong>${item.quantity}</strong>
-                            <button onclick="changeQty(${item.id}, 1)">+</button>
+                    <div class="cart-info">
+                        <h3>${item.name}</h3>
+                        <p>${Number(item.price).toLocaleString()} FCFA</p>
+                        <p>Sous-total : ${Number(item.price * item.quantity).toLocaleString()} FCFA</p>
+                    </div>
 
-                            <p>Sous-total : ${Number(item.price * item.quantity).toLocaleString()} FCFA</p>
+                    <div class="qty-actions">
+                        <button onclick="changeQty(${item.id}, -1)">-</button>
+                        <strong>${item.quantity}</strong>
+                        <button onclick="changeQty(${item.id}, 1)">+</button>
+                    </div>
 
-                            <button onclick="removeItem(${item.id})">Supprimer</button>
-                        </div>
-                    `;
+                    <button onclick="removeItem(${item.id})" class="btn-danger">Supprimer</button>
+                </div>
+            `;
             });
 
             totalAmount.textContent = "Total : " + Number(total).toLocaleString() + " FCFA";
@@ -94,5 +103,6 @@
 
         renderCart();
     </script>
+
 </body>
 </html>

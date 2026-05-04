@@ -21,6 +21,7 @@
             </p>
 
             <div class="thank-you-actions">
+                <a href="client-orders.html" class="cart-link">Voir mes commandes</a>
                 <a href="products.html" class="cart-link">Continuer mes achats</a>
                 <a href="cart.html" class="secondary-link">Voir le panier</a>
             </div>
@@ -30,9 +31,14 @@
     <script>
         const orderId = localStorage.getItem("lastOrderId");
 
-        if (orderId) {
+        if (!orderId) {
+            window.location.href = "products.html";
+        } else {
             document.getElementById("orderNumber").textContent =
                 "Numéro de commande : #" + orderId;
+
+            // nettoyage
+            localStorage.removeItem("lastOrderId");
         }
     </script>
 

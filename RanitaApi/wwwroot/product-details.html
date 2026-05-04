@@ -17,13 +17,42 @@
 
     <main class="product-details" id="productDetails"></main>
 
+
     <script>
+
+
         const API_BASE = "https://ranita-api.onrender.com/api";
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
 
+        if (!id) {
+            document.getElementById("productDetails").innerHTML = "<p>Produit invalide.</p>";
+            throw new Error("ID manquant");
+        }
+
         let currentProduct = null;
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        function escapeHtml(text) {
+            return text
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;");
+        }
+
+
+        function showToast(msg) {
+            const toast = document.createElement("div");
+            toast.className = "toast";
+            toast.innerText = msg;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2500);
+        }
+
 
         async function loadProduct() {
             const res = await fetch(`${API_BASE}/products/${id}`);
@@ -41,7 +70,7 @@
 
                 <div>
                     <h1>${currentProduct.name}</h1>
-                    <p>${currentProduct.description || ""}</p>
+                    <p>${escapeHtml(currentProduct.description || "")}</p>
 
                     <h2>${Number(currentProduct.price).toLocaleString()} FCFA</h2>
 
@@ -81,7 +110,7 @@
             }
 
             localStorage.setItem("cart", JSON.stringify(cart));
-            alert("Produit ajouté au panier !");
+            showToast("Produit ajouté au panier !");
         }
 
         loadProduct();

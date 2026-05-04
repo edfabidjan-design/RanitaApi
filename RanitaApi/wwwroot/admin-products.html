@@ -43,22 +43,23 @@
 
         <hr />
 
-        <table border="1" cellpadding="8">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Prix</th>
-                    <th>Stock</th>
-                    <th>Catégorie</th>
-                    <th>Image</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="productsTable"></tbody>
-        </table>
+        <div class="table-wrap">
+            <table border="1" cellpadding="8">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Stock</th>
+                        <th>Catégorie</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTable"></tbody>
+            </table>
 
-    </div>
+        </div>
 
     <script>
         const token = localStorage.getItem("adminToken");

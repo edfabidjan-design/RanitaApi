@@ -35,109 +35,111 @@
 
         <hr />
 
-        <table border="1" cellpadding="8">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="categoriesTable"></tbody>
-        </table>
+        <div class="table-wrap">
 
-    </div>
+            <table border="1" cellpadding="8">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="categoriesTable"></tbody>
+            </table>
 
-    <script>
-        const token = localStorage.getItem("adminToken");
+        </div>
 
-        if (!token) {
-            window.location.href = "admin-login.html";
-        }
+        <script>
+            const token = localStorage.getItem("adminToken");
 
-        function logout() {
-            localStorage.removeItem("adminToken");
-            window.location.href = "admin-login.html";
-        }
+            if (!token) {
+                window.location.href = "admin-login.html";
+            }
 
-        const API_BASE = "https://ranita-api.onrender.com/api";
-        const categoriesApi = `${API_BASE}/categories`;
+            function logout() {
+                localStorage.removeItem("adminToken");
+                window.location.href = "admin-login.html";
+            }
 
-        const form = document.getElementById("categoryForm");
-        const categoryId = document.getElementById("categoryId");
-        const categoryName = document.getElementById("categoryName");
-        const categoriesTable = document.getElementById("categoriesTable");
-        const resetBtn = document.getElementById("resetBtn");
+            const API_BASE = "https://ranita-api.onrender.com/api";
+            const categoriesApi = `${API_BASE}/categories`;
 
-        async function loadCategories() {
-            const res = await fetch(categoriesApi);
-            const categories = await res.json();
+            const form = document.getElementById("categoryForm");
+            const categoryId = document.getElementById("categoryId");
+            const categoryName = document.getElementById("categoryName");
+            const categoriesTable = document.getElementById("categoriesTable");
+            const resetBtn = document.getElementById("resetBtn");
 
-            categoriesTable.innerHTML = "";
+            async function loadCategories() {
+                const res = await fetch(categoriesApi);
+                const categories = await res.json();
 
-            categories.forEach(c => {
-                const tr = document.createElement("tr");
+                categoriesTable.innerHTML = "";
 
-                tr.innerHTML = `
-                    <td>${c.id}</td>
-                    <td>${c.name}</td>
-                    <td>
-                        <button onclick="editCategory(${c.id}, '${c.name}')">Modifier</button>
-                        <button onclick="deleteCategory(${c.id})">Supprimer</button>
-                    </td>
-                `;
+                categories.forEach(c => {
+                    const tr = document.createElement("tr");
 
-                categoriesTable.appendChild(tr);
-            });
-        }
+                    tr.innerHTML = `
+                            <td>${c.id}</td>
+                            <td>${c.name}</td>
+                            <td>
+                                <button onclick="editCategory(${c.id}, '${c.name}')">Modifier</button>
+                                <button onclick="deleteCategory(${c.id})">Supprimer</button>
+                            </td>
+                        `;
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const data = { name: categoryName.value };
-
-            if (categoryId.value) {
-                await fetch(`${categoriesApi}/${categoryId.value}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                });
-            } else {
-                await fetch(categoriesApi, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
+                    categoriesTable.appendChild(tr);
                 });
             }
 
-            resetForm();
-            loadCategories();
-        });
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
 
-        function editCategory(id, name) {
-            categoryId.value = id;
-            categoryName.value = name;
-        }
+                const data = { name: categoryName.value };
 
-        async function deleteCategory(id) {
-            if (!confirm("Supprimer cette catégorie ?")) return;
+                if (categoryId.value) {
+                    await fetch(`${categoriesApi}/${categoryId.value}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    await fetch(categoriesApi, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    });
+                }
 
-            await fetch(`${categoriesApi}/${id}`, {
-                method: "DELETE"
+                resetForm();
+                loadCategories();
             });
 
+            function editCategory(id, name) {
+                categoryId.value = id;
+                categoryName.value = name;
+            }
+
+            async function deleteCategory(id) {
+                if (!confirm("Supprimer cette catégorie ?")) return;
+
+                await fetch(`${categoriesApi}/${id}`, {
+                    method: "DELETE"
+                });
+
+                loadCategories();
+            }
+
+            function resetForm() {
+                categoryId.value = "";
+                categoryName.value = "";
+            }
+
+            resetBtn.addEventListener("click", resetForm);
+
             loadCategories();
-        }
-
-        function resetForm() {
-            categoryId.value = "";
-            categoryName.value = "";
-        }
-
-        resetBtn.addEventListener("click", resetForm);
-
-        loadCategories();
-    </script>
+        </script>
 
 </body>
 </html>
