@@ -5,6 +5,252 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranita - Checkout</title>
     <link rel="stylesheet" href="products.css">
+    <style>
+        /* ── Modale connexion ── */
+        .auth-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .auth-modal {
+            background: white;
+            border-radius: 22px;
+            padding: 32px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+            text-align: center;
+            animation: popIn 0.25s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .auth-modal .lock-icon {
+            font-size: 48px;
+            margin-bottom: 14px;
+        }
+
+        .auth-modal h2 {
+            font-size: 22px;
+            margin: 0 0 10px;
+            color: #111827;
+        }
+
+        .auth-modal p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 0 24px;
+            line-height: 1.5;
+        }
+
+        .auth-modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-login-modal {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-register-modal {
+            background: #ecfdf5;
+            color: #047857;
+            border: 2px solid #10b981;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-back-modal {
+            color: #9ca3af;
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* ── Frais de transport ── */
+        .order-summary-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 16px;
+            margin: 18px 0;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+            .summary-line.total {
+                font-size: 18px;
+                font-weight: 800;
+                color: #111827;
+                border-top: 1px solid #e5e7eb;
+                padding-top: 10px;
+                margin-top: 6px;
+                margin-bottom: 0;
+            }
+
+                .summary-line.total span:last-child {
+                    color: #f97316;
+                }
+
+        /* ── Modes paiement ── */
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+        }
+
+            .payment-option.active {
+                border-color: #10b981;
+                background: #ecfdf5;
+            }
+
+            .payment-option.disabled {
+                opacity: 0.42;
+                cursor: not-allowed;
+                background: #f3f4f6;
+            }
+
+            .payment-option input[type="radio"] {
+                accent-color: #10b981;
+                width: 18px;
+                height: 18px;
+                flex-shrink: 0;
+            }
+
+            .payment-option label {
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                flex: 1;
+            }
+
+            .payment-option .badge-soon {
+                font-size: 10px;
+                background: #fef3c7;
+                color: #92400e;
+                padding: 2px 8px;
+                border-radius: 999px;
+                font-weight: 700;
+            }
+
+        .payment-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* ── Form inputs ── */
+        .checkout-card form input,
+        .checkout-card form select {
+            width: 100%;
+            height: 50px;
+            display: block;
+            margin-bottom: 14px;
+            padding: 0 14px;
+            box-sizing: border-box;
+            font-size: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            background: #f9fafb;
+            font-family: inherit;
+        }
+
+            .checkout-card form input:focus {
+                outline: none;
+                border-color: #10b981;
+                background: white;
+            }
+
+        .client-info-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            color: #065f46;
+            font-weight: 600;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 768px) {
+            .checkout-page {
+                padding: 16px 12px 40px !important;
+                align-items: flex-start !important;
+                min-height: unset !important;
+            }
+
+            .checkout-card {
+                padding: 20px 16px !important;
+                border-radius: 18px !important;
+            }
+
+                .checkout-card h1 {
+                    font-size: 22px !important;
+                }
+
+            .auth-modal {
+                padding: 24px 18px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -16,47 +262,134 @@
         </nav>
     </header>
 
+    <!-- Modale connexion obligatoire -->
+    <div class="auth-modal-overlay" id="authModal" style="display:none;">
+        <div class="auth-modal">
+            <div class="lock-icon">🔒</div>
+            <h2>Connexion requise</h2>
+            <p>Vous devez être connecté pour finaliser votre commande. Connectez-vous ou créez un compte gratuitement.</p>
+            <div class="auth-modal-actions">
+                <a href="login.html?redirect=checkout.html" class="btn-login-modal">Se connecter</a>
+                <a href="register.html?redirect=checkout.html" class="btn-register-modal">Créer un compte</a>
+                <a href="cart.html" class="btn-back-modal">← Retour au panier</a>
+            </div>
+        </div>
+    </div>
+
     <main class="checkout-page">
         <section class="checkout-card">
             <h1>Finaliser la commande</h1>
-            <p>Renseignez vos informations de livraison.</p>
+            <p style="color:#6b7280; font-size:14px; margin-bottom:20px;">Vérifiez vos informations de livraison.</p>
+
+            <!-- Info client connecté -->
+            <div class="client-info-bar" id="clientInfoBar" style="display:none;">
+                ✅ <span id="clientInfoText"></span>
+            </div>
 
             <form id="checkoutForm">
                 <input type="text" id="customerName" placeholder="Nom complet" required>
                 <input type="tel" id="customerPhone" placeholder="Téléphone" required>
                 <input type="text" id="customerAddress" placeholder="Adresse de livraison" required>
 
-                <select id="paymentMethod" required>
-                    <option value="">Mode de paiement</option>
-                    <option value="Paiement à la livraison">Paiement à la livraison</option>
-                    <option value="Orange Money">Orange Money</option>
-                    <option value="Wave">Wave</option>
-                    <option value="MTN MoMo">MTN MoMo</option>
-                </select>
+                <!-- Modes de paiement -->
+                <span class="payment-label">Mode de paiement</span>
+                <div class="payment-options">
+                    <div class="payment-option active" id="opt-livraison">
+                        <input type="radio" name="payment" id="pay-livraison" value="Paiement à la livraison" checked>
+                        <label for="pay-livraison">💵 Paiement à la livraison</label>
+                    </div>
+                    <div class="payment-option disabled">
+                        <input type="radio" name="payment" id="pay-orange" value="Orange Money" disabled>
+                        <label for="pay-orange">🟠 Orange Money</label>
+                        <span class="badge-soon">Bientôt</span>
+                    </div>
+                    <div class="payment-option disabled">
+                        <input type="radio" name="payment" id="pay-wave" value="Wave" disabled>
+                        <label for="pay-wave">🌊 Wave</label>
+                        <span class="badge-soon">Bientôt</span>
+                    </div>
+                    <div class="payment-option disabled">
+                        <input type="radio" name="payment" id="pay-mtn" value="MTN MoMo" disabled>
+                        <label for="pay-mtn">🟡 MTN MoMo</label>
+                        <span class="badge-soon">Bientôt</span>
+                    </div>
+                </div>
 
-                <h2 id="orderTotal">Total : 0 FCFA</h2>
+                <!-- Récapitulatif -->
+                <div class="order-summary-box">
+                    <div class="summary-line">
+                        <span>Sous-total</span>
+                        <span id="subtotalDisplay">0 FCFA</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>🚚 Frais de livraison</span>
+                        <span id="shippingDisplay">1 500 FCFA</span>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total à payer</span>
+                        <span id="grandTotalDisplay">0 FCFA</span>
+                    </div>
+                </div>
 
-                <button type="submit" class="btn-buy">Confirmer la commande</button>
+                <button type="submit" class="btn-buy" style="width:100%; height:50px; font-size:16px; border:none; cursor:pointer; border-radius:14px;">
+                    ✅ Confirmer la commande
+                </button>
             </form>
 
-            <a href="cart.html" class="secondary-link">Retour au panier</a>
+            <a href="cart.html" class="secondary-link" style="display:block; text-align:center; margin-top:16px;">← Retour au panier</a>
         </section>
     </main>
 
     <script>
         const API_BASE = "https://ranita-api.onrender.com/api";
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const orderTotal = document.getElementById("orderTotal");
-        const checkoutForm = document.getElementById("checkoutForm");
+        const SHIPPING_FEE = 1500; // Frais de livraison fixes en FCFA
 
-        function calculateTotal() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const client = JSON.parse(localStorage.getItem("client")) || null;
+
+        // ── 1. Vérification connexion ──
+        if (!client) {
+            document.getElementById("authModal").style.display = "flex";
+        } else {
+            // Afficher info client
+            const bar = document.getElementById("clientInfoBar");
+            bar.style.display = "flex";
+            document.getElementById("clientInfoText").textContent =
+                `Connecté en tant que ${client.name || client.email}`;
+
+            // Pré-remplir les champs si dispo
+            if (client.name) document.getElementById("customerName").value = client.name;
+            if (client.phone) document.getElementById("customerPhone").value = client.phone;
+            if (client.address) document.getElementById("customerAddress").value = client.address;
+        }
+
+        // ── 2. Calcul des totaux ──
+        function calculateSubtotal() {
             return cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
         }
 
-        orderTotal.textContent = "Total : " + calculateTotal().toLocaleString() + " FCFA";
+        function updateTotals() {
+            const subtotal = calculateSubtotal();
+            const grandTotal = subtotal + SHIPPING_FEE;
 
-        checkoutForm.addEventListener("submit", async (e) => {
+            document.getElementById("subtotalDisplay").textContent =
+                Number(subtotal).toLocaleString() + " FCFA";
+            document.getElementById("shippingDisplay").textContent =
+                Number(SHIPPING_FEE).toLocaleString() + " FCFA";
+            document.getElementById("grandTotalDisplay").textContent =
+                Number(grandTotal).toLocaleString() + " FCFA";
+        }
+
+        updateTotals();
+
+        // ── 3. Soumission commande ──
+        document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
             e.preventDefault();
+
+            if (!client) {
+                document.getElementById("authModal").style.display = "flex";
+                return;
+            }
 
             if (cart.length === 0) {
                 alert("Votre panier est vide.");
@@ -64,34 +397,50 @@
                 return;
             }
 
+            const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+
             const order = {
-                clientId: JSON.parse(localStorage.getItem("client"))?.id || null,
-                customerName: customerName.value,
-                customerPhone: customerPhone.value,
-                customerAddress: customerAddress.value,
-                paymentMethod: paymentMethod.value,
+                clientId: client.id || null,
+                customerName: document.getElementById("customerName").value,
+                customerPhone: document.getElementById("customerPhone").value,
+                customerAddress: document.getElementById("customerAddress").value,
+                paymentMethod: selectedPayment,
+                shippingFee: SHIPPING_FEE,
                 items: cart.map(item => ({
                     productId: item.id,
                     quantity: item.quantity
                 }))
             };
 
-            const res = await fetch(`${API_BASE}/orders`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(order)
-            });
+            const btn = e.target.querySelector("button[type='submit']");
+            btn.disabled = true;
+            btn.textContent = "Envoi en cours...";
 
-            if (!res.ok) {
-                const err = await res.text();
-                alert("Erreur commande : " + err);
-                return;
+            try {
+                const res = await fetch(`${API_BASE}/orders`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(order)
+                });
+
+                if (!res.ok) {
+                    const err = await res.text();
+                    alert("Erreur commande : " + err);
+                    btn.disabled = false;
+                    btn.textContent = "✅ Confirmer la commande";
+                    return;
+                }
+
+                const data = await res.json();
+                localStorage.removeItem("cart");
+                localStorage.setItem("lastOrderId", data.id);
+                window.location.href = "thank-you.html";
+
+            } catch (err) {
+                alert("Erreur réseau. Veuillez réessayer.");
+                btn.disabled = false;
+                btn.textContent = "✅ Confirmer la commande";
             }
-
-            const data = await res.json();
-            localStorage.removeItem("cart");
-            localStorage.setItem("lastOrderId", data.id);
-            window.location.href = "thank-you.html";
         });
     </script>
 
