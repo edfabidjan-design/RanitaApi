@@ -13,5 +13,6 @@ RUN dotnet publish "RanitaApi.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
+ARG CACHEBUST=1
 COPY --from=build /src/RanitaApi/wwwroot ./wwwroot
 ENTRYPOINT ["dotnet", "RanitaApi.dll"]
