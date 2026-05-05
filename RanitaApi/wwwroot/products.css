@@ -505,81 +505,179 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-/* ===== CLEAN MOBILE VERSION (FINAL PRO) ===== */
+/* ===== MOBILE RESPONSIVE FIX - RANITA MARKET ===== */
+/* Remplace/ajoute à la fin de ton products.css      */
 
 @media (max-width: 768px) {
 
-    .products-page {
-        padding: 12px;
+    body {
+        overflow-x: hidden;
     }
 
+    /* ── Header ── */
     .mobile-shop-header {
-        display: flex;
+        display: flex !important;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        padding: 12px 0 10px;
+        gap: 8px;
     }
 
-    .site-logo {
-        font-size: 18px;
-        font-weight: 700;
+        .mobile-shop-header .site-logo {
+            font-size: 16px !important;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 55%;
+        }
+
+        /* Panier bouton compact */
+        .mobile-shop-header .cart-link {
+            font-size: 13px !important;
+            padding: 9px 13px !important;
+            border-radius: 12px !important;
+            white-space: nowrap;
+            height: auto !important;
+            min-width: unset !important;
+            line-height: 1.2;
+        }
+
+    /* ── Page wrapper ── */
+    .products-page {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 12px 40px;
+        box-sizing: border-box;
     }
 
-    .cart-link {
-        font-size: 13px;
-        padding: 6px 10px;
-        border-radius: 10px;
+    /* ── Titre ── */
+    .products-title {
+        text-align: center;
+        margin: 16px 0 18px;
     }
 
-    .products-title h1 {
-        font-size: 26px;
-    }
+        .products-title h1 {
+            font-size: 28px !important;
+            line-height: 1.1;
+            margin: 0 0 8px;
+        }
 
-    .products-title p {
-        font-size: 14px;
-    }
+        .products-title p {
+            font-size: 14px !important;
+            color: #6b7280;
+            margin: 0 auto;
+            max-width: 300px;
+            line-height: 1.4;
+        }
 
+    /* ── Toolbar (search + filtre) ── */
     .products-toolbar {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 14px !important;
+        margin: 0 0 20px !important;
+        box-sizing: border-box !important;
+        border-radius: 16px !important;
     }
 
+        .products-toolbar input,
+        .products-toolbar select {
+            width: 100% !important;
+            height: 46px !important;
+            box-sizing: border-box !important;
+            font-size: 15px !important;
+            border-radius: 10px !important;
+            padding: 0 14px !important;
+        }
+
+    /* ── Grille produits : 2 colonnes ── */
     #productsGrid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
     }
 
+    /* ── Card produit ── */
     .product-card {
-        padding: 10px;
-        border-radius: 14px;
+        padding: 10px !important;
+        border-radius: 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px;
     }
 
     .product-img {
-        height: 110px;
+        height: 110px !important;
+        border-radius: 12px !important;
+        margin-bottom: 6px;
     }
 
     .product-card h3 {
-        font-size: 15px;
+        font-size: 14px !important;
+        font-weight: 700;
+        margin: 2px 0 !important;
+        line-height: 1.2;
     }
 
+    /* Description : 2 lignes max */
     .product-card p {
-        font-size: 12px;
+        font-size: 12px !important;
+        color: #6b7280;
+        margin: 0 0 4px !important;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
+    /* Prix */
     .product-card strong {
-        font-size: 15px;
+        font-size: 15px !important;
+        margin: 2px 0 !important;
+        display: block;
     }
 
     .product-card small {
-        font-size: 11px;
+        font-size: 11px !important;
+        color: #9ca3af;
+        display: block;
     }
 
+    /* Boutons : pleine largeur, taille fixe */
     .btn-buy,
     .btn-disabled {
-        height: 32px;
-        font-size: 12px;
+        width: 100% !important;
+        height: 38px !important;
+        font-size: 12px !important;
+        border-radius: 10px !important;
+        padding: 0 !important;
+        margin-top: 8px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap;
+    }
+
+    .btn-disabled {
+        font-size: 11px !important; /* "Rupture de stock" est long */
+    }
+}
+
+/* ── Très petits écrans (< 380px) ── */
+@media (max-width: 380px) {
+
+    #productsGrid {
+        grid-template-columns: 1fr !important; /* 1 colonne si trop étroit */
+    }
+
+    .products-title h1 {
+        font-size: 24px !important;
     }
 }
 
