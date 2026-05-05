@@ -682,38 +682,174 @@
 }
 
 
-/* ===== CART MOBILE FIX ===== */
+/* ===== CART MOBILE FIX - RANITA MARKET ===== */
+/* Remplace ton ancien @media (max-width: 768px) du cart par ceci */
 
 @media (max-width: 768px) {
 
+    /* ── Header ── */
+    .site-header {
+        padding: 12px 16px;
+        gap: 8px;
+    }
+
+    .site-logo {
+        font-size: 16px !important;
+    }
+
+    .site-header nav a {
+        margin-left: 10px;
+        font-size: 13px;
+    }
+
+    /* ── Page ── */
+    .cart-page {
+        margin: 16px auto;
+        padding: 0 12px 40px;
+        box-sizing: border-box;
+    }
+
+        .cart-page h1 {
+            font-size: 26px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+    /* ── Cart item : colonne verticale ── */
     .cart-item {
         display: flex !important;
-        flex-direction: column;
-        gap: 12px;
-        padding: 14px;
+        flex-direction: column !important;
+        gap: 10px;
+        padding: 14px !important;
+        border-radius: 16px;
+        align-items: center;
+        text-align: center;
     }
 
         .cart-item img {
-            width: 100%;
-            height: 150px;
-            object-fit: contain;
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: contain !important;
+            border-radius: 12px;
         }
 
+    /* ── Info produit ── */
     .cart-info {
+        width: 100%;
         text-align: center;
     }
 
         .cart-info h3 {
-            font-size: 20px;
+            font-size: 17px !important;
+            margin: 0 0 6px;
         }
 
+        .cart-info p {
+            font-size: 14px;
+            margin: 2px 0;
+            color: #6b7280;
+        }
+
+    /* ── Boutons quantité ── */
     .qty-actions {
+        display: flex;
         justify-content: center;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
     }
 
+        .qty-actions button {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 12px !important;
+            font-size: 20px !important;
+            font-weight: 700;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-actions strong {
+            font-size: 18px;
+            min-width: 28px;
+            text-align: center;
+        }
+
+    /* ── Bouton supprimer ── */
+    .cart-item .btn-danger {
+        width: 100% !important;
+        height: 40px !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    /* ── Résumé total ── */
     .cart-summary {
-        flex-direction: column;
-        gap: 12px;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 18px !important;
+        border-radius: 16px;
         text-align: center;
+        margin-top: 20px;
+    }
+
+        .cart-summary h2 {
+            font-size: 20px;
+            margin: 0 0 4px;
+        }
+
+        /* Tous les boutons du summary : pleine largeur */
+        .cart-summary .cart-link,
+        .cart-summary .btn-danger,
+        .cart-summary .secondary-link {
+            width: 100% !important;
+            height: 48px !important;
+            border-radius: 12px !important;
+            font-size: 15px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-sizing: border-box;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+    /* ── Panier vide ── */
+    .empty-card {
+        text-align: center;
+        padding: 40px 20px;
+        font-size: 16px;
+        color: #6b7280;
+        border-radius: 16px;
+    }
+}
+
+/* ── Très petits écrans ── */
+@media (max-width: 380px) {
+
+    .cart-page h1 {
+        font-size: 22px;
+    }
+
+    .cart-info h3 {
+        font-size: 15px !important;
+    }
+
+    .cart-summary .cart-link,
+    .cart-summary .btn-danger,
+    .cart-summary .secondary-link {
+        font-size: 13px !important;
+        height: 44px !important;
     }
 }
