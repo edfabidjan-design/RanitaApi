@@ -879,3 +879,32 @@ body {
         height: 170px !important;
     }
 }
+@media (max-width: 480px) {
+    .payment-option {
+        flex-wrap: wrap !important;
+        padding: 10px 12px !important;
+        gap: 8px !important;
+        overflow: hidden !important;
+    }
+
+        .payment-option input[type="radio"] {
+            flex-shrink: 0 !important;
+            width: 18px !important;
+            height: 18px !important;
+        }
+
+        .payment-option label {
+            flex: 1 !important;
+            min-width: 0 !important;
+            font-size: 13px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow: hidden !important;
+        }
+
+        .payment-option .badge-soon {
+            margin-left: auto !important;
+            flex-shrink: 0 !important;
+            font-size: 10px !important;
+        }
+}
