@@ -1,12 +1,4 @@
-﻿body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #1f2937;
-  
-}
-
-.site-header {
+﻿.site-header {
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -21,6 +13,15 @@
     .site-header nav a:hover {
         color: #10b981;
     }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+  
+}
+
 
 
 .products-header {
