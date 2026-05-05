@@ -559,52 +559,78 @@
 
 
 
-/* FIX MOBILE PRODUITS FINAL */
+/* MOBILE PRODUITS 2 COLONNES */
 @media (max-width: 768px) {
     .products-header {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 8px;
-        align-items: center;
-        padding-top: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 10px;
+        padding-top: 14px;
     }
 
-    .products-title {
-        grid-column: 1 / -1;
+    .site-logo {
+        font-size: 24px;
         text-align: center;
     }
 
-        .products-title h1 {
-            font-size: 26px;
-        }
-
-    .products-toolbar {
-        width: auto;
-        margin: 14px 14px 22px;
+    .products-title h1 {
+        font-size: 28px;
     }
 
+    .products-title p {
+        font-size: 16px;
+    }
+
+    .cart-link {
+        width: auto;
+        text-align: center;
+    }
+
+    .products-toolbar {
+        margin: 18px 0 24px;
+        width: auto;
+        max-width: none;
+        box-sizing: border-box;
+    }
+
+        .products-toolbar input,
+        .products-toolbar select {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
     #productsGrid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-        padding: 0 2px;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
     }
 
     .product-card {
-        display: grid;
-        grid-template-columns: 130px 1fr;
-        gap: 14px;
-        align-items: start;
+        display: block !important;
+        padding: 12px;
     }
 
     .product-img {
-        height: 130px;
+        height: 140px;
     }
 
-    .product-card h3,
+    .product-card h3 {
+        font-size: 15px;
+    }
+
     .product-card p,
-    .product-card strong,
-    .product-card small,
-    .product-card button {
-        grid-column: 2;
+    .product-card small {
+        font-size: 12px;
+    }
+
+    .product-card strong {
+        font-size: 15px;
+    }
+
+    .btn-buy,
+    .btn-disabled {
+        font-size: 12px;
+        padding: 9px 10px;
     }
 }
