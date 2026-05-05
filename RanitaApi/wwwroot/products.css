@@ -556,3 +556,50 @@
         grid-template-columns: 1fr 1fr;
     }
 }
+
+
+
+/* FIX MOBILE PRODUITS */
+@media (max-width: 768px) {
+    #productsGrid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .product-card {
+        padding: 12px;
+    }
+
+    .product-img {
+        height: 135px;
+    }
+
+    .product-card h3 {
+        font-size: 15px;
+    }
+
+    .product-card p,
+    .product-card small {
+        font-size: 12px;
+    }
+
+    .product-card strong {
+        font-size: 15px;
+    }
+
+    .btn-buy,
+    .btn-disabled {
+        font-size: 12px;
+        padding: 9px 10px;
+    }
+}
+
+@media (max-width: 420px) {
+    #productsGrid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .product-img {
+        height: 220px;
+    }
+}
