@@ -1,4 +1,4 @@
-POST https://ranita-api.onrender.com/api/products
+POST https://ranitaapi-production.up.railway.app/api/products
 Content-Type: application/json
 
 {
