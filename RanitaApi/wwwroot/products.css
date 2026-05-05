@@ -322,10 +322,11 @@ body {
     min-height: 75vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 30px;
+    align-items: flex-start;
+    padding: 20px 12px;
+    box-sizing: border-box;
+    width: 100%;
 }
-
 .checkout-card {
     width: 100%;
     max-width: 520px;
