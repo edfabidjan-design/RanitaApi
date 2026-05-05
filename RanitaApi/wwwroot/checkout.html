@@ -323,7 +323,7 @@
         </div>
     </div>
 
-    <main class="checkout-page">
+    <div class="checkout-page" style="display:block; width:100%; padding:16px; box-sizing:border-box;">
         <section class="checkout-card">
             <h1>Finaliser la commande</h1>
             <p style="color:#6b7280; font-size:14px; margin-bottom:20px;">Vérifiez vos informations de livraison.</p>
@@ -382,72 +382,72 @@
 
             <a href="cart.html" class="secondary-link" style="display:block; text-align:center; margin-top:16px;">← Retour au panier</a>
         </section>
-    </main>
+    </div>
 
-    <script>
-        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-        const SHIPPING_FEE = 1500;
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const client = JSON.parse(localStorage.getItem("client")) || null;
+        <script>
+            const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+            const SHIPPING_FEE = 1500;
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const client = JSON.parse(localStorage.getItem("client")) || null;
 
-        if (!client) {
-            document.getElementById("authModal").style.display = "flex";
-        } else {
-            document.getElementById("clientInfoBar").style.display = "flex";
-            document.getElementById("clientInfoText").textContent = `Connecté en tant que ${client.name || client.email}`;
-            if (client.name) document.getElementById("customerName").value = client.name;
-            if (client.phone) document.getElementById("customerPhone").value = client.phone;
-            if (client.address) document.getElementById("customerAddress").value = client.address;
-        }
-
-        function updateTotals() {
-            const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
-            const grandTotal = subtotal + SHIPPING_FEE;
-            document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
-            document.getElementById("shippingDisplay").textContent = Number(SHIPPING_FEE).toLocaleString() + " FCFA";
-            document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
-        }
-        updateTotals();
-
-        document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
-            if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
-
-            const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
-            const order = {
-                clientId: client.id || null,
-                customerName: document.getElementById("customerName").value,
-                customerPhone: document.getElementById("customerPhone").value,
-                customerAddress: document.getElementById("customerAddress").value,
-                paymentMethod: selectedPayment,
-                shippingFee: SHIPPING_FEE,
-                items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
-            };
-
-            const btn = e.target.querySelector("button[type='submit']");
-            btn.disabled = true; btn.textContent = "Envoi en cours...";
-
-            try {
-                const res = await fetch(`${API_BASE}/orders`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(order)
-                });
-                if (!res.ok) {
-                    alert("Erreur commande : " + await res.text());
-                    btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
-                    return;
-                }
-                const data = await res.json();
-                localStorage.removeItem("cart");
-                localStorage.setItem("lastOrderId", data.id);
-                window.location.href = "thank-you.html";
-            } catch (err) {
-                alert("Erreur réseau. Veuillez réessayer.");
-                btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
+            if (!client) {
+                document.getElementById("authModal").style.display = "flex";
+            } else {
+                document.getElementById("clientInfoBar").style.display = "flex";
+                document.getElementById("clientInfoText").textContent = `Connecté en tant que ${client.name || client.email}`;
+                if (client.name) document.getElementById("customerName").value = client.name;
+                if (client.phone) document.getElementById("customerPhone").value = client.phone;
+                if (client.address) document.getElementById("customerAddress").value = client.address;
             }
-        });
-    </script>
+
+            function updateTotals() {
+                const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
+                const grandTotal = subtotal + SHIPPING_FEE;
+                document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
+                document.getElementById("shippingDisplay").textContent = Number(SHIPPING_FEE).toLocaleString() + " FCFA";
+                document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
+            }
+            updateTotals();
+
+            document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
+                if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
+
+                const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+                const order = {
+                    clientId: client.id || null,
+                    customerName: document.getElementById("customerName").value,
+                    customerPhone: document.getElementById("customerPhone").value,
+                    customerAddress: document.getElementById("customerAddress").value,
+                    paymentMethod: selectedPayment,
+                    shippingFee: SHIPPING_FEE,
+                    items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
+                };
+
+                const btn = e.target.querySelector("button[type='submit']");
+                btn.disabled = true; btn.textContent = "Envoi en cours...";
+
+                try {
+                    const res = await fetch(`${API_BASE}/orders`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(order)
+                    });
+                    if (!res.ok) {
+                        alert("Erreur commande : " + await res.text());
+                        btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
+                        return;
+                    }
+                    const data = await res.json();
+                    localStorage.removeItem("cart");
+                    localStorage.setItem("lastOrderId", data.id);
+                    window.location.href = "thank-you.html";
+                } catch (err) {
+                    alert("Erreur réseau. Veuillez réessayer.");
+                    btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
+                }
+            });
+        </script>
 </body>
 </html>
