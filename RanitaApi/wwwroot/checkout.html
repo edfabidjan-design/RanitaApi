@@ -243,6 +243,10 @@
             box-sizing: border-box;
         }
 
+
+        section.checkout-card {
+            overflow: hidden !important;
+        }
         @media (max-width: 768px) {
             .checkout-page {
                 padding: 16px 12px 50px !important;
@@ -295,6 +299,16 @@
             .checkout-card form input,
             .checkout-card form select {
                 height: 48px !important;
+            }
+
+            section.checkout-card {
+                overflow: hidden !important;
+                width: 100vw !important;
+                max-width: 100vw !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                border-radius: 0 !important;
+                padding: 16px !important;
             }
         }
 
