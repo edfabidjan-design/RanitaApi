@@ -34,17 +34,23 @@
     <script>
         const API = "https://ranita-api.onrender.com/api/client-auth";
 
-        document.getElementById("registerForm").addEventListener("submit", async e => {
+        const registerForm = document.getElementById("registerForm");
+        const nameInput = document.getElementById("name");
+        const emailInput = document.getElementById("email");
+        const phoneInput = document.getElementById("phone");
+        const passwordInput = document.getElementById("password");
+
+        registerForm.addEventListener("submit", async e => {
             e.preventDefault();
 
             const res = await fetch(`${API}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    fullName: name.value,
-                    email: email.value,
-                    phone: phone.value,
-                    password: password.value
+                    FullName: nameInput.value.trim(),
+                    Email: emailInput.value.trim(),
+                    Phone: phoneInput.value.trim(),
+                    Password: passwordInput.value.trim()
                 })
             });
 

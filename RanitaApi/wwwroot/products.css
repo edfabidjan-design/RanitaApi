@@ -657,3 +657,36 @@
         font-size: 11px;
     }
 }
+
+@media (max-width: 768px) {
+    .products-header {
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        text-align: left !important;
+        gap: 10px;
+    }
+
+    .site-logo {
+        text-align: left !important;
+        justify-self: start;
+    }
+
+    .cart-link {
+        justify-self: end;
+        width: auto !important;
+        min-width: 120px;
+        text-align: center !important;
+    }
+
+    .products-title {
+        grid-column: 1 / -1;
+        text-align: center !important;
+    }
+
+    .products-toolbar input,
+    .products-toolbar select {
+        text-align: center !important;
+        text-align-last: center !important;
+    }
+}
