@@ -853,3 +853,184 @@
         height: 44px !important;
     }
 }
+
+
+/* ===== CHECKOUT + PRODUCT-DETAILS MOBILE FIX - RANITA MARKET ===== */
+/* Ajoute ce bloc à la fin de ton products.css                        */
+
+/* ══════════════════════════════════════════
+   CHECKOUT PAGE
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+    /* ── Header ── */
+    .site-header {
+        padding: 12px 16px;
+    }
+
+    .site-logo {
+        font-size: 16px !important;
+    }
+
+    .site-header nav a {
+        margin-left: 10px;
+        font-size: 13px;
+    }
+
+    /* ── Page wrapper ── */
+    .checkout-page {
+        min-height: unset !important;
+        padding: 20px 12px 40px !important;
+        align-items: flex-start !important;
+    }
+
+    /* ── Card formulaire ── */
+    .checkout-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 22px 16px !important;
+        border-radius: 18px !important;
+        box-sizing: border-box;
+    }
+
+        .checkout-card h1 {
+            font-size: 24px !important;
+            margin: 0 0 8px;
+            text-align: center;
+        }
+
+        .checkout-card > p {
+            font-size: 14px;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* ── Inputs + select ── */
+        .checkout-card input,
+        .checkout-card select {
+            width: 100% !important;
+            height: 50px !important;
+            display: block !important;
+            margin-bottom: 14px !important;
+            padding: 0 14px !important;
+            box-sizing: border-box !important;
+            font-size: 15px !important;
+            border: 1px solid #d1d5db;
+            border-radius: 12px !important;
+            background: #f9fafb;
+        }
+
+    /* ── Total ── */
+    #orderTotal {
+        font-size: 20px !important;
+        text-align: center;
+        margin: 10px 0 18px !important;
+        color: #f97316;
+    }
+
+    /* ── Bouton confirmer ── */
+    .checkout-card .btn-buy {
+        width: 100% !important;
+        height: 50px !important;
+        font-size: 16px !important;
+        border-radius: 14px !important;
+        margin-top: 4px !important;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* ── Lien retour panier ── */
+    .checkout-card .secondary-link {
+        display: block !important;
+        text-align: center !important;
+        margin-top: 16px !important;
+        font-size: 14px !important;
+        padding: 12px !important;
+        border-radius: 12px !important;
+    }
+}
+
+
+/* ══════════════════════════════════════════
+   PRODUCT DETAILS PAGE
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+    /* ── Card détail produit ── */
+    .product-detail-card {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 18px;
+        max-width: 100% !important;
+        padding: 16px 12px 40px !important;
+        box-sizing: border-box;
+    }
+
+        .product-detail-card img {
+            width: 100% !important;
+            height: 240px !important;
+            object-fit: contain !important;
+            border-radius: 16px !important;
+            background: #f3f4f6;
+        }
+
+        /* ── Texte ── */
+        .product-detail-card h1 {
+            font-size: 22px !important;
+            margin: 0 0 10px;
+        }
+
+        .product-detail-card p {
+            font-size: 14px !important;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 6px 0;
+        }
+
+        .product-detail-card h2 {
+            font-size: 24px !important;
+            color: #f97316;
+            margin: 12px 0 10px;
+        }
+
+        /* ── Boutons ── */
+        .product-detail-card .btn-buy,
+        .product-detail-card .btn-disabled {
+            width: 100% !important;
+            height: 50px !important;
+            font-size: 16px !important;
+            border-radius: 14px !important;
+            margin-top: 16px !important;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-detail-card .secondary-link {
+            display: block !important;
+            text-align: center !important;
+            margin-top: 14px !important;
+            font-size: 14px !important;
+            padding: 12px !important;
+            border-radius: 12px !important;
+        }
+}
+
+/* ── Très petits écrans ── */
+@media (max-width: 380px) {
+
+    .checkout-card h1 {
+        font-size: 20px !important;
+    }
+
+    .product-detail-card h1 {
+        font-size: 18px !important;
+    }
+
+    .product-detail-card img {
+        height: 180px !important;
+    }
+}
