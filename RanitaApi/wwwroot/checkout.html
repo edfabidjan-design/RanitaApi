@@ -6,7 +6,6 @@
     <title>Ranita - Checkout</title>
     <link rel="stylesheet" href="products.css">
     <style>
-        /* ── Modale connexion ── */
         .auth-modal-overlay {
             position: fixed;
             inset: 0;
@@ -99,7 +98,6 @@
             display: block;
         }
 
-        /* ── Frais de transport ── */
         .order-summary-box {
             background: #f9fafb;
             border: 1px solid #e5e7eb;
@@ -131,7 +129,6 @@
                     color: #f97316;
                 }
 
-        /* ── Modes paiement ── */
         .payment-options {
             display: flex;
             flex-direction: column;
@@ -148,7 +145,6 @@
             border-radius: 12px;
             cursor: pointer;
             transition: 0.2s;
-            position: relative;
         }
 
             .payment-option.active {
@@ -193,7 +189,6 @@
             display: block;
         }
 
-        /* ── Form inputs ── */
         .checkout-card form input,
         .checkout-card form select {
             width: 100%;
@@ -229,25 +224,41 @@
             font-weight: 600;
         }
 
-        /* ── Mobile ── */
         @media (max-width: 768px) {
             .checkout-page {
-                padding: 16px 12px 40px !important;
+                padding: 16px 12px 50px !important;
                 align-items: flex-start !important;
                 min-height: unset !important;
             }
 
             .checkout-card {
+                width: 100% !important;
+                max-width: 100% !important;
                 padding: 20px 16px !important;
                 border-radius: 18px !important;
             }
 
                 .checkout-card h1 {
                     font-size: 22px !important;
+                    text-align: center !important;
                 }
 
+            .summary-line.total {
+                font-size: 16px !important;
+            }
+
             .auth-modal {
-                padding: 24px 18px;
+                padding: 24px 18px !important;
+                border-radius: 18px !important;
+            }
+
+                .auth-modal h2 {
+                    font-size: 18px !important;
+                }
+
+            .checkout-card form input,
+            .checkout-card form select {
+                height: 48px !important;
             }
         }
     </style>
@@ -262,7 +273,6 @@
         </nav>
     </header>
 
-    <!-- Modale connexion obligatoire -->
     <div class="auth-modal-overlay" id="authModal" style="display:none;">
         <div class="auth-modal">
             <div class="lock-icon">🔒</div>
@@ -281,7 +291,6 @@
             <h1>Finaliser la commande</h1>
             <p style="color:#6b7280; font-size:14px; margin-bottom:20px;">Vérifiez vos informations de livraison.</p>
 
-            <!-- Info client connecté -->
             <div class="client-info-bar" id="clientInfoBar" style="display:none;">
                 ✅ <span id="clientInfoText"></span>
             </div>
@@ -291,10 +300,9 @@
                 <input type="tel" id="customerPhone" placeholder="Téléphone" required>
                 <input type="text" id="customerAddress" placeholder="Adresse de livraison" required>
 
-                <!-- Modes de paiement -->
                 <span class="payment-label">Mode de paiement</span>
                 <div class="payment-options">
-                    <div class="payment-option active" id="opt-livraison">
+                    <div class="payment-option active">
                         <input type="radio" name="payment" id="pay-livraison" value="Paiement à la livraison" checked>
                         <label for="pay-livraison">💵 Paiement à la livraison</label>
                     </div>
@@ -315,7 +323,6 @@
                     </div>
                 </div>
 
-                <!-- Récapitulatif -->
                 <div class="order-summary-box">
                     <div class="summary-line">
                         <span>Sous-total</span>
@@ -342,63 +349,35 @@
 
     <script>
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-        const SHIPPING_FEE = 1500; // Frais de livraison fixes en FCFA
-
+        const SHIPPING_FEE = 1500;
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const client = JSON.parse(localStorage.getItem("client")) || null;
 
-        // ── 1. Vérification connexion ──
         if (!client) {
             document.getElementById("authModal").style.display = "flex";
         } else {
-            // Afficher info client
-            const bar = document.getElementById("clientInfoBar");
-            bar.style.display = "flex";
-            document.getElementById("clientInfoText").textContent =
-                `Connecté en tant que ${client.name || client.email}`;
-
-            // Pré-remplir les champs si dispo
+            document.getElementById("clientInfoBar").style.display = "flex";
+            document.getElementById("clientInfoText").textContent = `Connecté en tant que ${client.name || client.email}`;
             if (client.name) document.getElementById("customerName").value = client.name;
             if (client.phone) document.getElementById("customerPhone").value = client.phone;
             if (client.address) document.getElementById("customerAddress").value = client.address;
         }
 
-        // ── 2. Calcul des totaux ──
-        function calculateSubtotal() {
-            return cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
-        }
-
         function updateTotals() {
-            const subtotal = calculateSubtotal();
+            const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
             const grandTotal = subtotal + SHIPPING_FEE;
-
-            document.getElementById("subtotalDisplay").textContent =
-                Number(subtotal).toLocaleString() + " FCFA";
-            document.getElementById("shippingDisplay").textContent =
-                Number(SHIPPING_FEE).toLocaleString() + " FCFA";
-            document.getElementById("grandTotalDisplay").textContent =
-                Number(grandTotal).toLocaleString() + " FCFA";
+            document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
+            document.getElementById("shippingDisplay").textContent = Number(SHIPPING_FEE).toLocaleString() + " FCFA";
+            document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
         }
-
         updateTotals();
 
-        // ── 3. Soumission commande ──
         document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-
-            if (!client) {
-                document.getElementById("authModal").style.display = "flex";
-                return;
-            }
-
-            if (cart.length === 0) {
-                alert("Votre panier est vide.");
-                window.location.href = "products.html";
-                return;
-            }
+            if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
+            if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
 
             const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
-
             const order = {
                 clientId: client.id || null,
                 customerName: document.getElementById("customerName").value,
@@ -406,15 +385,11 @@
                 customerAddress: document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
                 shippingFee: SHIPPING_FEE,
-                items: cart.map(item => ({
-                    productId: item.id,
-                    quantity: item.quantity
-                }))
+                items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
             };
 
             const btn = e.target.querySelector("button[type='submit']");
-            btn.disabled = true;
-            btn.textContent = "Envoi en cours...";
+            btn.disabled = true; btn.textContent = "Envoi en cours...";
 
             try {
                 const res = await fetch(`${API_BASE}/orders`, {
@@ -422,27 +397,20 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(order)
                 });
-
                 if (!res.ok) {
-                    const err = await res.text();
-                    alert("Erreur commande : " + err);
-                    btn.disabled = false;
-                    btn.textContent = "✅ Confirmer la commande";
+                    alert("Erreur commande : " + await res.text());
+                    btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
                     return;
                 }
-
                 const data = await res.json();
                 localStorage.removeItem("cart");
                 localStorage.setItem("lastOrderId", data.id);
                 window.location.href = "thank-you.html";
-
             } catch (err) {
                 alert("Erreur réseau. Veuillez réessayer.");
-                btn.disabled = false;
-                btn.textContent = "✅ Confirmer la commande";
+                btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
             }
         });
     </script>
-
 </body>
 </html>
