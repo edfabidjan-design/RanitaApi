@@ -8,12 +8,10 @@ COPY ["RanitaApi/RanitaApi.csproj", "RanitaApi/"]
 RUN dotnet restore "RanitaApi/RanitaApi.csproj"
 COPY . .
 WORKDIR "/src/RanitaApi"
-RUN dotnet build "RanitaApi.csproj" -c Release -o /app/build
-
-FROM build AS publish
 RUN dotnet publish "RanitaApi.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
+COPY --from=build /src/RanitaApi/wwwroot ./wwwroot
 ENTRYPOINT ["dotnet", "RanitaApi.dll"]
