@@ -8,17 +8,17 @@
 </head>
 <body>
 
+    <header class="mobile-shop-header">
+        <div class="site-logo" onclick="window.location.href='index.html'">
+            🛒 Ranita Market
+        </div>
+
+        <a href="cart.html" class="cart-link">
+            🛒 Panier (<span id="cartCount">0</span>)
+        </a>
+    </header>
+
     <main class="products-page">
-
-        <header class="mobile-shop-header">
-            <div class="site-logo" onclick="window.location.href='index.html'">
-                🛒 Ranita Market
-            </div>
-
-            <a href="cart.html" class="cart-link">
-                🛒 Panier (<span id="cartCount">0</span>)
-            </a>
-        </header>
 
         <section class="products-title">
             <h1>Nos produits</h1>
@@ -56,8 +56,8 @@
 
             categories.forEach(c => {
                 categoryFilter.innerHTML += `
-                        <option value="${c.id}">${c.name}</option>
-                    `;
+                            <option value="${c.id}">${c.name}</option>
+                        `;
             });
         }
 
@@ -113,22 +113,22 @@
 
             filtered.forEach(p => {
                 productsGrid.innerHTML += `
-    <div class="product-card" onclick="openProductDetails(${p.id})">
-        <div class="product-img">
-            <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
-        </div>
+        <div class="product-card" onclick="openProductDetails(${p.id})">
+            <div class="product-img">
+                <img src="${p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_300,h_300,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/300x300?text=Ranita'}" alt="${p.name}">
+            </div>
 
-        <h3>${p.name}</h3>
-        <p>${p.description || ""}</p>
-        <strong>${Number(p.price).toLocaleString()} FCFA</strong>
-        <small>${p.category?.name || ""}</small>
-        <small>Stock : ${p.stock}</small>
+            <h3>${p.name}</h3>
+            <p>${p.description || ""}</p>
+            <strong>${Number(p.price).toLocaleString()} FCFA</strong>
+            <small>${p.category?.name || ""}</small>
+            <small>Stock : ${p.stock}</small>
 
-        ${p.stock <= 0
+            ${p.stock <= 0
                         ? `<button disabled class="btn-disabled" onclick="event.stopPropagation()">Rupture de stock</button>`
                         : `<button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">Ajouter au panier</button>`
                     }
-    </div>
+        </div>
 `;
             });
         }
