@@ -2,16 +2,41 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ranita - Checkout</title>
     <link rel="stylesheet" href="products.css">
     <style>
-        /* Fix débordement global */
         html, body {
-            overflow-x: hidden;
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .checkout-wrapper {
             width: 100%;
             max-width: 100%;
+            padding: 20px 16px 50px;
+            box-sizing: border-box;
         }
+
+        .checkout-card {
+            width: 100% !important;
+            max-width: 560px !important;
+            background: white;
+            padding: 28px 24px;
+            border-radius: 22px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, .10);
+            margin: 0 auto;
+            box-sizing: border-box !important;
+        }
+
+            .checkout-card h1 {
+                font-size: 26px;
+                text-align: center;
+                margin: 0 0 8px;
+            }
 
         .auth-modal-overlay {
             position: fixed;
@@ -114,6 +139,7 @@
             padding: 16px;
             margin: 18px 0;
             box-sizing: border-box;
+            width: 100%;
         }
 
         .summary-line {
@@ -151,15 +177,14 @@
         .payment-option {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 13px 16px;
+            gap: 10px;
+            padding: 12px 14px;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             cursor: pointer;
             transition: 0.2s;
             width: 100%;
             box-sizing: border-box;
-            overflow: hidden;
         }
 
             .payment-option.active {
@@ -186,6 +211,7 @@
                 cursor: pointer;
                 flex: 1;
                 min-width: 0;
+                word-break: break-word;
             }
 
             .payment-option .badge-soon {
@@ -243,75 +269,48 @@
             box-sizing: border-box;
         }
 
-
-        section.checkout-card {
-            overflow: hidden !important;
-        }
         @media (max-width: 768px) {
-            .checkout-page {
-                padding: 16px 12px 50px !important;
-                min-height: unset !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
+            .checkout-wrapper {
+                padding: 12px 12px 50px !important;
             }
 
             .checkout-card {
-                width: 100% !important;
-                max-width: 100% !important;
                 padding: 20px 14px !important;
-                border-radius: 18px !important;
-                box-sizing: border-box !important;
-                margin: 0 !important;
+                border-radius: 16px !important;
+                max-width: 100% !important;
             }
 
                 .checkout-card h1 {
-                    font-size: 22px !important;
-                    text-align: center !important;
+                    font-size: 20px !important;
                 }
 
-            .payment-options {
-                width: 100% !important;
-                box-sizing: border-box !important;
-            }
-
             .payment-option {
-                width: 100% !important;
-                padding: 11px 10px !important;
+                padding: 10px 10px !important;
                 gap: 8px !important;
-                box-sizing: border-box !important;
             }
 
                 .payment-option label {
                     font-size: 13px !important;
-                    white-space: normal !important;
-                    word-break: break-word !important;
-                    min-width: 0 !important;
                 }
 
             .summary-line.total {
-                font-size: 16px !important;
+                font-size: 15px !important;
             }
 
             .auth-modal {
-                padding: 24px 16px !important;
+                padding: 22px 14px !important;
             }
+
+                .auth-modal h2 {
+                    font-size: 18px !important;
+                }
 
             .checkout-card form input,
             .checkout-card form select {
-                height: 48px !important;
-            }
-
-            section.checkout-card {
-                overflow: hidden !important;
-                width: 100vw !important;
-                max-width: 100vw !important;
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-                border-radius: 0 !important;
-                padding: 16px !important;
+                height: 46px !important;
+                font-size: 14px !important;
             }
         }
-
     </style>
 </head>
 <body>
@@ -337,10 +336,10 @@
         </div>
     </div>
 
-    <div class="checkout-page" style="display:block; width:100%; padding:16px; box-sizing:border-box;">
-        <section class="checkout-card">
+    <div class="checkout-wrapper">
+        <div class="checkout-card">
             <h1>Finaliser la commande</h1>
-            <p style="color:#6b7280; font-size:14px; margin-bottom:20px;">Vérifiez vos informations de livraison.</p>
+            <p style="color:#6b7280; font-size:14px; margin-bottom:20px; text-align:center;">Vérifiez vos informations de livraison.</p>
 
             <div class="client-info-bar" id="clientInfoBar" style="display:none;">
                 ✅ <span id="clientInfoText"></span>
@@ -395,73 +394,73 @@
             </form>
 
             <a href="cart.html" class="secondary-link" style="display:block; text-align:center; margin-top:16px;">← Retour au panier</a>
-        </section>
+        </div>
     </div>
 
-        <script>
-            const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-            const SHIPPING_FEE = 1500;
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const client = JSON.parse(localStorage.getItem("client")) || null;
+    <script>
+        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+        const SHIPPING_FEE = 1500;
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const client = JSON.parse(localStorage.getItem("client")) || null;
 
-            if (!client) {
-                document.getElementById("authModal").style.display = "flex";
-            } else {
-                document.getElementById("clientInfoBar").style.display = "flex";
-                document.getElementById("clientInfoText").textContent = `Connecté en tant que ${client.name || client.email}`;
-                if (client.name) document.getElementById("customerName").value = client.name;
-                if (client.phone) document.getElementById("customerPhone").value = client.phone;
-                if (client.address) document.getElementById("customerAddress").value = client.address;
-            }
+        if (!client) {
+            document.getElementById("authModal").style.display = "flex";
+        } else {
+            document.getElementById("clientInfoBar").style.display = "flex";
+            document.getElementById("clientInfoText").textContent = `Connecté en tant que ${client.name || client.email}`;
+            if (client.name) document.getElementById("customerName").value = client.name;
+            if (client.phone) document.getElementById("customerPhone").value = client.phone;
+            if (client.address) document.getElementById("customerAddress").value = client.address;
+        }
 
-            function updateTotals() {
-                const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
-                const grandTotal = subtotal + SHIPPING_FEE;
-                document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
-                document.getElementById("shippingDisplay").textContent = Number(SHIPPING_FEE).toLocaleString() + " FCFA";
-                document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
-            }
-            updateTotals();
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
+            const grandTotal = subtotal + SHIPPING_FEE;
+            document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
+            document.getElementById("shippingDisplay").textContent = Number(SHIPPING_FEE).toLocaleString() + " FCFA";
+            document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
+        }
+        updateTotals();
 
-            document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
-                e.preventDefault();
-                if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
-                if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
+        document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
+            if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
 
-                const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
-                const order = {
-                    clientId: client.id || null,
-                    customerName: document.getElementById("customerName").value,
-                    customerPhone: document.getElementById("customerPhone").value,
-                    customerAddress: document.getElementById("customerAddress").value,
-                    paymentMethod: selectedPayment,
-                    shippingFee: SHIPPING_FEE,
-                    items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
-                };
+            const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+            const order = {
+                clientId: client.id || null,
+                customerName: document.getElementById("customerName").value,
+                customerPhone: document.getElementById("customerPhone").value,
+                customerAddress: document.getElementById("customerAddress").value,
+                paymentMethod: selectedPayment,
+                shippingFee: SHIPPING_FEE,
+                items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
+            };
 
-                const btn = e.target.querySelector("button[type='submit']");
-                btn.disabled = true; btn.textContent = "Envoi en cours...";
+            const btn = e.target.querySelector("button[type='submit']");
+            btn.disabled = true; btn.textContent = "Envoi en cours...";
 
-                try {
-                    const res = await fetch(`${API_BASE}/orders`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(order)
-                    });
-                    if (!res.ok) {
-                        alert("Erreur commande : " + await res.text());
-                        btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
-                        return;
-                    }
-                    const data = await res.json();
-                    localStorage.removeItem("cart");
-                    localStorage.setItem("lastOrderId", data.id);
-                    window.location.href = "thank-you.html";
-                } catch (err) {
-                    alert("Erreur réseau. Veuillez réessayer.");
+            try {
+                const res = await fetch(`${API_BASE}/orders`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(order)
+                });
+                if (!res.ok) {
+                    alert("Erreur commande : " + await res.text());
                     btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
+                    return;
                 }
-            });
-        </script>
+                const data = await res.json();
+                localStorage.removeItem("cart");
+                localStorage.setItem("lastOrderId", data.id);
+                window.location.href = "thank-you.html";
+            } catch (err) {
+                alert("Erreur réseau. Veuillez réessayer.");
+                btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
+            }
+        });
+    </script>
 </body>
 </html>
