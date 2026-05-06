@@ -324,6 +324,7 @@ body {
     padding: 30px 20px;
     box-sizing: border-box;
     width: 100%;
+    overflow-x: hidden;
 }
 
 .checkout-card {
