@@ -252,5 +252,30 @@ namespace RanitaApi.Controllers
 
             return Ok("Supprimé");
         }
+
+        // TEMPORAIRE - supprimer après utilisation
+        [HttpGet("run-migrations")]
+        public IActionResult RunMigrations()
+        {
+            try
+            {
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""OldPrice"" NUMERIC(18,2) NULL;");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""ShortDescription"" TEXT NOT NULL DEFAULT '';");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE;");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Brand"" TEXT NOT NULL DEFAULT '';");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Slug"" TEXT NOT NULL DEFAULT '';");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""MetaDescription"" TEXT NOT NULL DEFAULT '';");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Attributes"" TEXT NOT NULL DEFAULT '{}';");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Sku"" TEXT NOT NULL DEFAULT '';");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Images"" TEXT NOT NULL DEFAULT '[]';");
+                _context.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""ImageUrl"" TEXT NOT NULL DEFAULT '';");
+                return Ok("Migrations OK - colonnes ajoutees");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Erreur: " + ex.Message);
+            }
+        }
     }
+
 }
