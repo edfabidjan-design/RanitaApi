@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-          
+
             <!-- Prix & Stock -->
             <div class="form-section">
                 <h3>💰 Prix & Stock</h3>
@@ -243,463 +243,470 @@
                 <div class="form-grid" id="attributeFields"></div>
             </div>
 
+            <!-- Variantes — ICI après attributs -->
+            <div class="form-section" id="variantsSection" style="display:none;">
+                <h3>🔀 Variantes & Stock</h3>
+                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">
+                    Sélectionnez vos attributs ci-dessus puis cliquez sur "Générer les variantes"
+                </p>
+                <button type="button" onclick="generateVariants()"
+                        style="background:#3b82f6;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:16px;">
+                    🔀 Générer les variantes
+                </button>
+                <div id="variantsList"></div>
+            </div>
+
             <div class="form-actions">
-                <button type="submit" class="btn-save">✅ Enregistrer</button>
-                <button type="button" id="resetBtn" class="btn-reset">🔄 Réinitialiser</button>
+
+                <!-- Table produits -->
+                <div class="table-wrap">
+                    <table border="1" cellpadding="8">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prix</th>
+                                <th>Ancien Prix</th>
+                                <th>Stock</th>
+                                <th>Catégorie</th>
+                                <th>Statut</th>
+                                <th>Image</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable"></tbody>
+                    </table>
+                </div>
             </div>
-        </form>
 
-        <hr>
-
-        <!-- Table produits -->
-        <div class="table-wrap">
-            <table border="1" cellpadding="8">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Prix</th>
-                        <th>Ancien Prix</th>
-                        <th>Stock</th>
-                        <th>Catégorie</th>
-                        <th>Statut</th>
-                        <th>Image</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="productsTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
+            <script>
 
 
-        let productImages = []; // URLs existantes
-        let newImageFiles = []; // Nouveaux fichiers à uploader
+                let productImages = []; // URLs existantes
+                let newImageFiles = []; // Nouveaux fichiers à uploader
 
-        function previewNewImage(input) {
-            if (!input.files || !input.files[0]) return;
+                function previewNewImage(input) {
+                    if (!input.files || !input.files[0]) return;
 
-            if (productImages.length + newImageFiles.length >= 5) {
-                alert("Maximum 5 images autorisées !");
-                input.value = "";
-                return;
-            }
+                    if (productImages.length + newImageFiles.length >= 5) {
+                        alert("Maximum 5 images autorisées !");
+                        input.value = "";
+                        return;
+                    }
 
-            const file = input.files[0];
-            newImageFiles.push(file);
+                    const file = input.files[0];
+                    newImageFiles.push(file);
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                renderGallery();
-            };
-            reader.readAsDataURL(file);
-            input.value = "";
-        }
-
-        function renderGallery() {
-            const gallery = document.getElementById("imageGallery");
-            gallery.innerHTML = "";
-
-            // Images existantes
-            productImages.forEach((url, index) => {
-                gallery.innerHTML += `
-            <div style="position:relative;width:90px;">
-                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
-                ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
-                <button type="button" onclick="removeExistingImage(${index})"
-                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
-                ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
-            </div>
-        `;
-            });
-
-            // Nouveaux fichiers
-            newImageFiles.forEach((file, index) => {
-                const url = URL.createObjectURL(file);
-                const isMain = productImages.length === 0 && index === 0;
-                gallery.innerHTML += `
-            <div style="position:relative;width:90px;">
-                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
-                ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
-                <button type="button" onclick="removeNewImage(${index})"
-                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
-            </div>
-        `;
-            });
-
-            // Placeholder si vide
-            if (productImages.length === 0 && newImageFiles.length === 0) {
-                gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajoutée</p>`;
-            }
-        }
-
-        function removeExistingImage(index) {
-            productImages.splice(index, 1);
-            renderGallery();
-        }
-
-        function removeNewImage(index) {
-            newImageFiles.splice(index, 1);
-            renderGallery();
-        }
-
-        function setMainImage(index) {
-            const img = productImages.splice(index, 1)[0];
-            productImages.unshift(img);
-            renderGallery();
-        }
-
-
-        function generateVariants() {
-            const attrFields = document.querySelectorAll("[id^='attr_']");
-            const selectedAttrs = {};
-
-            attrFields.forEach(el => {
-                const key = el.id.replace("attr_", "");
-                if (el.value) {
-                    selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        renderGallery();
+                    };
+                    reader.readAsDataURL(file);
+                    input.value = "";
                 }
-            });
 
-            const keys = Object.keys(selectedAttrs);
-            if (keys.length === 0) {
-                alert("Sélectionnez d'abord des attributs !");
-                return;
-            }
+                function renderGallery() {
+                    const gallery = document.getElementById("imageGallery");
+                    gallery.innerHTML = "";
 
-            // Générer toutes les combinaisons
-            const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
-            const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
-
-            const variantsList = document.getElementById("variantsList");
-            variantsList.innerHTML = `
-        <table style="width:100%;border-collapse:collapse;">
-            <thead>
-                <tr style="background:#f9fafb;">
-                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th>
-                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th>
-                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Prix spécifique (optionnel)</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${labels.map((label, i) => `
-                    <tr>
-                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td>
-                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
-                            <input type="number" id="variant_stock_${i}" placeholder="0" min="0"
-                                   style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
-                        </td>
-                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
-                            <input type="number" id="variant_price_${i}" placeholder="Prix de base"
-                                   style="width:120px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
-                        </td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-
-            // Stocker les labels pour le submit
-            window._variantLabels = labels;
-            document.getElementById("variantsSection").style.display = "block";
-            document.getElementById("productStock").value = "0";
-        }
-
-        function getCombinations(arrays) {
-            return arrays.reduce((acc, curr) =>
-                acc.flatMap(a => curr.map(b => [...a, b])), [[]]
-            );
-        }
-
-
-        const token = localStorage.getItem("adminToken");
-        if (!token) window.location.href = "admin-login.html";
-
-        function logout() {
-            localStorage.removeItem("adminToken");
-            window.location.href = "admin-login.html";
-        }
-
-        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-
-        async function loadCategories() {
-            const res = await fetch(`${API_BASE}/categories`);
-            const parents = await res.json();
-            const select = document.getElementById("categoryId");
-
-            select.innerHTML = `<option value="">-- Choisir une catégorie --</option>`;
-            parents.forEach(parent => {
-                if (parent.children && parent.children.length > 0) {
-                    select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
-                    parent.children.forEach(child => {
-                        select.innerHTML += `<option value="${child.id}">${child.name}</option>`;
+                    // Images existantes
+                    productImages.forEach((url, index) => {
+                        gallery.innerHTML += `
+                        <div style="position:relative;width:90px;">
+                            <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                            ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                            <button type="button" onclick="removeExistingImage(${index})"
+                                    style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
+                            ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
+                        </div>
+                    `;
                     });
-                    select.innerHTML += `</optgroup>`;
-                } else {
-                    select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
+
+                    // Nouveaux fichiers
+                    newImageFiles.forEach((file, index) => {
+                        const url = URL.createObjectURL(file);
+                        const isMain = productImages.length === 0 && index === 0;
+                        gallery.innerHTML += `
+                        <div style="position:relative;width:90px;">
+                            <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                            ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                            <button type="button" onclick="removeNewImage(${index})"
+                                    style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
+                        </div>
+                    `;
+                    });
+
+                    // Placeholder si vide
+                    if (productImages.length === 0 && newImageFiles.length === 0) {
+                        gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajoutée</p>`;
+                    }
                 }
-            });
-        }
 
-        async function loadAttributeFields() {
-            const catId = document.getElementById("categoryId").value;
-            const section = document.getElementById("attributesSection");
-            const fields = document.getElementById("attributeFields");
-
-            if (!catId) { section.style.display = "none"; return; }
-
-            const res = await fetch(`${API_BASE}/category-attributes/${catId}`);
-            const attrs = await res.json();
-
-            if (attrs.length === 0) { section.style.display = "none"; return; }
-
-            section.style.display = "block";
-            fields.innerHTML = attrs.map(a => `
-        <div class="attr-field full">
-            <label>${a.attributeName}</label>
-            ${a.attributeType === 'select'
-                    ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-                    ${a.attributeOptions.split(',').map(o => `
-                        <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;">
-                            <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}"
-                                   onchange="updateAttrHidden('${a.attributeName}')">
-                            <span>${o.trim()}</span>
-                        </label>
-                    `).join('')}
-                    <input type="hidden" id="attr_${a.attributeName}" value="">
-                   </div>`
-                    : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}"
-                          id="attr_${a.attributeName}"
-                          placeholder="${a.attributeName}">`
+                function removeExistingImage(index) {
+                    productImages.splice(index, 1);
+                    renderGallery();
                 }
-        </div>
-    `).join('');
-            // Afficher variantes si attributs select
-            const hasSelectAttr = attrs.some(a => a.attributeType === 'select');
-            document.getElementById("variantsSection").style.display = hasSelectAttr ? "block" : "none";
-            document.getElementById("variantsList").innerHTML = "";
-            window._variantLabels = null;
-        }
 
-        function updateAttrHidden(attrName) {
-            const checkboxes = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
-            const values = Array.from(checkboxes).map(cb => cb.value);
-            document.getElementById(`attr_${attrName}`).value = values.join(',');
-        }
+                function removeNewImage(index) {
+                    newImageFiles.splice(index, 1);
+                    renderGallery();
+                }
 
-        async function loadProducts() {
-            const res = await fetch(`${API_BASE}/products`);
-            const products = await res.json();
-            const tbody = document.getElementById("productsTable");
-
-            tbody.innerHTML = products.map(p => `
-                <tr>
-                    <td>${p.id}</td>
-                    <td>${p.name}</td>
-                    <td>${Number(p.price).toLocaleString()} FCFA</td>
-                    <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
-                    <td>${p.stock}</td>
-                    <td>${p.category?.name || "—"}</td>
-                    <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
-                    <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
-                    <td>
-                        <button onclick="editProduct(${p.id})">✏️ Modifier</button>
-                        <button onclick="deleteProduct(${p.id})">🗑️ Supprimer</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        let allProducts = [];
-
-        async function editProduct(id) {
-            const res = await fetch(`${API_BASE}/products/${id}`);
-            const p = await res.json();
-
-            document.getElementById("productId").value = p.id;
-            document.getElementById("productName").value = p.name;
-            document.getElementById("productBrand").value = p.brand || "";
-            document.getElementById("productShortDescription").value = p.shortDescription || "";
-            document.getElementById("productDescription").value = p.description || "";
-            document.getElementById("productPrice").value = p.price;
-            document.getElementById("productOldPrice").value = p.oldPrice || "";
-            document.getElementById("productStock").value = p.stock;
-            document.getElementById("productIsActive").checked = p.isActive;
-            document.getElementById("productSlug").value = p.slug || p.name.toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9\s-]/g, "")
-                .replace(/\s+/g, "-");
-            document.getElementById("productMetaDescription").value = p.metaDescription || "";
-            document.getElementById("categoryId").value = p.categoryId || "";
-            document.getElementById("productSku").value = p.sku || "";
+                function setMainImage(index) {
+                    const img = productImages.splice(index, 1)[0];
+                    productImages.unshift(img);
+                    renderGallery();
+                }
 
 
-            await loadAttributeFields();
+                function generateVariants() {
+                    const attrFields = document.querySelectorAll("[id^='attr_']");
+                    const selectedAttrs = {};
 
-            // Remplir les attributs
-
-            if (p.attributes && p.attributes !== "{}") {
-                try {
-                    const attrs = JSON.parse(p.attributes);
-                    Object.keys(attrs).forEach(key => {
-                        const hidden = document.getElementById(`attr_${key}`);
-                        if (hidden) {
-                            hidden.value = attrs[key];
-                            // Cocher les bonnes cases
-                            const values = attrs[key].split(',');
-                            values.forEach(val => {
-                                const cb = document.querySelector(`input[name="attr_${key}"][value="${val.trim()}"]`);
-                                if (cb) cb.checked = true;
-                            });
+                    attrFields.forEach(el => {
+                        const key = el.id.replace("attr_", "");
+                        if (el.value) {
+                            selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
                         }
                     });
-                } catch (e) { }
-            }
+
+                    const keys = Object.keys(selectedAttrs);
+                    if (keys.length === 0) {
+                        alert("Sélectionnez d'abord des attributs !");
+                        return;
+                    }
+
+                    // Générer toutes les combinaisons
+                    const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
+                    const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
+
+                    const variantsList = document.getElementById("variantsList");
+                    variantsList.innerHTML = `
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr style="background:#f9fafb;">
+                                <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th>
+                                <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th>
+                                <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Prix spécifique (optionnel)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${labels.map((label, i) => `
+                                <tr>
+                                    <td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td>
+                                    <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
+                                        <input type="number" id="variant_stock_${i}" placeholder="0" min="0"
+                                               style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                                    </td>
+                                    <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
+                                        <input type="number" id="variant_price_${i}" placeholder="Prix de base"
+                                               style="width:120px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                    // Stocker les labels pour le submit
+                    window._variantLabels = labels;
+                    document.getElementById("variantsSection").style.display = "block";
+                    document.getElementById("productStock").value = "0";
+                }
+
+                function getCombinations(arrays) {
+                    return arrays.reduce((acc, curr) =>
+                        acc.flatMap(a => curr.map(b => [...a, b])), [[]]
+                    );
+                }
+
+
+                const token = localStorage.getItem("adminToken");
+                if (!token) window.location.href = "admin-login.html";
+
+                function logout() {
+                    localStorage.removeItem("adminToken");
+                    window.location.href = "admin-login.html";
+                }
+
+                const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+
+                async function loadCategories() {
+                    const res = await fetch(`${API_BASE}/categories`);
+                    const parents = await res.json();
+                    const select = document.getElementById("categoryId");
+
+                    select.innerHTML = `<option value="">-- Choisir une catégorie --</option>`;
+                    parents.forEach(parent => {
+                        if (parent.children && parent.children.length > 0) {
+                            select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
+                            parent.children.forEach(child => {
+                                select.innerHTML += `<option value="${child.id}">${child.name}</option>`;
+                            });
+                            select.innerHTML += `</optgroup>`;
+                        } else {
+                            select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
+                        }
+                    });
+                }
+
+                async function loadAttributeFields() {
+                    const catId = document.getElementById("categoryId").value;
+                    const section = document.getElementById("attributesSection");
+                    const fields = document.getElementById("attributeFields");
+
+                    if (!catId) { section.style.display = "none"; return; }
+
+                    const res = await fetch(`${API_BASE}/category-attributes/${catId}`);
+                    const attrs = await res.json();
+
+                    if (attrs.length === 0) { section.style.display = "none"; return; }
+
+                    section.style.display = "block";
+                    fields.innerHTML = attrs.map(a => `
+                    <div class="attr-field full">
+                        <label>${a.attributeName}</label>
+                        ${a.attributeType === 'select'
+                            ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+                                ${a.attributeOptions.split(',').map(o => `
+                                    <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;">
+                                        <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}"
+                                               onchange="updateAttrHidden('${a.attributeName}')">
+                                        <span>${o.trim()}</span>
+                                    </label>
+                                `).join('')}
+                                <input type="hidden" id="attr_${a.attributeName}" value="">
+                               </div>`
+                            : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}"
+                                      id="attr_${a.attributeName}"
+                                      placeholder="${a.attributeName}">`
+                        }
+                    </div>
+                `).join('');
+                    // Afficher variantes si attributs select
+                    const hasSelectAttr = attrs.some(a => a.attributeType === 'select');
+                    document.getElementById("variantsSection").style.display = hasSelectAttr ? "block" : "none";
+                    document.getElementById("variantsList").innerHTML = "";
+                    window._variantLabels = null;
+                }
+
+                function updateAttrHidden(attrName) {
+                    const checkboxes = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
+                    const values = Array.from(checkboxes).map(cb => cb.value);
+                    document.getElementById(`attr_${attrName}`).value = values.join(',');
+                }
+
+                async function loadProducts() {
+                    const res = await fetch(`${API_BASE}/products`);
+                    const products = await res.json();
+                    const tbody = document.getElementById("productsTable");
+
+                    tbody.innerHTML = products.map(p => `
+                            <tr>
+                                <td>${p.id}</td>
+                                <td>${p.name}</td>
+                                <td>${Number(p.price).toLocaleString()} FCFA</td>
+                                <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
+                                <td>${p.stock}</td>
+                                <td>${p.category?.name || "—"}</td>
+                                <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
+                                <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
+                                <td>
+                                    <button onclick="editProduct(${p.id})">✏️ Modifier</button>
+                                    <button onclick="deleteProduct(${p.id})">🗑️ Supprimer</button>
+                                </td>
+                            </tr>
+                        `).join('');
+                }
+
+                let allProducts = [];
+
+                async function editProduct(id) {
+                    const res = await fetch(`${API_BASE}/products/${id}`);
+                    const p = await res.json();
+
+                    document.getElementById("productId").value = p.id;
+                    document.getElementById("productName").value = p.name;
+                    document.getElementById("productBrand").value = p.brand || "";
+                    document.getElementById("productShortDescription").value = p.shortDescription || "";
+                    document.getElementById("productDescription").value = p.description || "";
+                    document.getElementById("productPrice").value = p.price;
+                    document.getElementById("productOldPrice").value = p.oldPrice || "";
+                    document.getElementById("productStock").value = p.stock;
+                    document.getElementById("productIsActive").checked = p.isActive;
+                    document.getElementById("productSlug").value = p.slug || p.name.toLowerCase()
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                        .replace(/[^a-z0-9\s-]/g, "")
+                        .replace(/\s+/g, "-");
+                    document.getElementById("productMetaDescription").value = p.metaDescription || "";
+                    document.getElementById("categoryId").value = p.categoryId || "";
+                    document.getElementById("productSku").value = p.sku || "";
+
+
+                    await loadAttributeFields();
+
+                    // Remplir les attributs
+
+                    if (p.attributes && p.attributes !== "{}") {
+                        try {
+                            const attrs = JSON.parse(p.attributes);
+                            Object.keys(attrs).forEach(key => {
+                                const hidden = document.getElementById(`attr_${key}`);
+                                if (hidden) {
+                                    hidden.value = attrs[key];
+                                    // Cocher les bonnes cases
+                                    const values = attrs[key].split(',');
+                                    values.forEach(val => {
+                                        const cb = document.querySelector(`input[name="attr_${key}"][value="${val.trim()}"]`);
+                                        if (cb) cb.checked = true;
+                                    });
+                                }
+                            });
+                        } catch (e) { }
+                    }
 
 
 
 
-            // Charger les images existantes
-            productImages = [];
-            newImageFiles = [];
-            try {
-                productImages = JSON.parse(p.images || "[]");
-            } catch (e) { productImages = p.imageUrl ? [p.imageUrl] : []; }
-            renderGallery();
+                    // Charger les images existantes
+                    productImages = [];
+                    newImageFiles = [];
+                    try {
+                        productImages = JSON.parse(p.images || "[]");
+                    } catch (e) { productImages = p.imageUrl ? [p.imageUrl] : []; }
+                    renderGallery();
 
 
-            window.scrollTo(0, 0);
-        }
+                    window.scrollTo(0, 0);
+                }
 
-        async function deleteProduct(id) {
-            if (!confirm("Supprimer ce produit ?")) return;
-            await fetch(`${API_BASE}/products/${id}`, { method: "DELETE" });
-            loadProducts();
-        }
+                async function deleteProduct(id) {
+                    if (!confirm("Supprimer ce produit ?")) return;
+                    await fetch(`${API_BASE}/products/${id}`, { method: "DELETE" });
+                    loadProducts();
+                }
 
-        document.getElementById("productForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
+                document.getElementById("productForm").addEventListener("submit", async (e) => {
+                    e.preventDefault();
 
-            // Collecter les attributs
-            const attrFields = document.querySelectorAll("[id^='attr_']");
-            const attributes = {};
-            attrFields.forEach(el => {
-                const key = el.id.replace("attr_", "");
-                if (el.value) attributes[key] = el.value;
-            });
+                    // Collecter les attributs
+                    const attrFields = document.querySelectorAll("[id^='attr_']");
+                    const attributes = {};
+                    attrFields.forEach(el => {
+                        const key = el.id.replace("attr_", "");
+                        if (el.value) attributes[key] = el.value;
+                    });
 
-            const formData = new FormData();
-            formData.append("Name", document.getElementById("productName").value);
-            formData.append("Brand", document.getElementById("productBrand").value);
-            formData.append("ShortDescription", document.getElementById("productShortDescription").value);
-            formData.append("Description", document.getElementById("productDescription").value);
-            formData.append("Price", document.getElementById("productPrice").value);
-            formData.append("OldPrice", document.getElementById("productOldPrice").value || "");
-            formData.append("Stock", document.getElementById("productStock").value);
-            formData.append("IsActive", document.getElementById("productIsActive").checked);
-            const slugVal = document.getElementById("productSlug").value ||
-                document.getElementById("productName").value.toLowerCase()
-                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                    .replace(/[^a-z0-9\s-]/g, "")
-                    .replace(/\s+/g, "-");
-            formData.append("Slug", slugVal);
-            formData.append("MetaDescription", document.getElementById("productMetaDescription").value || document.getElementById("productShortDescription").value.substring(0, 160) || "");
-            formData.append("CategoryId", document.getElementById("categoryId").value);
-            formData.append("Attributes", JSON.stringify(attributes));
-            formData.append("Sku", document.getElementById("productSku").value);
+                    const formData = new FormData();
+                    formData.append("Name", document.getElementById("productName").value);
+                    formData.append("Brand", document.getElementById("productBrand").value);
+                    formData.append("ShortDescription", document.getElementById("productShortDescription").value);
+                    formData.append("Description", document.getElementById("productDescription").value);
+                    formData.append("Price", document.getElementById("productPrice").value);
+                    formData.append("OldPrice", document.getElementById("productOldPrice").value || "");
+                    formData.append("Stock", document.getElementById("productStock").value);
+                    formData.append("IsActive", document.getElementById("productIsActive").checked);
+                    const slugVal = document.getElementById("productSlug").value ||
+                        document.getElementById("productName").value.toLowerCase()
+                            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                            .replace(/[^a-z0-9\s-]/g, "")
+                            .replace(/\s+/g, "-");
+                    formData.append("Slug", slugVal);
+                    formData.append("MetaDescription", document.getElementById("productMetaDescription").value || document.getElementById("productShortDescription").value.substring(0, 160) || "");
+                    formData.append("CategoryId", document.getElementById("categoryId").value);
+                    formData.append("Attributes", JSON.stringify(attributes));
+                    formData.append("Sku", document.getElementById("productSku").value);
 
-            // Images existantes
-            formData.append("Images", JSON.stringify(productImages));
+                    // Images existantes
+                    formData.append("Images", JSON.stringify(productImages));
 
-            // Nouvelles images
-            newImageFiles.forEach((file) => {
-                formData.append("imageFiles", file);
-            });
+                    // Nouvelles images
+                    newImageFiles.forEach((file) => {
+                        formData.append("imageFiles", file);
+                    });
 
-            // Image principale = première
-            if (productImages.length > 0) {
-                formData.append("ImageUrl", productImages[0]);
-            }
+                    // Image principale = première
+                    if (productImages.length > 0) {
+                        formData.append("ImageUrl", productImages[0]);
+                    }
 
-            // Variantes
-            if (window._variantLabels) {
-                const variants = window._variantLabels.map((label, i) => ({
-                    combination: label,
-                    stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0),
-                    price: parseFloat(document.getElementById(`variant_price_${i}`)?.value || 0) || null
-                }));
-                formData.append("Variants", JSON.stringify(variants));
-            }
+                    // Variantes
+                    if (window._variantLabels) {
+                        const variants = window._variantLabels.map((label, i) => ({
+                            combination: label,
+                            stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0),
+                            price: parseFloat(document.getElementById(`variant_price_${i}`)?.value || 0) || null
+                        }));
+                        formData.append("Variants", JSON.stringify(variants));
+                    }
 
-            const id = document.getElementById("productId").value;
-            const url = id ? `${API_BASE}/products/${id}` : `${API_BASE}/products`;
-            const method = id ? "PUT" : "POST";
+                    const id = document.getElementById("productId").value;
+                    const url = id ? `${API_BASE}/products/${id}` : `${API_BASE}/products`;
+                    const method = id ? "PUT" : "POST";
 
-            const res = await fetch(url, { method, body: formData });
+                    const res = await fetch(url, { method, body: formData });
 
-            if (!res.ok) {
-                alert("Erreur : " + await res.text());
-                return;
-            }
+                    if (!res.ok) {
+                        alert("Erreur : " + await res.text());
+                        return;
+                    }
 
-            resetForm();
-            loadProducts();
-        });
+                    resetForm();
+                    loadProducts();
+                });
 
-        document.getElementById("categoryId").addEventListener("change", function () {
-            if (!document.getElementById("productId").value) {
-                const catText = this.options[this.selectedIndex]?.text || "PRD";
-                const prefix = catText
-                    .substring(0, 3)
-                    .toUpperCase()
-                    .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "");
-                const random = Math.floor(1000 + Math.random() * 9000);
-                document.getElementById("productSku").value = `RAN-${prefix}-${random}`;
-            }
-        });
+                document.getElementById("categoryId").addEventListener("change", function () {
+                    if (!document.getElementById("productId").value) {
+                        const catText = this.options[this.selectedIndex]?.text || "PRD";
+                        const prefix = catText
+                            .substring(0, 3)
+                            .toUpperCase()
+                            .normalize("NFD")
+                            .replace(/[\u0300-\u036f]/g, "");
+                        const random = Math.floor(1000 + Math.random() * 9000);
+                        document.getElementById("productSku").value = `RAN-${prefix}-${random}`;
+                    }
+                });
 
-        document.getElementById("productShortDescription").addEventListener("input", function () {
-            const meta = document.getElementById("productMetaDescription");
-            // Auto-remplir seulement si vide
-            if (!meta.value) {
-                meta.value = this.value.substring(0, 160);
-            }
-        });
+                document.getElementById("productShortDescription").addEventListener("input", function () {
+                    const meta = document.getElementById("productMetaDescription");
+                    // Auto-remplir seulement si vide
+                    if (!meta.value) {
+                        meta.value = this.value.substring(0, 160);
+                    }
+                });
 
-        function resetForm() {
-            document.getElementById("productForm").reset();
-            document.getElementById("productId").value = "";
-           
-            document.getElementById("attributesSection").style.display = "none";
-            document.getElementById("attributeFields").innerHTML = "";
-            document.getElementById("productSku").value = "";
-            productImages = [];
-            newImageFiles = [];
-            renderGallery();
+                function resetForm() {
+                    document.getElementById("productForm").reset();
+                    document.getElementById("productId").value = "";
 
-            document.getElementById("variantsSection").style.display = "none";
-            document.getElementById("variantsList").innerHTML = "";
-            window._variantLabels = null;
-        }
+                    document.getElementById("attributesSection").style.display = "none";
+                    document.getElementById("attributeFields").innerHTML = "";
+                    document.getElementById("productSku").value = "";
+                    productImages = [];
+                    newImageFiles = [];
+                    renderGallery();
 
-        document.getElementById("resetBtn").addEventListener("click", resetForm);
+                    document.getElementById("variantsSection").style.display = "none";
+                    document.getElementById("variantsList").innerHTML = "";
+                    window._variantLabels = null;
+                }
 
-        // Auto-générer le slug depuis le nom
-        document.getElementById("productName").addEventListener("input", function () {
-            const slug = this.value
-                .toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9\s-]/g, "")
-                .replace(/\s+/g, "-");
-            document.getElementById("productSlug").value = slug;
-        });
+                document.getElementById("resetBtn").addEventListener("click", resetForm);
 
-        loadCategories();
-        loadProducts();
-    </script>
+                // Auto-générer le slug depuis le nom
+                document.getElementById("productName").addEventListener("input", function () {
+                    const slug = this.value
+                        .toLowerCase()
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                        .replace(/[^a-z0-9\s-]/g, "")
+                        .replace(/\s+/g, "-");
+                    document.getElementById("productSlug").value = slug;
+                });
+
+                loadCategories();
+                loadProducts();
+            </script>
 
 </body>
 </html>
