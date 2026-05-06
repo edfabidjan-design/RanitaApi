@@ -71,6 +71,34 @@ app.MapGet("/", context =>
 
 
 
+
+
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS ""CategoryAttributes"" (
+                ""Id"" SERIAL PRIMARY KEY,
+                ""CategoryId"" INT NOT NULL REFERENCES ""Categories""(""Id"") ON DELETE CASCADE,
+                ""AttributeName"" TEXT NOT NULL DEFAULT '',
+                ""AttributeType"" TEXT NOT NULL DEFAULT 'text',
+                ""AttributeOptions"" TEXT NOT NULL DEFAULT ''
+            );
+        ");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("CategoryAttributes table error: " + ex.Message);
+}
+
+
+
+
+
 try
 {
     using (var scope = app.Services.CreateScope())
