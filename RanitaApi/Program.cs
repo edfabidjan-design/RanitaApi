@@ -23,10 +23,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowRanitaShop", policy =>
     {
         policy.WithOrigins(
-                "https://ranita-shop.com",
-                "https://www.ranita-shop.com"
-            )
-            .AllowAnyHeader()
+            "https://ranita-shop.com",
+            "https://www.ranita-shop.com",
+            "http://ranita-shop.com",
+            "http://www.ranita-shop.com"
+        )
+                    .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
