@@ -17,6 +17,7 @@
             <a href="admin-dashboard.html" class="active">Dashboard</a>
             <a href="admin-products.html">Produits</a>
             <a href="admin-categories.html">Catégories</a>
+            <a href="admin-attributes.html">Attributs</a>
             <a href="admin-orders.html">Commandes</a>
         </nav>
 
@@ -26,11 +27,12 @@
     <div class="admin-container">
 
         <h1>Dashboard</h1>
-        <p>Bienvenue dans l’espace administration Ranita</p>
+        <p>Bienvenue dans l'espace administration Ranita</p>
 
         <div class="cards">
             <a href="admin-products.html" class="card">📦 Produits</a>
             <a href="admin-categories.html" class="card">📁 Catégories</a>
+            <a href="admin-attributes.html" class="card">🏷️ Attributs</a>
             <a href="admin-orders.html" class="card">🧾 Commandes</a>
         </div>
 
@@ -38,10 +40,7 @@
 
     <script>
         const token = localStorage.getItem("adminToken");
-
-        if (!token) {
-            window.location.href = "admin-login.html";
-        }
+        if (!token) window.location.href = "admin-login.html";
 
         function logout() {
             localStorage.removeItem("adminToken");
