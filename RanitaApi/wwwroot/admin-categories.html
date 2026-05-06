@@ -9,138 +9,170 @@
 <body>
 
     <header class="admin-header">
-        <div class="logo" onclick="location.href='admin-dashboard.html'">
-            🛒 Ranita Admin
-        </div>
-
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
             <a href="admin-orders.html">Commandes</a>
             <a href="admin-categories.html" class="active">Catégories</a>
         </nav>
-
         <button onclick="logout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
+        <h1>Gestion des catégories</h1>
 
-        <h1>Création des catégories</h1>
-
-        <form id="categoryForm">
-            <input type="hidden" id="categoryId" />
-            <input type="text" id="categoryName" placeholder="Nom de la catégorie" required />
-            <button type="submit">Enregistrer</button>
-            <button type="button" id="resetBtn">Réinitialiser</button>
+        <form id="categoryForm" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+            <input type="hidden" id="categoryId">
+            <input type="text" id="categoryName" placeholder="Nom de la catégorie" required
+                   style="flex:1;padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;">
+            <select id="categoryParent" style="padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;">
+                <option value="">— Catégorie parente (optionnel) —</option>
+            </select>
+            <button type="submit" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;">
+                Enregistrer
+            </button>
+            <button type="button" id="resetBtn" style="background:#f3f4f6;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;">
+                Réinitialiser
+            </button>
         </form>
 
-        <hr />
+        <div id="categoriesTree"></div>
+    </div>
 
-        <div class="table-wrap">
+    <script>
+        const token = localStorage.getItem("adminToken");
+        if (!token) window.location.href = "admin-login.html";
 
-            <table border="1" cellpadding="8">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="categoriesTable"></tbody>
-            </table>
+        function logout() {
+            localStorage.removeItem("adminToken");
+            window.location.href = "admin-login.html";
+        }
 
-        </div>
+        const API = "https://ranitaapi-production.up.railway.app/api/categories";
 
-        <script>
-            const token = localStorage.getItem("adminToken");
+        async function loadCategories() {
+            const res = await fetch(API);
+            const parents = await res.json();
 
-            if (!token) {
-                window.location.href = "admin-login.html";
-            }
-
-            function logout() {
-                localStorage.removeItem("adminToken");
-                window.location.href = "admin-login.html";
-            }
-
-            const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-            const categoriesApi = `${API_BASE}/categories`;
-
-            const form = document.getElementById("categoryForm");
-            const categoryId = document.getElementById("categoryId");
-            const categoryName = document.getElementById("categoryName");
-            const categoriesTable = document.getElementById("categoriesTable");
-            const resetBtn = document.getElementById("resetBtn");
-
-            async function loadCategories() {
-                const res = await fetch(categoriesApi);
-                const categories = await res.json();
-
-                categoriesTable.innerHTML = "";
-
-                categories.forEach(c => {
-                    const tr = document.createElement("tr");
-
-                    tr.innerHTML = `
-                            <td>${c.id}</td>
-                            <td>${c.name}</td>
-                            <td>
-                                <button onclick="editCategory(${c.id}, '${c.name}')">Modifier</button>
-                                <button onclick="deleteCategory(${c.id})">Supprimer</button>
-                            </td>
-                        `;
-
-                    categoriesTable.appendChild(tr);
-                });
-            }
-
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const data = { name: categoryName.value };
-
-                if (categoryId.value) {
-                    await fetch(`${categoriesApi}/${categoryId.value}`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(data)
-                    });
-                } else {
-                    await fetch(categoriesApi, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(data)
-                    });
+            // Remplir le select des parents
+            const select = document.getElementById("categoryParent");
+            const currentId = document.getElementById("categoryId").value;
+            select.innerHTML = `<option value="">— Catégorie parente (optionnel) —</option>`;
+            parents.forEach(p => {
+                if (p.id != currentId) {
+                    select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
                 }
-
-                resetForm();
-                loadCategories();
             });
 
-            function editCategory(id, name) {
-                categoryId.value = id;
-                categoryName.value = name;
-            }
+            // Afficher l'arbre
+            const tree = document.getElementById("categoriesTree");
+            tree.innerHTML = "";
 
-            async function deleteCategory(id) {
-                if (!confirm("Supprimer cette catégorie ?")) return;
+            parents.forEach(parent => {
+                const card = document.createElement("div");
+                card.style.cssText = "background:white;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 4px 15px rgba(0,0,0,0.07);";
 
-                await fetch(`${categoriesApi}/${id}`, {
-                    method: "DELETE"
-                });
+                card.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${parent.children?.length ? '12px' : '0'};">
+                        <strong style="font-size:16px;">📁 ${parent.name}</strong>
+                        <div style="display:flex;gap:8px;">
+                            <button onclick="editCategory(${parent.id}, '${parent.name}', '')"
+                                    style="background:#f0fdf4;color:#059669;border:1px solid #10b981;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">
+                                ✏️ Modifier
+                            </button>
+                            <button onclick="deleteCategory(${parent.id})"
+                                    style="background:#fff0f0;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">
+                                🗑️ Supprimer
+                            </button>
+                            <button onclick="addChild(${parent.id}, '${parent.name}')"
+                                    style="background:#eff6ff;color:#3b82f6;border:1px solid #3b82f6;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">
+                                ➕ Sous-catégorie
+                            </button>
+                        </div>
+                    </div>
+                    ${parent.children?.map(child => `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f9fafb;border-radius:10px;margin-top:8px;">
+                            <span style="color:#374151;">　└── ${child.name}</span>
+                            <div style="display:flex;gap:8px;">
+                                <button onclick="editCategory(${child.id}, '${child.name}', ${child.parentId})"
+                                        style="background:#f0fdf4;color:#059669;border:1px solid #10b981;padding:4px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">
+                                    ✏️
+                                </button>
+                                <button onclick="deleteCategory(${child.id})"
+                                        style="background:#fff0f0;color:#ef4444;border:1px solid #ef4444;padding:4px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    `).join("") || ""}
+                `;
 
-                loadCategories();
-            }
+                tree.appendChild(card);
+            });
+        }
 
-            function resetForm() {
-                categoryId.value = "";
-                categoryName.value = "";
-            }
+        function addChild(parentId, parentName) {
+            document.getElementById("categoryId").value = "";
+            document.getElementById("categoryName").value = "";
+            document.getElementById("categoryParent").value = parentId;
+            document.getElementById("categoryName").focus();
+        }
 
-            resetBtn.addEventListener("click", resetForm);
+        function editCategory(id, name, parentId) {
+            document.getElementById("categoryId").value = id;
+            document.getElementById("categoryName").value = name;
+            loadCategories().then(() => {
+                document.getElementById("categoryParent").value = parentId || "";
+            });
+            document.getElementById("categoryName").focus();
+        }
 
+        async function deleteCategory(id) {
+            if (!confirm("Supprimer cette catégorie ?")) return;
+            await fetch(`${API}/${id}`, { method: "DELETE" });
             loadCategories();
-        </script>
+        }
+
+        document.getElementById("categoryForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("categoryId").value;
+            const name = document.getElementById("categoryName").value;
+            const parentId = document.getElementById("categoryParent").value;
+
+            const data = {
+                name,
+                parentId: parentId ? parseInt(parentId) : null
+            };
+
+            if (id) {
+                await fetch(`${API}/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+            } else {
+                await fetch(API, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+            }
+
+            resetForm();
+            loadCategories();
+        });
+
+        function resetForm() {
+            document.getElementById("categoryId").value = "";
+            document.getElementById("categoryName").value = "";
+            document.getElementById("categoryParent").value = "";
+        }
+
+        document.getElementById("resetBtn").addEventListener("click", resetForm);
+
+        loadCategories();
+    </script>
 
 </body>
 </html>

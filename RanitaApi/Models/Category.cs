@@ -8,6 +8,13 @@ namespace RanitaApi.Models
 
         public string Name { get; set; } = "";
 
+        public int? ParentId { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public Category? Parent { get; set; }
+
+        public List<Category> Children { get; set; } = new();
+
         [JsonIgnore]
         public List<Product> Products { get; set; } = new();
     }

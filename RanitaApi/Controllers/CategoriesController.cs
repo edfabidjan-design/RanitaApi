@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
 
@@ -18,6 +19,16 @@ namespace RanitaApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            var categories = _context.Categories
+                .Include(c => c.Children)
+                .Where(c => c.ParentId == null)
+                .ToList();
+            return Ok(categories);
+        }
+
+        [HttpGet("all")]
+        public IActionResult GetAll()
+        {
             return Ok(_context.Categories.ToList());
         }
 
@@ -28,16 +39,15 @@ namespace RanitaApi.Controllers
             _context.SaveChanges();
             return Ok(category);
         }
-    
 
-    [HttpPut("{id}")]
+        [HttpPut("{id}")]
         public IActionResult Put(int id, Category updated)
         {
             var category = _context.Categories.Find(id);
-            if (category == null)
-                return NotFound();
+            if (category == null) return NotFound();
 
             category.Name = updated.Name;
+            category.ParentId = updated.ParentId;
             _context.SaveChanges();
 
             return Ok(category);
@@ -47,8 +57,7 @@ namespace RanitaApi.Controllers
         public IActionResult Delete(int id)
         {
             var category = _context.Categories.Find(id);
-            if (category == null)
-                return NotFound();
+            if (category == null) return NotFound();
 
             _context.Categories.Remove(category);
             _context.SaveChanges();

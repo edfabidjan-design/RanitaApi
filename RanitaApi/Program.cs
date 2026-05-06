@@ -70,6 +70,28 @@ app.MapGet("/", context =>
 
 
 
+
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        db.Database.ExecuteSqlRaw(@"
+            ALTER TABLE ""Categories""
+            ADD COLUMN IF NOT EXISTS ""ParentId"" INT NULL REFERENCES ""Categories""(""Id"") ON DELETE SET NULL;
+        ");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Categories ParentId error: " + ex.Message);
+}
+
+
+
+
+
 try
 {
     using (var scope = app.Services.CreateScope())
