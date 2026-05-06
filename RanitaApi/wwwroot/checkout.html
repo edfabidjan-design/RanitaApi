@@ -357,24 +357,22 @@
             }
         }
 
-        @media screen and (max-width: 600px) {
+        @media (max-width: 600px) {
             .payment-option {
-                display: grid !important;
-                grid-template-columns: 22px 1fr auto !important;
-                align-items: center !important;
-                padding: 10px 12px !important;
-                gap: 8px !important;
+                flex-wrap: wrap !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                max-width: 100% !important;
             }
 
                 .payment-option label {
-                    font-size: 13px !important;
-                    white-space: normal !important;
+                    flex: 1 1 auto !important;
+                    min-width: 0 !important;
+                    max-width: calc(100% - 80px) !important;
                     word-break: break-word !important;
-                }
-
-                .payment-option .badge-soon {
-                    font-size: 10px !important;
-                    white-space: nowrap !important;
+                    white-space: normal !important;
+                    overflow: hidden !important;
                 }
         }
 
