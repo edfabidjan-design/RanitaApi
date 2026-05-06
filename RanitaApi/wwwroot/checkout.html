@@ -416,37 +416,14 @@
                 <input type="tel" id="customerPhone" placeholder="Téléphone" required>
 
 
-                <select id="customerZone" required onchange="updateZone()">
-                    <option value="">-- Choisir votre zone de livraison --</option>
-                    <optgroup label="🏙️ Abidjan — Quartiers">
-                        <option value="Plateau|1000">Plateau — 1 000 FCFA</option>
-                        <option value="Cocody|1500">Cocody — 1 500 FCFA</option>
-                        <option value="Marcory|1500">Marcory — 1 500 FCFA</option>
-                        <option value="Treichville|1000">Treichville — 1 000 FCFA</option>
-                        <option value="Adjamé|1000">Adjamé — 1 000 FCFA</option>
-                        <option value="Yopougon|2000">Yopougon — 2 000 FCFA</option>
-                        <option value="Abobo|2500">Abobo — 2 500 FCFA</option>
-                        <option value="Koumassi|1500">Koumassi — 1 500 FCFA</option>
-                        <option value="Port-Bouët|2000">Port-Bouët — 2 000 FCFA</option>
-                        <option value="Bingerville|2500">Bingerville — 2 500 FCFA</option>
-                        <option value="Riviera|1500">Riviera — 1 500 FCFA</option>
-                        <option value="Angré|2000">Angré — 2 000 FCFA</option>
-                        <option value="Songon|3000">Songon — 3 000 FCFA</option>
-                        <option value="Anyama|3000">Anyama — 3 000 FCFA</option>
-                    </optgroup>
-                    <optgroup label="🌍 Autres villes">
-                        <option value="Bouaké|5000">Bouaké — 5 000 FCFA</option>
-                        <option value="Yamoussoukro|5000">Yamoussoukro — 5 000 FCFA</option>
-                        <option value="San Pedro|7000">San Pedro — 7 000 FCFA</option>
-                        <option value="Daloa|6000">Daloa — 6 000 FCFA</option>
-                        <option value="Korhogo|7000">Korhogo — 7 000 FCFA</option>
-                        <option value="Man|7000">Man — 7 000 FCFA</option>
-                        <option value="Abengourou|5000">Abengourou — 5 000 FCFA</option>
-                        <option value="Divo|5000">Divo — 5 000 FCFA</option>
-                        <option value="Gagnoa|6000">Gagnoa — 6 000 FCFA</option>
-                    </optgroup>
-                </select>
-                <input type="text" id="customerAddress" placeholder="Adresse précise (rue, quartier...)" required>
+                <div style="position:relative; margin-bottom:14px;">
+                    <input type="text" id="customerZoneInput" placeholder="🔍 Rechercher votre ville ou quartier..."
+                           autocomplete="off" oninput="filterZones()" onfocus="filterZones()" required
+                           style="width:100%;height:50px;padding:0 14px;border:1px solid #d1d5db;border-radius:12px;background:#f9fafb;font-size:15px;box-sizing:border-box;">
+                    <input type="hidden" id="customerZone">
+                    <div id="zoneDropdown" style="display:none;position:absolute;top:52px;left:0;right:0;background:white;border:1px solid #d1d5db;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);z-index:999;max-height:250px;overflow-y:auto;"></div>
+                </div>
+                <input type="text" id="customerAddress" placeholder="Adresse précise (rue, numéro...)" required>
 
 
 
@@ -521,6 +498,73 @@
             SHIPPING_FEE = parseInt(zone.split("|")[1]);
             updateTotals();
         }
+
+
+        const zones = [
+            // Abidjan
+            { name: "Plateau", fee: 1000, group: "Abidjan" },
+            { name: "Cocody", fee: 1500, group: "Abidjan" },
+            { name: "Marcory", fee: 1500, group: "Abidjan" },
+            { name: "Treichville", fee: 1000, group: "Abidjan" },
+            { name: "Adjamé", fee: 1000, group: "Abidjan" },
+            { name: "Yopougon", fee: 2000, group: "Abidjan" },
+            { name: "Abobo", fee: 2500, group: "Abidjan" },
+            { name: "Koumassi", fee: 1500, group: "Abidjan" },
+            { name: "Port-Bouët", fee: 2000, group: "Abidjan" },
+            { name: "Bingerville", fee: 2500, group: "Abidjan" },
+            { name: "Riviera", fee: 1500, group: "Abidjan" },
+            { name: "Angré", fee: 2000, group: "Abidjan" },
+            { name: "Songon", fee: 3000, group: "Abidjan" },
+            { name: "Anyama", fee: 3000, group: "Abidjan" },
+            // Autres villes
+            { name: "Bouaké", fee: 5000, group: "Autres villes" },
+            { name: "Yamoussoukro", fee: 5000, group: "Autres villes" },
+            { name: "San Pedro", fee: 7000, group: "Autres villes" },
+            { name: "Daloa", fee: 6000, group: "Autres villes" },
+            { name: "Korhogo", fee: 7000, group: "Autres villes" },
+            { name: "Man", fee: 7000, group: "Autres villes" },
+            { name: "Abengourou", fee: 5000, group: "Autres villes" },
+            { name: "Divo", fee: 5000, group: "Autres villes" },
+            { name: "Gagnoa", fee: 6000, group: "Autres villes" },
+        ];
+
+        function filterZones() {
+            const input = document.getElementById("customerZoneInput").value.toLowerCase();
+            const dropdown = document.getElementById("zoneDropdown");
+            const filtered = zones.filter(z => z.name.toLowerCase().includes(input));
+
+            if (filtered.length === 0) {
+                dropdown.style.display = "none";
+                return;
+            }
+
+            dropdown.innerHTML = filtered.map(z => `
+        <div onclick="selectZone('${z.name}', ${z.fee})" 
+             style="padding:12px 16px;cursor:pointer;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center;"
+             onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+            <span style="font-weight:600;color:#111827;">${z.name}</span>
+            <span style="font-size:12px;color:#10b981;font-weight:700;">${z.fee.toLocaleString()} FCFA</span>
+        </div>
+    `).join("");
+
+            dropdown.style.display = "block";
+        }
+
+        function selectZone(name, fee) {
+            document.getElementById("customerZoneInput").value = name;
+            document.getElementById("customerZone").value = name + "|" + fee;
+            document.getElementById("zoneDropdown").style.display = "none";
+            SHIPPING_FEE = fee;
+            updateTotals();
+        }
+
+        // Ferme le dropdown si on clique ailleurs
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest("#customerZoneInput") && !e.target.closest("#zoneDropdown")) {
+                document.getElementById("zoneDropdown").style.display = "none";
+            }
+        });
+
 
         function updateTotals() {
             const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
