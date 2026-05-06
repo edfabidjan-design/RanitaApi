@@ -516,7 +516,7 @@
             formData.append("Stock", document.getElementById("productStock").value);
             formData.append("IsActive", document.getElementById("productIsActive").checked);
             formData.append("Slug", document.getElementById("productSlug").value);
-            formData.append("MetaDescription", document.getElementById("productMetaDescription").value);
+            formData.append("MetaDescription", document.getElementById("productMetaDescription").value || document.getElementById("productShortDescription").value.substring(0, 160) || "");
             formData.append("CategoryId", document.getElementById("categoryId").value);
             formData.append("Attributes", JSON.stringify(attributes));
             formData.append("Sku", document.getElementById("productSku").value);
@@ -559,6 +559,14 @@
                     .replace(/[\u0300-\u036f]/g, "");
                 const random = Math.floor(1000 + Math.random() * 9000);
                 document.getElementById("productSku").value = `RAN-${prefix}-${random}`;
+            }
+        });
+
+        document.getElementById("productShortDescription").addEventListener("input", function () {
+            const meta = document.getElementById("productMetaDescription");
+            // Auto-remplir seulement si vide
+            if (!meta.value) {
+                meta.value = this.value.substring(0, 160);
             }
         });
 
