@@ -414,7 +414,42 @@
             <form id="checkoutForm">
                 <input type="text" id="customerName" placeholder="Nom complet" required>
                 <input type="tel" id="customerPhone" placeholder="Téléphone" required>
-                <input type="text" id="customerAddress" placeholder="Adresse de livraison" required>
+
+
+                <select id="customerZone" required onchange="updateZone()">
+                    <option value="">-- Choisir votre zone de livraison --</option>
+                    <optgroup label="🏙️ Abidjan — Quartiers">
+                        <option value="Plateau|1000">Plateau — 1 000 FCFA</option>
+                        <option value="Cocody|1500">Cocody — 1 500 FCFA</option>
+                        <option value="Marcory|1500">Marcory — 1 500 FCFA</option>
+                        <option value="Treichville|1000">Treichville — 1 000 FCFA</option>
+                        <option value="Adjamé|1000">Adjamé — 1 000 FCFA</option>
+                        <option value="Yopougon|2000">Yopougon — 2 000 FCFA</option>
+                        <option value="Abobo|2500">Abobo — 2 500 FCFA</option>
+                        <option value="Koumassi|1500">Koumassi — 1 500 FCFA</option>
+                        <option value="Port-Bouët|2000">Port-Bouët — 2 000 FCFA</option>
+                        <option value="Bingerville|2500">Bingerville — 2 500 FCFA</option>
+                        <option value="Riviera|1500">Riviera — 1 500 FCFA</option>
+                        <option value="Angré|2000">Angré — 2 000 FCFA</option>
+                        <option value="Songon|3000">Songon — 3 000 FCFA</option>
+                        <option value="Anyama|3000">Anyama — 3 000 FCFA</option>
+                    </optgroup>
+                    <optgroup label="🌍 Autres villes">
+                        <option value="Bouaké|5000">Bouaké — 5 000 FCFA</option>
+                        <option value="Yamoussoukro|5000">Yamoussoukro — 5 000 FCFA</option>
+                        <option value="San Pedro|7000">San Pedro — 7 000 FCFA</option>
+                        <option value="Daloa|6000">Daloa — 6 000 FCFA</option>
+                        <option value="Korhogo|7000">Korhogo — 7 000 FCFA</option>
+                        <option value="Man|7000">Man — 7 000 FCFA</option>
+                        <option value="Abengourou|5000">Abengourou — 5 000 FCFA</option>
+                        <option value="Divo|5000">Divo — 5 000 FCFA</option>
+                        <option value="Gagnoa|6000">Gagnoa — 6 000 FCFA</option>
+                    </optgroup>
+                </select>
+                <input type="text" id="customerAddress" placeholder="Adresse précise (rue, quartier...)" required>
+
+
+
 
                 <span class="payment-label">Mode de paiement</span>
                 <div class="payment-options" style="width:100%;box-sizing:border-box;overflow:hidden;">
@@ -465,7 +500,8 @@
 
     <script>
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-        const SHIPPING_FEE = 1500;
+        let SHIPPING_FEE = 0;
+
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const client = JSON.parse(localStorage.getItem("client")) || null;
 
@@ -477,6 +513,13 @@
             if (client.name) document.getElementById("customerName").value = client.name;
             if (client.phone) document.getElementById("customerPhone").value = client.phone;
             if (client.address) document.getElementById("customerAddress").value = client.address;
+        }
+
+        function updateZone() {
+            const zone = document.getElementById("customerZone").value;
+            if (!zone) return;
+            SHIPPING_FEE = parseInt(zone.split("|")[1]);
+            updateTotals();
         }
 
         function updateTotals() {
@@ -492,13 +535,17 @@
             e.preventDefault();
             if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
             if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
+            if (SHIPPING_FEE === 0) { alert("Veuillez choisir votre zone de livraison."); return; }
 
+            const zoneValue = document.getElementById("customerZone").value;
+            const zoneName = zoneValue ? zoneValue.split("|")[0] : "";
             const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+
             const order = {
                 clientId: client.id || null,
                 customerName: document.getElementById("customerName").value,
                 customerPhone: document.getElementById("customerPhone").value,
-                customerAddress: document.getElementById("customerAddress").value,
+                customerAddress: zoneName + " — " + document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
                 shippingFee: SHIPPING_FEE,
                 items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
