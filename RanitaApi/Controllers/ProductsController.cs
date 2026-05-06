@@ -132,6 +132,27 @@ namespace RanitaApi.Controllers
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
+            // Sauvegarder les variantes
+            var variantsJson = Request.Form["Variants"].ToString();
+            if (!string.IsNullOrEmpty(variantsJson))
+            {
+                var variants = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariant>>(variantsJson);
+                if (variants != null)
+                {
+                    // Supprimer les anciennes variantes
+                    var old = _context.ProductVariants.Where(v => v.ProductId == product.Id);
+                    _context.ProductVariants.RemoveRange(old);
+
+                    // Ajouter les nouvelles
+                    foreach (var v in variants)
+                    {
+                        v.ProductId = product.Id;
+                        _context.ProductVariants.Add(v);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             return Ok(product);
         }
 
@@ -192,6 +213,28 @@ namespace RanitaApi.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            // Sauvegarder les variantes
+            var variantsJson = Request.Form["Variants"].ToString();
+            if (!string.IsNullOrEmpty(variantsJson))
+            {
+                var variants = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariant>>(variantsJson);
+                if (variants != null)
+                {
+                    // Supprimer les anciennes variantes
+                    var old = _context.ProductVariants.Where(v => v.ProductId == product.Id);
+                    _context.ProductVariants.RemoveRange(old);
+
+                    // Ajouter les nouvelles
+                    foreach (var v in variants)
+                    {
+                        v.ProductId = product.Id;
+                        _context.ProductVariants.Add(v);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+            }
+
 
             return Ok(product);
         }

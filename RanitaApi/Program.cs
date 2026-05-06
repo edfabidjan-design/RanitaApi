@@ -81,6 +81,28 @@ try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS ""ProductVariants"" (
+                ""Id"" SERIAL PRIMARY KEY,
+                ""ProductId"" INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
+                ""Combination"" TEXT NOT NULL DEFAULT '',
+                ""Stock"" INT NOT NULL DEFAULT 0,
+                ""Price"" NUMERIC(18,2) NULL
+            );
+        ");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("ProductVariants error: " + ex.Message);
+}
+
+
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.ExecuteSqlRaw(@"
             ALTER TABLE ""Products""
             ADD COLUMN IF NOT EXISTS ""Images"" TEXT NOT NULL DEFAULT '[]';
         ");

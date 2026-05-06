@@ -17,6 +17,7 @@ namespace RanitaApi.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<CategoryAttribute> CategoryAttributes { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
