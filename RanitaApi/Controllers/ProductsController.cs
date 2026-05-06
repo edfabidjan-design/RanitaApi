@@ -262,10 +262,28 @@ namespace RanitaApi.Controllers
                 var conn = _context.Database.GetDbConnection();
                 conn.Open();
                 var cmd = conn.CreateCommand();
-                cmd.CommandText = "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Attributes\" TEXT NOT NULL DEFAULT '{}';";
-                cmd.ExecuteNonQuery();
+                var columns = new[]
+                {
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Attributes\" TEXT NOT NULL DEFAULT '{}'",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"OldPrice\" NUMERIC(18,2) NULL",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"ShortDescription\" TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"IsActive\" BOOLEAN NOT NULL DEFAULT TRUE",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Brand\" TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Slug\" TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"MetaDescription\" TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Sku\" TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Images\" TEXT NOT NULL DEFAULT '[]'",
+            "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"ImageUrl\" TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE \"Orders\" ADD COLUMN IF NOT EXISTS \"ClientId\" INT NULL",
+            "ALTER TABLE \"Categories\" ADD COLUMN IF NOT EXISTS \"ParentId\" INT NULL"
+        };
+                foreach (var sql in columns)
+                {
+                    cmd.CommandText = sql;
+                    cmd.ExecuteNonQuery();
+                }
                 conn.Close();
-                return Ok("Attributes column added OK");
+                return Ok("Toutes les colonnes OK");
             }
             catch (Exception ex)
             {
