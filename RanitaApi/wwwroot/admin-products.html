@@ -476,6 +476,11 @@
                 }
         </div>
     `).join('');
+            // Afficher variantes si attributs select
+            const hasSelectAttr = attrs.some(a => a.attributeType === 'select');
+            document.getElementById("variantsSection").style.display = hasSelectAttr ? "block" : "none";
+            document.getElementById("variantsList").innerHTML = "";
+            window._variantLabels = null;
         }
 
         function updateAttrHidden(attrName) {
@@ -675,6 +680,9 @@
             newImageFiles = [];
             renderGallery();
 
+            document.getElementById("variantsSection").style.display = "none";
+            document.getElementById("variantsList").innerHTML = "";
+            window._variantLabels = null;
         }
 
         document.getElementById("resetBtn").addEventListener("click", resetForm);
