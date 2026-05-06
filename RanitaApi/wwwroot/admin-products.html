@@ -91,12 +91,22 @@
 
         async function loadCategories() {
             const res = await fetch(categoriesApi);
-            const categories = await res.json();
+            const parents = await res.json();
 
             categoryId.innerHTML = `<option value="">-- Choisir une catégorie --</option>`;
 
-            categories.forEach(c => {
-                categoryId.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            parents.forEach(parent => {
+                if (parent.children && parent.children.length > 0) {
+                    // Parent avec enfants → groupe
+                    categoryId.innerHTML += `<optgroup label="📁 ${parent.name}">`;
+                    parent.children.forEach(child => {
+                        categoryId.innerHTML += `<option value="${child.id}">${child.name}</option>`;
+                    });
+                    categoryId.innerHTML += `</optgroup>`;
+                } else {
+                    // Parent sans enfants → sélectionnable directement
+                    categoryId.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
+                }
             });
         }
 
