@@ -254,7 +254,24 @@ namespace RanitaApi.Controllers
         }
 
 
-
+        [HttpGet("run-migrations")]
+        public IActionResult RunMigrations()
+        {
+            try
+            {
+                var conn = _context.Database.GetDbConnection();
+                conn.Open();
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Attributes\" TEXT NOT NULL DEFAULT '{}';";
+                cmd.ExecuteNonQuery();
+                conn.Close();
+                return Ok("Attributes column added OK");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Erreur: " + ex.Message);
+            }
+        }
 
     }
 
