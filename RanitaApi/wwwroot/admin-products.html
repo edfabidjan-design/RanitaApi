@@ -165,6 +165,7 @@
                 </div>
             </div>
 
+          
             <!-- Prix & Stock -->
             <div class="form-section">
                 <h3>💰 Prix & Stock</h3>
@@ -178,10 +179,23 @@
                         <input type="number" id="productOldPrice" placeholder="Ex: 20000">
                     </div>
                     <div>
-                        <label>Stock *</label>
+                        <label>Stock global * (si pas de variantes)</label>
                         <input type="number" id="productStock" placeholder="Ex: 50" required>
                     </div>
                 </div>
+            </div>
+
+            <!-- Variantes -->
+            <div class="form-section" id="variantsSection" style="display:none;">
+                <h3>🔀 Variantes & Stock</h3>
+                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">
+                    Choisissez les attributs ci-dessous puis cliquez sur "Générer les variantes"
+                </p>
+                <button type="button" onclick="generateVariants()"
+                        style="background:#3b82f6;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:16px;">
+                    🔀 Générer les variantes
+                </button>
+                <div id="variantsList"></div>
             </div>
 
             <!-- Images -->
@@ -335,6 +349,68 @@
             const img = productImages.splice(index, 1)[0];
             productImages.unshift(img);
             renderGallery();
+        }
+
+
+        function generateVariants() {
+            const attrFields = document.querySelectorAll("[id^='attr_']");
+            const selectedAttrs = {};
+
+            attrFields.forEach(el => {
+                const key = el.id.replace("attr_", "");
+                if (el.value) {
+                    selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
+                }
+            });
+
+            const keys = Object.keys(selectedAttrs);
+            if (keys.length === 0) {
+                alert("Sélectionnez d'abord des attributs !");
+                return;
+            }
+
+            // Générer toutes les combinaisons
+            const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
+            const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
+
+            const variantsList = document.getElementById("variantsList");
+            variantsList.innerHTML = `
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="background:#f9fafb;">
+                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th>
+                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th>
+                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Prix spécifique (optionnel)</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${labels.map((label, i) => `
+                    <tr>
+                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td>
+                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
+                            <input type="number" id="variant_stock_${i}" placeholder="0" min="0"
+                                   style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                        </td>
+                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
+                            <input type="number" id="variant_price_${i}" placeholder="Prix de base"
+                                   style="width:120px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+            // Stocker les labels pour le submit
+            window._variantLabels = labels;
+            document.getElementById("variantsSection").style.display = "block";
+            document.getElementById("productStock").value = "0";
+        }
+
+        function getCombinations(arrays) {
+            return arrays.reduce((acc, curr) =>
+                acc.flatMap(a => curr.map(b => [...a, b])), [[]]
+            );
         }
 
 
@@ -540,6 +616,16 @@
             // Image principale = première
             if (productImages.length > 0) {
                 formData.append("ImageUrl", productImages[0]);
+            }
+
+            // Variantes
+            if (window._variantLabels) {
+                const variants = window._variantLabels.map((label, i) => ({
+                    combination: label,
+                    stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0),
+                    price: parseFloat(document.getElementById(`variant_price_${i}`)?.value || 0) || null
+                }));
+                formData.append("Variants", JSON.stringify(variants));
             }
 
             const id = document.getElementById("productId").value;
