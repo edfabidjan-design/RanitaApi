@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-
 builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -28,18 +27,16 @@ builder.Services.AddCors(options =>
             "http://ranita-shop.com",
             "http://www.ranita-shop.com"
         )
-                    .AllowAnyHeader()
+            .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
-
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
-
 
 var app = builder.Build();
 
@@ -61,263 +58,213 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
-
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/index.html");
     return Task.CompletedTask;
 });
 
+// ── ProductVariants table ──────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""ProductVariants"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""ProductId"" INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
+            ""Combination"" TEXT NOT NULL DEFAULT '',
+            ""Stock"" INT NOT NULL DEFAULT 0,
+            ""Price"" NUMERIC(18,2) NULL
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("ProductVariants error: " + ex.Message); }
 
-
-
-
-
-
-
+// ── Products columns (chaque ALTER séparé pour éviter l'échec silencieux) ──
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Images"" TEXT NOT NULL DEFAULT '[]';");
+}
+catch (Exception ex) { Console.WriteLine("Products.Images error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.ExecuteSqlRaw(@"
-            CREATE TABLE IF NOT EXISTS ""ProductVariants"" (
-                ""Id"" SERIAL PRIMARY KEY,
-                ""ProductId"" INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
-                ""Combination"" TEXT NOT NULL DEFAULT '',
-                ""Stock"" INT NOT NULL DEFAULT 0,
-                ""Price"" NUMERIC(18,2) NULL
-            );
-        ");
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""ShortDescription"" TEXT NOT NULL DEFAULT '';");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("ProductVariants error: " + ex.Message);
-}
-
+catch (Exception ex) { Console.WriteLine("Products.ShortDescription error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.ExecuteSqlRaw(@"
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""Images"" TEXT NOT NULL DEFAULT '[]';
-        ");
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""OldPrice"" NUMERIC(18,2) NULL;");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("Products Images column error: " + ex.Message);
-}
-
-
-
+catch (Exception ex) { Console.WriteLine("Products.OldPrice error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        db.Database.ExecuteSqlRaw(@"
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""ShortDescription"" TEXT NOT NULL DEFAULT '';
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""OldPrice"" NUMERIC(18,2) NULL;
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE;
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""Brand"" TEXT NOT NULL DEFAULT '';
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""Slug"" TEXT NOT NULL DEFAULT '';
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""MetaDescription"" TEXT NOT NULL DEFAULT '';
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""Attributes"" TEXT NOT NULL DEFAULT '{}';
-            ALTER TABLE ""Products""
-            ADD COLUMN IF NOT EXISTS ""Sku"" TEXT NOT NULL DEFAULT '';
-        ");
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE;");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("Products columns error: " + ex.Message);
-}
-
-
+catch (Exception ex) { Console.WriteLine("Products.IsActive error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        db.Database.ExecuteSqlRaw(@"
-            CREATE TABLE IF NOT EXISTS ""CategoryAttributes"" (
-                ""Id"" SERIAL PRIMARY KEY,
-                ""CategoryId"" INT NOT NULL REFERENCES ""Categories""(""Id"") ON DELETE CASCADE,
-                ""AttributeName"" TEXT NOT NULL DEFAULT '',
-                ""AttributeType"" TEXT NOT NULL DEFAULT 'text',
-                ""AttributeOptions"" TEXT NOT NULL DEFAULT ''
-            );
-        ");
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Brand"" TEXT NOT NULL DEFAULT '';");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("CategoryAttributes table error: " + ex.Message);
-}
-
-
-
-
+catch (Exception ex) { Console.WriteLine("Products.Brand error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        db.Database.ExecuteSqlRaw(@"
-            ALTER TABLE ""Categories""
-            ADD COLUMN IF NOT EXISTS ""ParentId"" INT NULL REFERENCES ""Categories""(""Id"") ON DELETE SET NULL;
-        ");
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Slug"" TEXT NOT NULL DEFAULT '';");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("Categories ParentId error: " + ex.Message);
-}
-
-
-
-
+catch (Exception ex) { Console.WriteLine("Products.Slug error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        db.Database.ExecuteSqlRaw("""
-            CREATE TABLE IF NOT EXISTS "Users" (
-                "Id" SERIAL PRIMARY KEY,
-                "Username" text NOT NULL,
-                "Password" text NOT NULL
-            );
-        """);
-
-        if (!db.Users.Any())
-        {
-            db.Users.Add(new User
-            {
-                Username = "admin",
-                Password = "1234"
-            });
-
-            db.SaveChanges();
-        }
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""MetaDescription"" TEXT NOT NULL DEFAULT '';");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("User seed error: " + ex.Message);
-}
-
-
+catch (Exception ex) { Console.WriteLine("Products.MetaDescription error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        db.Database.ExecuteSqlRaw("""
-            ALTER TABLE "Products"
-            ADD COLUMN IF NOT EXISTS "ImageUrl" text NOT NULL DEFAULT '';
-        """);
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Attributes"" TEXT NOT NULL DEFAULT '{}';");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("DB fix error: " + ex.Message);
-}
-
+catch (Exception ex) { Console.WriteLine("Products.Attributes error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        db.Database.ExecuteSqlRaw(@"
-            CREATE TABLE IF NOT EXISTS ""Orders"" (
-                ""Id"" SERIAL PRIMARY KEY,
-                ""CustomerName"" TEXT,
-                ""CustomerPhone"" TEXT,
-                ""CustomerAddress"" TEXT,
-                ""PaymentMethod"" TEXT,
-                ""Total"" NUMERIC(18,2),
-                ""Status"" TEXT,
-                ""CreatedAt"" TIMESTAMP
-            );
-        ");
-
-        db.Database.ExecuteSqlRaw(@"
-            CREATE TABLE IF NOT EXISTS ""OrderItems"" (
-                ""Id"" SERIAL PRIMARY KEY,
-                ""OrderId"" INT REFERENCES ""Orders""(""Id"") ON DELETE CASCADE,
-                ""ProductId"" INT,
-                ""ProductName"" TEXT,
-                ""Price"" NUMERIC(18,2),
-                ""Quantity"" INT,
-                ""ImageUrl"" TEXT
-            );
-        ");
-
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Sku"" TEXT NOT NULL DEFAULT '';");
 }
-catch (Exception ex)
-{
-    Console.WriteLine("Orders table error: " + ex.Message);
-}
-
+catch (Exception ex) { Console.WriteLine("Products.Sku error: " + ex.Message); }
 
 try
 {
-    using (var scope = app.Services.CreateScope())
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""ImageUrl"" TEXT NOT NULL DEFAULT '';");
+}
+catch (Exception ex) { Console.WriteLine("Products.ImageUrl error: " + ex.Message); }
+
+// ── CategoryAttributes table ───────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""CategoryAttributes"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""CategoryId"" INT NOT NULL REFERENCES ""Categories""(""Id"") ON DELETE CASCADE,
+            ""AttributeName"" TEXT NOT NULL DEFAULT '',
+            ""AttributeType"" TEXT NOT NULL DEFAULT 'text',
+            ""AttributeOptions"" TEXT NOT NULL DEFAULT ''
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("CategoryAttributes error: " + ex.Message); }
+
+// ── Categories.ParentId ────────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Categories"" ADD COLUMN IF NOT EXISTS ""ParentId"" INT NULL REFERENCES ""Categories""(""Id"") ON DELETE SET NULL;");
+}
+catch (Exception ex) { Console.WriteLine("Categories.ParentId error: " + ex.Message); }
+
+// ── Users table + seed ─────────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw("""
+        CREATE TABLE IF NOT EXISTS "Users" (
+            "Id" SERIAL PRIMARY KEY,
+            "Username" text NOT NULL,
+            "Password" text NOT NULL
+        );
+    """);
+    if (!db.Users.Any())
     {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        db.Database.ExecuteSqlRaw(@"
-            CREATE TABLE IF NOT EXISTS ""Clients"" (
-                ""Id"" SERIAL PRIMARY KEY,
-                ""FullName"" TEXT NOT NULL,
-                ""Email"" TEXT NOT NULL UNIQUE,
-                ""Phone"" TEXT,
-                ""PasswordHash"" TEXT NOT NULL,
-                ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW(),
-                ""ResetCode"" TEXT,
-                ""ResetCodeExpiresAt"" TIMESTAMP
-            );
-        ");
-
-        db.Database.ExecuteSqlRaw(@"
-            ALTER TABLE ""Orders""
-            ADD COLUMN IF NOT EXISTS ""ClientId"" INT NULL;
-        ");
+        db.Users.Add(new User { Username = "admin", Password = "1234" });
+        db.SaveChanges();
     }
 }
-catch (Exception ex)
+catch (Exception ex) { Console.WriteLine("Users error: " + ex.Message); }
+
+// ── Orders + OrderItems tables ─────────────────────────────────────────────
+try
 {
-    Console.WriteLine("Clients table error: " + ex.Message);
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""Orders"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""CustomerName"" TEXT,
+            ""CustomerPhone"" TEXT,
+            ""CustomerAddress"" TEXT,
+            ""PaymentMethod"" TEXT,
+            ""Total"" NUMERIC(18,2),
+            ""Status"" TEXT,
+            ""CreatedAt"" TIMESTAMP
+        );
+    ");
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""OrderItems"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""OrderId"" INT REFERENCES ""Orders""(""Id"") ON DELETE CASCADE,
+            ""ProductId"" INT,
+            ""ProductName"" TEXT,
+            ""Price"" NUMERIC(18,2),
+            ""Quantity"" INT,
+            ""ImageUrl"" TEXT
+        );
+    ");
 }
+catch (Exception ex) { Console.WriteLine("Orders error: " + ex.Message); }
 
+// ── Clients table + Orders.ClientId ───────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""Clients"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""FullName"" TEXT NOT NULL,
+            ""Email"" TEXT NOT NULL UNIQUE,
+            ""Phone"" TEXT,
+            ""PasswordHash"" TEXT NOT NULL,
+            ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW(),
+            ""ResetCode"" TEXT,
+            ""ResetCodeExpiresAt"" TIMESTAMP
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("Clients error: " + ex.Message); }
 
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""ClientId"" INT NULL;");
+}
+catch (Exception ex) { Console.WriteLine("Orders.ClientId error: " + ex.Message); }
 
 app.Run();
