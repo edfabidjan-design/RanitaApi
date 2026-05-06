@@ -135,8 +135,9 @@
                         <input type="text" id="productName" placeholder="Ex: Chemise Homme Slim" required>
                     </div>
                     <div>
-                        <label>SKU (Code unique) *</label>
-                        <input type="text" id="productSku" placeholder="Ex: RAN-CHM-001" required>
+                        <label>SKU (Code unique) — généré automatiquement</label>
+                        <input type="text" id="productSku" placeholder="Ex: RAN-CHM-001" required readonly
+                               style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;">
                     </div>
                     <div>
                         <label>Marque</label>
@@ -380,19 +381,31 @@
 
             section.style.display = "block";
             fields.innerHTML = attrs.map(a => `
-                <div class="attr-field">
-                    <label>${a.attributeName}</label>
-                    ${a.attributeType === 'select'
-                    ? `<select id="attr_${a.attributeName}">
-                            <option value="">-- Choisir --</option>
-                            ${a.attributeOptions.split(',').map(o => `<option value="${o.trim()}">${o.trim()}</option>`).join('')}
-                           </select>`
+        <div class="attr-field full">
+            <label>${a.attributeName}</label>
+            ${a.attributeType === 'select'
+                    ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+                    ${a.attributeOptions.split(',').map(o => `
+                        <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;">
+                            <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}"
+                                   onchange="updateAttrHidden('${a.attributeName}')">
+                            <span>${o.trim()}</span>
+                        </label>
+                    `).join('')}
+                    <input type="hidden" id="attr_${a.attributeName}" value="">
+                   </div>`
                     : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}"
-                                  id="attr_${a.attributeName}"
-                                  placeholder="${a.attributeName}">`
+                          id="attr_${a.attributeName}"
+                          placeholder="${a.attributeName}">`
                 }
-                </div>
-            `).join('');
+        </div>
+    `).join('');
+        }
+
+        function updateAttrHidden(attrName) {
+            const checkboxes = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
+            const values = Array.from(checkboxes).map(cb => cb.value);
+            document.getElementById(`attr_${attrName}`).value = values.join(',');
         }
 
         async function loadProducts() {
@@ -442,15 +455,27 @@
             await loadAttributeFields();
 
             // Remplir les attributs
+
             if (p.attributes && p.attributes !== "{}") {
                 try {
                     const attrs = JSON.parse(p.attributes);
                     Object.keys(attrs).forEach(key => {
-                        const el = document.getElementById(`attr_${key}`);
-                        if (el) el.value = attrs[key];
+                        const hidden = document.getElementById(`attr_${key}`);
+                        if (hidden) {
+                            hidden.value = attrs[key];
+                            // Cocher les bonnes cases
+                            const values = attrs[key].split(',');
+                            values.forEach(val => {
+                                const cb = document.querySelector(`input[name="attr_${key}"][value="${val.trim()}"]`);
+                                if (cb) cb.checked = true;
+                            });
+                        }
                     });
                 } catch (e) { }
             }
+
+
+
 
             // Charger les images existantes
             productImages = [];
