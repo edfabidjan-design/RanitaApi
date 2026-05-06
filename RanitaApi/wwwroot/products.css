@@ -908,3 +908,13 @@ body {
             font-size: 10px !important;
         }
 }
+
+@media (max-width: 600px) {
+    .checkout-page .payment-option,
+    .checkout-wrapper .payment-option {
+        display: grid !important;
+        grid-template-columns: 22px 1fr auto !important;
+        gap: 8px !important;
+        padding: 10px 12px !important;
+    }
+}
