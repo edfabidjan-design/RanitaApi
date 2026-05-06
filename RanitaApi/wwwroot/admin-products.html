@@ -446,7 +446,10 @@
             document.getElementById("productOldPrice").value = p.oldPrice || "";
             document.getElementById("productStock").value = p.stock;
             document.getElementById("productIsActive").checked = p.isActive;
-            document.getElementById("productSlug").value = p.slug || "";
+            document.getElementById("productSlug").value = p.slug || p.name.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9\s-]/g, "")
+                .replace(/\s+/g, "-");
             document.getElementById("productMetaDescription").value = p.metaDescription || "";
             document.getElementById("categoryId").value = p.categoryId || "";
             document.getElementById("productSku").value = p.sku || "";
@@ -515,7 +518,12 @@
             formData.append("OldPrice", document.getElementById("productOldPrice").value || "");
             formData.append("Stock", document.getElementById("productStock").value);
             formData.append("IsActive", document.getElementById("productIsActive").checked);
-            formData.append("Slug", document.getElementById("productSlug").value);
+            const slugVal = document.getElementById("productSlug").value ||
+                document.getElementById("productName").value.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/[^a-z0-9\s-]/g, "")
+                    .replace(/\s+/g, "-");
+            formData.append("Slug", slugVal);
             formData.append("MetaDescription", document.getElementById("productMetaDescription").value || document.getElementById("productShortDescription").value.substring(0, 160) || "");
             formData.append("CategoryId", document.getElementById("categoryId").value);
             formData.append("Attributes", JSON.stringify(attributes));
