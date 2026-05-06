@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-          
+
             <!-- Prix & Stock -->
             <div class="form-section">
                 <h3>💰 Prix & Stock</h3>
@@ -185,18 +185,7 @@
                 </div>
             </div>
 
-            <!-- Variantes -->
-            <div class="form-section" id="variantsSection" style="display:none;">
-                <h3>🔀 Variantes & Stock</h3>
-                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">
-                    Choisissez les attributs ci-dessous puis cliquez sur "Générer les variantes"
-                </p>
-                <button type="button" onclick="generateVariants()"
-                        style="background:#3b82f6;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:16px;">
-                    🔀 Générer les variantes
-                </button>
-                <div id="variantsList"></div>
-            </div>
+
 
             <!-- Images -->
             <div class="form-section">
@@ -243,7 +232,16 @@
                 <div class="form-grid" id="attributeFields"></div>
             </div>
 
+            <!-- Variantes — après attributs -->
+            <div class="form-section" id="variantsSection" style="display:none;">
+                <h3>🔀 Variantes & Stock</h3>
+                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">Sélectionnez vos attributs ci-dessus puis cliquez sur "Générer les variantes"</p>
+                <button type="button" onclick="generateVariants()" style="background:#3b82f6;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:16px;">🔀 Générer les variantes</button>
+                <div id="variantsList"></div>
+            </div>
+
             <div class="form-actions">
+
                 <button type="submit" class="btn-save">✅ Enregistrer</button>
                 <button type="button" id="resetBtn" class="btn-reset">🔄 Réinitialiser</button>
             </div>
@@ -476,6 +474,12 @@
                 }
         </div>
     `).join('');
+
+            const hasSelectAttr = attrs.some(a => a.attributeType === 'select');
+            document.getElementById("variantsSection").style.display = hasSelectAttr ? "block" : "none";
+            document.getElementById("variantsList").innerHTML = "";
+            window._variantLabels = null;
+
         }
 
         function updateAttrHidden(attrName) {
@@ -674,6 +678,10 @@
             productImages = [];
             newImageFiles = [];
             renderGallery();
+
+            document.getElementById("variantsSection").style.display = "none";
+            document.getElementById("variantsList").innerHTML = "";
+            window._variantLabels = null;
 
         }
 
