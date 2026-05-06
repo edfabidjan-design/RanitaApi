@@ -73,6 +73,39 @@ app.MapGet("/", context =>
 
 
 
+
+
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        db.Database.ExecuteSqlRaw(@"
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""ShortDescription"" TEXT NOT NULL DEFAULT '';
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""OldPrice"" NUMERIC(18,2) NULL;
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE;
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""Brand"" TEXT NOT NULL DEFAULT '';
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""Slug"" TEXT NOT NULL DEFAULT '';
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""MetaDescription"" TEXT NOT NULL DEFAULT '';
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""Attributes"" TEXT NOT NULL DEFAULT '{}';
+        ");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Products columns error: " + ex.Message);
+}
+
+
+
 try
 {
     using (var scope = app.Services.CreateScope())
