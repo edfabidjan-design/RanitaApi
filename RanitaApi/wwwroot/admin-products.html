@@ -183,17 +183,26 @@
                 </div>
             </div>
 
-            <!-- Image -->
+            <!-- Images -->
             <div class="form-section">
-                <h3>🖼️ Image</h3>
-                <div class="form-grid">
+                <h3>🖼️ Images (max 5 — la 1ère est l'image principale)</h3>
+                <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+
+                    <!-- Bouton ajout -->
                     <div>
-                        <label>Image du produit</label>
-                        <input type="file" id="imageFile" accept="image/*">
+                        <label style="display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:#374151;">
+                            Ajouter une image
+                        </label>
+                        <input type="file" id="imageFile" accept="image/*" onchange="previewNewImage(this)"
+                               style="padding:8px;border:1px dashed #d1d5db;border-radius:10px;background:#f9fafb;width:200px;">
                     </div>
-                    <div id="currentImageDiv" style="display:none;">
-                        <label>Image actuelle</label>
-                        <img id="currentImage" src="" width="80" style="border-radius:8px;">
+
+                    <!-- Galerie aperçu -->
+                    <div style="flex:1;">
+                        <label style="display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:#374151;">
+                            Galerie
+                        </label>
+                        <div id="imageGallery" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
                     </div>
                 </div>
             </div>
@@ -249,6 +258,85 @@
     </div>
 
     <script>
+
+
+        let productImages = []; // URLs existantes
+        let newImageFiles = []; // Nouveaux fichiers à uploader
+
+        function previewNewImage(input) {
+            if (!input.files || !input.files[0]) return;
+
+            if (productImages.length + newImageFiles.length >= 5) {
+                alert("Maximum 5 images autorisées !");
+                input.value = "";
+                return;
+            }
+
+            const file = input.files[0];
+            newImageFiles.push(file);
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                renderGallery();
+            };
+            reader.readAsDataURL(file);
+            input.value = "";
+        }
+
+        function renderGallery() {
+            const gallery = document.getElementById("imageGallery");
+            gallery.innerHTML = "";
+
+            // Images existantes
+            productImages.forEach((url, index) => {
+                gallery.innerHTML += `
+            <div style="position:relative;width:90px;">
+                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                <button type="button" onclick="removeExistingImage(${index})"
+                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
+                ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
+            </div>
+        `;
+            });
+
+            // Nouveaux fichiers
+            newImageFiles.forEach((file, index) => {
+                const url = URL.createObjectURL(file);
+                const isMain = productImages.length === 0 && index === 0;
+                gallery.innerHTML += `
+            <div style="position:relative;width:90px;">
+                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                <button type="button" onclick="removeNewImage(${index})"
+                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
+            </div>
+        `;
+            });
+
+            // Placeholder si vide
+            if (productImages.length === 0 && newImageFiles.length === 0) {
+                gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajoutée</p>`;
+            }
+        }
+
+        function removeExistingImage(index) {
+            productImages.splice(index, 1);
+            renderGallery();
+        }
+
+        function removeNewImage(index) {
+            newImageFiles.splice(index, 1);
+            renderGallery();
+        }
+
+        function setMainImage(index) {
+            const img = productImages.splice(index, 1)[0];
+            productImages.unshift(img);
+            renderGallery();
+        }
+
+
         const token = localStorage.getItem("adminToken");
         if (!token) window.location.href = "admin-login.html";
 
@@ -350,10 +438,6 @@
             document.getElementById("categoryId").value = p.categoryId || "";
             document.getElementById("productSku").value = p.sku || "";
 
-            if (p.imageUrl) {
-                document.getElementById("currentImageDiv").style.display = "block";
-                document.getElementById("currentImage").src = p.imageUrl;
-            }
 
             await loadAttributeFields();
 
@@ -367,6 +451,15 @@
                     });
                 } catch (e) { }
             }
+
+            // Charger les images existantes
+            productImages = [];
+            newImageFiles = [];
+            try {
+                productImages = JSON.parse(p.images || "[]");
+            } catch (e) { productImages = p.imageUrl ? [p.imageUrl] : []; }
+            renderGallery();
+
 
             window.scrollTo(0, 0);
         }
@@ -403,9 +496,17 @@
             formData.append("Attributes", JSON.stringify(attributes));
             formData.append("Sku", document.getElementById("productSku").value);
 
-            const imageFile = document.getElementById("imageFile");
-            if (imageFile.files.length > 0) {
-                formData.append("image", imageFile.files[0]);
+            // Images existantes
+            formData.append("Images", JSON.stringify(productImages));
+
+            // Nouvelles images
+            newImageFiles.forEach((file) => {
+                formData.append("imageFiles", file);
+            });
+
+            // Image principale = première
+            if (productImages.length > 0) {
+                formData.append("ImageUrl", productImages[0]);
             }
 
             const id = document.getElementById("productId").value;
@@ -439,10 +540,13 @@
         function resetForm() {
             document.getElementById("productForm").reset();
             document.getElementById("productId").value = "";
-            document.getElementById("currentImageDiv").style.display = "none";
+           
             document.getElementById("attributesSection").style.display = "none";
             document.getElementById("attributeFields").innerHTML = "";
             document.getElementById("productSku").value = "";
+            productImages = [];
+            newImageFiles = [];
+            renderGallery();
 
         }
 

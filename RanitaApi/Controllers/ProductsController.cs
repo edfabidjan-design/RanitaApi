@@ -29,10 +29,19 @@ namespace RanitaApi.Controllers
                     p.Id,
                     p.Name,
                     p.Price,
+                    p.OldPrice,
                     p.Stock,
+                    p.ShortDescription,
                     p.Description,
                     p.ImageUrl,
+                    p.Images,
                     p.CategoryId,
+                    p.Brand,
+                    p.Sku,
+                    p.IsActive,
+                    p.Slug,
+                    p.MetaDescription,
+                    p.Attributes,
                     Category = p.Category == null ? null : new
                     {
                         p.Category.Id,
@@ -56,10 +65,19 @@ namespace RanitaApi.Controllers
                     p.Id,
                     p.Name,
                     p.Price,
+                    p.OldPrice,
                     p.Stock,
+                    p.ShortDescription,
                     p.Description,
                     p.ImageUrl,
+                    p.Images,
                     p.CategoryId,
+                    p.Brand,
+                    p.Sku,
+                    p.IsActive,
+                    p.Slug,
+                    p.MetaDescription,
+                    p.Attributes,
                     Category = p.Category == null ? null : new
                     {
                         p.Category.Id,
@@ -76,7 +94,7 @@ namespace RanitaApi.Controllers
 
         // ✅ CREATE
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Product product, IFormFile image)
+        public async Task<IActionResult> Create([FromForm] Product product, List<IFormFile>? imageFiles)
         {
             if (product.CategoryId == null || product.CategoryId <= 0)
                 return BadRequest("Catégorie obligatoire.");
@@ -85,23 +103,30 @@ namespace RanitaApi.Controllers
             if (!categoryExists)
                 return BadRequest("Catégorie introuvable.");
 
-            if (image != null)
+            var imageUrls = new List<string>();
+
+            if (imageFiles != null && imageFiles.Count > 0)
             {
                 var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
                 var cloudinary = new Cloudinary(cloudinaryUrl);
                 cloudinary.Api.Secure = true;
 
-                await using var stream = image.OpenReadStream();
-
-                var uploadParams = new ImageUploadParams
+                foreach (var file in imageFiles)
                 {
-                    File = new FileDescription(image.FileName, stream),
-                    Folder = "ranita-products"
-                };
+                    await using var stream = file.OpenReadStream();
+                    var uploadResult = await cloudinary.UploadAsync(new ImageUploadParams
+                    {
+                        File = new FileDescription(file.FileName, stream),
+                        Folder = "ranita-products"
+                    });
+                    imageUrls.Add(uploadResult.SecureUrl.ToString());
+                }
+            }
 
-                var uploadResult = await cloudinary.UploadAsync(uploadParams);
-
-                product.ImageUrl = uploadResult.SecureUrl.ToString();
+            if (imageUrls.Count > 0)
+            {
+                product.ImageUrl = imageUrls[0];
+                product.Images = System.Text.Json.JsonSerializer.Serialize(imageUrls);
             }
 
             _context.Products.Add(product);
@@ -112,7 +137,7 @@ namespace RanitaApi.Controllers
 
         // ✅ UPDATE
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] Product updated, IFormFile? image)
+        public async Task<IActionResult> Update(int id, [FromForm] Product updated, List<IFormFile>? imageFiles)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
@@ -120,71 +145,56 @@ namespace RanitaApi.Controllers
 
             product.Name = updated.Name;
             product.Price = updated.Price;
+            product.OldPrice = updated.OldPrice;
             product.Stock = updated.Stock;
+            product.ShortDescription = updated.ShortDescription;
             product.Description = updated.Description;
             product.CategoryId = updated.CategoryId;
+            product.Brand = updated.Brand;
+            product.IsActive = updated.IsActive;
+            product.Slug = updated.Slug;
+            product.MetaDescription = updated.MetaDescription;
+            product.Attributes = updated.Attributes;
+            product.Sku = updated.Sku;
 
-                if (image != null)
-                {
-                    var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
-                    var cloudinary = new Cloudinary(cloudinaryUrl);
-                    cloudinary.Api.Secure = true;
-
-                    await using var stream = image.OpenReadStream();
-
-                    var uploadParams = new ImageUploadParams
-                    {
-                        File = new FileDescription(image.FileName, stream),
-                        Folder = "ranita-products"
-                    };
-
-                    var uploadResult = await cloudinary.UploadAsync(uploadParams);
-
-                    product.ImageUrl = uploadResult.SecureUrl.ToString();
-                }
-            
-
-            await _context.SaveChangesAsync();
-
-            return Ok(product);
-        }
-
-
-        // ✅ UPDATE avec FormData en POST
-        [HttpPost("update/{id}")]
-        public async Task<IActionResult> UpdatePost(int id, [FromForm] Product updated, IFormFile? image)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-                return NotFound();
-
-            product.Name = updated.Name;
-            product.Price = updated.Price;
-            product.Stock = updated.Stock;
-            product.Description = updated.Description;
-            product.CategoryId = updated.CategoryId;
-
-            if (image != null)
+            // Images existantes conservées
+            var existingImages = new List<string>();
+            try
             {
-                var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                existingImages = System.Text.Json.JsonSerializer
+                    .Deserialize<List<string>>(updated.Images ?? "[]") ?? new();
+            }
+            catch { }
 
-                if (!Directory.Exists(imagesFolder))
-                    Directory.CreateDirectory(imagesFolder);
+            // Upload nouvelles images
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+                var cloudinary = new Cloudinary(cloudinaryUrl);
+                cloudinary.Api.Secure = true;
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                var filePath = Path.Combine(imagesFolder, fileName);
+                foreach (var file in imageFiles)
+                {
+                    await using var stream = file.OpenReadStream();
+                    var uploadResult = await cloudinary.UploadAsync(new ImageUploadParams
+                    {
+                        File = new FileDescription(file.FileName, stream),
+                        Folder = "ranita-products"
+                    });
+                    existingImages.Add(uploadResult.SecureUrl.ToString());
+                }
+            }
 
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await image.CopyToAsync(stream);
-
-                product.ImageUrl = "/images/" + fileName;
+            if (existingImages.Count > 0)
+            {
+                product.ImageUrl = existingImages[0];
+                product.Images = System.Text.Json.JsonSerializer.Serialize(existingImages);
             }
 
             await _context.SaveChangesAsync();
 
             return Ok(product);
         }
-
 
         // ✅ DELETE
         [HttpDelete("{id}")]

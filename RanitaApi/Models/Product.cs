@@ -20,5 +20,6 @@ namespace RanitaApi.Models
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
         public string Sku { get; set; } = "";
+        public string Images { get; set; } = "[]"; // JSON array d'URLs
     }
 }

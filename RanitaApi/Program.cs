@@ -80,6 +80,25 @@ try
     using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.ExecuteSqlRaw(@"
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""Images"" TEXT NOT NULL DEFAULT '[]';
+        ");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Products Images column error: " + ex.Message);
+}
+
+
+
+
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         db.Database.ExecuteSqlRaw(@"
             ALTER TABLE ""Products""
