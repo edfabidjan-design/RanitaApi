@@ -135,6 +135,10 @@
                         <input type="text" id="productName" placeholder="Ex: Chemise Homme Slim" required>
                     </div>
                     <div>
+                        <label>SKU (Code unique) *</label>
+                        <input type="text" id="productSku" placeholder="Ex: RAN-CHM-001" required>
+                    </div>
+                    <div>
                         <label>Marque</label>
                         <input type="text" id="productBrand" placeholder="Ex: Nike, Samsung...">
                     </div>
@@ -344,6 +348,7 @@
             document.getElementById("productSlug").value = p.slug || "";
             document.getElementById("productMetaDescription").value = p.metaDescription || "";
             document.getElementById("categoryId").value = p.categoryId || "";
+            document.getElementById("productSku").value = p.sku || "";
 
             if (p.imageUrl) {
                 document.getElementById("currentImageDiv").style.display = "block";
@@ -396,6 +401,7 @@
             formData.append("MetaDescription", document.getElementById("productMetaDescription").value);
             formData.append("CategoryId", document.getElementById("categoryId").value);
             formData.append("Attributes", JSON.stringify(attributes));
+            formData.append("Sku", document.getElementById("productSku").value);
 
             const imageFile = document.getElementById("imageFile");
             if (imageFile.files.length > 0) {
@@ -417,12 +423,27 @@
             loadProducts();
         });
 
+        document.getElementById("categoryId").addEventListener("change", function () {
+            if (!document.getElementById("productId").value) {
+                const catText = this.options[this.selectedIndex]?.text || "PRD";
+                const prefix = catText
+                    .substring(0, 3)
+                    .toUpperCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+                const random = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById("productSku").value = `RAN-${prefix}-${random}`;
+            }
+        });
+
         function resetForm() {
             document.getElementById("productForm").reset();
             document.getElementById("productId").value = "";
             document.getElementById("currentImageDiv").style.display = "none";
             document.getElementById("attributesSection").style.display = "none";
             document.getElementById("attributeFields").innerHTML = "";
+            document.getElementById("productSku").value = "";
+
         }
 
         document.getElementById("resetBtn").addEventListener("click", resetForm);

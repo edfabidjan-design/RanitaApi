@@ -96,6 +96,8 @@ try
             ADD COLUMN IF NOT EXISTS ""MetaDescription"" TEXT NOT NULL DEFAULT '';
             ALTER TABLE ""Products""
             ADD COLUMN IF NOT EXISTS ""Attributes"" TEXT NOT NULL DEFAULT '{}';
+            ALTER TABLE ""Products""
+            ADD COLUMN IF NOT EXISTS ""Sku"" TEXT NOT NULL DEFAULT '';
         ");
     }
 }
