@@ -7,6 +7,32 @@
     <link rel="stylesheet" href="products.css">
     <style>
 
+        .payment-options {
+            overflow: hidden !important;
+            width: 100% !important;
+        }
+
+        .payment-option {
+            display: grid !important;
+            grid-template-columns: 22px 1fr auto !important;
+            align-items: center !important;
+            gap: 8px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+        }
+
+            .payment-option label {
+                min-width: 0 !important;
+                word-break: break-word !important;
+                white-space: normal !important;
+            }
+
+            .payment-option .badge-soon {
+                white-space: nowrap !important;
+                flex-shrink: 0 !important;
+            }
+
         * {
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
@@ -393,7 +419,7 @@
                 <input type="text" id="customerAddress" placeholder="Adresse de livraison" required>
 
                 <span class="payment-label">Mode de paiement</span>
-                <div class="payment-options">
+                <div class="payment-options" style="width:100%;box-sizing:border-box;overflow:hidden;">
                     <div class="payment-option active">
                         <input type="radio" name="payment" id="pay-livraison" value="Paiement à la livraison" checked>
                         <label for="pay-livraison">💵 Paiement à la livraison</label>
