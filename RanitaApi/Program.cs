@@ -65,14 +65,32 @@ app.MapGet("/", context =>
 });
 
 
-// Créer toutes les tables EF Core
 try
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+    Console.WriteLine("EnsureCreated OK");
 }
 catch (Exception ex) { Console.WriteLine("EnsureCreated error: " + ex.Message); }
+
+
+// Test connexion DB au démarrage
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+    Console.WriteLine("DB connected and tables created OK");
+}
+catch (Exception ex) { Console.WriteLine("STARTUP DB ERROR: " + ex.Message); }
+
+
+
+
+
+
+
 
 
 
