@@ -24,72 +24,73 @@ namespace RanitaApi.Controllers
         {
             var products = await _context.Products
                 .Include(p => p.Category)
-                .Select(p => new
-                {
-                    p.Id,
-                    p.Name,
-                    p.Price,
-                    p.OldPrice,
-                    p.Stock,
-                    p.ShortDescription,
-                    p.Description,
-                    p.ImageUrl,
-                    p.Images,
-                    p.CategoryId,
-                    p.Brand,
-                    p.Sku,
-                    p.IsActive,
-                    p.Slug,
-                    p.MetaDescription,
-                    p.Attributes,
-                    Category = p.Category == null ? null : new
-                    {
-                        p.Category.Id,
-                        p.Category.Name
-                    }
-                })
+                .Include(p => p.Variants)
                 .ToListAsync();
 
-            return Ok(products);
+            var result = products.Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.Price,
+                p.OldPrice,
+                Stock = p.Variants != null && p.Variants.Any()
+                    ? p.Variants.Sum(v => v.Stock)
+                    : p.Stock,
+                p.ShortDescription,
+                p.Description,
+                p.ImageUrl,
+                p.Images,
+                p.CategoryId,
+                p.Brand,
+                p.Sku,
+                p.IsActive,
+                p.Slug,
+                p.MetaDescription,
+                p.Attributes,
+                Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name },
+                Variants = p.Variants?.Select(v => new { v.Id, v.Combination, v.Stock, v.Price })
+            });
+
+            return Ok(result);
         }
 
         // ✅ GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var product = await _context.Products
+            var p = await _context.Products
                 .Include(p => p.Category)
+                .Include(p => p.Variants)
                 .Where(p => p.Id == id)
-                .Select(p => new
-                {
-                    p.Id,
-                    p.Name,
-                    p.Price,
-                    p.OldPrice,
-                    p.Stock,
-                    p.ShortDescription,
-                    p.Description,
-                    p.ImageUrl,
-                    p.Images,
-                    p.CategoryId,
-                    p.Brand,
-                    p.Sku,
-                    p.IsActive,
-                    p.Slug,
-                    p.MetaDescription,
-                    p.Attributes,
-                    Category = p.Category == null ? null : new
-                    {
-                        p.Category.Id,
-                        p.Category.Name
-                    }
-                })
                 .FirstOrDefaultAsync();
 
-            if (product == null)
-                return NotFound();
+            if (p == null) return NotFound();
 
-            return Ok(product);
+            var result = new
+            {
+                p.Id,
+                p.Name,
+                p.Price,
+                p.OldPrice,
+                Stock = p.Variants != null && p.Variants.Any()
+                    ? p.Variants.Sum(v => v.Stock)
+                    : p.Stock,
+                p.ShortDescription,
+                p.Description,
+                p.ImageUrl,
+                p.Images,
+                p.CategoryId,
+                p.Brand,
+                p.Sku,
+                p.IsActive,
+                p.Slug,
+                p.MetaDescription,
+                p.Attributes,
+                Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name },
+                Variants = p.Variants?.Select(v => new { v.Id, v.Combination, v.Stock, v.Price })
+            };
+
+            return Ok(result);
         }
 
         // ✅ CREATE

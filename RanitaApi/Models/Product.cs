@@ -21,5 +21,6 @@ namespace RanitaApi.Models
         public Category? Category { get; set; }
         public string Sku { get; set; } = "";
         public string Images { get; set; } = "[]"; // JSON array d'URLs
+        public ICollection<ProductVariant>? Variants { get; set; }
     }
 }
