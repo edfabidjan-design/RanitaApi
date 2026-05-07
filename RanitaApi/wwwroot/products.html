@@ -354,6 +354,8 @@
                             ${stockLabel}
                             ${p.stock <= 0
                         ? `<button class="btn-disabled" disabled onclick="event.stopPropagation()">Rupture de stock</button>`
+                    : p.variants && p.variants.length > 0
+                        ? `<button class="btn-buy" onclick="event.stopPropagation(); location.href='product-details.html?id=${p.id}'">👁 Choisir une variante</button>`
                         : `<button class="btn-buy" data-id="${p.id}" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 Ajouter au panier</button>`
                     }
                         </div>

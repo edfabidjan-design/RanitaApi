@@ -163,4 +163,21 @@ public class ClientAuthController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet("/api/clients")]
+    public async Task<IActionResult> GetAllClients()
+    {
+        var clients = await _context.Clients
+            .OrderByDescending(c => c.CreatedAt)
+            .Select(c => new {
+                c.Id,
+                c.FullName,
+                c.Email,
+                c.Phone,
+                c.CreatedAt
+            })
+            .ToListAsync();
+
+        return Ok(clients);
+    }
 }

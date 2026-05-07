@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranita Admin - Clients</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <style>
+        .client-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #10b981;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            flex: 1;
+            min-width: 120px;
+        }
+
+            .stat-card .stat-num {
+                font-size: 24px;
+                font-weight: 800;
+                color: #111827;
+            }
+
+            .stat-card .stat-label {
+                font-size: 12px;
+                color: #6b7280;
+                margin-top: 2px;
+            }
+
+        .search-bar {
+            margin-bottom: 16px;
+        }
+
+            .search-bar input {
+                width: 100%;
+                max-width: 400px;
+                padding: 10px 16px;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                font-size: 14px;
+            }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .modal-overlay.open {
+                display: flex;
+            }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+            .modal h3 {
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 16px;
+            }
+
+        .modal-info {
+            font-size: 14px;
+            color: #374151;
+            line-height: 2;
+        }
+
+            .modal-info strong {
+                color: #111827;
+            }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 13px;
+        }
+
+            .order-row:last-child {
+                border-bottom: none;
+            }
+
+        .btn-close-modal {
+            width: 100%;
+            background: #f3f4f6;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-attente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-validee {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-livree {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-annulee {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="admin-header">
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
+        <nav>
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="admin-products.html">Produits</a>
+            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-attributes.html">Attributs</a>
+            <a href="admin-orders.html">Commandes</a>
+            <a href="admin-clients.html" class="active">Clients</a>
+        </nav>
+        <button onclick="logout()">Déconnexion</button>
+    </header>
+
+    <div class="admin-container">
+        <h1>👥 Gestion des clients</h1>
+
+        <div class="stats-bar" id="statsBar"></div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un client..." oninput="filterClients()">
+        </div>
+
+        <div class="table-wrap">
+            <table border="1" cellpadding="8">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Client</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Commandes</th>
+                        <th>Total dépensé</th>
+                        <th>Inscrit le</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" id="modalContent"></div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("adminToken");
+        if (!token) window.location.href = "admin-login.html";
+
+        function logout() {
+            localStorage.removeItem("adminToken");
+            window.location.href = "admin-login.html";
+        }
+
+        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+        let allClients = [];
+        let allOrders = [];
+
+        async function loadData() {
+            const [clientsRes, ordersRes] = await Promise.all([
+                fetch(`${API_BASE}/clients`),
+                fetch(`${API_BASE}/orders`)
+            ]);
+
+            allClients = await clientsRes.json();
+            allOrders = await ordersRes.json();
+
+            // Stats
+            document.getElementById("statsBar").innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-num">${allClients.length}</div>
+                    <div class="stat-label">Total clients</div>
+                </div>
+                <div class="stat-card" style="border-top:3px solid #10b981;">
+                    <div class="stat-num">${allClients.filter(c => {
+                        const orders = allOrders.filter(o => o.clientId === c.id);
+                        return orders.length > 0;
+                    }).length}</div>
+                    <div class="stat-label">Clients actifs</div>
+                </div>
+                <div class="stat-card" style="border-top:3px solid #3b82f6;">
+                    <div class="stat-num">${allClients.filter(c => {
+                        const orders = allOrders.filter(o => o.clientId === c.id);
+                        return orders.length === 0;
+                    }).length}</div>
+                    <div class="stat-label">Jamais commandé</div>
+                </div>
+            `;
+
+            renderClients(allClients);
+        }
+
+        function renderClients(clients) {
+            const tbody = document.getElementById("clientsTable");
+
+            if (clients.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = clients.map(c => {
+                const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulée");
+                const totalDepense = orders.reduce((s, o) => s + o.total, 0);
+                const initiale = (c.fullName || c.email || "?")[0].toUpperCase();
+
+                return `
+                    <tr>
+                        <td><strong>#${c.id}</strong></td>
+                        <td>
+                            <div class="client-info">
+                                <div class="client-avatar">${initiale}</div>
+                                <span>${c.fullName}</span>
+                            </div>
+                        </td>
+                        <td>${c.email}</td>
+                        <td>${c.phone || "—"}</td>
+                        <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
+                        <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
+                        <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
+                        <td>
+                            <button onclick="showClientDetails(${c.id})">👁 Voir</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterClients() {
+            const search = document.getElementById("searchInput").value.toLowerCase();
+            const filtered = allClients.filter(c =>
+                (c.fullName || "").toLowerCase().includes(search) ||
+                (c.email || "").toLowerCase().includes(search) ||
+                (c.phone || "").toLowerCase().includes(search)
+            );
+            renderClients(filtered);
+        }
+
+        function showClientDetails(clientId) {
+            const c = allClients.find(c => c.id === clientId);
+            if (!c) return;
+
+            const orders = allOrders.filter(o => o.clientId === clientId);
+            const totalDepense = orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0);
+
+            function getBadge(status) {
+                switch(status) {
+                    case "En attente": return "badge-attente";
+                    case "Validée": return "badge-validee";
+                    case "Livrée": return "badge-livree";
+                    case "Annulée": return "badge-annulee";
+                    default: return "";
+                }
+            }
+
+            document.getElementById("modalContent").innerHTML = `
+                <h3>👤 ${c.fullName}</h3>
+                <div class="modal-info">
+                    <strong>Email :</strong> ${c.email}<br>
+                    <strong>Téléphone :</strong> ${c.phone || "—"}<br>
+                    <strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br>
+                    <strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA
+                </div>
+
+                <div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#374151;">
+                    📦 Commandes (${orders.length})
+                </div>
+
+                ${orders.length === 0 ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` :
+                    orders.map(o => `
+                        <div class="order-row">
+                            <span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
+                            <span>
+                                <span class="status-badge ${getBadge(o.status)}">${o.status}</span>
+                                &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong>
+                            </span>
+                        </div>
+                    `).join('')
+                }
+
+                <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">
+                    Fermer
+                </button>
+            `;
+
+            document.getElementById("modalOverlay").classList.add("open");
+        }
+
+        function closeModal(e) {
+            if (e.target === document.getElementById("modalOverlay")) {
+                document.getElementById("modalOverlay").classList.remove("open");
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
