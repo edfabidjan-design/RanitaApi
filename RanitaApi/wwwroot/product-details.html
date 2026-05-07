@@ -540,7 +540,8 @@
                     price: selectedVariant?.price || currentProduct.price,
                     imageUrl: currentProduct.imageUrl,
                     quantity,
-                    variant: selectedVariant?.combination || null
+                    variant: selectedVariant?.combination || null,
+                    variantId: selectedVariant?.id || null  // ✅ ajout
                 });
             }
 
