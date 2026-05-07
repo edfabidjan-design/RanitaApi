@@ -131,15 +131,23 @@
         .product-prices {
             display: flex;
             align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
+            gap: 6px;
             margin-top: 4px;
+            flex-wrap: nowrap;
+        }
+
+        .price-current {
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+            white-space: nowrap;
         }
 
         .price-old {
             font-size: 12px;
             color: #9ca3af;
             text-decoration: line-through;
+            white-space: nowrap;
         }
 
         .price-badge {
@@ -149,6 +157,8 @@
             padding: 2px 6px;
             border-radius: 6px;
             font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .product-stock {
