@@ -304,4 +304,26 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Orders.ClientId error: " + ex.Message); }
 
+
+
+// ── OrderItems.VariantId ───────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""OrderItems"" ADD COLUMN IF NOT EXISTS ""VariantId"" INT NULL;");
+}
+catch (Exception ex) { Console.WriteLine("OrderItems.VariantId error: " + ex.Message); }
+
+// ── Orders.ShippingFee ─────────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""ShippingFee"" NUMERIC(18,2) NOT NULL DEFAULT 0;");
+}
+catch (Exception ex) { Console.WriteLine("Orders.ShippingFee error: " + ex.Message); }
+
+
+
 app.Run();
