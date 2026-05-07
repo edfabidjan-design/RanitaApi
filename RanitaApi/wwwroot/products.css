@@ -143,9 +143,15 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     transition: 0.2s;
     cursor: pointer;
 }
+
+    .product-card .btn-buy,
+    .product-card .btn-disabled {
+        margin-top: auto;
+    }
 
     .product-card:hover {
         transform: translateY(-4px);
@@ -153,16 +159,17 @@ body {
     }
 
 .product-img {
-    height: 130px;
+    width: 100%;
+    aspect-ratio: 1;
     border-radius: 14px;
     overflow: hidden;
+    background: #f3f4f6;
 }
 
     .product-img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        background: #eee;
     }
 
 .product-card h3 {
