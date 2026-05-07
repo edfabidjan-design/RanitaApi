@@ -628,7 +628,8 @@
             formData.append("Description", document.getElementById("productDescription").value);
             formData.append("Price", document.getElementById("productPrice").value);
             formData.append("OldPrice", document.getElementById("productOldPrice").value || "");
-            formData.append("Stock", document.getElementById("productStock").value);
+            const stockVal = document.getElementById("productStock").value;
+            formData.append("Stock", stockVal || "0");
             formData.append("IsActive", document.getElementById("productIsActive").checked);
             const slugVal = document.getElementById("productSlug").value ||
                 document.getElementById("productName").value.toLowerCase()
