@@ -517,28 +517,25 @@
             const res = await fetch(`${API_BASE}/products/${id}`);
             const p = await res.json();
 
+            // Remplir catégorie D'ABORD
+            document.getElementById("categoryId").value = p.categoryId || "";
+            await loadAttributeFields();
+
+            // Remplir les champs APRÈS loadAttributeFields
             document.getElementById("productId").value = p.id;
-            document.getElementById("productName").value = p.name;
+            document.getElementById("productName").value = p.name || "";
             document.getElementById("productBrand").value = p.brand || "";
             document.getElementById("productShortDescription").value = p.shortDescription || "";
             document.getElementById("productDescription").value = p.description || "";
-            document.getElementById("productPrice").value = p.price;
+            document.getElementById("productPrice").value = p.price || "";
             document.getElementById("productOldPrice").value = p.oldPrice || "";
-            document.getElementById("productStock").value = p.stock;
+            document.getElementById("productStock").value = p.stock || "";
             document.getElementById("productIsActive").checked = p.isActive;
-            document.getElementById("productSlug").value = p.slug || p.name.toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9\s-]/g, "")
-                .replace(/\s+/g, "-");
+            document.getElementById("productSlug").value = p.slug || "";
             document.getElementById("productMetaDescription").value = p.metaDescription || "";
-            document.getElementById("categoryId").value = p.categoryId || "";
             document.getElementById("productSku").value = p.sku || "";
 
-
-            await loadAttributeFields();
-
-            // Remplir les attributs
-
+            // Attributs
             if (p.attributes && p.attributes !== "{}") {
                 try {
                     const attrs = JSON.parse(p.attributes);
@@ -546,9 +543,7 @@
                         const hidden = document.getElementById(`attr_${key}`);
                         if (hidden) {
                             hidden.value = attrs[key];
-                            // Cocher les bonnes cases
-                            const values = attrs[key].split(',');
-                            values.forEach(val => {
+                            attrs[key].split(',').forEach(val => {
                                 const cb = document.querySelector(`input[name="attr_${key}"][value="${val.trim()}"]`);
                                 if (cb) cb.checked = true;
                             });
@@ -557,36 +552,28 @@
                 } catch (e) { }
             }
 
-
-
-
-            // Charger les images existantes
+            // Images
             productImages = [];
             newImageFiles = [];
-            try {
-                productImages = JSON.parse(p.images || "[]");
-            } catch (e) { productImages = p.imageUrl ? [p.imageUrl] : []; }
+            try { productImages = JSON.parse(p.images || "[]"); }
+            catch (e) { productImages = p.imageUrl ? [p.imageUrl] : []; }
             renderGallery();
 
-            // Charger les variantes existantes
+            // Variantes
             if (p.variants && p.variants.length > 0) {
-                // Reconstruire les labels depuis les attributs cochés
-                setTimeout(() => {
-                    const attrFields = document.querySelectorAll("[id^='attr_']");
-                    const selectedAttrs = {};
-                    attrFields.forEach(el => {
-                        const key = el.id.replace("attr_", "");
-                        if (el.value) {
-                            selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
-                        }
-                    });
-                    const keys = Object.keys(selectedAttrs);
-                    if (keys.length > 0) {
-                        const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
-                        const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
-                        window._variantLabels = labels;
+                const attrFields = document.querySelectorAll("[id^='attr_']");
+                const selectedAttrs = {};
+                attrFields.forEach(el => {
+                    const key = el.id.replace("attr_", "");
+                    if (el.value) selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
+                });
+                const keys = Object.keys(selectedAttrs);
+                if (keys.length > 0) {
+                    const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
+                    const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
+                    window._variantLabels = labels;
 
-                        document.getElementById("variantsList").innerHTML = `
+                    document.getElementById("variantsList").innerHTML = `
                 <table style="width:100%;border-collapse:collapse;">
                     <thead><tr style="background:#f9fafb;">
                         <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th>
@@ -604,18 +591,15 @@
                                 </td>
                                 <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
                                     <input type="number" id="variant_price_${i}" 
-                                           value="${p.variants[i]?.price || ''}" placeholder="Prix de base"
+                                           value="${p.variants[i]?.price || ''}"
                                            style="width:120px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
                                 </td>
                             </tr>`).join('')}
                     </tbody>
                 </table>`;
-                        document.getElementById("variantsSection").style.display = "block";
-                    }
-                }, 500);
+                    document.getElementById("variantsSection").style.display = "block";
+                }
             }
-
-
 
             window.scrollTo(0, 0);
         }
