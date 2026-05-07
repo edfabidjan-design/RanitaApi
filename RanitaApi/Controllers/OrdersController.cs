@@ -6,7 +6,7 @@ using RanitaApi.Models;
 namespace RanitaApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     public class OrdersController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,110 +16,172 @@ namespace RanitaApi.Controllers
             _context = context;
         }
 
-        // ✅ Créer une commande
-        [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] Order order)
+        // ✅ GET ALL (admin)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            if (order.Items == null || !order.Items.Any())
-                return BadRequest("Panier vide");
+            var orders = await _context.Orders
+                .Include(o => o.Items)
+                .Include(o => o.Client)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
 
-            // 🔥 recalcul du total sécurisé côté serveur
+            var result = orders.Select(o => new
+            {
+                o.Id,
+                o.CustomerName,
+                o.CustomerPhone,
+                o.CustomerAddress,
+                o.PaymentMethod,
+                o.Total,
+                o.Status,
+                o.CreatedAt,
+                o.ClientId,
+                Client = o.Client == null ? null : new { o.Client.Id, o.Client.FullName, o.Client.Email },
+                Items = o.Items.Select(i => new
+                {
+                    i.Id,
+                    i.ProductId,
+                    i.ProductName,
+                    i.Price,
+                    i.Quantity,
+                    i.ImageUrl
+                })
+            });
+
+            return Ok(result);
+        }
+
+        // ✅ GET BY ID
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var o = await _context.Orders
+                .Include(o => o.Items)
+                .Include(o => o.Client)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (o == null) return NotFound();
+
+            return Ok(new
+            {
+                o.Id,
+                o.CustomerName,
+                o.CustomerPhone,
+                o.CustomerAddress,
+                o.PaymentMethod,
+                o.Total,
+                o.Status,
+                o.CreatedAt,
+                o.ClientId,
+                Items = o.Items.Select(i => new
+                {
+                    i.Id,
+                    i.ProductId,
+                    i.ProductName,
+                    i.Price,
+                    i.Quantity,
+                    i.ImageUrl
+                })
+            });
+        }
+
+        // ✅ CREATE
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
+        {
+            if (dto.Items == null || dto.Items.Count == 0)
+                return BadRequest("Panier vide.");
+
+            var order = new Order
+            {
+                CustomerName = dto.CustomerName,
+                CustomerPhone = dto.CustomerPhone,
+                CustomerAddress = dto.CustomerAddress,
+                PaymentMethod = dto.PaymentMethod,
+                ClientId = dto.ClientId,
+                Status = "En attente",
+                CreatedAt = DateTime.UtcNow
+            };
+
             decimal total = 0;
 
-            foreach (var item in order.Items)
+            foreach (var item in dto.Items)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
-                if (product == null)
-                    return BadRequest($"Produit {item.ProductId} introuvable");
+                if (product == null) continue;
 
-                if (product.Stock < item.Quantity)
-                    return BadRequest($"Stock insuffisant pour {product.Name}");
+                var price = product.Price;
+                var orderItem = new OrderItem
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    Price = price,
+                    Quantity = item.Quantity,
+                    ImageUrl = product.ImageUrl
+                };
 
-                product.Stock -= item.Quantity;
-
-                item.Price = product.Price;
-                item.ProductName = product.Name;
-                item.ImageUrl = product.ImageUrl ?? "";
-
-                total += item.Price * item.Quantity;
+                total += price * item.Quantity;
+                order.Items.Add(orderItem);
             }
 
+            // Ajouter frais de livraison
+            total += dto.ShippingFee;
             order.Total = total;
-            order.Status = "En attente";
-            order.CreatedAt = DateTime.UtcNow;
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                order.Id,
-                order.CustomerName,
-                order.CustomerPhone,
-                order.CustomerAddress,
-                order.PaymentMethod,
-                order.Total,
-                order.Status,
-                order.CreatedAt,
-                order.Items
-            });
+            return Ok(new { order.Id, order.Total, order.Status });
         }
 
-        // ✅ Liste des commandes (admin)
-        [HttpGet]
-        public async Task<IActionResult> GetOrders()
+        // ✅ UPDATE STATUS (admin)
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
         {
-            var orders = await _context.Orders
-                .Include(o => o.Items)
-                .OrderByDescending(o => o.CreatedAt)
-                .ToListAsync();
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
 
-            return Ok(orders);
-        }
-
-        // ✅ Détail d'une commande
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder(int id)
-        {
-            var order = await _context.Orders
-                .Include(o => o.Items)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            if (order == null)
-                return NotFound();
-
-            return Ok(order);
-        }
-
-        // ✅ Changer statut
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
-        {
-            var order = await _context.Orders
-                .Include(o => o.Items)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            if (order == null)
-                return NotFound();
-
-            // ✅ Si on annule une commande qui n'était pas déjà annulée
-            if (status == "Annulée" && order.Status != "Annulée")
-            {
-                foreach (var item in order.Items)
-                {
-                    var product = await _context.Products.FindAsync(item.ProductId);
-                    if (product != null)
-                    {
-                        product.Stock += item.Quantity;
-                    }
-                }
-            }
-
-            order.Status = status;
-
+            order.Status = dto.Status;
             await _context.SaveChangesAsync();
 
-            return Ok(order);
+            return Ok(new { order.Id, order.Status });
         }
+
+        // ✅ DELETE (admin)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+
+            return Ok("Supprimé");
+        }
+    }
+
+    // DTOs
+    public class CreateOrderDto
+    {
+        public string CustomerName { get; set; } = "";
+        public string CustomerPhone { get; set; } = "";
+        public string CustomerAddress { get; set; } = "";
+        public string PaymentMethod { get; set; } = "";
+        public int? ClientId { get; set; }
+        public decimal ShippingFee { get; set; }
+        public List<OrderItemDto> Items { get; set; } = new();
+    }
+
+    public class OrderItemDto
+    {
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public class UpdateStatusDto
+    {
+        public string Status { get; set; } = "";
     }
 }

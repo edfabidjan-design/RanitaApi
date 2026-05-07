@@ -3,8 +3,276 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranita - Panier</title>
+    <title>Ranita - Mon Panier</title>
     <link rel="stylesheet" href="products.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #111827;
+        }
+
+        .site-header {
+            background: #111827;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            color: white;
+        }
+
+        .site-header nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .cart-page {
+            max-width: 900px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+            .cart-page h1 {
+                font-size: 24px;
+                font-weight: 800;
+                margin-bottom: 24px;
+            }
+
+        /* ITEM */
+        .cart-item {
+            background: white;
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+            .cart-item img {
+                width: 90px;
+                height: 90px;
+                object-fit: cover;
+                border-radius: 10px;
+                flex-shrink: 0;
+            }
+
+        .cart-info {
+            flex: 1;
+        }
+
+            .cart-info h3 {
+                font-size: 15px;
+                font-weight: 700;
+                margin-bottom: 4px;
+            }
+
+        .cart-variant {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 600;
+            background: #ecfdf5;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .cart-price {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .cart-subtotal {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111827;
+            margin-top: 2px;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f9fafb;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #374151;
+            transition: background 0.2s;
+        }
+
+            .qty-btn:hover {
+                background: #e5e7eb;
+            }
+
+        .qty-num {
+            width: 40px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+            .btn-remove:hover {
+                background: #fef2f2;
+            }
+
+        /* RÉSUMÉ */
+        .cart-summary {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 800;
+            color: #111827;
+            padding-top: 12px;
+            border-top: 2px solid #f3f4f6;
+            margin-bottom: 20px;
+        }
+
+        .btn-checkout {
+            display: block;
+            width: 100%;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s;
+            margin-bottom: 12px;
+        }
+
+            .btn-checkout:hover {
+                background: #059669;
+            }
+
+        .btn-clear {
+            display: block;
+            width: 100%;
+            background: #fef2f2;
+            color: #ef4444;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: background 0.2s;
+        }
+
+            .btn-clear:hover {
+                background: #fee2e2;
+            }
+
+        .btn-continue {
+            display: block;
+            text-align: center;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+            .btn-continue:hover {
+                color: #10b981;
+            }
+
+        /* VIDE */
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+            .empty-cart p {
+                font-size: 16px;
+                color: #9ca3af;
+                margin: 12px 0 24px;
+            }
+
+        .btn-shop {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .cart-item {
+                flex-wrap: wrap;
+            }
+
+                .cart-item img {
+                    width: 70px;
+                    height: 70px;
+                }
+        }
+    </style>
 </head>
 <body>
 
@@ -12,87 +280,98 @@
         <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
         <nav>
             <a href="products.html">Produits</a>
-            <a href="cart.html">Panier</a>
+            <a href="cart.html">🛒 Panier</a>
         </nav>
     </header>
 
     <main class="cart-page">
-        <h1>Mon panier</h1>
-
+        <h1>🛒 Mon panier</h1>
         <div id="cartContainer"></div>
-
-        <div class="cart-summary">
-            <h2 id="totalAmount">Total : 0 FCFA</h2>
-
-            <a href="checkout.html" class="cart-link">Passer la commande</a>
-            <button onclick="clearCart()" class="btn-danger">Vider le panier</button>
-            <a href="products.html" class="secondary-link">Continuer les achats</a>
-        </div>
+        <div id="cartSummary"></div>
     </main>
 
     <script>
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-        const cartContainer = document.getElementById("cartContainer");
-        const totalAmount = document.getElementById("totalAmount");
-
         function renderCart() {
-            cartContainer.innerHTML = "";
+            const container = document.getElementById("cartContainer");
+            const summary = document.getElementById("cartSummary");
 
             if (cart.length === 0) {
-                cartContainer.innerHTML = `<div class="empty-card"><p>Votre panier est vide.</p></div>`;
-                totalAmount.textContent = "Total : 0 FCFA";
+                container.innerHTML = `
+                        <div class="empty-cart">
+                            <div style="font-size:60px">🛒</div>
+                            <p>Votre panier est vide.</p>
+                            <a href="products.html" class="btn-shop">Voir les produits</a>
+                        </div>`;
+                summary.innerHTML = "";
                 return;
             }
 
             let total = 0;
+            let totalItems = 0;
 
-            cart.forEach(item => {
-                total += item.price * item.quantity;
+            container.innerHTML = cart.map(item => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                totalItems += item.quantity;
+                const imgUrl = item.imageUrl
+                    ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/')
+                    : 'https://via.placeholder.com/120';
 
-                cartContainer.innerHTML += `
-                <div class="cart-item">
-                    <img src="${item.imageUrl ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/') : 'https://via.placeholder.com/120'}" alt="${item.name}">
+                return `
+                    <div class="cart-item">
+                        <img src="${imgUrl}" alt="${item.name}">
+                        <div class="cart-info">
+                            <h3>${item.name}</h3>
+                            ${item.variant ? `<span class="cart-variant">${item.variant}</span>` : ''}
+                            <div class="cart-price">${Number(item.price).toLocaleString()} FCFA / unité</div>
+                            <div class="cart-subtotal">${Number(subtotal).toLocaleString()} FCFA</div>
+                        </div>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty('${item.cartKey || item.id}', -1)">−</button>
+                            <span class="qty-num">${item.quantity}</span>
+                            <button class="qty-btn" onclick="changeQty('${item.cartKey || item.id}', 1)">+</button>
+                        </div>
+                        <button class="btn-remove" onclick="removeItem('${item.cartKey || item.id}')" title="Supprimer">🗑</button>
+                    </div>`;
+            }).join('');
 
-                    <div class="cart-info">
-                        <h3>${item.name}</h3>
-                        <p>${Number(item.price).toLocaleString()} FCFA</p>
-                        <p>Sous-total : ${Number(item.price * item.quantity).toLocaleString()} FCFA</p>
-                    </div>
-
-                    <div class="qty-actions">
-                        <button onclick="changeQty(${item.id}, -1)">-</button>
-                        <strong>${item.quantity}</strong>
-                        <button onclick="changeQty(${item.id}, 1)">+</button>
-                    </div>
-
-                    <button onclick="removeItem(${item.id})" class="btn-danger">Supprimer</button>
-                </div>
-            `;
-            });
-
-            totalAmount.textContent = "Total : " + Number(total).toLocaleString() + " FCFA";
+            summary.innerHTML = `
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Articles</span>
+                            <span>${totalItems}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Livraison</span>
+                            <span>À confirmer</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Total</span>
+                            <span>${Number(total).toLocaleString()} FCFA</span>
+                        </div>
+                        <a href="checkout.html" class="btn-checkout">✅ Passer la commande</a>
+                        <button onclick="clearCart()" class="btn-clear">🗑 Vider le panier</button>
+                        <a href="products.html" class="btn-continue">← Continuer les achats</a>
+                    </div>`;
         }
 
-        function changeQty(id, delta) {
-            const item = cart.find(p => p.id === id);
+        function changeQty(cartKey, delta) {
+            const item = cart.find(i => (i.cartKey || i.id) == cartKey);
             if (!item) return;
-
             item.quantity += delta;
-
-            if (item.quantity <= 0) {
-                cart = cart.filter(p => p.id !== id);
-            }
-
+            if (item.quantity <= 0) cart = cart.filter(i => (i.cartKey || i.id) != cartKey);
             saveCart();
         }
 
-        function removeItem(id) {
-            cart = cart.filter(p => p.id !== id);
+        function removeItem(cartKey) {
+            cart = cart.filter(i => (i.cartKey || i.id) != cartKey);
             saveCart();
         }
 
         function clearCart() {
+            if (!confirm("Vider le panier ?")) return;
             cart = [];
             saveCart();
         }
@@ -104,6 +383,5 @@
 
         renderCart();
     </script>
-
 </body>
 </html>
