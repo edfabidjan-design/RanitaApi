@@ -648,7 +648,9 @@ body {
     }
 
     .product-img {
-        height: 110px !important;
+        max-height: 120px !important;
+        aspect-ratio: unset !important;
+        height: 120px !important;
         border-radius: 12px !important;
     }
 
@@ -663,6 +665,19 @@ body {
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
+    .product-name {
+        font-size: 13px !important;
+        -webkit-line-clamp: 2 !important;
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+
+    .product-prices {
+        margin-top: 2px !important;
+    }
+
 
     .product-card strong {
         font-size: 15px !important;
