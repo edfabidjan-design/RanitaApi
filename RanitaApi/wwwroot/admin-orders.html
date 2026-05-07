@@ -265,6 +265,10 @@
                         <div class="stat-num">${stats.livree}</div>
                         <div class="stat-label">Livrées</div>
                     </div>
+                    <div class="stat-card" style="border-top:3px solid #ef4444;">
+                       <div class="stat-num">${orders.filter(o => o.status === "Annulée").length}</div>
+                       <div class="stat-label">Annulées</div>
+                   </div>
                     <div class="stat-card" style="border-top:3px solid #8b5cf6;">
                         <div class="stat-num">${Number(stats.ca).toLocaleString()} FCFA</div>
                         <div class="stat-label">Chiffre d'affaires</div>
@@ -309,8 +313,10 @@
                 return;
             }
 
-            // Mettre à jour la classe CSS
             selectEl.className = `status-select ${getStatusClass(status)}`;
+
+            // ✅ Recharger les stats
+            loadOrders();
         }
 
         function showDetails(o) {
