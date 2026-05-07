@@ -662,6 +662,10 @@
                     </div>` : ''}
                 `;
 
+            // Sélectionner automatiquement la première variante disponible
+            const firstAvailable = currentProduct.variants.find(v => v.stock > 0);
+            if (firstAvailable) selectVariant(firstAvailable.id);
+
             updateStockDisplay();
         }
 
