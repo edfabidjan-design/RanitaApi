@@ -360,8 +360,18 @@
         function changeQty(cartKey, delta) {
             const item = cart.find(i => (i.cartKey || i.id) == cartKey);
             if (!item) return;
-            item.quantity += delta;
-            if (item.quantity <= 0) cart = cart.filter(i => (i.cartKey || i.id) != cartKey);
+
+            const newQty = item.quantity + delta;
+
+            if (newQty <= 0) {
+                cart = cart.filter(i => (i.cartKey || i.id) != cartKey);
+            } else if (delta > 0 && item.maxStock && newQty > item.maxStock) {
+                alert(`Stock maximum atteint (${item.maxStock} disponibles)`);
+                return;
+            } else {
+                item.quantity = newQty;
+            }
+
             saveCart();
         }
 

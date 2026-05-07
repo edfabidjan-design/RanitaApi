@@ -541,7 +541,8 @@
                     imageUrl: currentProduct.imageUrl,
                     quantity,
                     variant: selectedVariant?.combination || null,
-                    variantId: selectedVariant?.id || null  // ✅ ajout
+                    variantId: selectedVariant?.id || null,
+                    maxStock: getStock()  // ✅ ajout
                 });
             }
 
