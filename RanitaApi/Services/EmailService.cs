@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using RanitaApi.Models;
+using System.Text;
 using System.Text.Json;
 
 namespace RanitaApi.Services
@@ -112,6 +113,95 @@ namespace RanitaApi.Services
 
             if (!response.IsSuccessStatusCode)
                 Console.WriteLine("BREVO ERROR: " + result);
+        }
+
+        // ✅ Confirmation commande → client
+        public async Task SendOrderConfirmationToClientAsync(string toEmail, string clientName, int orderId, decimal total, List<OrderItem> items)
+        {
+            var itemsHtml = string.Join("", items.Select(i => $@"
+        <tr>
+            <td style='padding:8px;border-bottom:1px solid #f3f4f6;'>{i.ProductName}{(string.IsNullOrEmpty(i.VariantName) ? "" : $" ({i.VariantName})")}</td>
+            <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:center;'>{i.Quantity}</td>
+            <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;color:#10b981;'>{(i.Price * i.Quantity).ToString("N0")} FCFA</td>
+        </tr>"));
+
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = toEmail } },
+                subject = $"✅ Commande #{orderId} confirmée — Ranita Market",
+                htmlContent = $@"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
+    <h2 style='color:#059669;margin:0 0 8px'>✅ Commande reçue !</h2>
+    <p>Bonjour <strong>{clientName}</strong>,</p>
+    <p>Merci pour votre commande sur <strong>Ranita Market</strong> ! Nous l'avons bien reçue et elle est en cours de traitement.</p>
+    <div style='background:#f9fafb;border-radius:8px;padding:16px;margin:16px 0;text-align:center;'>
+        <div style='font-size:13px;color:#6b7280;'>Numéro de commande</div>
+        <div style='font-size:28px;font-weight:800;color:#111827;'>#{orderId}</div>
+        <div style='display:inline-block;margin-top:8px;background:#fef3c7;color:#92400e;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>En attente</div>
+    </div>
+    <table style='width:100%;border-collapse:collapse;font-size:14px;'>
+        <thead>
+            <tr style='background:#f9fafb;'>
+                <th style='padding:8px;text-align:left;'>Produit</th>
+                <th style='padding:8px;text-align:center;'>Qté</th>
+                <th style='padding:8px;text-align:right;'>Prix</th>
+            </tr>
+        </thead>
+        <tbody>{itemsHtml}</tbody>
+    </table>
+    <div style='display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-top:16px;padding-top:12px;border-top:2px solid #f3f4f6;'>
+        <span>Total</span>
+        <span style='color:#10b981;'>{total.ToString("N0")} FCFA</span>
+    </div>
+    <a href='https://www.ranita-shop.com/my-orders.html'
+       style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
+      Suivre ma commande →
+    </a>
+    <p style='margin-top:20px;font-size:12px;color:#9ca3af;'>Ranita Market — www.ranita-shop.com</p>
+  </div>
+</div>"
+            };
+            await SendBrevoEmail(payload);
+        }
+
+        // ✅ Changement de statut → client
+        public async Task SendOrderStatusUpdateAsync(string clientEmail, string clientName, int orderId, string newStatus)
+        {
+            var (emoji, color, message) = newStatus switch
+            {
+                "Validée" => ("✅", "#3b82f6", "Votre commande a été validée et est en cours de préparation."),
+                "Livrée" => ("🎉", "#10b981", "Votre commande a été livrée. Merci pour votre achat !"),
+                "Annulée" => ("❌", "#ef4444", "Votre commande a été annulée. Contactez-nous pour plus d'informations."),
+                _ => ("📦", "#f59e0b", "Le statut de votre commande a été mis à jour.")
+            };
+
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = clientEmail } },
+                subject = $"{emoji} Commande #{orderId} — {newStatus}",
+                htmlContent = $@"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
+    <h2 style='color:{color};margin:0 0 16px'>{emoji} Statut mis à jour</h2>
+    <p>Bonjour <strong>{clientName}</strong>,</p>
+    <p>{message}</p>
+    <div style='background:#f9fafb;border-radius:8px;padding:16px;margin:16px 0;text-align:center;'>
+        <div style='font-size:13px;color:#6b7280;'>Commande</div>
+        <div style='font-size:28px;font-weight:800;color:#111827;'>#{orderId}</div>
+        <div style='display:inline-block;margin-top:8px;background:{color};color:white;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>{newStatus}</div>
+    </div>
+    <a href='https://www.ranita-shop.com/my-orders.html'
+       style='display:inline-block;margin-top:8px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
+      Voir mes commandes →
+    </a>
+    <p style='margin-top:20px;font-size:12px;color:#9ca3af;'>Ranita Market — www.ranita-shop.com</p>
+  </div>
+</div>"
+            };
+            await SendBrevoEmail(payload);
         }
     }
 }

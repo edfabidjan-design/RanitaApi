@@ -11,10 +11,12 @@ namespace RanitaApi.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly EmailService _emailService;
 
-        public OrdersController(AppDbContext context)
+        public OrdersController(AppDbContext context, EmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         // ✅ GET ALL (admin)
@@ -152,14 +154,22 @@ namespace RanitaApi.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Email notification admin
+            // Email notification admin + client
             try
             {
-                var emailService = HttpContext.RequestServices.GetService<EmailService>();
-                if (emailService != null)
-                    await emailService.SendNewOrderNotificationAsync(
-                        order.Id, order.CustomerName, order.CustomerPhone,
-                        order.CustomerAddress, order.Total);
+                // ✅ Admin
+                await _emailService.SendNewOrderNotificationAsync(
+                    order.Id, order.CustomerName, order.CustomerPhone,
+                    order.CustomerAddress, order.Total);
+
+                // ✅ Client (si email disponible)
+                if (order.ClientId.HasValue)
+                {
+                    var client = await _context.Clients.FindAsync(order.ClientId.Value);
+                    if (client != null && !string.IsNullOrEmpty(client.Email))
+                        await _emailService.SendOrderConfirmationToClientAsync(
+                            client.Email, client.FullName, order.Id, order.Total, order.Items.ToList());
+                }
             }
             catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
 
@@ -221,6 +231,21 @@ namespace RanitaApi.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            // ✅ Email client selon nouveau statut
+            try
+            {
+                var client = order.ClientId.HasValue
+                    ? await _context.Clients.FindAsync(order.ClientId.Value)
+                    : null;
+
+                if (client != null && !string.IsNullOrEmpty(client.Email))
+                    await _emailService.SendOrderStatusUpdateAsync(
+                        client.Email, client.FullName, order.Id, dto.Status);
+            }
+            catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
+
+
             return Ok(new { order.Id, order.Status });
         }
 
