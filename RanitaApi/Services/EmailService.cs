@@ -93,11 +93,23 @@ namespace RanitaApi.Services
 
         private async Task SendBrevoEmail(object payload)
         {
+            var apiKey = _config["Brevo:ApiKey"];
+            var senderEmail = _config["Brevo:SenderEmail"];
+            var senderName = _config["Brevo:SenderName"];
+
+            // LOG de diagnostic
+            Console.WriteLine($"BREVO DEBUG - ApiKey présent: {!string.IsNullOrEmpty(apiKey)}");
+            Console.WriteLine($"BREVO DEBUG - SenderEmail: {senderEmail}");
+            Console.WriteLine($"BREVO DEBUG - SenderName: {senderName}");
+
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email");
-            request.Headers.Add("api-key", _config["Brevo:ApiKey"]);
+            request.Headers.Add("api-key", apiKey);
             request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
             var response = await _http.SendAsync(request);
             var result = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine($"BREVO RESPONSE ({response.StatusCode}): {result}");
+
             if (!response.IsSuccessStatusCode)
                 Console.WriteLine("BREVO ERROR: " + result);
         }
