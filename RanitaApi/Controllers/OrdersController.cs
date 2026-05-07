@@ -153,26 +153,57 @@ namespace RanitaApi.Controllers
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
             if (order == null) return NotFound();
 
+            var ancienStatut = order.Status;
             order.Status = dto.Status;
-            await _context.SaveChangesAsync();
 
+            // ✅ Si on annule → remettre le stock
+            if (dto.Status == "Annulée" && ancienStatut != "Annulée")
+            {
+                foreach (var item in order.Items)
+                {
+                    if (item.VariantId.HasValue)
+                    {
+                        var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
+                        if (variant != null)
+                            variant.Stock += item.Quantity;
+                    }
+                    else
+                    {
+                        var product = await _context.Products.FindAsync(item.ProductId);
+                        if (product != null)
+                            product.Stock += item.Quantity;
+                    }
+                }
+            }
+
+            // ✅ Si on remet en attente/validée depuis annulée → déduire le stock
+            if (ancienStatut == "Annulée" && dto.Status != "Annulée")
+            {
+                foreach (var item in order.Items)
+                {
+                    if (item.VariantId.HasValue)
+                    {
+                        var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
+                        if (variant != null)
+                            variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
+                    }
+                    else
+                    {
+                        var product = await _context.Products.FindAsync(item.ProductId);
+                        if (product != null)
+                            product.Stock = Math.Max(0, product.Stock - item.Quantity);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
             return Ok(new { order.Id, order.Status });
-        }
-
-        // ✅ DELETE (admin)
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null) return NotFound();
-
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return Ok("Supprimé");
         }
 
         // ✅ ANNULER commande (client)
