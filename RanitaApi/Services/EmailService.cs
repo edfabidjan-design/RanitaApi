@@ -9,6 +9,12 @@ namespace RanitaApi.Services
         private readonly IConfiguration _config;
         private readonly HttpClient _http = new HttpClient();
         private const string ADMIN_EMAIL = "ranitabouda@gmail.com";
+        private const string FOOTER = @"
+            <hr style='border:none;border-top:1px solid #f3f4f6;margin:24px 0;'/>
+            <p style='font-size:11px;color:#9ca3af;text-align:center;margin:0;'>
+                Ranita Market — <a href='https://www.ranita-shop.com' style='color:#9ca3af;'>www.ranita-shop.com</a><br>
+                Vous recevez cet email suite à une activité sur votre compte Ranita Market.
+            </p>";
 
         public EmailService(IConfiguration config)
         {
@@ -30,6 +36,7 @@ namespace RanitaApi.Services
     <p>Vous avez demandé une réinitialisation de mot de passe.</p>
     <h1 style='letter-spacing:5px;color:#f97316'>{code}</h1>
     <p style='color:#777'>Ce code expire dans 10 minutes.</p>
+    {FOOTER}
   </div>
 </div>"
             };
@@ -43,22 +50,23 @@ namespace RanitaApi.Services
             {
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
                 to = new[] { new { email = ADMIN_EMAIL } },
-                subject = $"🛒 Nouvelle commande #{orderId} - {customerName}",
+                subject = $"Nouvelle commande #{orderId} - {customerName}",
                 htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
-    <h2 style='color:#059669;margin:0 0 16px'>🛒 Nouvelle commande reçue !</h2>
+    <h2 style='color:#059669;margin:0 0 16px'>Nouvelle commande recue !</h2>
     <table style='width:100%;font-size:15px;'>
       <tr><td style='padding:6px 0;color:#666'>Commande</td><td><strong>#{orderId}</strong></td></tr>
       <tr><td style='padding:6px 0;color:#666'>Client</td><td><strong>{customerName}</strong></td></tr>
-      <tr><td style='padding:6px 0;color:#666'>Téléphone</td><td><strong>{customerPhone}</strong></td></tr>
+      <tr><td style='padding:6px 0;color:#666'>Telephone</td><td><strong>{customerPhone}</strong></td></tr>
       <tr><td style='padding:6px 0;color:#666'>Adresse</td><td>{customerAddress}</td></tr>
       <tr><td style='padding:6px 0;color:#666'>Total</td><td><strong style='color:#f97316;font-size:18px'>{total.ToString("N0")} FCFA</strong></td></tr>
     </table>
     <a href='https://www.ranita-shop.com/admin-orders.html'
        style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
-      Voir la commande →
+      Voir la commande
     </a>
+    {FOOTER}
   </div>
 </div>"
             };
@@ -72,81 +80,59 @@ namespace RanitaApi.Services
             {
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
                 to = new[] { new { email = ADMIN_EMAIL } },
-                subject = $"👤 Nouveau client inscrit - {clientName}",
+                subject = $"Nouveau client inscrit - {clientName}",
                 htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
-    <h2 style='color:#3b82f6;margin:0 0 16px'>👤 Nouveau client inscrit !</h2>
+    <h2 style='color:#3b82f6;margin:0 0 16px'>Nouveau client inscrit !</h2>
     <table style='width:100%;font-size:15px;'>
       <tr><td style='padding:6px 0;color:#666'>Nom</td><td><strong>{clientName}</strong></td></tr>
       <tr><td style='padding:6px 0;color:#666'>Email</td><td>{clientEmail}</td></tr>
-      <tr><td style='padding:6px 0;color:#666'>Téléphone</td><td>{clientPhone ?? "—"}</td></tr>
+      <tr><td style='padding:6px 0;color:#666'>Telephone</td><td>{clientPhone ?? "—"}</td></tr>
     </table>
     <a href='https://www.ranita-shop.com/admin-clients.html'
        style='display:inline-block;margin-top:20px;background:#3b82f6;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
-      Voir les clients →
+      Voir les clients
     </a>
+    {FOOTER}
   </div>
 </div>"
             };
             await SendBrevoEmail(payload);
         }
 
-        private async Task SendBrevoEmail(object payload)
-        {
-            var apiKey = _config["Brevo:ApiKey"];
-            var senderEmail = _config["Brevo:SenderEmail"];
-            var senderName = _config["Brevo:SenderName"];
-
-            // LOG de diagnostic
-            Console.WriteLine($"BREVO DEBUG - ApiKey présent: {!string.IsNullOrEmpty(apiKey)}");
-            Console.WriteLine($"BREVO DEBUG - SenderEmail: {senderEmail}");
-            Console.WriteLine($"BREVO DEBUG - SenderName: {senderName}");
-
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email");
-            request.Headers.Add("api-key", apiKey);
-            request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
-            var response = await _http.SendAsync(request);
-            var result = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine($"BREVO RESPONSE ({response.StatusCode}): {result}");
-
-            if (!response.IsSuccessStatusCode)
-                Console.WriteLine("BREVO ERROR: " + result);
-        }
-
         // ✅ Confirmation commande → client
         public async Task SendOrderConfirmationToClientAsync(string toEmail, string clientName, int orderId, decimal total, List<OrderItem> items)
         {
             var itemsHtml = string.Join("", items.Select(i => $@"
-        <tr>
-            <td style='padding:8px;border-bottom:1px solid #f3f4f6;'>{i.ProductName}{(string.IsNullOrEmpty(i.VariantName) ? "" : $" ({i.VariantName})")}</td>
-            <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:center;'>{i.Quantity}</td>
-            <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;color:#10b981;'>{(i.Price * i.Quantity).ToString("N0")} FCFA</td>
-        </tr>"));
+                <tr>
+                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;'>{i.ProductName}{(string.IsNullOrEmpty(i.VariantName) ? "" : $" ({i.VariantName})")}</td>
+                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:center;'>{i.Quantity}</td>
+                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;color:#10b981;'>{(i.Price * i.Quantity).ToString("N0")} FCFA</td>
+                </tr>"));
 
             var payload = new
             {
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
                 to = new[] { new { email = toEmail } },
-                subject = $"✅ Commande #{orderId} confirmée — Ranita Market",
+                subject = $"Commande #{orderId} confirmee - Ranita Market",
                 htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
-    <h2 style='color:#059669;margin:0 0 8px'>✅ Commande reçue !</h2>
+    <h2 style='color:#059669;margin:0 0 8px'>Commande recue !</h2>
     <p>Bonjour <strong>{clientName}</strong>,</p>
-    <p>Merci pour votre commande sur <strong>Ranita Market</strong> ! Nous l'avons bien reçue et elle est en cours de traitement.</p>
+    <p>Merci pour votre commande sur <strong>Ranita Market</strong> ! Nous l'avons bien recue et elle est en cours de traitement.</p>
     <div style='background:#f9fafb;border-radius:8px;padding:16px;margin:16px 0;text-align:center;'>
-        <div style='font-size:13px;color:#6b7280;'>Numéro de commande</div>
+        <div style='font-size:13px;color:#6b7280;'>Numero de commande</div>
         <div style='font-size:28px;font-weight:800;color:#111827;'>#{orderId}</div>
         <div style='display:inline-block;margin-top:8px;background:#fef3c7;color:#92400e;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>En attente</div>
     </div>
     <table style='width:100%;border-collapse:collapse;font-size:14px;'>
         <thead>
             <tr style='background:#f9fafb;'>
-                <th style='padding:8px;text-align:left;'>Produit</th>
-                <th style='padding:8px;text-align:center;'>Qté</th>
-                <th style='padding:8px;text-align:right;'>Prix</th>
+                <th style='padding:8px;text-align:left;color:#6b7280;font-weight:600;'>Produit</th>
+                <th style='padding:8px;text-align:center;color:#6b7280;font-weight:600;'>Qte</th>
+                <th style='padding:8px;text-align:right;color:#6b7280;font-weight:600;'>Prix</th>
             </tr>
         </thead>
         <tbody>{itemsHtml}</tbody>
@@ -157,9 +143,9 @@ namespace RanitaApi.Services
     </div>
     <a href='https://www.ranita-shop.com/my-orders.html'
        style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
-      Suivre ma commande →
+      Suivre ma commande
     </a>
-    <p style='margin-top:20px;font-size:12px;color:#9ca3af;'>Ranita Market — www.ranita-shop.com</p>
+    {FOOTER}
   </div>
 </div>"
             };
@@ -169,23 +155,23 @@ namespace RanitaApi.Services
         // ✅ Changement de statut → client
         public async Task SendOrderStatusUpdateAsync(string clientEmail, string clientName, int orderId, string newStatus)
         {
-            var (emoji, color, message) = newStatus switch
+            var (color, message) = newStatus switch
             {
-                "Validée" => ("✅", "#3b82f6", "Votre commande a été validée et est en cours de préparation."),
-                "Livrée" => ("🎉", "#10b981", "Votre commande a été livrée. Merci pour votre achat !"),
-                "Annulée" => ("❌", "#ef4444", "Votre commande a été annulée. Contactez-nous pour plus d'informations."),
-                _ => ("📦", "#f59e0b", "Le statut de votre commande a été mis à jour.")
+                "Validée" => ("#3b82f6", "Votre commande a ete validee et est en cours de preparation."),
+                "Livrée" => ("#10b981", "Votre commande a ete livree. Merci pour votre achat !"),
+                "Annulée" => ("#ef4444", "Votre commande a ete annulee. Contactez-nous pour plus d'informations."),
+                _ => ("#f59e0b", "Le statut de votre commande a ete mis a jour.")
             };
 
             var payload = new
             {
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
                 to = new[] { new { email = clientEmail } },
-                subject = $"{emoji} Commande #{orderId} — {newStatus}",
+                subject = $"Commande #{orderId} - {newStatus}",
                 htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
-    <h2 style='color:{color};margin:0 0 16px'>{emoji} Statut mis à jour</h2>
+    <h2 style='color:{color};margin:0 0 16px'>Statut de votre commande mis a jour</h2>
     <p>Bonjour <strong>{clientName}</strong>,</p>
     <p>{message}</p>
     <div style='background:#f9fafb;border-radius:8px;padding:16px;margin:16px 0;text-align:center;'>
@@ -195,13 +181,24 @@ namespace RanitaApi.Services
     </div>
     <a href='https://www.ranita-shop.com/my-orders.html'
        style='display:inline-block;margin-top:8px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
-      Voir mes commandes →
+      Voir mes commandes
     </a>
-    <p style='margin-top:20px;font-size:12px;color:#9ca3af;'>Ranita Market — www.ranita-shop.com</p>
+    {FOOTER}
   </div>
 </div>"
             };
             await SendBrevoEmail(payload);
+        }
+
+        private async Task SendBrevoEmail(object payload)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email");
+            request.Headers.Add("api-key", _config["Brevo:ApiKey"]);
+            request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+            var response = await _http.SendAsync(request);
+            var result = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                Console.WriteLine("BREVO ERROR: " + result);
         }
     }
 }
