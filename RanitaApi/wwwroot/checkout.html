@@ -604,7 +604,11 @@
                 customerAddress: zoneName + " — " + document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
                 shippingFee: SHIPPING_FEE,
-                items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
+                items: cart.map(item => ({
+                    productId: item.id,
+                    quantity: item.quantity,
+                    variantId: item.variantId || null
+                }))
             };
 
             const btn = e.target.querySelector("button[type='submit']");

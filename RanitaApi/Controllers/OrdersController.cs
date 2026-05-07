@@ -123,6 +123,19 @@ namespace RanitaApi.Controllers
 
                 total += price * item.Quantity;
                 order.Items.Add(orderItem);
+
+                // ✅ Déduire le stock
+                if (item.VariantId.HasValue)
+                {
+                    var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
+                    if (variant != null)
+                        variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
+                }
+                else
+                {
+                    product.Stock = Math.Max(0, product.Stock - item.Quantity);
+                }
+
             }
 
             // Ajouter frais de livraison
