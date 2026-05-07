@@ -45,7 +45,9 @@ namespace RanitaApi.Controllers
                     i.ProductName,
                     i.Price,
                     i.Quantity,
-                    i.ImageUrl
+                    i.ImageUrl,
+                    i.VariantId,
+                    i.VariantName  // ✅ ajout
                 })
             });
 
@@ -81,7 +83,9 @@ namespace RanitaApi.Controllers
                     i.ProductName,
                     i.Price,
                     i.Quantity,
-                    i.ImageUrl
+                    i.ImageUrl,
+                    i.VariantId,
+                    i.VariantName  // ✅ ajout
                 })
             });
         }
@@ -119,7 +123,8 @@ namespace RanitaApi.Controllers
                     Price = price,
                     Quantity = item.Quantity,
                     ImageUrl = product.ImageUrl,
-                    VariantId = item.VariantId
+                    VariantId = item.VariantId,
+                    VariantName = item.VariantName
                 };
 
                 total += price * item.Quantity;
@@ -260,6 +265,7 @@ namespace RanitaApi.Controllers
         public int ProductId { get; set; }
         public int Quantity { get; set; }
         public int? VariantId { get; set; }
+        public string? VariantName { get; set; }
 
     }
 

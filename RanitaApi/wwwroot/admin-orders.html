@@ -331,7 +331,7 @@
             <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}">
             <div class="modal-item-info">
                 <div class="modal-item-name">${i.productName}</div>
-                <div class="modal-item-qty">Quantité : ${i.quantity}</div>
+                <div class="modal-item-qty">Quantité : ${i.quantity}${i.variantName ? ` • ${i.variantName}` : ''}</div>
             </div>
             <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
         </div>

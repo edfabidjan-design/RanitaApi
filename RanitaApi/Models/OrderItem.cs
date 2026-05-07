@@ -17,6 +17,7 @@ namespace RanitaApi.Models
         public int Quantity { get; set; }
         public string ImageUrl { get; set; } = "";
         public int? VariantId { get; set; }
+        public string? VariantName { get; set; }
 
     }
 }

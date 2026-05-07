@@ -326,4 +326,16 @@ catch (Exception ex) { Console.WriteLine("Orders.ShippingFee error: " + ex.Messa
 
 
 
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""OrderItems"" ADD COLUMN IF NOT EXISTS ""VariantName"" TEXT NULL;");
+}
+catch (Exception ex) { Console.WriteLine("OrderItems.VariantName error: " + ex.Message); }
+
+
+
+
 app.Run();
