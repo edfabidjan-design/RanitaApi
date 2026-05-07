@@ -5,46 +5,341 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes commandes - Ranita</title>
     <link rel="stylesheet" href="products.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+        }
+
+        .site-header {
+            background: #111827;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            color: white;
+        }
+
+        .site-header nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .orders-page {
+            max-width: 800px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+            .orders-page h1 {
+                font-size: 24px;
+                font-weight: 800;
+                margin-bottom: 8px;
+            }
+
+            .orders-page p {
+                font-size: 14px;
+                color: #6b7280;
+                margin-bottom: 24px;
+            }
+
+        .order-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+
+            .order-card:hover {
+                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            }
+
+        .order-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .order-id {
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .order-date {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-en-attente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-validee {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-livree {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-annulee {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .order-total {
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .order-items-preview {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+
+            .order-items-preview img {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 8px;
+                border: 2px solid #f3f4f6;
+            }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+            .modal-overlay.open {
+                display: flex;
+            }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+            .modal h3 {
+                font-size: 18px;
+                font-weight: 800;
+                margin-bottom: 6px;
+            }
+
+        .modal-date {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 16px;
+        }
+
+        .modal-info {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #374151;
+            line-height: 1.8;
+        }
+
+        .modal-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+            .modal-item:last-child {
+                border-bottom: none;
+            }
+
+            .modal-item img {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 10px;
+                flex-shrink: 0;
+            }
+
+        .modal-item-info {
+            flex: 1;
+        }
+
+        .modal-item-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 2px;
+        }
+
+        .modal-item-qty {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .modal-item-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #10b981;
+            white-space: nowrap;
+        }
+
+        .modal-total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 8px 0;
+            color: #6b7280;
+        }
+
+            .modal-total-row.grand {
+                font-size: 18px;
+                font-weight: 800;
+                color: #111827;
+                border-top: 2px solid #f3f4f6;
+                margin-top: 8px;
+                padding-top: 12px;
+            }
+
+                .modal-total-row.grand span:last-child {
+                    color: #10b981;
+                }
+
+        .btn-close {
+            width: 100%;
+            background: #f3f4f6;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 14px;
+        }
+
+            .empty-state p {
+                color: #9ca3af;
+                margin: 12px 0 24px;
+            }
+
+        .btn-shop {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body>
+
     <header class="site-header">
         <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
         <nav>
             <a href="products.html">Produits</a>
             <a href="cart.html">Panier</a>
-            <a href="client-orders.html">Mes commandes</a>
             <a href="javascript:void(0)" onclick="logoutClient()">Déconnexion</a>
         </nav>
     </header>
 
-    <main class="products-page">
-        <header class="products-header">
-            <div>
-                <h1>Mes commandes</h1>
-                <p>Consultez l’historique de vos commandes Ranita Market</p>
-            </div>
-
-            <a href="products.html" class="cart-link">Retour boutique</a>
-        </header>
-
+    <div class="orders-page">
+        <h1>📦 Mes commandes</h1>
+        <p>Historique de vos commandes Ranita Market</p>
         <div id="ordersContainer"></div>
-    </main>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" id="modalContent"></div>
+    </div>
 
     <script>
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
         const client = JSON.parse(localStorage.getItem("client"));
 
-        const container = document.getElementById("ordersContainer");
-
         if (!client) {
-            alert("Veuillez vous connecter pour voir vos commandes.");
-            window.location.href = "login.html";
+            window.location.href = "login.html?redirect=client-orders.html";
         }
 
+        function getStatusClass(status) {
+            switch (status) {
+                case "En attente": return "status-en-attente";
+                case "Validée": return "status-validee";
+                case "Livrée": return "status-livree";
+                case "Annulée": return "status-annulee";
+                default: return "status-en-attente";
+            }
+        }
 
         async function loadOrders() {
-            const res = await fetch(`${API_BASE}/client-auth/orders/${client.id}`);
+            const container = document.getElementById("ordersContainer");
 
+            const res = await fetch(`${API_BASE}/client-auth/orders/${client.id}`);
             if (!res.ok) {
                 container.innerHTML = "<p>Impossible de charger vos commandes.</p>";
                 return;
@@ -54,61 +349,102 @@
 
             if (orders.length === 0) {
                 container.innerHTML = `
-                <div class="empty-card">
-                    <h2>Aucune commande</h2>
-                    <p>Vous n’avez pas encore passé de commande.</p>
-                    <a href="products.html" class="cart-link">Découvrir les produits</a>
-                </div>
-            `;
+                        <div class="empty-state">
+                            <div style="font-size:60px">📦</div>
+                            <p>Vous n'avez pas encore passé de commande.</p>
+                            <a href="products.html" class="btn-shop">Découvrir les produits</a>
+                        </div>`;
                 return;
             }
 
             container.innerHTML = orders.map(o => `
-            <div class="order-card">
-                <div class="order-head">
-                    <div>
-                        <h2>Commande #${o.id}</h2>
-                        <p>${new Date(o.createdAt).toLocaleDateString()}</p>
+                    <div class="order-card" onclick="showDetails(${o.id})">
+                        <div class="order-head">
+                            <div>
+                                <div class="order-id">Commande #${o.id}</div>
+                                <div class="order-date">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                            </div>
+                            <span class="order-status ${getStatusClass(o.status)}">${o.status}</span>
+                        </div>
+                        <div class="order-items-preview">
+                            ${o.items.map(i => `
+                                <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}" title="${i.productName}">
+                            `).join('')}
+                        </div>
+                        <div class="order-summary">
+                            <span>${o.items.length} article(s) • ${o.paymentMethod}</span>
+                            <span class="order-total">${Number(o.total).toLocaleString()} FCFA</span>
+                        </div>
                     </div>
-                    <span class="order-status">${o.status || "En attente"}</span>
-                </div>
+                `).join('');
 
-                <p><strong>Paiement :</strong> ${o.paymentMethod}</p>
-                <p><strong>Livraison :</strong> ${o.customerAddress}</p>
-
-                <table class="order-table">
-                    <thead>
-                        <tr>
-                            <th>Produit</th>
-                            <th>Qté</th>
-                            <th>Prix</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${o.items.map(i => `
-                            <tr>
-                                <td>${i.productName}</td>
-                                <td>${i.quantity}</td>
-                                <td>${Number(i.price).toLocaleString()} FCFA</td>
-                                <td>${Number(i.price * i.quantity).toLocaleString()} FCFA</td>
-                            </tr>
-                        `).join("")}
-                    </tbody>
-                </table>
-
-                <h3>Total : ${Number(o.total).toLocaleString()} FCFA</h3>
-            </div>
-        `).join("");
+            // Stocker les commandes pour la modal
+            window._orders = orders;
         }
 
-        loadOrders();
+        function showDetails(orderId) {
+            const o = window._orders.find(o => o.id === orderId);
+            if (!o) return;
+
+            const subtotal = o.items.reduce((s, i) => s + i.price * i.quantity, 0);
+            const shipping = o.total - subtotal;
+
+            document.getElementById("modalContent").innerHTML = `
+                    <h3>Commande #${o.id}</h3>
+                    <div class="modal-date">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+
+                    <div class="modal-info">
+                        <strong>Statut :</strong> ${o.status}<br>
+                        <strong>Livraison :</strong> ${o.customerAddress}<br>
+                        <strong>Paiement :</strong> ${o.paymentMethod}
+                    </div>
+
+                    <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#374151;">Articles commandés</div>
+
+                    ${o.items.map(i => `
+                        <div class="modal-item">
+                            <img src="${i.imageUrl || 'https://via.placeholder.com/60'}" alt="${i.productName}">
+                            <div class="modal-item-info">
+                                <div class="modal-item-name">${i.productName}</div>
+                                <div class="modal-item-qty">Quantité : ${i.quantity} × ${Number(i.price).toLocaleString()} FCFA</div>
+                            </div>
+                            <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
+                        </div>
+                    `).join('')}
+
+                    <div class="modal-total-row">
+                        <span>Sous-total</span>
+                        <span>${Number(subtotal).toLocaleString()} FCFA</span>
+                    </div>
+                    <div class="modal-total-row">
+                        <span>🚚 Livraison</span>
+                        <span>${Number(shipping).toLocaleString()} FCFA</span>
+                    </div>
+                    <div class="modal-total-row grand">
+                        <span>Total</span>
+                        <span>${Number(o.total).toLocaleString()} FCFA</span>
+                    </div>
+
+                    <button class="btn-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">
+                        Fermer
+                    </button>
+                `;
+
+            document.getElementById("modalOverlay").classList.add("open");
+        }
+
+        function closeModal(e) {
+            if (e.target === document.getElementById("modalOverlay")) {
+                document.getElementById("modalOverlay").classList.remove("open");
+            }
+        }
 
         function logoutClient() {
             localStorage.removeItem("client");
             window.location.href = "login.html";
         }
-    </script>
 
+        loadOrders();
+    </script>
 </body>
 </html>
