@@ -345,7 +345,7 @@
                         <div class="product-info">
                             <span class="product-category">${p.category?.name || ""}</span>
                             <h3 class="product-name">${p.name}</h3>
-                            <p class="product-description">${p.shortDescription || p.description || ""}</p>
+                            ${p.shortDescription ? `<p class="product-description">${p.shortDescription}</p>` : ""}
                             <div class="product-prices">
                                 <span class="price-current">${Number(p.price).toLocaleString()} FCFA</span>
                                 ${p.oldPrice ? `<span class="price-old">${Number(p.oldPrice).toLocaleString()} FCFA</span>` : ""}
