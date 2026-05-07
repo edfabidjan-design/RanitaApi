@@ -944,3 +944,135 @@ body {
         padding-top: 70px !important;
     }
 }
+
+
+
+/* =============================================
+   CORRECTIONS RESPONSIVE MANQUANTES
+============================================= */
+
+/* Client orders page */
+@media (max-width: 768px) {
+    .orders-page {
+        padding: 0 12px !important;
+        margin: 70px auto 40px !important;
+    }
+
+    .order-card {
+        padding: 16px !important;
+    }
+
+    .order-head {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .order-table {
+        font-size: 12px !important;
+    }
+
+    .order-table th, .order-table td {
+        padding: 8px !important;
+    }
+}
+
+/* Thank you page */
+@media (max-width: 768px) {
+    .thank-you-card {
+        padding: 28px 20px !important;
+        margin: 16px !important;
+    }
+
+    .thank-you-card h1 {
+        font-size: 22px !important;
+    }
+
+    .thank-you-actions {
+        flex-direction: column !important;
+    }
+
+    .thank-you-actions a {
+        width: 100% !important;
+        text-align: center !important;
+    }
+}
+
+/* Product details page responsive */
+@media (max-width: 768px) {
+    .product-page {
+        margin-top: 70px !important;
+        padding: 0 12px !important;
+    }
+
+    .product-description-full {
+        padding: 0 12px !important;
+    }
+}
+
+/* Auth pages */
+.auth-card {
+    max-width: 420px;
+    margin: 60px auto;
+    background: white;
+    padding: 36px;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.10);
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        margin: 70px 16px 40px !important;
+        padding: 24px 16px !important;
+    }
+}
+
+.auth-logo {
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    color: #111827;
+}
+
+.auth-card h2 {
+    text-align: center;
+    margin: 0 0 20px;
+    font-size: 22px;
+}
+
+.auth-card form input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.auth-card form button {
+    width: 100%;
+    padding: 13px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+.auth-links a {
+    color: #10b981;
+    text-decoration: none;
+    font-weight: 600;
+}
