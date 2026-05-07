@@ -145,14 +145,14 @@ namespace RanitaApi.Controllers
                     );
                     if (variants != null && variants.Count > 0)
                     {
-                        var old = _context.ProductVariants.Where(v => v.ProductId == id); // ← id, pas product.Id
+                        var old = _context.ProductVariants.Where(v => v.ProductId == product.Id);
                         _context.ProductVariants.RemoveRange(old);
                         await _context.SaveChangesAsync();
 
                         foreach (var v in variants)
                         {
                             v.Id = 0;
-                            v.ProductId = id; // ← id, pas product.Id
+                            v.ProductId = product.Id;
                             _context.ProductVariants.Add(v);
                         }
                         await _context.SaveChangesAsync();
