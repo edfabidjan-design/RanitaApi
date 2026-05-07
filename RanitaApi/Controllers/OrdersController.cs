@@ -118,7 +118,8 @@ namespace RanitaApi.Controllers
                     ProductName = product.Name,
                     Price = price,
                     Quantity = item.Quantity,
-                    ImageUrl = product.ImageUrl
+                    ImageUrl = product.ImageUrl,
+                    VariantId = item.VariantId
                 };
 
                 total += price * item.Quantity;
@@ -173,6 +174,42 @@ namespace RanitaApi.Controllers
 
             return Ok("Supprimé");
         }
+
+        // ✅ ANNULER commande (client)
+        [HttpPost("{id}/cancel")]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return NotFound();
+
+            if (order.Status != "En attente")
+                return BadRequest("Seules les commandes en attente peuvent être annulées.");
+
+            order.Status = "Annulée";
+
+            // ✅ Remettre le stock
+            foreach (var item in order.Items)
+            {
+                if (item.VariantId.HasValue)
+                {
+                    var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
+                    if (variant != null)
+                        variant.Stock += item.Quantity;
+                }
+                else
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product != null)
+                        product.Stock += item.Quantity;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok("Commande annulée");
+        }
     }
 
     // DTOs
@@ -192,6 +229,7 @@ namespace RanitaApi.Controllers
         public int ProductId { get; set; }
         public int Quantity { get; set; }
         public int? VariantId { get; set; }
+
     }
 
     public class UpdateStatusDto

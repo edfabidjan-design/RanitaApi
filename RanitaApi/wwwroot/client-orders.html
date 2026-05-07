@@ -336,6 +336,25 @@
             }
         }
 
+
+        async function cancelOrder(orderId) {
+            if (!confirm("Voulez-vous vraiment annuler cette commande ?")) return;
+
+            const res = await fetch(`${API_BASE}/orders/${orderId}/cancel`, {
+                method: "POST"
+            });
+
+            if (!res.ok) {
+                alert(await res.text());
+                return;
+            }
+
+            alert("Commande annulée avec succès.");
+            document.getElementById("modalOverlay").classList.remove("open");
+            loadOrders();
+        }
+
+
         async function loadOrders() {
             const container = document.getElementById("ordersContainer");
 
@@ -382,6 +401,8 @@
             window._orders = orders;
         }
 
+
+
         function showDetails(orderId) {
             const o = window._orders.find(o => o.id === orderId);
             if (!o) return;
@@ -425,9 +446,15 @@
                         <span>${Number(o.total).toLocaleString()} FCFA</span>
                     </div>
 
-                    <button class="btn-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">
-                        Fermer
-                    </button>
+${o.status === "En attente" ? `
+    <button onclick="cancelOrder(${o.id})" 
+            style="width:100%;background:#fef2f2;color:#ef4444;border:2px solid #ef4444;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:12px;font-size:14px;">
+        ❌ Annuler la commande
+    </button>
+` : ''}
+<button class="btn-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">
+    Fermer
+</button>
                 `;
 
             document.getElementById("modalOverlay").classList.add("open");
