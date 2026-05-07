@@ -648,9 +648,9 @@ body {
     }
 
     .product-img {
-        max-height: 120px !important;
+        max-height: 90px !important;
         aspect-ratio: unset !important;
-        height: 120px !important;
+        height: 90px !important;
         border-radius: 12px !important;
     }
 
