@@ -226,23 +226,34 @@ namespace RanitaApi.Controllers
             await _context.SaveChangesAsync();
 
             // Sauvegarder les variantes
-            var variantsJson = Request.Form["Variants"].ToString();
-            if (!string.IsNullOrEmpty(variantsJson))
+            // Sauvegarder les variantes
+            var variantsJson = Request.Form["Variants"].FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(variantsJson))
             {
-                var variants = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariant>>(variantsJson);
-                if (variants != null)
+                try
                 {
-                    // Supprimer les anciennes variantes
-                    var old = _context.ProductVariants.Where(v => v.ProductId == product.Id);
-                    _context.ProductVariants.RemoveRange(old);
-
-                    // Ajouter les nouvelles
-                    foreach (var v in variants)
+                    var variants = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariant>>(
+                        variantsJson,
+                        new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                    if (variants != null && variants.Count > 0)
                     {
-                        v.ProductId = product.Id;
-                        _context.ProductVariants.Add(v);
+                        var old = _context.ProductVariants.Where(v => v.ProductId == id);
+                        _context.ProductVariants.RemoveRange(old);
+                        await _context.SaveChangesAsync();
+
+                        foreach (var v in variants)
+                        {
+                            v.Id = 0;
+                            v.ProductId = id;
+                            _context.ProductVariants.Add(v);
+                        }
+                        await _context.SaveChangesAsync();
                     }
-                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ERROR] Variantes Update: {ex.Message}");
                 }
             }
 
