@@ -131,4 +131,36 @@ public class ClientAuthController : ControllerBase
 
         return Ok("Mot de passe réinitialisé");
     }
+
+    [HttpGet("orders/{clientId}")]
+    public async Task<IActionResult> GetClientOrders(int clientId)
+    {
+        var orders = await _context.Orders
+            .Include(o => o.Items)
+            .Where(o => o.ClientId == clientId)
+            .OrderByDescending(o => o.CreatedAt)
+            .ToListAsync();
+
+        var result = orders.Select(o => new
+        {
+            o.Id,
+            o.CustomerName,
+            o.CustomerPhone,
+            o.CustomerAddress,
+            o.PaymentMethod,
+            o.Total,
+            o.Status,
+            o.CreatedAt,
+            Items = o.Items.Select(i => new
+            {
+                i.Id,
+                i.ProductName,
+                i.Price,
+                i.Quantity,
+                i.ImageUrl
+            })
+        });
+
+        return Ok(result);
+    }
 }

@@ -5,43 +5,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Commande confirmée - Ranita</title>
     <link rel="stylesheet" href="products.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-header {
+            background: #111827;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            color: white;
+        }
+
+        .site-header nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .thank-you-page {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .thank-you-card {
+            background: white;
+            border-radius: 20px;
+            padding: 48px 40px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .thank-you-card h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+
+        .order-number {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #065f46;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+            border: 1px solid #10b981;
+        }
+
+        .thank-you-card p {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .thank-you-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            display: block;
+            background: #10b981;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+
+            .btn-primary:hover {
+                background: #059669;
+            }
+
+        .btn-secondary {
+            display: block;
+            background: #f3f4f6;
+            color: #374151;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+
+            .btn-secondary:hover {
+                background: #e5e7eb;
+            }
+
+        .divider {
+            height: 1px;
+            background: #f3f4f6;
+            margin: 8px 0;
+        }
+
+        @media (max-width: 480px) {
+            .thank-you-card {
+                padding: 32px 20px;
+            }
+
+                .thank-you-card h1 {
+                    font-size: 20px;
+                }
+        }
+    </style>
 </head>
 <body>
 
+    <header class="site-header">
+        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
+        <nav>
+            <a href="products.html">Produits</a>
+            <a href="cart.html">Panier</a>
+        </nav>
+    </header>
+
     <main class="thank-you-page">
         <div class="thank-you-card">
-            <div class="success-icon">✅</div>
-
-            <h1>Merci pour votre commande !</h1>
-
-            <p id="orderNumber"></p>
-
+            <div class="success-icon">🎉</div>
+            <h1>Commande confirmée !</h1>
+            <div class="order-number" id="orderNumber"></div>
             <p>
-                Votre commande a été enregistrée avec succès.
-                Notre équipe vous contactera rapidement pour la confirmation et la livraison.
+                Merci pour votre commande sur Ranita Market.<br>
+                Notre équipe vous contactera rapidement au numéro fourni pour confirmer la livraison.
             </p>
-
             <div class="thank-you-actions">
-                <a href="client-orders.html" class="cart-link">Voir mes commandes</a>
-                <a href="products.html" class="cart-link">Continuer mes achats</a>
-                <a href="cart.html" class="secondary-link">Voir le panier</a>
+                <a href="products.html" class="btn-primary">🛒 Continuer mes achats</a>
+                <div class="divider"></div>
+                <a href="client-orders.html" class="btn-secondary">📦 Voir mes commandes</a>
             </div>
         </div>
     </main>
 
     <script>
         const orderId = localStorage.getItem("lastOrderId");
-
         if (!orderId) {
             window.location.href = "products.html";
         } else {
-            document.getElementById("orderNumber").textContent =
-                "Numéro de commande : #" + orderId;
-
-            // nettoyage
+            document.getElementById("orderNumber").textContent = "Commande #" + orderId;
             localStorage.removeItem("lastOrderId");
         }
     </script>
-
 </body>
 </html>

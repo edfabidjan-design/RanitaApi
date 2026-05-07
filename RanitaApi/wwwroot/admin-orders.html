@@ -5,30 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranita Admin - Commandes</title>
     <link rel="stylesheet" href="admin-style.css">
+    <style>
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-validated {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-delivered {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-select {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .modal-overlay.open {
+                display: flex;
+            }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+            .modal h3 {
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 16px;
+                color: #111827;
+            }
+
+        .modal-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+            .modal-item img {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+        .modal-item-info {
+            flex: 1;
+        }
+
+        .modal-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .modal-item-qty {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .modal-item-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .modal-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 800;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .btn-close-modal {
+            width: 100%;
+            background: #f3f4f6;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .order-info {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+            .order-info strong {
+                color: #111827;
+            }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            flex: 1;
+            min-width: 120px;
+        }
+
+            .stat-card .stat-num {
+                font-size: 24px;
+                font-weight: 800;
+                color: #111827;
+            }
+
+            .stat-card .stat-label {
+                font-size: 12px;
+                color: #6b7280;
+                margin-top: 2px;
+            }
+    </style>
 </head>
 <body>
 
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
-
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
             <a href="admin-categories.html">Catégories</a>
             <a href="admin-orders.html" class="active">Commandes</a>
         </nav>
-
         <button onclick="logout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
-        <h1>Traitement des commandes</h1>
+        <h1>📦 Gestion des commandes</h1>
+
+        <div class="stats-bar" id="statsBar"></div>
 
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>Client</th>
                         <th>Téléphone</th>
                         <th>Adresse</th>
@@ -42,13 +207,16 @@
                 <tbody id="ordersTable"></tbody>
             </table>
         </div>
+    </div>
+
+    <!-- MODAL DÉTAILS -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" id="modalContent"></div>
+    </div>
 
     <script>
         const token = localStorage.getItem("adminToken");
-
-        if (!token) {
-            window.location.href = "admin-login.html";
-        }
+        if (!token) window.location.href = "admin-login.html";
 
         function logout() {
             localStorage.removeItem("adminToken");
@@ -56,8 +224,6 @@
         }
 
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-        const ordersApi = `${API_BASE}/orders`;
-        const ordersTable = document.getElementById("ordersTable");
 
         function getStatusClass(status) {
             switch (status) {
@@ -70,42 +236,72 @@
         }
 
         async function loadOrders() {
-            const res = await fetch(ordersApi);
+            const res = await fetch(`${API_BASE}/orders`);
             const orders = await res.json();
 
-            ordersTable.innerHTML = "";
+            // Stats
+            const stats = {
+                total: orders.length,
+                attente: orders.filter(o => o.status === "En attente").length,
+                validee: orders.filter(o => o.status === "Validée").length,
+                livree: orders.filter(o => o.status === "Livrée").length,
+                ca: orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0)
+            };
 
-            orders.forEach(o => {
-                ordersTable.innerHTML += `
-                <tr>
-                    <td>${o.id}</td>
-                    <td>${o.customerName}</td>
-                    <td>${o.customerPhone}</td>
-                    <td>${o.customerAddress}</td>
-                    <td>${o.paymentMethod}</td>
-                    <td>${Number(o.total).toLocaleString()} FCFA</td>
-                    <td>
-                        <select class="${getStatusClass(o.status)}" onchange="updateStatus(${o.id}, this.value)">
-                            <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                            <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-                            <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-                            <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-                        </select>
-                    </td>
-                    <td>${new Date(o.createdAt).toLocaleString()}</td>
-                    <td>
-                        <button onclick='showDetails(${JSON.stringify(o.items)})'>Voir</button>
-                    </td>
-                </tr>
-            `;
-            });
+            document.getElementById("statsBar").innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-num">${stats.total}</div>
+                        <div class="stat-label">Total commandes</div>
+                    </div>
+                    <div class="stat-card" style="border-top:3px solid #f59e0b;">
+                        <div class="stat-num">${stats.attente}</div>
+                        <div class="stat-label">En attente</div>
+                    </div>
+                    <div class="stat-card" style="border-top:3px solid #3b82f6;">
+                        <div class="stat-num">${stats.validee}</div>
+                        <div class="stat-label">Validées</div>
+                    </div>
+                    <div class="stat-card" style="border-top:3px solid #10b981;">
+                        <div class="stat-num">${stats.livree}</div>
+                        <div class="stat-label">Livrées</div>
+                    </div>
+                    <div class="stat-card" style="border-top:3px solid #8b5cf6;">
+                        <div class="stat-num">${Number(stats.ca).toLocaleString()} FCFA</div>
+                        <div class="stat-label">Chiffre d'affaires</div>
+                    </div>
+                `;
+
+            const tbody = document.getElementById("ordersTable");
+            tbody.innerHTML = orders.map(o => `
+                    <tr>
+                        <td><strong>#${o.id}</strong></td>
+                        <td>${o.customerName}</td>
+                        <td>${o.customerPhone}</td>
+                        <td style="max-width:150px;font-size:12px;">${o.customerAddress}</td>
+                        <td>${o.paymentMethod}</td>
+                        <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
+                        <td>
+                            <select class="status-select ${getStatusClass(o.status)}"
+                                    onchange="updateStatus(${o.id}, this.value, this)">
+                                <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+                                <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+                                <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+                                <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+                            </select>
+                        </td>
+                        <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
+                        <td>
+                            <button onclick='showDetails(${JSON.stringify(o)})'>👁 Voir</button>
+                        </td>
+                    </tr>
+                `).join('');
         }
 
-        async function updateStatus(id, status) {
-            const res = await fetch(`${ordersApi}/${id}/status`, {
-                method: "PUT",
+        async function updateStatus(id, status, selectEl) {
+            const res = await fetch(`${API_BASE}/orders/${id}/status`, {
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(status)
+                body: JSON.stringify({ status })
             });
 
             if (!res.ok) {
@@ -113,21 +309,57 @@
                 return;
             }
 
-            alert("Statut mis à jour");
+            // Mettre à jour la classe CSS
+            selectEl.className = `status-select ${getStatusClass(status)}`;
         }
 
-        function showDetails(items) {
-            let text = "Produits commandés :\n\n";
+        function showDetails(o) {
+            const itemsHtml = o.items.map(i => `
+                    <div class="modal-item">
+                        <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}">
+                        <div class="modal-item-info">
+                            <div class="modal-item-name">${i.productName}</div>
+                            <div class="modal-item-qty">Quantité : ${i.quantity}</div>
+                        </div>
+                        <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
+                    </div>
+                `).join('');
 
-            items.forEach(i => {
-                text += `${i.productName} x ${i.quantity} = ${Number(i.price * i.quantity).toLocaleString()} FCFA\n`;
-            });
+            const subtotal = o.items.reduce((s, i) => s + i.price * i.quantity, 0);
 
-            alert(text);
+            document.getElementById("modalContent").innerHTML = `
+                    <h3>Commande #${o.id}</h3>
+                    <div class="order-info">
+                        <strong>Client :</strong> ${o.customerName}<br>
+                        <strong>Téléphone :</strong> ${o.customerPhone}<br>
+                        <strong>Adresse :</strong> ${o.customerAddress}<br>
+                        <strong>Paiement :</strong> ${o.paymentMethod}<br>
+                        <strong>Date :</strong> ${new Date(o.createdAt).toLocaleString('fr-FR')}
+                    </div>
+                    ${itemsHtml}
+                    <div class="modal-total">
+                        <span>Sous-total</span>
+                        <span>${Number(subtotal).toLocaleString()} FCFA</span>
+                    </div>
+                    <div class="modal-total">
+                        <span>Total payé</span>
+                        <span style="color:#10b981;">${Number(o.total).toLocaleString()} FCFA</span>
+                    </div>
+                    <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">
+                        Fermer
+                    </button>
+                `;
+
+            document.getElementById("modalOverlay").classList.add("open");
+        }
+
+        function closeModal(e) {
+            if (e.target === document.getElementById("modalOverlay")) {
+                document.getElementById("modalOverlay").classList.remove("open");
+            }
         }
 
         loadOrders();
     </script>
-
 </body>
 </html>

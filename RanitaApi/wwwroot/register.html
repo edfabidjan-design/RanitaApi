@@ -62,7 +62,8 @@
             }
 
             alert("Compte créé !");
-            window.location.href = "login.html";
+            const redirect = new URLSearchParams(window.location.search).get("redirect");
+            window.location.href = "login.html" + (redirect ? `?redirect=${redirect}` : "");
         });
     </script>
 

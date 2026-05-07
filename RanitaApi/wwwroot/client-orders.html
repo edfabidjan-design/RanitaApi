@@ -43,7 +43,7 @@
 
 
         async function loadOrders() {
-            const res = await fetch(`${API_BASE}/client-orders/${client.id}`);
+            const res = await fetch(`${API_BASE}/client-auth/orders/${client.id}`);
 
             if (!res.ok) {
                 container.innerHTML = "<p>Impossible de charger vos commandes.</p>";
@@ -91,7 +91,7 @@
                                 <td>${i.productName}</td>
                                 <td>${i.quantity}</td>
                                 <td>${Number(i.price).toLocaleString()} FCFA</td>
-                                <td>${Number(i.total).toLocaleString()} FCFA</td>
+                                <td>${Number(i.price * i.quantity).toLocaleString()} FCFA</td>
                             </tr>
                         `).join("")}
                     </tbody>

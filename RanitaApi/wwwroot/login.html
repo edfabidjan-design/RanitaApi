@@ -55,7 +55,8 @@
             localStorage.setItem("client", JSON.stringify(data));
 
             alert("Connexion OK");
-            window.location.href = "products.html";
+            const redirect = new URLSearchParams(window.location.search).get("redirect");
+            window.location.href = redirect || "products.html";
         });
     </script>
 
