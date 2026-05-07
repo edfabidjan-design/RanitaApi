@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
+using RanitaApi.Services;
 
 namespace RanitaApi.Controllers
 {
@@ -150,6 +151,18 @@ namespace RanitaApi.Controllers
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+
+            // Email notification admin
+            try
+            {
+                var emailService = HttpContext.RequestServices.GetService<EmailService>();
+                if (emailService != null)
+                    await emailService.SendNewOrderNotificationAsync(
+                        order.Id, order.CustomerName, order.CustomerPhone,
+                        order.CustomerAddress, order.Total);
+            }
+            catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
+
 
             return Ok(new { order.Id, order.Total, order.Status });
         }

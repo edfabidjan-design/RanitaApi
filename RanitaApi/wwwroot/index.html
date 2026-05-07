@@ -71,10 +71,10 @@
                     <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
                         👤 ${client.name ? client.name.split(" ")[0] : "Mon compte"} ▾
                     </button>
-                    <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:180px;z-index:999;">
-                       <a href="client-orders.html" style="display:block;padding:12px 16px;color:#111827;text-decoration:none;font-weight:600;border-bottom:1px solid #f3f4f6;white-space:nowrap;">📦 Mes commandes</a>
-                        <div onclick="logout()" style="padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
-                    </div>
+                <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
+                  <a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#111827;text-decoration:none;font-weight:600;border-bottom:1px solid #f3f4f6;white-space:nowrap;">📦 Mes commandes</a>
+                  <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;white-space:nowrap;">🚪 Se déconnecter</div>
+                </div>
                 </div>
             `;
         } else {

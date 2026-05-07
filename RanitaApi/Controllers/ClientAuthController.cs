@@ -51,6 +51,16 @@ public class ClientAuthController : ControllerBase
         _context.Clients.Add(client);
         await _context.SaveChangesAsync();
 
+        // Email notification admin
+        try
+        {
+            await _emailService.SendNewClientNotificationAsync(
+                client.FullName, client.Email, client.Phone);
+        }
+        catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
+
+
+
         return Ok(new { message = "Compte créé" });
     }
 
