@@ -41,8 +41,7 @@ namespace RanitaApi.Controllers
                 o.CreatedAt,
                 o.ClientId,
                 Client = o.Client == null ? null : new { o.Client.Id, o.Client.FullName, o.Client.Email },
-                Items = o.Items.Select(i => new
-                {
+                Items = o.Items.Select(i => new {
                     i.Id,
                     i.ProductId,
                     i.ProductName,
@@ -50,7 +49,7 @@ namespace RanitaApi.Controllers
                     i.Quantity,
                     i.ImageUrl,
                     i.VariantId,
-                    i.VariantName  // ✅ ajout
+                    i.VariantName
                 })
             });
 
@@ -79,8 +78,7 @@ namespace RanitaApi.Controllers
                 o.Status,
                 o.CreatedAt,
                 o.ClientId,
-                Items = o.Items.Select(i => new
-                {
+                Items = o.Items.Select(i => new {
                     i.Id,
                     i.ProductId,
                     i.ProductName,
@@ -88,7 +86,7 @@ namespace RanitaApi.Controllers
                     i.Quantity,
                     i.ImageUrl,
                     i.VariantId,
-                    i.VariantName  // ✅ ajout
+                    i.VariantName
                 })
             });
         }
@@ -118,22 +116,20 @@ namespace RanitaApi.Controllers
                 var product = await _context.Products.FindAsync(item.ProductId);
                 if (product == null) continue;
 
-                var price = product.Price;
                 var orderItem = new OrderItem
                 {
                     ProductId = product.Id,
                     ProductName = product.Name,
-                    Price = price,
+                    Price = product.Price,
                     Quantity = item.Quantity,
                     ImageUrl = product.ImageUrl,
                     VariantId = item.VariantId,
                     VariantName = item.VariantName
                 };
 
-                total += price * item.Quantity;
+                total += product.Price * item.Quantity;
                 order.Items.Add(orderItem);
 
-                // ✅ Déduire le stock
                 if (item.VariantId.HasValue)
                 {
                     var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
@@ -144,35 +140,42 @@ namespace RanitaApi.Controllers
                 {
                     product.Stock = Math.Max(0, product.Stock - item.Quantity);
                 }
-
             }
 
-            // Ajouter frais de livraison
             total += dto.ShippingFee;
             order.Total = total;
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Email notification admin + client
-            try
+            // ✅ Emails en arrière-plan — ne bloque pas la réponse
+            var orderId = order.Id;
+            var customerName = order.CustomerName;
+            var customerPhone = order.CustomerPhone;
+            var customerAddress = order.CustomerAddress;
+            var orderTotal = order.Total;
+            var clientId = order.ClientId;
+            var orderItems = order.Items.ToList();
+
+            _ = Task.Run(async () =>
             {
-                // ✅ Admin
-                await _emailService.SendNewOrderNotificationAsync(
-                    order.Id, order.CustomerName, order.CustomerPhone,
-                    order.CustomerAddress, order.Total);
-
-                // ✅ Client (si email disponible)
-                if (order.ClientId.HasValue)
+                try
                 {
-                    var client = await _context.Clients.FindAsync(order.ClientId.Value);
-                    if (client != null && !string.IsNullOrEmpty(client.Email))
-                        await _emailService.SendOrderConfirmationToClientAsync(
-                            client.Email, client.FullName, order.Id, order.Total, order.Items.ToList());
-                }
-            }
-            catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
+                    await _emailService.SendNewOrderNotificationAsync(
+                        orderId, customerName, customerPhone, customerAddress, orderTotal);
 
+                    if (clientId.HasValue)
+                    {
+                        using var scope = HttpContext.RequestServices.CreateScope();
+                        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                        var client = await db.Clients.FindAsync(clientId.Value);
+                        if (client != null && !string.IsNullOrEmpty(client.Email))
+                            await _emailService.SendOrderConfirmationToClientAsync(
+                                client.Email, client.FullName, orderId, orderTotal, orderItems);
+                    }
+                }
+                catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
+            });
 
             return Ok(new { order.Id, order.Total, order.Status });
         }
@@ -190,7 +193,6 @@ namespace RanitaApi.Controllers
             var ancienStatut = order.Status;
             order.Status = dto.Status;
 
-            // ✅ Si on annule → remettre le stock
             if (dto.Status == "Annulée" && ancienStatut != "Annulée")
             {
                 foreach (var item in order.Items)
@@ -198,19 +200,16 @@ namespace RanitaApi.Controllers
                     if (item.VariantId.HasValue)
                     {
                         var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
-                        if (variant != null)
-                            variant.Stock += item.Quantity;
+                        if (variant != null) variant.Stock += item.Quantity;
                     }
                     else
                     {
                         var product = await _context.Products.FindAsync(item.ProductId);
-                        if (product != null)
-                            product.Stock += item.Quantity;
+                        if (product != null) product.Stock += item.Quantity;
                     }
                 }
             }
 
-            // ✅ Si on remet en attente/validée depuis annulée → déduire le stock
             if (ancienStatut == "Annulée" && dto.Status != "Annulée")
             {
                 foreach (var item in order.Items)
@@ -218,33 +217,39 @@ namespace RanitaApi.Controllers
                     if (item.VariantId.HasValue)
                     {
                         var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
-                        if (variant != null)
-                            variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
+                        if (variant != null) variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
                     }
                     else
                     {
                         var product = await _context.Products.FindAsync(item.ProductId);
-                        if (product != null)
-                            product.Stock = Math.Max(0, product.Stock - item.Quantity);
+                        if (product != null) product.Stock = Math.Max(0, product.Stock - item.Quantity);
                     }
                 }
             }
 
             await _context.SaveChangesAsync();
 
-            // ✅ Email client selon nouveau statut
-            try
+            // ✅ Email client en arrière-plan
+            var orderId = order.Id;
+            var clientId = order.ClientId;
+            var newStatus = dto.Status;
+
+            _ = Task.Run(async () =>
             {
-                var client = order.ClientId.HasValue
-                    ? await _context.Clients.FindAsync(order.ClientId.Value)
-                    : null;
-
-                if (client != null && !string.IsNullOrEmpty(client.Email))
-                    await _emailService.SendOrderStatusUpdateAsync(
-                        client.Email, client.FullName, order.Id, dto.Status);
-            }
-            catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
-
+                try
+                {
+                    if (clientId.HasValue)
+                    {
+                        using var scope = HttpContext.RequestServices.CreateScope();
+                        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                        var client = await db.Clients.FindAsync(clientId.Value);
+                        if (client != null && !string.IsNullOrEmpty(client.Email))
+                            await _emailService.SendOrderStatusUpdateAsync(
+                                client.Email, client.FullName, orderId, newStatus);
+                    }
+                }
+                catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
+            });
 
             return Ok(new { order.Id, order.Status });
         }
@@ -264,20 +269,17 @@ namespace RanitaApi.Controllers
 
             order.Status = "Annulée";
 
-            // ✅ Remettre le stock
             foreach (var item in order.Items)
             {
                 if (item.VariantId.HasValue)
                 {
                     var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
-                    if (variant != null)
-                        variant.Stock += item.Quantity;
+                    if (variant != null) variant.Stock += item.Quantity;
                 }
                 else
                 {
                     var product = await _context.Products.FindAsync(item.ProductId);
-                    if (product != null)
-                        product.Stock += item.Quantity;
+                    if (product != null) product.Stock += item.Quantity;
                 }
             }
 
@@ -286,7 +288,6 @@ namespace RanitaApi.Controllers
         }
     }
 
-    // DTOs
     public class CreateOrderDto
     {
         public string CustomerName { get; set; } = "";
@@ -304,7 +305,6 @@ namespace RanitaApi.Controllers
         public int Quantity { get; set; }
         public int? VariantId { get; set; }
         public string? VariantName { get; set; }
-
     }
 
     public class UpdateStatusDto
