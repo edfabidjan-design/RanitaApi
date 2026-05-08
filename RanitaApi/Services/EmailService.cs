@@ -207,7 +207,8 @@ namespace RanitaApi.Services
                 message.Body = bodyBuilder.ToMessageBody();
 
                 using var client = new SmtpClient();
-                await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                // ✅ Port 465 SSL au lieu de 587
+                await client.ConnectAsync("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect);
                 await client.AuthenticateAsync(gmailEmail, gmailPassword);
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);
