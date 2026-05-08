@@ -141,7 +141,7 @@ namespace RanitaApi.Services
         <span>Total</span>
         <span style='color:#10b981;'>{total.ToString("N0")} FCFA</span>
     </div>
-    <a href='https://www.ranita-shop.com/my-orders.html'
+    <a href='https://www.ranita-shop.com/client-orders.html'
        style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
       Suivre ma commande
     </a>
@@ -179,7 +179,7 @@ namespace RanitaApi.Services
         <div style='font-size:28px;font-weight:800;color:#111827;'>#{orderId}</div>
         <div style='display:inline-block;margin-top:8px;background:{color};color:white;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>{newStatus}</div>
     </div>
-    <a href='https://www.ranita-shop.com/my-orders.html'
+    <a href='https://www.ranita-shop.com/client-orders.html'
        style='display:inline-block;margin-top:8px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
       Voir mes commandes
     </a>
