@@ -1,7 +1,4 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
-using RanitaApi.Models;
+﻿using RanitaApi.Models;
 using System.Text;
 using System.Text.Json;
 
@@ -16,17 +13,13 @@ namespace RanitaApi.Services
             <hr style='border:none;border-top:1px solid #f3f4f6;margin:24px 0;'/>
             <p style='font-size:11px;color:#9ca3af;text-align:center;margin:0;'>
                 Ranita Market — <a href='https://www.ranita-shop.com' style='color:#9ca3af;'>www.ranita-shop.com</a><br>
-                Vous recevez cet email suite à une activité sur votre compte Ranita Market.
+                Vous recevez cet email suite à une activite sur votre compte Ranita Market.
             </p>";
 
         public EmailService(IConfiguration config)
         {
             _config = config;
         }
-
-        // ============================
-        // EMAILS ADMIN → Brevo
-        // ============================
 
         // ✅ Nouvelle commande → admin
         public async Task SendNewOrderNotificationAsync(int orderId, string customerName, string customerPhone, string customerAddress, decimal total)
@@ -86,15 +79,15 @@ namespace RanitaApi.Services
             await SendBrevoEmail(payload);
         }
 
-        // ============================
-        // EMAILS CLIENT → Gmail SMTP
-        // ============================
-
         // ✅ Reset password → client
         public async Task SendResetCodeAsync(string toEmail, string code)
         {
-            var subject = "Code de reinitialisation - Ranita Market";
-            var html = $@"
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = toEmail } },
+                subject = "Code de reinitialisation - Ranita Market",
+                htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:20px;border-radius:10px;text-align:center'>
     <h2 style='color:#059669'>Ranita Market</h2>
@@ -103,8 +96,9 @@ namespace RanitaApi.Services
     <p style='color:#777'>Ce code expire dans 10 minutes.</p>
     {FOOTER}
   </div>
-</div>";
-            await SendGmailEmail(toEmail, subject, html);
+</div>"
+            };
+            await SendBrevoEmail(payload);
         }
 
         // ✅ Confirmation commande → client
@@ -117,8 +111,12 @@ namespace RanitaApi.Services
                     <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;color:#10b981;'>{(i.Price * i.Quantity).ToString("N0")} FCFA</td>
                 </tr>"));
 
-            var subject = $"Commande #{orderId} confirmee - Ranita Market";
-            var html = $@"
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = toEmail } },
+                subject = $"Commande #{orderId} confirmee - Ranita Market",
+                htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
     <h2 style='color:#059669;margin:0 0 8px'>Commande recue !</h2>
@@ -149,8 +147,9 @@ namespace RanitaApi.Services
     </a>
     {FOOTER}
   </div>
-</div>";
-            await SendGmailEmail(toEmail, subject, html);
+</div>"
+            };
+            await SendBrevoEmail(payload);
         }
 
         // ✅ Changement de statut → client
@@ -164,8 +163,12 @@ namespace RanitaApi.Services
                 _ => ("#f59e0b", "Le statut de votre commande a ete mis a jour.")
             };
 
-            var subject = $"Commande #{orderId} - {newStatus}";
-            var html = $@"
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = clientEmail } },
+                subject = $"Commande #{orderId} - {newStatus}",
+                htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
     <h2 style='color:{color};margin:0 0 16px'>Statut de votre commande mis a jour</h2>
@@ -182,45 +185,12 @@ namespace RanitaApi.Services
     </a>
     {FOOTER}
   </div>
-</div>";
-            await SendGmailEmail(clientEmail, subject, html);
+</div>"
+            };
+            await SendBrevoEmail(payload);
         }
 
-        // ============================
-        // MÉTHODES PRIVÉES
-        // ============================
-
-        private async Task SendGmailEmail(string toEmail, string subject, string htmlContent)
-        {
-            try
-            {
-                var gmailEmail = _config["Gmail:Email"];
-                var gmailPassword = _config["Gmail:Password"];
-                var senderName = _config["Gmail:SenderName"] ?? "Ranita Market";
-
-                var message = new MimeMessage();
-                message.From.Add(new MailboxAddress(senderName, gmailEmail));
-                message.To.Add(new MailboxAddress("", toEmail));
-                message.Subject = subject;
-
-                var bodyBuilder = new BodyBuilder { HtmlBody = htmlContent };
-                message.Body = bodyBuilder.ToMessageBody();
-
-                using var client = new SmtpClient();
-                // ✅ Port 465 SSL au lieu de 587
-                await client.ConnectAsync("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect);
-                await client.AuthenticateAsync(gmailEmail, gmailPassword);
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-
-                Console.WriteLine($"GMAIL SENT to {toEmail} - {subject}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"GMAIL ERROR: {ex.Message}");
-            }
-        }
-
+        // ✅ MÉTHODE PRIVÉE — Brevo API
         private async Task SendBrevoEmail(object payload)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.brevo.com/v3/smtp/email");
@@ -228,6 +198,7 @@ namespace RanitaApi.Services
             request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
             var response = await _http.SendAsync(request);
             var result = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"BREVO RESPONSE ({response.StatusCode}): {result}");
             if (!response.IsSuccessStatusCode)
                 Console.WriteLine("BREVO ERROR: " + result);
         }
