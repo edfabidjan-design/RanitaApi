@@ -8,7 +8,7 @@ namespace RanitaApi.Services
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _http = new HttpClient();
-        private const string ADMIN_EMAIL = "ranitabouda@gmail.com";
+        private const string ADMIN_EMAIL = "admin@ranita-shop.com";
         private const string FOOTER = @"
             <hr style='border:none;border-top:1px solid #f3f4f6;margin:24px 0;'/>
             <p style='font-size:11px;color:#9ca3af;text-align:center;margin:0;'>
