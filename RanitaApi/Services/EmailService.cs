@@ -113,6 +113,7 @@ namespace RanitaApi.Services
 
             var payload = new
             {
+                replyTo = new { email = "ranitabouda@gmail.com", name = "Ranita Market" },
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
                 to = new[] { new { email = toEmail } },
                 subject = $"Commande #{orderId} confirmee - Ranita Market",
@@ -165,6 +166,7 @@ namespace RanitaApi.Services
 
             var payload = new
             {
+                replyTo = new { email = "ranitabouda@gmail.com", name = "Ranita Market" },
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
                 to = new[] { new { email = clientEmail } },
                 subject = $"Commande #{orderId} - {newStatus}",
