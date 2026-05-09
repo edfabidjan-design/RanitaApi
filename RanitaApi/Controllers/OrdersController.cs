@@ -12,11 +12,13 @@ namespace RanitaApi.Controllers
     {
         private readonly AppDbContext _context;
         private readonly EmailService _emailService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public OrdersController(AppDbContext context, EmailService emailService)
+        public OrdersController(AppDbContext context, EmailService emailService, IServiceScopeFactory scopeFactory)
         {
             _context = context;
             _emailService = emailService;
+            _scopeFactory = scopeFactory;
         }
 
         // ✅ GET ALL (admin)
@@ -166,7 +168,7 @@ namespace RanitaApi.Controllers
 
                     if (clientId.HasValue)
                     {
-                        using var scope = HttpContext.RequestServices.CreateScope();
+                        using var scope = _scopeFactory.CreateScope(); // ✅ plus de HttpContext
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
                         if (client != null && !string.IsNullOrEmpty(client.Email))
@@ -240,7 +242,7 @@ namespace RanitaApi.Controllers
                 {
                     if (clientId.HasValue)
                     {
-                        using var scope = HttpContext.RequestServices.CreateScope();
+                        using var scope = _scopeFactory.CreateScope(); // ✅
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
                         if (client != null && !string.IsNullOrEmpty(client.Email))
