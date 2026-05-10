@@ -661,7 +661,7 @@
             formData.append("OldPrice", document.getElementById("productOldPrice").value || "");
             const stockVal = document.getElementById("productStock").value;
             formData.append("Stock", stockVal || "0");
-            formData.append("IsActive", document.getElementById("productIsActive").checked);
+            formData.append("IsActive", document.getElementById("productIsActive").checked ? "true" : "false");
             const slugVal = document.getElementById("productSlug").value ||
                 document.getElementById("productName").value.toLowerCase()
                     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
