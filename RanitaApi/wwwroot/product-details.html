@@ -711,8 +711,7 @@
         }
 
         
-        loadProduct();
-        loadReviews();
+        loadProduct().then(() => loadReviews());
     </script>
 </body>
 </html>
