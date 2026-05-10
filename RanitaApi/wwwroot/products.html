@@ -257,10 +257,21 @@
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         let allProducts = [];
+        let reviewsMap = {}; // ← ajoute cette ligne
 
         const productsGrid = document.getElementById("productsGrid");
         const searchInput = document.getElementById("searchInput");
         const categoryFilter = document.getElementById("categoryFilter");
+
+
+        async function loadProducts() {
+            try {
+                const res = await fetch(`${API_BASE}/products`);
+                allProducts = await res.json();
+                allProducts = allProducts.filter(p => p.isActive !== false);
+                await loadReviews(); // ← ajoute ça
+                renderProducts();
+
 
         async function loadCategories() {
             try {
@@ -372,6 +383,16 @@
                         <div class="product-info">
                             <span class="product-category">${p.category?.name || ""}</span>
                             <h3 class="product-name">${p.name}</h3>
+${(() => {
+                        const notes = reviewsMap[p.id];
+                        if (!notes || notes.length === 0) return '';
+                        const avg = (notes.reduce((s, n) => s + n, 0) / notes.length).toFixed(1);
+                        const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+                        return `<div style="font-size:12px;color:#f59e0b;display:flex;align-items:center;gap:4px;">
+        <span>${stars}</span>
+        <span style="color:#6b7280;">${avg} (${notes.length})</span>
+    </div>`;
+                    })()}
                             
                             <div class="product-prices">
                                 <span class="price-current">${Number(p.price).toLocaleString()} FCFA</span>
