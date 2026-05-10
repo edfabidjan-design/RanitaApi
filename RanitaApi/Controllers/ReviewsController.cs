@@ -26,7 +26,6 @@ namespace RanitaApi.Controllers
                 .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new {
                     r.Id,
-                    r.ProductId,
                     r.Note,
                     r.Commentaire,
                     r.CreatedAt,
@@ -91,6 +90,7 @@ namespace RanitaApi.Controllers
                 .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new {
                     r.Id,
+                    r.ProductId,
                     r.Note,
                     r.Commentaire,
                     r.Approuve,
