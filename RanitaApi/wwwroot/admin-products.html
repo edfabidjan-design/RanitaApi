@@ -671,6 +671,12 @@
 
             resetForm();
             loadProducts();
+
+            const toast = document.createElement("div");
+            toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#10b981;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
+            toast.textContent = "✅ Produit enregistré avec succès !";
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         });
 
         document.getElementById("categoryId").addEventListener("change", function () {
@@ -723,14 +729,8 @@
             document.getElementById("productSlug").value = slug;
         });
 
-        resetForm();
+        loadCategories();
         loadProducts();
-
-        const toast = document.createElement("div");
-        toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#10b981;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
-        toast.textContent = "✅ Produit enregistré avec succès !";
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
     </script>
 
 </body>
