@@ -97,12 +97,23 @@ namespace RanitaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] Product product, List<IFormFile>? imageFiles)
         {
+            ModelState.Remove("Brand");
+            ModelState.Remove("ShortDescription");
+            ModelState.Remove("Description");
+            ModelState.Remove("Slug");
+            ModelState.Remove("MetaDescription");
+            ModelState.Remove("ImageUrl");
+            ModelState.Remove("Images");
+            ModelState.Remove("Attributes");
+            ModelState.Remove("Sku");
+
             if (product.CategoryId == null || product.CategoryId <= 0)
                 return BadRequest("Catégorie obligatoire.");
 
             var categoryExists = await _context.Categories.AnyAsync(c => c.Id == product.CategoryId);
             if (!categoryExists)
                 return BadRequest("Catégorie introuvable.");
+
 
             var imageUrls = new List<string>();
 
@@ -171,6 +182,16 @@ namespace RanitaApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] Product updated, List<IFormFile>? imageFiles)
         {
+            ModelState.Remove("Brand");
+            ModelState.Remove("ShortDescription");
+            ModelState.Remove("Description");
+            ModelState.Remove("Slug");
+            ModelState.Remove("MetaDescription");
+            ModelState.Remove("ImageUrl");
+            ModelState.Remove("Images");
+            ModelState.Remove("Attributes");
+            ModelState.Remove("Sku");
+
             var product = await _context.Products.FindAsync(id);
             if (product == null)
                 return NotFound();
@@ -182,7 +203,7 @@ namespace RanitaApi.Controllers
             product.ShortDescription = updated.ShortDescription;
             product.Description = updated.Description;
             product.CategoryId = updated.CategoryId;
-            product.Brand = updated.Brand;
+            product.Brand = updated.Brand ?? "";
             product.IsActive = updated.IsActive;
             product.Slug = updated.Slug;
             product.MetaDescription = updated.MetaDescription;
