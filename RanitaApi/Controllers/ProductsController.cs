@@ -142,6 +142,16 @@ namespace RanitaApi.Controllers
             }
 
             _context.Products.Add(product);
+
+            product.Brand = product.Brand ?? "";
+            product.ShortDescription = product.ShortDescription ?? "";
+            product.Slug = product.Slug ?? "";
+            product.MetaDescription = product.MetaDescription ?? "";
+            product.Attributes = product.Attributes ?? "{}";
+            product.Sku = product.Sku ?? "";
+            product.ImageUrl = product.ImageUrl ?? "";
+            product.Images = product.Images ?? "[]";
+
             await _context.SaveChangesAsync();
 
             // Sauvegarder les variantes
@@ -204,11 +214,15 @@ namespace RanitaApi.Controllers
             product.Description = updated.Description;
             product.CategoryId = updated.CategoryId;
             product.Brand = updated.Brand ?? "";
-            product.IsActive = updated.IsActive;
-            product.Slug = updated.Slug;
-            product.MetaDescription = updated.MetaDescription;
-            product.Attributes = updated.Attributes;
-            product.Sku = updated.Sku;
+
+            product.ShortDescription = updated.ShortDescription ?? "";
+            product.Slug = updated.Slug ?? "";
+            product.MetaDescription = updated.MetaDescription ?? "";
+            product.Attributes = updated.Attributes ?? "{}";
+            product.Sku = updated.Sku ?? "";
+
+
+     
 
             // Images existantes conservées
             var existingImages = new List<string>();
