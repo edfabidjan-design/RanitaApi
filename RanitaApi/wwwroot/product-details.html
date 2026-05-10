@@ -452,6 +452,38 @@
 
         updateCartCount();
 
+
+        async function loadReviews() {
+            const res = await fetch(`${API_BASE}/reviews/product/${productId}`);
+            const reviews = await res.json();
+            const container = document.getElementById("reviewsList");
+
+            if (!reviews.length) {
+                container.innerHTML = `<p style="color:#9ca3af;font-size:14px;">Aucun avis pour ce produit.</p>`;
+                return;
+            }
+
+            const moyenne = (reviews.reduce((s, r) => s + r.note, 0) / reviews.length).toFixed(1);
+
+            container.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+            <span style="font-size:28px;font-weight:800;color:#f59e0b;">${moyenne}</span>
+            <span style="font-size:22px;color:#f59e0b;">${"★".repeat(Math.round(moyenne))}${"☆".repeat(5 - Math.round(moyenne))}</span>
+            <span style="font-size:13px;color:#6b7280;">${reviews.length} avis</span>
+        </div>
+        ${reviews.map(r => `
+        <div style="padding:16px;border-bottom:1px solid #f3f4f6;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="color:#f59e0b;font-size:16px;">${"★".repeat(r.note)}${"☆".repeat(5 - r.note)}</span>
+                <strong style="font-size:14px;">${r.client}</strong>
+                <span style="font-size:12px;color:#9ca3af;margin-left:auto;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
+            </div>
+            ${r.commentaire ? `<p style="font-size:14px;color:#374151;margin:0;">${r.commentaire}</p>` : ''}
+        </div>`).join('')}
+    `;
+        }
+
+
         function updateCartCount() {
             const total = cart.reduce((s, i) => s + i.quantity, 0);
             document.getElementById("cartCount").textContent = total;
@@ -661,6 +693,18 @@
                         <h3>Description du produit</h3>
                         <p>${currentProduct.description}</p>
                     </div>` : ''}
+
+                    ${currentProduct.description ? `
+<div class="product-description-full">
+    <h3>Description du produit</h3>
+    <p>${currentProduct.description}</p>
+</div>` : ''}
+
+<div class="product-description-full" id="reviewsSection">
+    <h3>⭐ Avis clients</h3>
+    <div id="reviewsList"><p style="color:#9ca3af;font-size:14px;">Chargement des avis...</p></div>
+</div>
+            
                 `;
 
             // Sélectionner automatiquement la première variante disponible
@@ -670,7 +714,9 @@
             updateStockDisplay();
         }
 
+        
         loadProduct();
+        loadReviews();
     </script>
 </body>
 </html>
