@@ -100,7 +100,7 @@ try
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""Attributes"" TEXT NOT NULL DEFAULT '{}';");
+    db.Database.ExecuteSqlRaw("ALTER TABLE \"Products\" ADD COLUMN IF NOT EXISTS \"Attributes\" TEXT NOT NULL DEFAULT '{}';");
 }
 catch (Exception ex) { Console.WriteLine("Products.Attributes error: " + ex.Message); }
 
