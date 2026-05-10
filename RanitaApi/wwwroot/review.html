@@ -139,19 +139,22 @@
     const params = new URLSearchParams(window.location.search);
     const orderId = parseInt(params.get("orderId"));
     const productId = parseInt(params.get("productId"));
-    const client = JSON.parse(localStorage.getItem("ranitaClient") || "null");
+        const client = JSON.parse(localStorage.getItem("client") || "null");
 
     async function init() {
         const container = document.getElementById("reviewContainer");
 
         if (!client) {
+            // Sauvegarder l'URL et rediriger vers login
+            const currentUrl = encodeURIComponent(window.location.href);
             container.innerHTML = `
-                <div class="review-card" style="text-align:center;padding:40px;">
-                    <p style="font-size:18px;">🔒 Connectez-vous pour laisser un avis</p>
-                    <a href="login.html" class="btn-submit" style="display:inline-block;margin-top:16px;text-decoration:none;padding:12px 24px;width:auto;">
-                        Se connecter
-                    </a>
-                </div>`;
+    <div class="review-card" style="text-align:center;padding:40px;">
+        <p style="font-size:18px;">🔒 Connectez-vous pour laisser un avis</p>
+        <a href="login.html?redirect=${currentUrl}" class="btn-submit" 
+           style="display:inline-block;margin-top:16px;text-decoration:none;padding:12px 24px;width:auto;">
+            Se connecter
+        </a>
+    </div>`;
             return;
         }
 
