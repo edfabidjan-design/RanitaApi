@@ -4,7 +4,7 @@ using RanitaApi.Models;
 using RanitaApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+
 
 builder.Services.AddScoped<EmailService>();
 
@@ -33,6 +33,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
