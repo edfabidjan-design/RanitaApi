@@ -365,4 +365,16 @@ catch (Exception ex) { Console.WriteLine("Reviews error: " + ex.Message); }
 
 
 
+
+
+// ── Products.Brand nullable ────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Products"" ALTER COLUMN ""Brand"" DROP NOT NULL;");
+}
+catch (Exception ex) { Console.WriteLine("Products.Brand nullable error: " + ex.Message); }
+
+
 app.Run();
