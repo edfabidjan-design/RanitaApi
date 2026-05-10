@@ -365,4 +365,15 @@ try
 catch (Exception ex) { Console.WriteLine("Products.Brand nullable error: " + ex.Message); }
 
 
+
+// ── Fix Brand null values ──────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"UPDATE ""Products"" SET ""Brand"" = '' WHERE ""Brand"" IS NULL;");
+}
+catch (Exception ex) { Console.WriteLine("Fix Brand null error: " + ex.Message); }
+
+
 app.Run();
