@@ -464,23 +464,35 @@
             }
 
             const moyenne = (reviews.reduce((s, r) => s + r.note, 0) / reviews.length).toFixed(1);
+            let visible = 3;
 
-            container.innerHTML = `
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-            <span style="font-size:28px;font-weight:800;color:#f59e0b;">${moyenne}</span>
-            <span style="font-size:22px;color:#f59e0b;">${"★".repeat(Math.round(moyenne))}${"☆".repeat(5 - Math.round(moyenne))}</span>
-            <span style="font-size:13px;color:#6b7280;">${reviews.length} avis</span>
-        </div>
-        ${reviews.map(r => `
-        <div style="padding:16px;border-bottom:1px solid #f3f4f6;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <span style="color:#f59e0b;font-size:16px;">${"★".repeat(r.note)}${"☆".repeat(5 - r.note)}</span>
-                <strong style="font-size:14px;">${r.client}</strong>
-                <span style="font-size:12px;color:#9ca3af;margin-left:auto;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
+            function render() {
+                const slice = reviews.slice(0, visible);
+                container.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+                <span style="font-size:28px;font-weight:800;color:#f59e0b;">${moyenne}</span>
+                <span style="font-size:22px;color:#f59e0b;">${"★".repeat(Math.round(moyenne))}${"☆".repeat(5 - Math.round(moyenne))}</span>
+                <span style="font-size:13px;color:#6b7280;">${reviews.length} avis</span>
             </div>
-            ${r.commentaire ? `<p style="font-size:14px;color:#374151;margin:0;">${r.commentaire}</p>` : ''}
-        </div>`).join('')}
-    `;
+            ${slice.map(r => `
+            <div style="padding:16px;border-bottom:1px solid #f3f4f6;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <span style="color:#f59e0b;font-size:16px;">${"★".repeat(r.note)}${"☆".repeat(5 - r.note)}</span>
+                    <strong style="font-size:14px;">${r.client}</strong>
+                    <span style="font-size:12px;color:#9ca3af;margin-left:auto;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
+                </div>
+                ${r.commentaire ? `<p style="font-size:14px;color:#374151;margin:0;">${r.commentaire}</p>` : ''}
+            </div>`).join('')}
+            ${reviews.length > visible ? `
+            <button onclick="showMore()"
+                style="width:100%;margin-top:16px;padding:12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;color:#374151;">
+                Voir plus (${reviews.length - visible} restants)
+            </button>` : ''}
+        `;
+            }
+
+            window.showMore = () => { visible += 3; render(); };
+            render();
         }
 
 
