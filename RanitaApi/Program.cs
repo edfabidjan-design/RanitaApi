@@ -338,4 +338,27 @@ catch (Exception ex) { Console.WriteLine("OrderItems.VariantName error: " + ex.M
 
 
 
+
+// ── Reviews table ──────────────────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""Reviews"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""ProductId"" INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
+            ""ClientId"" INT NOT NULL REFERENCES ""Clients""(""Id"") ON DELETE CASCADE,
+            ""OrderId"" INT NOT NULL,
+            ""Note"" INT NOT NULL,
+            ""Commentaire"" TEXT NOT NULL DEFAULT '',
+            ""Approuve"" BOOLEAN NOT NULL DEFAULT TRUE,
+            ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("Reviews error: " + ex.Message); }
+
+
+
 app.Run();
