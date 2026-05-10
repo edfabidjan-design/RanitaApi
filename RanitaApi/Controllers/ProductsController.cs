@@ -141,6 +141,9 @@ namespace RanitaApi.Controllers
                 product.Images = System.Text.Json.JsonSerializer.Serialize(imageUrls);
             }
 
+            var isActiveStr = Request.Form["IsActive"].FirstOrDefault();
+            product.IsActive = isActiveStr == "true" || isActiveStr == "True";
+
             _context.Products.Add(product);
 
             product.Brand = product.Brand ?? "";
@@ -214,6 +217,9 @@ namespace RanitaApi.Controllers
             product.Description = updated.Description;
             product.CategoryId = updated.CategoryId;
             product.Brand = updated.Brand ?? "";
+
+            var isActiveStr = Request.Form["IsActive"].FirstOrDefault();
+            product.IsActive = isActiveStr == "true" || isActiveStr == "True";
 
             product.ShortDescription = updated.ShortDescription ?? "";
             product.Slug = updated.Slug ?? "";
