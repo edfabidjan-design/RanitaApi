@@ -71,7 +71,7 @@ namespace RanitaApi.Controllers
                 OrderId = dto.OrderId,
                 Note = dto.Note,
                 Commentaire = dto.Commentaire,
-                Approuve = true
+                Approuve = false
             };
 
             _context.Reviews.Add(review);
@@ -112,6 +112,17 @@ namespace RanitaApi.Controllers
             _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
             return Ok("Avis supprimé");
+        }
+
+        // PATCH — admin approuve un avis
+        [HttpPatch("{id}/approve")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+            if (review == null) return NotFound();
+            review.Approuve = true;
+            await _context.SaveChangesAsync();
+            return Ok("Avis approuvé");
         }
     }
 
