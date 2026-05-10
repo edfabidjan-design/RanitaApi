@@ -163,14 +163,17 @@ namespace RanitaApi.Controllers
             {
                 try
                 {
+                    await _emailService.SendNewOrderNotificationAsync(
+                        orderId, customerName, customerPhone, customerAddress, orderTotal);
+
                     if (clientId.HasValue)
                     {
-                        using var scope = _scopeFactory.CreateScope();
+                        using var scope = _scopeFactory.CreateScope(); // ✅ plus de HttpContext
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
                         if (client != null && !string.IsNullOrEmpty(client.Email))
-                            await _emailService.SendOrderStatusUpdateAsync(
-                                client.Email, client.FullName, orderId, newStatus, orderItems);
+                            await _emailService.SendOrderConfirmationToClientAsync(
+                                client.Email, client.FullName, orderId, orderTotal, orderItems);
                     }
                 }
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
@@ -232,6 +235,7 @@ namespace RanitaApi.Controllers
             var orderId = order.Id;
             var clientId = order.ClientId;
             var newStatus = dto.Status;
+            var orderItems = order.Items.ToList();
 
             _ = Task.Run(async () =>
             {
@@ -239,12 +243,12 @@ namespace RanitaApi.Controllers
                 {
                     if (clientId.HasValue)
                     {
-                        using var scope = _scopeFactory.CreateScope(); // ✅
+                        using var scope = _scopeFactory.CreateScope();
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
                         if (client != null && !string.IsNullOrEmpty(client.Email))
                             await _emailService.SendOrderStatusUpdateAsync(
-                                client.Email, client.FullName, orderId, newStatus);
+                                client.Email, client.FullName, orderId, newStatus, orderItems);
                     }
                 }
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
