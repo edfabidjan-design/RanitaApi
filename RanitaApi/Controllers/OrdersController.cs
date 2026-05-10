@@ -163,17 +163,14 @@ namespace RanitaApi.Controllers
             {
                 try
                 {
-                    await _emailService.SendNewOrderNotificationAsync(
-                        orderId, customerName, customerPhone, customerAddress, orderTotal);
-
                     if (clientId.HasValue)
                     {
-                        using var scope = _scopeFactory.CreateScope(); // ✅ plus de HttpContext
+                        using var scope = _scopeFactory.CreateScope();
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
                         if (client != null && !string.IsNullOrEmpty(client.Email))
-                            await _emailService.SendOrderConfirmationToClientAsync(
-                                client.Email, client.FullName, orderId, orderTotal, orderItems);
+                            await _emailService.SendOrderStatusUpdateAsync(
+                                client.Email, client.FullName, orderId, newStatus, orderItems);
                     }
                 }
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
