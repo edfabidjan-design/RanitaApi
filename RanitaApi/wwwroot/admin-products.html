@@ -278,6 +278,40 @@
         let productImages = []; // URLs existantes
         let newImageFiles = []; // Nouveaux fichiers à uploader
 
+
+        async function duplicateProduct(id) {
+            const res = await fetch(`${API_BASE}/products/${id}`);
+            const p = await res.json();
+
+            const formData = new FormData();
+            formData.append("Name", p.name + " (Copie)");
+            formData.append("Brand", p.brand || "");
+            formData.append("ShortDescription", p.shortDescription || "");
+            formData.append("Description", p.description || "");
+            formData.append("Price", p.price);
+            formData.append("OldPrice", p.oldPrice || "");
+            formData.append("Stock", p.stock || "0");
+            formData.append("IsActive", "false");
+            formData.append("Slug", (p.slug || "") + "-copie-" + Date.now());
+            formData.append("MetaDescription", p.metaDescription || "");
+            formData.append("CategoryId", p.categoryId || "");
+            formData.append("Attributes", p.attributes || "{}");
+            formData.append("Sku", "RAN-CPY-" + Math.floor(1000 + Math.random() * 9000));
+            formData.append("Images", p.images || "[]");
+            if (p.imageUrl) formData.append("ImageUrl", p.imageUrl);
+
+            const dupRes = await fetch(`${API_BASE}/products`, { method: "POST", body: formData });
+            if (!dupRes.ok) { alert("Erreur duplication"); return; }
+
+            loadProducts();
+            const toast = document.createElement("div");
+            toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#f59e0b;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
+            toast.textContent = "📋 Produit dupliqué !";
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+
         function previewNewImage(input) {
             if (!input.files || !input.files[0]) return;
 
@@ -503,8 +537,12 @@
                     <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
                     <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
                     <td>
-                        <button onclick="editProduct(${p.id})">✏️ Modifier</button>
-                        <button onclick="deleteProduct(${p.id})">🗑️ Supprimer</button>
+<div style="display:flex;flex-direction:column;gap:6px;">
+    <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">✏️ Modifier</button>
+    <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">📋 Dupliquer</button>
+    <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">🗑️ Supprimer</button>
+</div>
+
                     </td>
                 </tr>
             `).join('');
