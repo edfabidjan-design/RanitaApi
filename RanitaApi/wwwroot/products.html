@@ -257,21 +257,23 @@
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         let allProducts = [];
-        let reviewsMap = {}; // ← ajoute cette ligne
+        let reviewsMap = {};
 
         const productsGrid = document.getElementById("productsGrid");
         const searchInput = document.getElementById("searchInput");
         const categoryFilter = document.getElementById("categoryFilter");
 
-
-        async function loadProducts() {
+        async function loadReviews() {
             try {
-                const res = await fetch(`${API_BASE}/products`);
-                allProducts = await res.json();
-                allProducts = allProducts.filter(p => p.isActive !== false);
-                await loadReviews(); // ← ajoute ça
-                renderProducts();
-
+                const res = await fetch(`${API_BASE}/reviews`);
+                const reviews = await res.json();
+                reviewsMap = {};
+                reviews.forEach(r => {
+                    if (!reviewsMap[r.productId]) reviewsMap[r.productId] = [];
+                    reviewsMap[r.productId].push(r.note);
+                });
+            } catch (e) { }
+        }
 
         async function loadCategories() {
             try {
@@ -288,20 +290,18 @@
                         categoryFilter.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
                     }
                 });
-            } catch (e) {
-                console.error("Erreur chargement catégories", e);
-            }
+            } catch (e) { console.error("Erreur chargement catégories", e); }
         }
 
         async function loadProducts() {
             try {
                 const res = await fetch(`${API_BASE}/products`);
                 allProducts = await res.json();
-                // Filtrer seulement les produits actifs
                 allProducts = allProducts.filter(p => p.isActive !== false);
+                await loadReviews();
                 renderProducts();
             } catch (e) {
-                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">😕</span><p>Impossible de charger les produits. Réessayez plus tard.</p></div>`;
+                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">😕</span><p>Impossible de charger les produits.</p></div>`;
             }
         }
 
@@ -312,35 +312,22 @@
 
         function addToCart(id) {
             const product = allProducts.find(p => p.id === id);
-            if (!product || product.stock <= 0) {
-                alert("Produit en rupture de stock.");
-                return;
-            }
+            if (!product || product.stock <= 0) { alert("Produit en rupture de stock."); return; }
             const existing = cart.find(p => p.id === id);
-            if (existing) {
-                existing.quantity++;
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
+            if (existing) { existing.quantity++; }
+            else { cart.push({ ...product, quantity: 1 }); }
             localStorage.setItem("cart", JSON.stringify(cart));
             updateCartCount();
-
-            // Feedback visuel
             const btn = document.querySelector(`[data-id="${id}"]`);
             if (btn) {
                 const orig = btn.textContent;
                 btn.textContent = "✅ Ajouté !";
                 btn.style.background = "#059669";
-                setTimeout(() => {
-                    btn.textContent = orig;
-                    btn.style.background = "";
-                }, 1200);
+                setTimeout(() => { btn.textContent = orig; btn.style.background = ""; }, 1200);
             }
         }
 
-        function openProductDetails(id) {
-            window.location.href = `product-details.html?id=${id}`;
-        }
+        function openProductDetails(id) { window.location.href = `product-details.html?id=${id}`; }
 
         function calcDiscount(price, oldPrice) {
             if (!oldPrice || oldPrice <= price) return null;
@@ -350,16 +337,14 @@
         function renderProducts() {
             const search = searchInput.value.toLowerCase();
             const selectedCategory = categoryFilter.value;
-
             const filtered = allProducts.filter(p => {
-                const matchSearch = p.name.toLowerCase().includes(search) ||
-                    (p.shortDescription || "").toLowerCase().includes(search);
+                const matchSearch = p.name.toLowerCase().includes(search) || (p.shortDescription || "").toLowerCase().includes(search);
                 const matchCategory = !selectedCategory || String(p.categoryId) === selectedCategory;
                 return matchSearch && matchCategory;
             });
 
             if (filtered.length === 0) {
-                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">🔍</span><p>Aucun produit trouvé pour cette recherche.</p></div>`;
+                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">🔍</span><p>Aucun produit trouvé.</p></div>`;
                 return;
             }
 
@@ -367,47 +352,43 @@
                 const imgUrl = p.imageUrl
                     ? p.imageUrl.replace('/upload/', '/upload/w_400,h_400,c_fill,q_auto,f_auto/')
                     : 'https://via.placeholder.com/400x400?text=Ranita';
-
                 const discount = calcDiscount(p.price, p.oldPrice);
-                const stockLabel = p.stock === 0
-                    ? ''
-                    : p.stock <= 5
-                        ? `<span class="product-stock low">⚠️ Plus que ${p.stock} en stock</span>`
+                const stockLabel = p.stock === 0 ? ''
+                    : p.stock <= 5 ? `<span class="product-stock low">⚠️ Plus que ${p.stock} en stock</span>`
                         : `<span class="product-stock">Stock : ${p.stock}</span>`;
 
+                const notes = reviewsMap[p.id];
+                const starsHtml = notes && notes.length > 0 ? (() => {
+                    const avg = (notes.reduce((s, n) => s + n, 0) / notes.length).toFixed(1);
+                    const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+                    return `<div style="font-size:12px;color:#f59e0b;display:flex;align-items:center;gap:4px;">
+                <span>${stars}</span><span style="color:#6b7280;">${avg} (${notes.length})</span>
+            </div>`;
+                })() : '';
+
                 return `
-                    <div class="product-card" onclick="openProductDetails(${p.id})">
-                        <div class="product-img">
-                            <img src="${imgUrl}" alt="${p.name}" loading="lazy">
-                        </div>
-                        <div class="product-info">
-                            <span class="product-category">${p.category?.name || ""}</span>
-                            <h3 class="product-name">${p.name}</h3>
-${(() => {
-                        const notes = reviewsMap[p.id];
-                        if (!notes || notes.length === 0) return '';
-                        const avg = (notes.reduce((s, n) => s + n, 0) / notes.length).toFixed(1);
-                        const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
-                        return `<div style="font-size:12px;color:#f59e0b;display:flex;align-items:center;gap:4px;">
-        <span>${stars}</span>
-        <span style="color:#6b7280;">${avg} (${notes.length})</span>
-    </div>`;
-                    })()}
-                            
-                            <div class="product-prices">
-                                <span class="price-current">${Number(p.price).toLocaleString()} FCFA</span>
-                                ${p.oldPrice ? `<span class="price-old">${Number(p.oldPrice).toLocaleString()} FCFA</span>` : ""}
-                                ${discount ? `<span class="price-badge">-${discount}%</span>` : ""}
-                            </div>
-                            ${stockLabel}
-                            ${p.stock <= 0
+        <div class="product-card" onclick="openProductDetails(${p.id})">
+            <div class="product-img">
+                <img src="${imgUrl}" alt="${p.name}" loading="lazy">
+            </div>
+            <div class="product-info">
+                <span class="product-category">${p.category?.name || ""}</span>
+                <h3 class="product-name">${p.name}</h3>
+                ${starsHtml}
+                <div class="product-prices">
+                    <span class="price-current">${Number(p.price).toLocaleString()} FCFA</span>
+                    ${p.oldPrice ? `<span class="price-old">${Number(p.oldPrice).toLocaleString()} FCFA</span>` : ""}
+                    ${discount ? `<span class="price-badge">-${discount}%</span>` : ""}
+                </div>
+                ${stockLabel}
+                ${p.stock <= 0
                         ? `<button class="btn-disabled" disabled onclick="event.stopPropagation()">Rupture de stock</button>`
-                    : p.variants && p.variants.length > 0
-                        ? `<button class="btn-buy" onclick="event.stopPropagation(); location.href='product-details.html?id=${p.id}'">👁 Choisir une variante</button>`
-                        : `<button class="btn-buy" data-id="${p.id}" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 Ajouter au panier</button>`
+                        : p.variants && p.variants.length > 0
+                            ? `<button class="btn-buy" onclick="event.stopPropagation(); location.href='product-details.html?id=${p.id}'">👁 Choisir une variante</button>`
+                            : `<button class="btn-buy" data-id="${p.id}" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 Ajouter au panier</button>`
                     }
-                        </div>
-                    </div>`;
+            </div>
+        </div>`;
             }).join('');
         }
 
