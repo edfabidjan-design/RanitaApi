@@ -41,6 +41,7 @@ namespace RanitaApi.Controllers
                 o.Total,
                 o.Status,
                 o.CreatedAt,
+                o.RefundMotif,
                 o.ClientId,
                 Client = o.Client == null ? null : new { o.Client.Id, o.Client.FullName, o.Client.Email },
                 Items = o.Items.Select(i => new {
