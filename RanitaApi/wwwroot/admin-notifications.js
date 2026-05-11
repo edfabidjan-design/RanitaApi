@@ -6,12 +6,13 @@ async function loadNavBadges() {
         const orders = await res.json();
         const count = orders.filter(o => o.status === "En attente").length;
 
-        // Supprimer anciens badges
-        document.querySelectorAll(".nav-badge").forEach(b => b.remove());
-        document.querySelectorAll(".nav-badge-wrap a").forEach(link => {
-            link.parentNode.parentNode.insertBefore(link, link.parentNode);
-            link.parentNode.remove();
-        });
+        // Mettre à jour badge existant
+        const existing = document.querySelector(".nav-badge");
+        if (existing) {
+            if (count === 0) existing.remove();
+            else existing.textContent = count;
+            return;
+        }
 
         if (count === 0) return;
 
