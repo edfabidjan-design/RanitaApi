@@ -33,6 +33,40 @@
     <script>
         const API = "https://ranitaapi-production.up.railway.app/api/client-auth";
 
+
+        async function registerClientPush(clientId) {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+            try {
+                const reg = await navigator.serviceWorker.register('/sw-client.js');
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') return;
+
+                const existing = await reg.pushManager.getSubscription();
+                if (existing) return;
+
+                const sub = await reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: 'BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY'
+                });
+
+                await fetch('https://ranitaapi-production.up.railway.app/api/notifications/subscribe-client', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        clientId: clientId,
+                        endpoint: sub.endpoint,
+                        p256dh: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('p256dh')))),
+                        auth: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth'))))
+                    })
+                });
+                console.log('Push client enregistré !');
+            } catch (e) {
+                console.error('Push error:', e);
+            }
+        }
+
+
+
         document.getElementById("loginForm").addEventListener("submit", async e => {
             e.preventDefault();
 
@@ -53,6 +87,9 @@
             }
 
             localStorage.setItem("client", JSON.stringify(data));
+
+            // ✅ Demander permission notifications
+            await registerClientPush(data.id);
 
             alert("Connexion OK");
             const redirect = new URLSearchParams(window.location.search).get("redirect");
