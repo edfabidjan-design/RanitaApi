@@ -305,6 +305,50 @@ namespace RanitaApi.Controllers
 
             return Ok("Demande de remboursement envoyée.");
         }
+
+
+
+        [HttpPost("{id}/refund-approve")]
+        public async Task<IActionResult> RefundApprove(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return NotFound();
+            if (order.Status != "Remboursement demandé") return BadRequest("Statut invalide.");
+
+            // Remettre le stock
+            foreach (var item in order.Items)
+            {
+                if (item.VariantId.HasValue)
+                {
+                    var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
+                    if (variant != null) variant.Stock += item.Quantity;
+                }
+                else
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product != null) product.Stock += item.Quantity;
+                }
+            }
+
+            order.Status = "Remboursé";
+            await _context.SaveChangesAsync();
+            return Ok("Remboursement validé.");
+        }
+
+        [HttpPost("{id}/refund-reject")]
+        public async Task<IActionResult> RefundReject(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+            if (order.Status != "Remboursement demandé") return BadRequest("Statut invalide.");
+
+            order.Status = "Remboursement rejeté";
+            await _context.SaveChangesAsync();
+            return Ok("Remboursement rejeté.");
+        }
     }
 
 

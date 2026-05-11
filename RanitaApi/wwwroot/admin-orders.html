@@ -169,6 +169,16 @@
                 color: #6b7280;
                 margin-top: 2px;
             }
+
+        .status-refund {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-refunded {
+            background: #d1fae5;
+            color: #065f46;
+        }
     </style>
 </head>
 <body>
@@ -234,9 +244,29 @@
                 case "Validée": return "status-validated";
                 case "Livrée": return "status-delivered";
                 case "Annulée": return "status-cancelled";
+                case "Remboursement demandé": return "status-refund";
+                case "Remboursé": return "status-refunded";
+                case "Remboursement rejeté": return "status-cancelled";
                 default: return "";
             }
         }
+
+        async function approveRefund(id) {
+            if (!confirm("Valider le remboursement et remettre le stock ?")) return;
+            const res = await fetch(`${API_BASE}/orders/${id}/refund-approve`, { method: "POST" });
+            if (!res.ok) { alert(await res.text()); return; }
+            document.getElementById("modalOverlay").classList.remove("open");
+            loadOrders();
+        }
+
+        async function rejectRefund(id) {
+            if (!confirm("Rejeter la demande de remboursement ?")) return;
+            const res = await fetch(`${API_BASE}/orders/${id}/refund-reject`, { method: "POST" });
+            if (!res.ok) { alert(await res.text()); return; }
+            document.getElementById("modalOverlay").classList.remove("open");
+            loadOrders();
+        }
+
 
         async function loadOrders() {
             const res = await fetch(`${API_BASE}/orders`);
@@ -290,19 +320,33 @@
         <td style="max-width:150px;font-size:12px;">${o.customerAddress}</td>
         <td>${o.paymentMethod}</td>
         <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
-        <td>
-            <select class="status-select ${getStatusClass(o.status)}"
-                    onchange="updateStatus(${o.id}, this.value, this)">
-                <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-                <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-                <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-            </select>
-        </td>
+
+<td>
+    ${o.status === "Remboursement demandé" ? `
+        <div style="display:flex;flex-direction:column;gap:6px;">
+            <span class="status-badge status-refund">💰 Remboursement demandé</span>
+            <button onclick="approveRefund(${o.id})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ Valider</button>
+            <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
+        </div>
+    ` : `
+        <select class="status-select ${getStatusClass(o.status)}"
+                onchange="updateStatus(${o.id}, this.value, this)">
+            <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+            <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+            <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+            <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+            <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
+            <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
+        </select>
+    `}
+</td>
+
         <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
         <td>
             <button onclick="showDetails(${o.id})">👁 Voir</button>
         </td>
+
+
     </tr>
 `).join('');
         }
@@ -351,6 +395,15 @@
             <strong>Paiement :</strong> ${o.paymentMethod}<br>
             <strong>Date :</strong> ${new Date(o.createdAt).toLocaleString('fr-FR')}
         </div>
+
+                ${o.refundMotif ? `
+    <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:12px;margin-bottom:12px;">
+        <strong style="color:#92400e;">💰 Motif remboursement :</strong>
+        <p style="margin-top:4px;font-size:13px;color:#374151;">${o.refundMotif}</p>
+    </div>
+` : ''}
+
+
         ${itemsHtml}
         <div class="modal-total">
             <span>Sous-total</span>
