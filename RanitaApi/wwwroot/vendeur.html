@@ -1,0 +1,1123 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendre sur Ranita Market</title>
+    <style>
+        :root {
+            --primary: #e8604c;
+            --primary-dark: #c94a38;
+            --primary-light: #fdf1ef;
+            --bg: #f5f5f0;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --text-muted: #6b6b6b;
+            --border: #e0e0d8;
+            --success: #2d9e6b;
+            --warning: #e8a020;
+            --danger: #d93025;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 60px 32px;
+            text-align: center;
+        }
+
+        .hero-logo {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+            .hero h1 span {
+                color: var(--primary);
+            }
+
+        .hero p {
+            font-size: 17px;
+            color: #aaa;
+            max-width: 500px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+            .hero-stat .number {
+                font-size: 28px;
+                font-weight: 800;
+                color: var(--primary);
+            }
+
+            .hero-stat .label {
+                font-size: 12px;
+                color: #888;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+        /* ── AVANTAGES ── */
+        .avantages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            padding: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .avantage-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .avantage-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .avantage-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .avantage-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ── PAGES ── */
+        .page {
+            display: none;
+        }
+
+            .page.active {
+                display: block;
+            }
+
+        /* ── FORMULAIRE INSCRIPTION ── */
+        .form-container {
+            max-width: 580px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .form-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px;
+        }
+
+        .form-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .form-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-muted);
+                margin-bottom: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                font-size: 15px;
+                font-family: inherit;
+                background: var(--bg);
+                color: var(--text);
+                transition: border-color 0.2s, box-shadow 0.2s;
+                outline: none;
+            }
+
+                .form-group input:focus,
+                .form-group select:focus,
+                .form-group textarea:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(232,96,76,0.12);
+                    background: white;
+                }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+            .btn-submit:hover {
+                background: var(--primary-dark);
+                transform: translateY(-1px);
+            }
+
+            .btn-submit:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .form-note {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 16px;
+            line-height: 1.5;
+        }
+
+        /* ── STATUS EN ATTENTE ── */
+        .status-container {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .status-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .status-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .status-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+            .status-row:last-child {
+                border-bottom: none;
+            }
+
+            .status-row .key {
+                color: var(--text-muted);
+            }
+
+            .status-row .val {
+                font-weight: 600;
+            }
+
+        .badge-status {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .badge-Pending {
+            background: #fff8e6;
+            color: #b07800;
+        }
+
+        .badge-Approved {
+            background: #e8f5ef;
+            color: #1a7a4a;
+        }
+
+        .badge-Rejected {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        /* ── DASHBOARD VENDEUR ── */
+        .dashboard {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .dash-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .dash-title {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .dash-shop {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .dash-stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+            .dash-stat .label {
+                font-size: 12px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 8px;
+            }
+
+            .dash-stat .value {
+                font-size: 24px;
+                font-weight: 800;
+            }
+
+                .dash-stat .value.green {
+                    color: var(--success);
+                }
+
+                .dash-stat .value.orange {
+                    color: var(--warning);
+                }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-add {
+            padding: 8px 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-add:hover {
+                background: var(--primary-dark);
+            }
+
+        /* Produit item dans dashboard */
+        .my-product {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .my-product-img {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+            .my-product-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .my-product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .my-product-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .my-product-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .my-product-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        /* ── MODAL AJOUT PRODUIT ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+            .modal-overlay.open {
+                display: flex;
+            }
+
+        .modal {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 28px;
+            width: 100%;
+            max-width: 520px;
+            margin: auto;
+        }
+
+            .modal h3 {
+                font-size: 18px;
+                font-weight: 800;
+                margin-bottom: 20px;
+            }
+
+            .modal .form-group input,
+            .modal .form-group select,
+            .modal .form-group textarea {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: inherit;
+                background: var(--bg);
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+                .modal .form-group input:focus,
+                .modal .form-group textarea:focus {
+                    border-color: var(--primary);
+                }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-save:hover {
+                background: var(--primary-dark);
+            }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 9999;
+            max-width: 300px;
+        }
+
+            .toast.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .toast.success {
+                background: var(--success);
+            }
+
+            .toast.error {
+                background: var(--danger);
+            }
+
+        /* ── LOGIN PROMPT ── */
+        .login-prompt {
+            text-align: center;
+            padding: 60px 32px;
+        }
+
+            .login-prompt .icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+            }
+
+            .login-prompt h2 {
+                font-size: 22px;
+                font-weight: 800;
+                margin-bottom: 10px;
+            }
+
+            .login-prompt p {
+                color: var(--text-muted);
+                margin-bottom: 24px;
+            }
+
+        .btn-login {
+            display: inline-block;
+            padding: 12px 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+
+            .btn-login:hover {
+                background: var(--primary-dark);
+            }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-container, .dashboard {
+                padding: 16px;
+            }
+
+            .form-card {
+                padding: 24px 20px;
+            }
+
+            .hero {
+                padding: 40px 16px;
+            }
+
+            .avantages {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══ PAGE ACCUEIL (pas connecté) ════════════════════════════════════ -->
+    <div class="page active" id="page-landing">
+        <div class="hero">
+            <div class="hero-logo">Ranita Market</div>
+            <h1>Vendez vos produits<br>sur <span>Ranita Market</span></h1>
+            <p>Rejoignez des milliers de vendeurs en Côte d'Ivoire. Créez votre boutique et atteignez vos clients partout.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="number">10%</div>
+                    <div class="label">Commission seulement</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="number">0 F</div>
+                    <div class="label">Inscription gratuite</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="number">24h</div>
+                    <div class="label">Validation rapide</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="avantages">
+            <div class="avantage-card">
+                <div class="avantage-icon">🛡️</div>
+                <div class="avantage-title">Sécurisé</div>
+                <div class="avantage-desc">Ranita vérifie chaque vendeur avant publication</div>
+            </div>
+            <div class="avantage-card">
+                <div class="avantage-icon">💸</div>
+                <div class="avantage-title">Paiement rapide</div>
+                <div class="avantage-desc">Orange Money, MTN Money ou virement bancaire</div>
+            </div>
+            <div class="avantage-card">
+                <div class="avantage-icon">📦</div>
+                <div class="avantage-title">Livraison gérée</div>
+                <div class="avantage-desc">Ranita centralise toutes les livraisons pour vous</div>
+            </div>
+            <div class="avantage-card">
+                <div class="avantage-icon">📊</div>
+                <div class="avantage-title">Dashboard</div>
+                <div class="avantage-desc">Suivez vos ventes et vos gains en temps réel</div>
+            </div>
+        </div>
+
+        <div style="text-align:center;padding-bottom:48px">
+            <button class="btn-login" onclick="checkAndStart()">Commencer à vendre →</button>
+        </div>
+    </div>
+
+    <!-- ══ PAGE LOGIN REQUIS ══════════════════════════════════════════════ -->
+    <div class="page" id="page-login-required">
+        <div class="login-prompt">
+            <div class="icon">🔐</div>
+            <h2>Connexion requise</h2>
+            <p>Vous devez être connecté à votre compte client pour créer une boutique.</p>
+            <a href="/login.html" class="btn-login">Se connecter</a>
+        </div>
+    </div>
+
+    <!-- ══ PAGE FORMULAIRE D'INSCRIPTION ══════════════════════════════════ -->
+    <div class="page" id="page-register">
+        <div class="form-container">
+            <div class="form-card">
+                <div class="form-title">Créer ma boutique</div>
+                <div class="form-subtitle">Remplissez ce formulaire — Ranita validera votre demande sous 24h</div>
+
+                <div class="form-group">
+                    <label>Nom de la boutique *</label>
+                    <input type="text" id="shopName" placeholder="Ex: Mode Abidjan, Tech Shop CI..." maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Description de la boutique</label>
+                    <textarea id="shopDescription" rows="3" placeholder="Décrivez ce que vous vendez..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Téléphone *</label>
+                        <input type="tel" id="phoneNumber" placeholder="07 XX XX XX XX">
+                    </div>
+                    <div class="form-group">
+                        <label>Numéro CNI *</label>
+                        <input type="text" id="nationalIdNumber" placeholder="CI-XXXXXXXXX">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Moyen de paiement</label>
+                        <select id="paymentMethod">
+                            <option value="">Choisir...</option>
+                            <option value="ORANGE_MONEY">Orange Money</option>
+                            <option value="MTN_MONEY">MTN Money</option>
+                            <option value="WAVE">Wave</option>
+                            <option value="BANK">Virement bancaire</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Numéro / IBAN</label>
+                        <input type="text" id="paymentDetails" placeholder="Numéro ou IBAN">
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="btn-register" onclick="submitRegistration()">
+                    Envoyer ma demande →
+                </button>
+
+                <div class="form-note">
+                    En soumettant ce formulaire, vous acceptez que Ranita Market vérifie votre identité et valide votre boutique avant toute publication.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ PAGE EN ATTENTE ════════════════════════════════════════════════ -->
+    <div class="page" id="page-pending">
+        <div class="status-container">
+            <div class="status-icon">⏳</div>
+            <div class="status-title">Demande en cours d'examen</div>
+            <div class="status-desc">Notre équipe examine votre dossier. Vous recevrez une notification dès que votre boutique sera validée.</div>
+
+            <div class="status-card" id="pending-info"></div>
+
+            <div style="color:var(--text-muted);font-size:14px">
+                Délai habituel : <strong>24 à 48 heures</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ PAGE REFUSÉ ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-rejected">
+        <div class="status-container">
+            <div class="status-icon">❌</div>
+            <div class="status-title">Demande refusée</div>
+            <div class="status-desc" id="rejected-reason">Votre demande n'a pas été acceptée.</div>
+            <button class="btn-login" onclick="showPage('page-register')">Soumettre une nouvelle demande</button>
+        </div>
+    </div>
+
+    <!-- ══ PAGE DASHBOARD VENDEUR ══════════════════════════════════════════ -->
+    <div class="page" id="page-dashboard">
+        <div class="dashboard">
+            <div class="dash-header">
+                <div>
+                    <div class="dash-title" id="dash-shop-name">Ma boutique</div>
+                    <div class="dash-shop" id="dash-shop-desc"></div>
+                </div>
+                <span class="badge-status badge-Approved">Boutique active</span>
+            </div>
+
+            <!-- Stats -->
+            <div class="dash-stats">
+                <div class="dash-stat">
+                    <div class="label">Produits publiés</div>
+                    <div class="value" id="dash-total-products">—</div>
+                </div>
+                <div class="dash-stat">
+                    <div class="label">En attente validation</div>
+                    <div class="value orange" id="dash-pending-products">—</div>
+                </div>
+                <div class="dash-stat">
+                    <div class="label">Gains totaux</div>
+                    <div class="value green" id="dash-earnings">—</div>
+                </div>
+                <div class="dash-stat">
+                    <div class="label">À recevoir</div>
+                    <div class="value orange" id="dash-pending-payouts">—</div>
+                </div>
+            </div>
+
+            <!-- Mes produits -->
+            <div class="section-title">
+                Mes produits
+                <button class="btn-add" onclick="openAddProduct()">+ Ajouter un produit</button>
+            </div>
+            <div id="my-products-list">
+                <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:14px">Chargement...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ MODAL AJOUT PRODUIT ══════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="modal-add-product">
+        <div class="modal">
+            <h3>Ajouter un produit</h3>
+
+            <div class="form-group">
+                <label>Nom du produit *</label>
+                <input type="text" id="p-name" placeholder="Ex: Sac en cuir marron">
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="p-description" rows="3" placeholder="Décrivez votre produit..."></textarea>
+            </div>
+
+            <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="form-group">
+                    <label>Prix (FCFA) *</label>
+                    <input type="number" id="p-price" placeholder="Ex: 15000" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Ancien prix</label>
+                    <input type="number" id="p-old-price" placeholder="Ex: 20000" min="0">
+                </div>
+            </div>
+
+            <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="form-group">
+                    <label>Stock *</label>
+                    <input type="number" id="p-stock" placeholder="Ex: 10" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <input type="text" id="p-category" placeholder="Ex: Mode, Électronique...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>URL image principale</label>
+                <input type="url" id="p-image" placeholder="https://...">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('modal-add-product')">Annuler</button>
+                <button class="btn-save" onclick="submitProduct()">Soumettre pour validation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+const API = 'https://ranitaapi-production.up.railway.app/api';
+
+let clientId = null;
+let sellerId = null;
+let sellerData = null;
+
+// ── INIT ────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+    // Récupère le client connecté depuis localStorage (adapte selon ton système auth)
+    const clientStr = localStorage.getItem('client');
+    if (clientStr) {
+        try {
+            const client = JSON.parse(clientStr);
+            clientId = client.id;
+        } catch(e) {}
+    }
+    // Si pas connecté, on reste sur la landing
+});
+
+function checkAndStart() {
+    if (!clientId) {
+        showPage('page-login-required');
+        return;
+    }
+    loadSellerStatus();
+}
+
+// ── CHARGER STATUT VENDEUR ───────────────────────────────────────────
+async function loadSellerStatus() {
+    try {
+        const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
+        if (res.status === 404) {
+            showPage('page-register');
+            return;
+        }
+        sellerData = await res.json();
+        sellerId = sellerData.id;
+
+        if (sellerData.status === 'Pending') {
+            showPendingPage(sellerData);
+        } else if (sellerData.status === 'Rejected') {
+            showRejectedPage(sellerData);
+        } else if (sellerData.status === 'Approved') {
+            showDashboard(sellerData);
+        } else if (sellerData.status === 'Suspended') {
+            showPage('page-pending');
+            document.querySelector('#page-pending .status-icon').textContent = '⏸️';
+            document.querySelector('#page-pending .status-title').textContent = 'Boutique suspendue';
+            document.querySelector('#page-pending .status-desc').textContent = 'Votre boutique a été suspendue. Contactez le support Ranita.';
+        }
+    } catch(e) {
+        showPage('page-register');
+    }
+}
+
+// ── INSCRIPTION ──────────────────────────────────────────────────────
+async function submitRegistration() {
+    const btn = document.getElementById('btn-register');
+    const shopName = document.getElementById('shopName').value.trim();
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const nationalIdNumber = document.getElementById('nationalIdNumber').value.trim();
+
+    if (!shopName || !phoneNumber || !nationalIdNumber) {
+        showToast('Remplissez tous les champs obligatoires (*)', 'error');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours...';
+
+    try {
+        const res = await fetch(`${API}/sellers/register?clientId=${clientId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                shopName,
+                shopDescription: document.getElementById('shopDescription').value.trim(),
+                phoneNumber,
+                nationalIdNumber,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                paymentDetails: document.getElementById('paymentDetails').value.trim()
+            })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            showToast('Demande envoyée ! Nous vous répondons sous 24h ✓', 'success');
+            setTimeout(() => loadSellerStatus(), 1500);
+        } else {
+            showToast(data.message || 'Erreur lors de l\'envoi', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Envoyer ma demande →';
+        }
+    } catch(e) {
+        showToast('Erreur réseau, réessayez', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Envoyer ma demande →';
+    }
+}
+
+// ── PAGES ────────────────────────────────────────────────────────────
+function showPendingPage(seller) {
+    document.getElementById('pending-info').innerHTML = `
+        <div class="status-row"><span class="key">Boutique</span><span class="val">${seller.shopName}</span></div>
+        <div class="status-row"><span class="key">Téléphone</span><span class="val">${seller.phoneNumber}</span></div>
+        <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge-status badge-Pending">En attente</span></span></div>
+        <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(seller.createdAt).toLocaleDateString('fr-FR')}</span></div>
+    `;
+    showPage('page-pending');
+}
+
+function showRejectedPage(seller) {
+    document.getElementById('rejected-reason').textContent =
+        seller.rejectionReason
+            ? `Motif : ${seller.rejectionReason}`
+            : 'Votre demande n\'a pas été acceptée. Vous pouvez soumettre une nouvelle demande.';
+    showPage('page-rejected');
+}
+
+async function showDashboard(seller) {
+    document.getElementById('dash-shop-name').textContent = seller.shopName;
+    document.getElementById('dash-shop-desc').textContent = seller.shopDescription || '';
+    document.getElementById('dash-total-products').textContent = seller.totalProducts;
+    document.getElementById('dash-pending-products').textContent = seller.pendingProducts;
+    document.getElementById('dash-earnings').textContent = formatPrice(seller.totalEarnings);
+    document.getElementById('dash-pending-payouts').textContent = formatPrice(seller.pendingPayouts);
+    showPage('page-dashboard');
+    loadMyProducts();
+}
+
+async function loadMyProducts() {
+    try {
+        const res = await fetch(`${API}/sellers/${sellerId}/products`);
+        const products = await res.json();
+        const el = document.getElementById('my-products-list');
+
+        if (!products.length) {
+            el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Aucun produit. Ajoutez votre premier produit !</div>';
+            return;
+        }
+
+        el.innerHTML = products.map(p => `
+            <div class="my-product">
+                <div class="my-product-img">
+                    ${p.images && p.images.length > 0
+                        ? `<img src="${p.images[0]}" onerror="this.style.display='none'">`
+                        : '📦'}
+                </div>
+                <div class="my-product-info">
+                    <div class="my-product-name">${p.name}</div>
+                    <div class="my-product-meta">Stock: ${p.stock} · ${p.category || 'Sans catégorie'}</div>
+                </div>
+                <div class="my-product-price">${formatPrice(p.price)}</div>
+                <span class="badge-status badge-${p.approvalStatus}" style="font-size:11px;padding:4px 10px">
+                    ${{ Pending: 'En attente', Approved: 'Publié', Rejected: 'Refusé' }[p.approvalStatus] || p.approvalStatus}
+                </span>
+            </div>
+        `).join('');
+    } catch(e) {}
+}
+
+// ── AJOUTER PRODUIT ──────────────────────────────────────────────────
+function openAddProduct() {
+    document.getElementById('p-name').value = '';
+    document.getElementById('p-description').value = '';
+    document.getElementById('p-price').value = '';
+    document.getElementById('p-old-price').value = '';
+    document.getElementById('p-stock').value = '';
+    document.getElementById('p-category').value = '';
+    document.getElementById('p-image').value = '';
+    openModal('modal-add-product');
+}
+
+async function submitProduct() {
+    const name  = document.getElementById('p-name').value.trim();
+    const price = parseFloat(document.getElementById('p-price').value);
+    const stock = parseInt(document.getElementById('p-stock').value) || 0;
+
+    if (!name || !price) {
+        showToast('Le nom et le prix sont obligatoires', 'error');
+        return;
+    }
+
+    const imageUrl = document.getElementById('p-image').value.trim();
+    const images = imageUrl ? [imageUrl] : [];
+
+    try {
+        const res = await fetch(`${API}/sellers/${sellerId}/products`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name,
+                description: document.getElementById('p-description').value.trim(),
+                price,
+                oldPrice: parseFloat(document.getElementById('p-old-price').value) || null,
+                stock,
+                category: document.getElementById('p-category').value.trim(),
+                images
+            })
+        });
+
+        if (res.ok) {
+            showToast('Produit soumis, en attente de validation ✓', 'success');
+            closeModal('modal-add-product');
+            loadMyProducts();
+        } else {
+            const data = await res.json();
+            showToast(data.message || 'Erreur', 'error');
+        }
+    } catch(e) {
+        showToast('Erreur réseau', 'error');
+    }
+}
+
+// ── UTILS ────────────────────────────────────────────────────────────
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+function formatPrice(p) {
+    return new Intl.NumberFormat('fr-CI', {
+        style: 'currency', currency: 'XOF', maximumFractionDigits: 0
+    }).format(p || 0);
+}
+
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+</script>
+</body>
+</html>
