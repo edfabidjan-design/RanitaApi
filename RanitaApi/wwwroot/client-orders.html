@@ -327,6 +327,25 @@
             window.location.href = "login.html?redirect=client-orders.html";
         }
 
+
+        async function requestRefund(orderId) {
+            const motif = document.getElementById(`refundMotif_${orderId}`).value.trim();
+            if (!motif) { alert("Veuillez indiquer un motif."); return; }
+
+            const res = await fetch(`${API_BASE}/orders/${orderId}/refund-request`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ motif })
+            });
+
+            if (!res.ok) { alert(await res.text()); return; }
+
+            alert("✅ Demande de remboursement envoyée !");
+            document.getElementById("modalOverlay").classList.remove("open");
+            loadOrders();
+        }
+
+
         function getStatusClass(status) {
             switch (status) {
                 case "En attente": return "status-en-attente";
@@ -453,6 +472,17 @@ ${o.status === "En attente" ? `
         ❌ Annuler la commande
     </button>
 ` : ''}
+${o.status === "Livrée" ? `
+    <div style="margin-top:12px;">
+        <textarea id="refundMotif_${o.id}" placeholder="Décrivez le motif de votre demande de remboursement..."
+            style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:8px;"></textarea>
+        <button onclick="requestRefund(${o.id})"
+            style="width:100%;background:#fef3c7;color:#92400e;border:2px solid #f59e0b;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;">
+            💰 Demander un remboursement
+        </button>
+    </div>
+` : ''}
+
 <button class="btn-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">
     Fermer
 </button>

@@ -289,7 +289,25 @@ namespace RanitaApi.Controllers
             await _context.SaveChangesAsync();
             return Ok("Commande annulée");
         }
+
+
+
+        [HttpPost("{id}/refund-request")]
+        public async Task<IActionResult> RefundRequest(int id, [FromBody] RefundRequestDto dto)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+            if (order.Status != "Livrée") return BadRequest("Remboursement uniquement pour les commandes livrées.");
+
+            order.Status = "Remboursement demandé";
+            order.RefundMotif = dto.Motif;
+            await _context.SaveChangesAsync();
+
+            return Ok("Demande de remboursement envoyée.");
+        }
     }
+
+
 
     public class CreateOrderDto
     {

@@ -376,4 +376,14 @@ try
 catch (Exception ex) { Console.WriteLine("Fix Brand null error: " + ex.Message); }
 
 
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""RefundMotif"" TEXT NULL;");
+}
+catch (Exception ex) { Console.WriteLine("Orders.RefundMotif error: " + ex.Message); }
+
+
 app.Run();
