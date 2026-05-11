@@ -5,27 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendre sur Ranita Market</title>
     <link rel="stylesheet" href="header.css">
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
-
-
     <style>
-        :root {
-            --primary: #e8604c;
-            --primary-dark: #c94a38;
-            --primary-light: #fdf1ef;
-            --bg: #f5f5f0;
-            --card: #ffffff;
-            --text: #1a1a1a;
-            --text-muted: #6b6b6b;
-            --border: #e0e0d8;
-            --success: #2d9e6b;
-            --warning: #e8a020;
-            --danger: #d93025;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -34,107 +16,11 @@
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
+            background: #f3f4f6;
+            color: #111827;
+            padding-top: 64px;
         }
 
-        /* ── HERO ── */
-        .hero {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: white;
-            padding: 60px 32px;
-            text-align: center;
-        }
-
-        .hero-logo {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .hero h1 {
-            font-size: clamp(28px, 5vw, 48px);
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 16px;
-        }
-
-            .hero h1 span {
-                color: var(--primary);
-            }
-
-        .hero p {
-            font-size: 17px;
-            color: #aaa;
-            max-width: 500px;
-            margin: 0 auto 32px;
-            line-height: 1.6;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-
-        .hero-stat {
-            text-align: center;
-        }
-
-            .hero-stat .number {
-                font-size: 28px;
-                font-weight: 800;
-                color: var(--primary);
-            }
-
-            .hero-stat .label {
-                font-size: 12px;
-                color: #888;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-
-        /* ── AVANTAGES ── */
-        .avantages {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            padding: 32px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .avantage-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px 20px;
-            text-align: center;
-        }
-
-        .avantage-icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-
-        .avantage-title {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .avantage-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        /* ── PAGES ── */
         .page {
             display: none;
         }
@@ -143,91 +29,208 @@
                 display: block;
             }
 
-        /* ── FORMULAIRE INSCRIPTION ── */
-        .form-container {
-            max-width: 580px;
+        /* ── HERO ── */
+        .hero {
+            background: #111827;
+            color: white;
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(26px, 5vw, 44px);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 14px;
+        }
+
+            .hero h1 span {
+                color: #10b981;
+            }
+
+        .hero p {
+            font-size: 16px;
+            color: #9ca3af;
+            max-width: 480px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat .number {
+            font-size: 26px;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        .hero-stat .label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 14px 36px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 32px;
+        }
+
+            .hero-cta:hover {
+                background: #059669;
+                transform: translateY(-1px);
+            }
+
+        /* ── AVANTAGES ── */
+        .avantages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            padding: 32px 24px;
+            max-width: 880px;
             margin: 0 auto;
-            padding: 32px;
+        }
+
+        .avantage-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px 18px;
+            text-align: center;
+        }
+
+        .avantage-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .avantage-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #111827;
+        }
+
+        .avantage-desc {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        /* ── FORMULAIRE ── */
+        .form-container {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 32px 24px;
         }
 
         .form-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 36px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 32px;
         }
 
-        .form-title {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
+            .form-card h2 {
+                font-size: 20px;
+                font-weight: 800;
+                color: #111827;
+                margin-bottom: 4px;
+            }
 
         .form-subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 28px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 24px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
             .form-group label {
                 display: block;
-                font-size: 13px;
-                font-weight: 600;
-                color: var(--text-muted);
+                font-size: 12px;
+                font-weight: 700;
+                color: #374151;
                 margin-bottom: 6px;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
+                letter-spacing: 0.4px;
             }
 
             .form-group input,
             .form-group select,
             .form-group textarea {
                 width: 100%;
-                padding: 12px 16px;
-                border: 1px solid var(--border);
+                padding: 11px 14px;
+                border: 1px solid #d1d5db;
                 border-radius: 10px;
-                font-size: 15px;
+                font-size: 14px;
                 font-family: inherit;
-                background: var(--bg);
-                color: var(--text);
-                transition: border-color 0.2s, box-shadow 0.2s;
+                background: #f9fafb;
+                color: #111827;
                 outline: none;
+                transition: border-color 0.2s, box-shadow 0.2s;
             }
 
                 .form-group input:focus,
                 .form-group select:focus,
                 .form-group textarea:focus {
-                    border-color: var(--primary);
-                    box-shadow: 0 0 0 3px rgba(232,96,76,0.12);
+                    border-color: #10b981;
+                    box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
                     background: white;
                 }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 14px;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 14px;
-            background: var(--primary);
+            padding: 13px;
+            background: #10b981;
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 8px;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 6px;
         }
 
             .btn-submit:hover {
-                background: var(--primary-dark);
+                background: #059669;
                 transform: translateY(-1px);
             }
 
@@ -239,43 +242,44 @@
 
         .form-note {
             font-size: 12px;
-            color: var(--text-muted);
+            color: #9ca3af;
             text-align: center;
-            margin-top: 16px;
+            margin-top: 14px;
             line-height: 1.5;
         }
 
-        /* ── STATUS EN ATTENTE ── */
+        /* ── STATUS ── */
         .status-container {
-            max-width: 500px;
+            max-width: 480px;
             margin: 60px auto;
-            padding: 32px;
+            padding: 24px;
             text-align: center;
         }
 
         .status-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+            font-size: 56px;
+            margin-bottom: 16px;
         }
 
         .status-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            color: #111827;
         }
 
         .status-desc {
-            font-size: 15px;
-            color: var(--text-muted);
+            font-size: 14px;
+            color: #6b7280;
             line-height: 1.6;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .status-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
             margin-bottom: 20px;
             text-align: left;
         }
@@ -285,7 +289,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #f3f4f6;
             font-size: 14px;
         }
 
@@ -294,41 +298,42 @@
             }
 
             .status-row .key {
-                color: var(--text-muted);
+                color: #6b7280;
             }
 
             .status-row .val {
-                font-weight: 600;
+                font-weight: 700;
             }
 
-        .badge-status {
+        /* ── BADGES ── */
+        .badge {
             display: inline-block;
-            padding: 6px 16px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
         }
 
-        .badge-Pending {
-            background: #fff8e6;
-            color: #b07800;
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
         }
 
-        .badge-Approved {
-            background: #e8f5ef;
-            color: #1a7a4a;
+        .badge-approved {
+            background: #d1fae5;
+            color: #065f46;
         }
 
-        .badge-Rejected {
-            background: #fdecea;
-            color: #c0392b;
+        .badge-rejected {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
-        /* ── DASHBOARD VENDEUR ── */
+        /* ── DASHBOARD ── */
         .dashboard {
-            max-width: 900px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 24px 32px;
+            padding: 28px 24px;
         }
 
         .dash-header {
@@ -341,65 +346,72 @@
         }
 
         .dash-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
+            color: #111827;
         }
 
-        .dash-shop {
-            font-size: 14px;
-            color: var(--text-muted);
+        .dash-desc {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 2px;
         }
 
         .dash-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
             margin-bottom: 28px;
         }
 
         .dash-stat {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
         }
 
             .dash-stat .label {
-                font-size: 12px;
-                color: var(--text-muted);
+                font-size: 11px;
+                color: #6b7280;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 margin-bottom: 8px;
             }
 
             .dash-stat .value {
-                font-size: 24px;
+                font-size: 22px;
                 font-weight: 800;
+                color: #111827;
             }
 
                 .dash-stat .value.green {
-                    color: var(--success);
+                    color: #10b981;
                 }
 
                 .dash-stat .value.orange {
-                    color: var(--warning);
+                    color: #f59e0b;
                 }
 
-        .section-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 14px;
+        .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
         }
 
         .btn-add {
-            padding: 8px 18px;
-            background: var(--primary);
+            background: #10b981;
             color: white;
             border: none;
             border-radius: 8px;
+            padding: 8px 16px;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
@@ -407,15 +419,15 @@
         }
 
             .btn-add:hover {
-                background: var(--primary-dark);
+                background: #059669;
             }
 
-        /* Produit item dans dashboard */
+        /* ── PRODUITS ── */
         .my-product {
-            background: var(--card);
-            border: 1px solid var(--border);
+            background: white;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 14px 18px;
+            padding: 14px 16px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -423,11 +435,11 @@
         }
 
         .my-product-img {
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             border-radius: 8px;
-            background: var(--bg);
-            border: 1px solid var(--border);
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -450,7 +462,7 @@
         .my-product-name {
             font-size: 14px;
             font-weight: 700;
-            margin-bottom: 3px;
+            color: #111827;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -458,23 +470,24 @@
 
         .my-product-meta {
             font-size: 12px;
-            color: var(--text-muted);
+            color: #6b7280;
+            margin-top: 2px;
         }
 
         .my-product-price {
             font-size: 15px;
-            font-weight: 700;
-            color: var(--primary);
+            font-weight: 800;
+            color: #10b981;
             white-space: nowrap;
         }
 
-        /* ── MODAL AJOUT PRODUIT ── */
+        /* ── MODAL ── */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            z-index: 10000;
             align-items: flex-start;
             justify-content: center;
             padding: 20px;
@@ -486,17 +499,18 @@
             }
 
         .modal {
-            background: var(--card);
-            border-radius: 20px;
+            background: white;
+            border-radius: 16px;
             padding: 28px;
             width: 100%;
-            max-width: 520px;
+            max-width: 500px;
             margin: auto;
         }
 
             .modal h3 {
-                font-size: 18px;
+                font-size: 17px;
                 font-weight: 800;
+                color: #111827;
                 margin-bottom: 20px;
             }
 
@@ -504,19 +518,18 @@
             .modal .form-group select,
             .modal .form-group textarea {
                 width: 100%;
-                padding: 10px 14px;
-                border: 1px solid var(--border);
+                padding: 10px 13px;
+                border: 1px solid #d1d5db;
                 border-radius: 8px;
                 font-size: 14px;
                 font-family: inherit;
-                background: var(--bg);
+                background: #f9fafb;
                 outline: none;
-                transition: border-color 0.2s;
             }
 
                 .modal .form-group input:focus,
                 .modal .form-group textarea:focus {
-                    border-color: var(--primary);
+                    border-color: #10b981;
                 }
 
         .modal-actions {
@@ -529,18 +542,19 @@
         .btn-cancel {
             padding: 10px 20px;
             border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--bg);
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            color: #374151;
         }
 
         .btn-save {
             padding: 10px 24px;
             border-radius: 8px;
             border: none;
-            background: var(--primary);
+            background: #10b981;
             color: white;
             font-size: 14px;
             font-weight: 700;
@@ -549,7 +563,30 @@
         }
 
             .btn-save:hover {
-                background: var(--primary-dark);
+                background: #059669;
+            }
+
+        /* ── LOGIN PROMPT ── */
+        .login-prompt {
+            text-align: center;
+            padding: 80px 24px;
+        }
+
+            .login-prompt .icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+            }
+
+            .login-prompt h2 {
+                font-size: 20px;
+                font-weight: 800;
+                margin-bottom: 8px;
+            }
+
+            .login-prompt p {
+                color: #6b7280;
+                margin-bottom: 24px;
+                font-size: 14px;
             }
 
         /* ── TOAST ── */
@@ -557,16 +594,16 @@
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: #1a1a1a;
+            background: #111827;
             color: white;
             padding: 12px 20px;
             border-radius: 10px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             transform: translateY(80px);
             opacity: 0;
             transition: all 0.3s;
-            z-index: 9999;
+            z-index: 99999;
             max-width: 300px;
         }
 
@@ -576,51 +613,11 @@
             }
 
             .toast.success {
-                background: var(--success);
+                background: #10b981;
             }
 
             .toast.error {
-                background: var(--danger);
-            }
-
-        /* ── LOGIN PROMPT ── */
-        .login-prompt {
-            text-align: center;
-            padding: 60px 32px;
-        }
-
-            .login-prompt .icon {
-                font-size: 48px;
-                margin-bottom: 16px;
-            }
-
-            .login-prompt h2 {
-                font-size: 22px;
-                font-weight: 800;
-                margin-bottom: 10px;
-            }
-
-            .login-prompt p {
-                color: var(--text-muted);
-                margin-bottom: 24px;
-            }
-
-        .btn-login {
-            display: inline-block;
-            padding: 12px 32px;
-            background: var(--primary);
-            color: white;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            transition: background 0.2s;
-        }
-
-            .btn-login:hover {
-                background: var(--primary-dark);
+                background: #ef4444;
             }
 
         @media (max-width: 600px) {
@@ -628,103 +625,78 @@
                 grid-template-columns: 1fr;
             }
 
-            .form-container, .dashboard {
-                padding: 16px;
+            .hero-stats {
+                gap: 24px;
             }
 
             .form-card {
-                padding: 24px 20px;
-            }
-
-            .hero {
-                padding: 40px 16px;
-            }
-
-            .avantages {
-                padding: 20px 16px;
+                padding: 22px 16px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ══ PAGE ACCUEIL (pas connecté) ════════════════════════════════════ -->
+    <!-- ── HEADER identique au reste du site ── -->
+    <header class="site-header">
+        <div class="site-logo" onclick="window.location.href='index.html'">
+            🛒 Ranita Market
+        </div>
+        <nav style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+            <a href="products.html">Produits</a>
+            <a href="cart.html">Panier</a>
+            <a href="vendeur.html" style="color:#10b981 !important;font-weight:800;">Vendre</a>
+            <div id="authNav" style="display:inline-flex;align-items:center;"></div>
+        </nav>
+    </header>
+
+    <!-- ══ LANDING ═══════════════════════════════════════════════════════ -->
     <div class="page active" id="page-landing">
         <div class="hero">
-            <div class="hero-logo">Ranita Market</div>
+            <div class="hero-tag">Ranita Market</div>
             <h1>Vendez vos produits<br>sur <span>Ranita Market</span></h1>
-            <p>Rejoignez des milliers de vendeurs en Côte d'Ivoire. Créez votre boutique et atteignez vos clients partout.</p>
+            <p>Rejoignez des vendeurs en Côte d'Ivoire. Créez votre boutique et atteignez vos clients partout.</p>
             <div class="hero-stats">
-                <div class="hero-stat">
-                    <div class="number">10%</div>
-                    <div class="label">Commission seulement</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="number">0 F</div>
-                    <div class="label">Inscription gratuite</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="number">24h</div>
-                    <div class="label">Validation rapide</div>
-                </div>
+                <div class="hero-stat"><div class="number">10%</div><div class="label">Commission seulement</div></div>
+                <div class="hero-stat"><div class="number">0 F</div><div class="label">Inscription gratuite</div></div>
+                <div class="hero-stat"><div class="number">24h</div><div class="label">Validation rapide</div></div>
             </div>
+            <button class="hero-cta" onclick="checkAndStart()">Commencer à vendre →</button>
         </div>
 
         <div class="avantages">
-            <div class="avantage-card">
-                <div class="avantage-icon">🛡️</div>
-                <div class="avantage-title">Sécurisé</div>
-                <div class="avantage-desc">Ranita vérifie chaque vendeur avant publication</div>
-            </div>
-            <div class="avantage-card">
-                <div class="avantage-icon">💸</div>
-                <div class="avantage-title">Paiement rapide</div>
-                <div class="avantage-desc">Orange Money, MTN Money ou virement bancaire</div>
-            </div>
-            <div class="avantage-card">
-                <div class="avantage-icon">📦</div>
-                <div class="avantage-title">Livraison gérée</div>
-                <div class="avantage-desc">Ranita centralise toutes les livraisons pour vous</div>
-            </div>
-            <div class="avantage-card">
-                <div class="avantage-icon">📊</div>
-                <div class="avantage-title">Dashboard</div>
-                <div class="avantage-desc">Suivez vos ventes et vos gains en temps réel</div>
-            </div>
-        </div>
-
-        <div style="text-align:center;padding-bottom:48px">
-            <button class="btn-login" onclick="checkAndStart()">Commencer à vendre →</button>
+            <div class="avantage-card"><div class="avantage-icon">🛡️</div><div class="avantage-title">Sécurisé</div><div class="avantage-desc">Ranita vérifie chaque vendeur avant publication</div></div>
+            <div class="avantage-card"><div class="avantage-icon">💸</div><div class="avantage-title">Paiement rapide</div><div class="avantage-desc">Orange Money, MTN Money ou virement bancaire</div></div>
+            <div class="avantage-card"><div class="avantage-icon">📦</div><div class="avantage-title">Livraison gérée</div><div class="avantage-desc">Ranita centralise toutes les livraisons pour vous</div></div>
+            <div class="avantage-card"><div class="avantage-icon">📊</div><div class="avantage-title">Dashboard</div><div class="avantage-desc">Suivez vos ventes et gains en temps réel</div></div>
         </div>
     </div>
 
-    <!-- ══ PAGE LOGIN REQUIS ══════════════════════════════════════════════ -->
+    <!-- ══ LOGIN REQUIS ═══════════════════════════════════════════════════ -->
     <div class="page" id="page-login-required">
         <div class="login-prompt">
             <div class="icon">🔐</div>
             <h2>Connexion requise</h2>
-            <p>Vous devez être connecté à votre compte client pour créer une boutique.</p>
-            <a href="/login.html" class="btn-login">Se connecter</a>
+            <p>Vous devez être connecté pour créer une boutique.</p>
+            <a href="/login.html?redirect=vendeur.html" class="btn-save" style="display:inline-block;padding:12px 32px;border-radius:12px;font-size:15px;text-decoration:none;">Se connecter</a>
         </div>
     </div>
 
-    <!-- ══ PAGE FORMULAIRE D'INSCRIPTION ══════════════════════════════════ -->
+    <!-- ══ FORMULAIRE ═════════════════════════════════════════════════════ -->
     <div class="page" id="page-register">
         <div class="form-container">
             <div class="form-card">
-                <div class="form-title">Créer ma boutique</div>
-                <div class="form-subtitle">Remplissez ce formulaire — Ranita validera votre demande sous 24h</div>
+                <h2>Créer ma boutique</h2>
+                <div class="form-subtitle">Ranita validera votre demande sous 24h</div>
 
                 <div class="form-group">
                     <label>Nom de la boutique *</label>
                     <input type="text" id="shopName" placeholder="Ex: Mode Abidjan, Tech Shop CI..." maxlength="100">
                 </div>
-
                 <div class="form-group">
-                    <label>Description de la boutique</label>
+                    <label>Description</label>
                     <textarea id="shopDescription" rows="3" placeholder="Décrivez ce que vous vendez..."></textarea>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label>Téléphone *</label>
@@ -735,7 +707,6 @@
                         <input type="text" id="nationalIdNumber" placeholder="CI-XXXXXXXXX">
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label>Moyen de paiement</label>
@@ -753,126 +724,76 @@
                     </div>
                 </div>
 
-                <button class="btn-submit" id="btn-register" onclick="submitRegistration()">
-                    Envoyer ma demande →
-                </button>
-
-                <div class="form-note">
-                    En soumettant ce formulaire, vous acceptez que Ranita Market vérifie votre identité et valide votre boutique avant toute publication.
-                </div>
+                <button class="btn-submit" id="btn-register" onclick="submitRegistration()">Envoyer ma demande →</button>
+                <div class="form-note">En soumettant ce formulaire, vous acceptez que Ranita Market vérifie votre identité avant toute publication.</div>
             </div>
         </div>
     </div>
 
-    <!-- ══ PAGE EN ATTENTE ════════════════════════════════════════════════ -->
+    <!-- ══ EN ATTENTE ═════════════════════════════════════════════════════ -->
     <div class="page" id="page-pending">
         <div class="status-container">
             <div class="status-icon">⏳</div>
             <div class="status-title">Demande en cours d'examen</div>
-            <div class="status-desc">Notre équipe examine votre dossier. Vous recevrez une notification dès que votre boutique sera validée.</div>
-
+            <div class="status-desc">Notre équipe examine votre dossier. Vous serez notifié dès validation.</div>
             <div class="status-card" id="pending-info"></div>
-
-            <div style="color:var(--text-muted);font-size:14px">
-                Délai habituel : <strong>24 à 48 heures</strong>
-            </div>
+            <div style="color:#6b7280;font-size:13px">Délai habituel : <strong>24 à 48 heures</strong></div>
         </div>
     </div>
 
-    <!-- ══ PAGE REFUSÉ ════════════════════════════════════════════════════ -->
+    <!-- ══ REFUSÉ ══════════════════════════════════════════════════════════ -->
     <div class="page" id="page-rejected">
         <div class="status-container">
             <div class="status-icon">❌</div>
             <div class="status-title">Demande refusée</div>
             <div class="status-desc" id="rejected-reason">Votre demande n'a pas été acceptée.</div>
-            <button class="btn-login" onclick="showPage('page-register')">Soumettre une nouvelle demande</button>
+            <button class="btn-save" style="padding:12px 32px;border-radius:12px;font-size:15px;cursor:pointer;" onclick="showPage('page-register')">Soumettre une nouvelle demande</button>
         </div>
     </div>
 
-    <!-- ══ PAGE DASHBOARD VENDEUR ══════════════════════════════════════════ -->
+    <!-- ══ DASHBOARD ══════════════════════════════════════════════════════ -->
     <div class="page" id="page-dashboard">
         <div class="dashboard">
             <div class="dash-header">
                 <div>
                     <div class="dash-title" id="dash-shop-name">Ma boutique</div>
-                    <div class="dash-shop" id="dash-shop-desc"></div>
+                    <div class="dash-desc" id="dash-shop-desc"></div>
                 </div>
-                <span class="badge-status badge-Approved">Boutique active</span>
+                <span class="badge badge-approved">Boutique active</span>
             </div>
 
-            <!-- Stats -->
             <div class="dash-stats">
-                <div class="dash-stat">
-                    <div class="label">Produits publiés</div>
-                    <div class="value" id="dash-total-products">—</div>
-                </div>
-                <div class="dash-stat">
-                    <div class="label">En attente validation</div>
-                    <div class="value orange" id="dash-pending-products">—</div>
-                </div>
-                <div class="dash-stat">
-                    <div class="label">Gains totaux</div>
-                    <div class="value green" id="dash-earnings">—</div>
-                </div>
-                <div class="dash-stat">
-                    <div class="label">À recevoir</div>
-                    <div class="value orange" id="dash-pending-payouts">—</div>
-                </div>
+                <div class="dash-stat"><div class="label">Produits publiés</div><div class="value" id="dash-total-products">—</div></div>
+                <div class="dash-stat"><div class="label">En attente</div><div class="value orange" id="dash-pending-products">—</div></div>
+                <div class="dash-stat"><div class="label">Gains totaux</div><div class="value green" id="dash-earnings">—</div></div>
+                <div class="dash-stat"><div class="label">À recevoir</div><div class="value orange" id="dash-pending-payouts">—</div></div>
             </div>
 
-            <!-- Mes produits -->
-            <div class="section-title">
-                Mes produits
+            <div class="section-header">
+                <div class="section-title">Mes produits</div>
                 <button class="btn-add" onclick="openAddProduct()">+ Ajouter un produit</button>
             </div>
             <div id="my-products-list">
-                <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:14px">Chargement...</div>
+                <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
             </div>
         </div>
     </div>
 
-    <!-- ══ MODAL AJOUT PRODUIT ══════════════════════════════════════════════ -->
+    <!-- ══ MODAL PRODUIT ══════════════════════════════════════════════════ -->
     <div class="modal-overlay" id="modal-add-product">
         <div class="modal">
             <h3>Ajouter un produit</h3>
-
-            <div class="form-group">
-                <label>Nom du produit *</label>
-                <input type="text" id="p-name" placeholder="Ex: Sac en cuir marron">
+            <div class="form-group"><label>Nom du produit *</label><input type="text" id="p-name" placeholder="Ex: Sac en cuir marron"></div>
+            <div class="form-group"><label>Description</label><textarea id="p-description" rows="3" placeholder="Décrivez votre produit..."></textarea></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="form-group"><label>Prix (FCFA) *</label><input type="number" id="p-price" placeholder="Ex: 15000" min="0"></div>
+                <div class="form-group"><label>Ancien prix</label><input type="number" id="p-old-price" placeholder="Ex: 20000" min="0"></div>
             </div>
-
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="p-description" rows="3" placeholder="Décrivez votre produit..."></textarea>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="form-group"><label>Stock *</label><input type="number" id="p-stock" placeholder="Ex: 10" min="0"></div>
+                <div class="form-group"><label>Catégorie</label><input type="text" id="p-category" placeholder="Ex: Mode, Électronique..."></div>
             </div>
-
-            <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                <div class="form-group">
-                    <label>Prix (FCFA) *</label>
-                    <input type="number" id="p-price" placeholder="Ex: 15000" min="0">
-                </div>
-                <div class="form-group">
-                    <label>Ancien prix</label>
-                    <input type="number" id="p-old-price" placeholder="Ex: 20000" min="0">
-                </div>
-            </div>
-
-            <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                <div class="form-group">
-                    <label>Stock *</label>
-                    <input type="number" id="p-stock" placeholder="Ex: 10" min="0">
-                </div>
-                <div class="form-group">
-                    <label>Catégorie</label>
-                    <input type="text" id="p-category" placeholder="Ex: Mode, Électronique...">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>URL image principale</label>
-                <input type="url" id="p-image" placeholder="https://...">
-            </div>
-
+            <div class="form-group"><label>URL image principale</label><input type="url" id="p-image" placeholder="https://..."></div>
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal('modal-add-product')">Annuler</button>
                 <button class="btn-save" onclick="submitProduct()">Soumettre pour validation</button>
@@ -880,251 +801,150 @@
         </div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
     <script>
-const API = 'https://ranitaapi-production.up.railway.app/api';
+        const API = 'https://ranitaapi-production.up.railway.app/api';
+        let clientId = null, sellerId = null;
 
-let clientId = null;
-let sellerId = null;
-let sellerData = null;
-
-// ── INIT ────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-    // Récupère le client connecté depuis localStorage (adapte selon ton système auth)
-    const clientStr = localStorage.getItem('client');
-    if (clientStr) {
-        try {
-            const client = JSON.parse(clientStr);
-            clientId = client.id;
-        } catch(e) {}
-    }
-    // Si pas connecté, on reste sur la landing
-});
-
-function checkAndStart() {
-    if (!clientId) {
-        showPage('page-login-required');
-        return;
-    }
-    loadSellerStatus();
-}
-
-// ── CHARGER STATUT VENDEUR ───────────────────────────────────────────
-async function loadSellerStatus() {
-    try {
-        const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
-        if (res.status === 404) {
-            showPage('page-register');
-            return;
-        }
-        sellerData = await res.json();
-        sellerId = sellerData.id;
-
-        if (sellerData.status === 'Pending') {
-            showPendingPage(sellerData);
-        } else if (sellerData.status === 'Rejected') {
-            showRejectedPage(sellerData);
-        } else if (sellerData.status === 'Approved') {
-            showDashboard(sellerData);
-        } else if (sellerData.status === 'Suspended') {
-            showPage('page-pending');
-            document.querySelector('#page-pending .status-icon').textContent = '⏸️';
-            document.querySelector('#page-pending .status-title').textContent = 'Boutique suspendue';
-            document.querySelector('#page-pending .status-desc').textContent = 'Votre boutique a été suspendue. Contactez le support Ranita.';
-        }
-    } catch(e) {
-        showPage('page-register');
-    }
-}
-
-// ── INSCRIPTION ──────────────────────────────────────────────────────
-async function submitRegistration() {
-    const btn = document.getElementById('btn-register');
-    const shopName = document.getElementById('shopName').value.trim();
-    const phoneNumber = document.getElementById('phoneNumber').value.trim();
-    const nationalIdNumber = document.getElementById('nationalIdNumber').value.trim();
-
-    if (!shopName || !phoneNumber || !nationalIdNumber) {
-        showToast('Remplissez tous les champs obligatoires (*)', 'error');
-        return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Envoi en cours...';
-
-    try {
-        const res = await fetch(`${API}/sellers/register?clientId=${clientId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                shopName,
-                shopDescription: document.getElementById('shopDescription').value.trim(),
-                phoneNumber,
-                nationalIdNumber,
-                paymentMethod: document.getElementById('paymentMethod').value,
-                paymentDetails: document.getElementById('paymentDetails').value.trim()
-            })
+        window.addEventListener('DOMContentLoaded', () => {
+            const client = JSON.parse(localStorage.getItem('client')) || null;
+            const authNav = document.getElementById('authNav');
+            if (client) {
+                clientId = client.id;
+                authNav.innerHTML = `
+                <div style="position:relative;display:inline-block;">
+                    <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
+                        👤 ${client.name ? client.name.split(' ')[0] : 'Mon compte'} ▾
+                    </button>
+                    <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
+                        <a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#111827;text-decoration:none;font-weight:600;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>
+                        <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
+                    </div>
+                </div>`;
+            } else {
+                authNav.innerHTML = `
+                <a href="login.html?redirect=vendeur.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
+                <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
+            }
         });
 
-        const data = await res.json();
-
-        if (res.ok) {
-            showToast('Demande envoyée ! Nous vous répondons sous 24h ✓', 'success');
-            setTimeout(() => loadSellerStatus(), 1500);
-        } else {
-            showToast(data.message || 'Erreur lors de l\'envoi', 'error');
-            btn.disabled = false;
-            btn.textContent = 'Envoyer ma demande →';
-        }
-    } catch(e) {
-        showToast('Erreur réseau, réessayez', 'error');
-        btn.disabled = false;
-        btn.textContent = 'Envoyer ma demande →';
-    }
-}
-
-// ── PAGES ────────────────────────────────────────────────────────────
-function showPendingPage(seller) {
-    document.getElementById('pending-info').innerHTML = `
-        <div class="status-row"><span class="key">Boutique</span><span class="val">${seller.shopName}</span></div>
-        <div class="status-row"><span class="key">Téléphone</span><span class="val">${seller.phoneNumber}</span></div>
-        <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge-status badge-Pending">En attente</span></span></div>
-        <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(seller.createdAt).toLocaleDateString('fr-FR')}</span></div>
-    `;
-    showPage('page-pending');
-}
-
-function showRejectedPage(seller) {
-    document.getElementById('rejected-reason').textContent =
-        seller.rejectionReason
-            ? `Motif : ${seller.rejectionReason}`
-            : 'Votre demande n\'a pas été acceptée. Vous pouvez soumettre une nouvelle demande.';
-    showPage('page-rejected');
-}
-
-async function showDashboard(seller) {
-    document.getElementById('dash-shop-name').textContent = seller.shopName;
-    document.getElementById('dash-shop-desc').textContent = seller.shopDescription || '';
-    document.getElementById('dash-total-products').textContent = seller.totalProducts;
-    document.getElementById('dash-pending-products').textContent = seller.pendingProducts;
-    document.getElementById('dash-earnings').textContent = formatPrice(seller.totalEarnings);
-    document.getElementById('dash-pending-payouts').textContent = formatPrice(seller.pendingPayouts);
-    showPage('page-dashboard');
-    loadMyProducts();
-}
-
-async function loadMyProducts() {
-    try {
-        const res = await fetch(`${API}/sellers/${sellerId}/products`);
-        const products = await res.json();
-        const el = document.getElementById('my-products-list');
-
-        if (!products.length) {
-            el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Aucun produit. Ajoutez votre premier produit !</div>';
-            return;
+        function toggleMenu() {
+            const m = document.getElementById('clientMenu');
+            if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
         }
 
-        el.innerHTML = products.map(p => `
-            <div class="my-product">
-                <div class="my-product-img">
-                    ${p.images && p.images.length > 0
-                        ? `<img src="${p.images[0]}" onerror="this.style.display='none'">`
-                        : '📦'}
-                </div>
-                <div class="my-product-info">
-                    <div class="my-product-name">${p.name}</div>
-                    <div class="my-product-meta">Stock: ${p.stock} · ${p.category || 'Sans catégorie'}</div>
-                </div>
-                <div class="my-product-price">${formatPrice(p.price)}</div>
-                <span class="badge-status badge-${p.approvalStatus}" style="font-size:11px;padding:4px 10px">
-                    ${{ Pending: 'En attente', Approved: 'Publié', Rejected: 'Refusé' }[p.approvalStatus] || p.approvalStatus}
-                </span>
-            </div>
-        `).join('');
-    } catch(e) {}
-}
+        function logout() { localStorage.removeItem('client'); window.location.reload(); }
 
-// ── AJOUTER PRODUIT ──────────────────────────────────────────────────
-function openAddProduct() {
-    document.getElementById('p-name').value = '';
-    document.getElementById('p-description').value = '';
-    document.getElementById('p-price').value = '';
-    document.getElementById('p-old-price').value = '';
-    document.getElementById('p-stock').value = '';
-    document.getElementById('p-category').value = '';
-    document.getElementById('p-image').value = '';
-    openModal('modal-add-product');
-}
-
-async function submitProduct() {
-    const name  = document.getElementById('p-name').value.trim();
-    const price = parseFloat(document.getElementById('p-price').value);
-    const stock = parseInt(document.getElementById('p-stock').value) || 0;
-
-    if (!name || !price) {
-        showToast('Le nom et le prix sont obligatoires', 'error');
-        return;
-    }
-
-    const imageUrl = document.getElementById('p-image').value.trim();
-    const images = imageUrl ? [imageUrl] : [];
-
-    try {
-        const res = await fetch(`${API}/sellers/${sellerId}/products`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name,
-                description: document.getElementById('p-description').value.trim(),
-                price,
-                oldPrice: parseFloat(document.getElementById('p-old-price').value) || null,
-                stock,
-                category: document.getElementById('p-category').value.trim(),
-                images
-            })
+        document.addEventListener('click', e => {
+            const m = document.getElementById('clientMenu');
+            if (m && !e.target.closest('#authNav')) m.style.display = 'none';
         });
 
-        if (res.ok) {
-            showToast('Produit soumis, en attente de validation ✓', 'success');
-            closeModal('modal-add-product');
-            loadMyProducts();
-        } else {
-            const data = await res.json();
-            showToast(data.message || 'Erreur', 'error');
+        function checkAndStart() {
+            if (!clientId) { showPage('page-login-required'); return; }
+            loadSellerStatus();
         }
-    } catch(e) {
-        showToast('Erreur réseau', 'error');
-    }
-}
 
-// ── UTILS ────────────────────────────────────────────────────────────
-function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo(0, 0);
-}
+        async function loadSellerStatus() {
+            try {
+                const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
+                if (res.status === 404) { showPage('page-register'); return; }
+                const s = await res.json();
+                sellerId = s.id;
+                if (s.status === 'Pending') {
+                    document.getElementById('pending-info').innerHTML = `
+                    <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
+                    <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
+                    <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
+                    <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
+                    showPage('page-pending');
+                } else if (s.status === 'Rejected') {
+                    document.getElementById('rejected-reason').textContent = s.rejectionReason ? `Motif : ${s.rejectionReason}` : 'Votre demande n\'a pas été acceptée.';
+                    showPage('page-rejected');
+                } else if (s.status === 'Approved') {
+                    document.getElementById('dash-shop-name').textContent = s.shopName;
+                    document.getElementById('dash-shop-desc').textContent = s.shopDescription || '';
+                    document.getElementById('dash-total-products').textContent = s.totalProducts;
+                    document.getElementById('dash-pending-products').textContent = s.pendingProducts;
+                    document.getElementById('dash-earnings').textContent = formatPrice(s.totalEarnings);
+                    document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
+                    showPage('page-dashboard');
+                    loadMyProducts();
+                } else {
+                    document.querySelector('#page-pending .status-icon').textContent = '⏸️';
+                    document.querySelector('#page-pending .status-title').textContent = 'Boutique suspendue';
+                    document.querySelector('#page-pending .status-desc').textContent = 'Contactez le support Ranita.';
+                    showPage('page-pending');
+                }
+            } catch (e) { showPage('page-register'); }
+        }
 
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+        async function submitRegistration() {
+            const btn = document.getElementById('btn-register');
+            const shopName = document.getElementById('shopName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const nationalIdNumber = document.getElementById('nationalIdNumber').value.trim();
+            if (!shopName || !phoneNumber || !nationalIdNumber) { showToast('Remplissez tous les champs obligatoires (*)', 'error'); return; }
+            btn.disabled = true; btn.textContent = 'Envoi en cours...';
+            try {
+                const res = await fetch(`${API}/sellers/register?clientId=${clientId}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shopName, shopDescription: document.getElementById('shopDescription').value.trim(), phoneNumber, nationalIdNumber, paymentMethod: document.getElementById('paymentMethod').value, paymentDetails: document.getElementById('paymentDetails').value.trim() })
+                });
+                const data = await res.json();
+                if (res.ok) { showToast('Demande envoyée ! Réponse sous 24h ✓', 'success'); setTimeout(() => loadSellerStatus(), 1500); }
+                else { showToast(data.message || 'Erreur', 'error'); btn.disabled = false; btn.textContent = 'Envoyer ma demande →'; }
+            } catch (e) { showToast('Erreur réseau', 'error'); btn.disabled = false; btn.textContent = 'Envoyer ma demande →'; }
+        }
 
-document.querySelectorAll('.modal-overlay').forEach(m => {
-    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
+        async function loadMyProducts() {
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const products = await res.json();
+                const el = document.getElementById('my-products-list');
+                if (!products.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit. Ajoutez votre premier produit !</div>'; return; }
+                const labels = { Pending: 'En attente', Approved: 'Publié', Rejected: 'Refusé' };
+                const bclass = { Pending: 'badge-pending', Approved: 'badge-approved', Rejected: 'badge-rejected' };
+                el.innerHTML = products.map(p => `
+                <div class="my-product">
+                    <div class="my-product-img">${p.images && p.images.length > 0 ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+                    <div class="my-product-info">
+                        <div class="my-product-name">${p.name}</div>
+                        <div class="my-product-meta">Stock: ${p.stock} · ${p.category || 'Sans catégorie'}</div>
+                    </div>
+                    <div class="my-product-price">${formatPrice(p.price)}</div>
+                    <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
+                </div>`).join('');
+            } catch (e) { }
+        }
 
-function formatPrice(p) {
-    return new Intl.NumberFormat('fr-CI', {
-        style: 'currency', currency: 'XOF', maximumFractionDigits: 0
-    }).format(p || 0);
-}
+        function openAddProduct() {
+            ['p-name', 'p-description', 'p-price', 'p-old-price', 'p-stock', 'p-category', 'p-image'].forEach(id => document.getElementById(id).value = '');
+            openModal('modal-add-product');
+        }
 
-function showToast(msg, type = '') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast show ' + type;
-    setTimeout(() => { t.className = 'toast'; }, 3500);
-}
-</script>
+        async function submitProduct() {
+            const name = document.getElementById('p-name').value.trim();
+            const price = parseFloat(document.getElementById('p-price').value);
+            if (!name || !price) { showToast('Le nom et le prix sont obligatoires', 'error'); return; }
+            const imageUrl = document.getElementById('p-image').value.trim();
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description: document.getElementById('p-description').value.trim(), price, oldPrice: parseFloat(document.getElementById('p-old-price').value) || null, stock: parseInt(document.getElementById('p-stock').value) || 0, category: document.getElementById('p-category').value.trim(), images: imageUrl ? [imageUrl] : [] })
+                });
+                if (res.ok) { showToast('Produit soumis ✓', 'success'); closeModal('modal-add-product'); loadMyProducts(); }
+                else { const data = await res.json(); showToast(data.message || 'Erreur', 'error'); }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0, 0); }
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+        document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
+        function formatPrice(p) { return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0); }
+        function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3500); }
+    </script>
 </body>
 </html>
