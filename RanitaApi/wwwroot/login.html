@@ -1,17 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Client - Ranita</title>
     <link rel="stylesheet" href="auth.css">
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <div class="auth-card">
 
         <div class="auth-logo" onclick="location.href='index.html'">
-            ?? Ranita Market
+            🛒 Ranita Market
         </div>
 
         <h2>Connexion</h2>
@@ -24,8 +24,8 @@
         </form>
 
         <div class="auth-links">
-            <a href="forgot-password.html">Mot de passe oubli� ?</a><br>
-            <a href="register.html">Cr�er un compte</a>
+            <a href="forgot-password.html">Mot de passe oublié ?</a><br>
+            <a href="register.html">Créer un compte</a>
         </div>
 
     </div>
@@ -59,7 +59,7 @@
                         auth: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth'))))
                     })
                 });
-                console.log('Push client enregistr� !');
+                console.log('Push client enregistré !');
             } catch (e) {
                 console.error('Push error:', e);
             }
@@ -88,7 +88,7 @@
 
             localStorage.setItem("client", JSON.stringify(data));
 
-            // ? Demander permission notifications
+            // ✅ Demander permission notifications
             await registerClientPush(data.id);
 
             alert("Connexion OK");

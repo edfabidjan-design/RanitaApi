@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -296,20 +296,20 @@
             font-weight: 700;
         }
     </style>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <header class="site-header">
-        <div class="site-logo" onclick="location.href='index.html'">?? Ranita Market</div>
+        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
         <nav>
             <a href="products.html">Produits</a>
             <a href="cart.html">Panier</a>
-            <a href="javascript:void(0)" onclick="logoutClient()">D�connexion</a>
+            <a href="javascript:void(0)" onclick="logoutClient()">Déconnexion</a>
         </nav>
     </header>
 
     <div class="orders-page" style="padding-top: 80px;">
-        <h1>?? Mes commandes</h1>
+        <h1>📦 Mes commandes</h1>
         <p>Historique de vos commandes Ranita Market</p>
         <div id="ordersContainer"></div>
     </div>
@@ -340,7 +340,7 @@
 
             if (!res.ok) { alert(await res.text()); return; }
 
-            alert("? Demande de remboursement envoy�e !");
+            alert("✅ Demande de remboursement envoyée !");
             document.getElementById("modalOverlay").classList.remove("open");
             loadOrders();
         }
@@ -349,9 +349,9 @@
         function getStatusClass(status) {
             switch (status) {
                 case "En attente": return "status-en-attente";
-                case "Valid�e": return "status-validee";
-                case "Livr�e": return "status-livree";
-                case "Annul�e": return "status-annulee";
+                case "Validée": return "status-validee";
+                case "Livrée": return "status-livree";
+                case "Annulée": return "status-annulee";
                 default: return "status-en-attente";
             }
         }
@@ -369,7 +369,7 @@
                 return;
             }
 
-            alert("Commande annul�e avec succ�s.");
+            alert("Commande annulée avec succès.");
             document.getElementById("modalOverlay").classList.remove("open");
             loadOrders();
         }
@@ -389,9 +389,9 @@
             if (orders.length === 0) {
                 container.innerHTML = `
                         <div class="empty-state">
-                            <div style="font-size:60px">??</div>
-                            <p>Vous n'avez pas encore pass� de commande.</p>
-                            <a href="products.html" class="btn-shop">D�couvrir les produits</a>
+                            <div style="font-size:60px">📦</div>
+                            <p>Vous n'avez pas encore passé de commande.</p>
+                            <a href="products.html" class="btn-shop">Découvrir les produits</a>
                         </div>`;
                 return;
             }
@@ -411,7 +411,7 @@
                             `).join('')}
                         </div>
                         <div class="order-summary">
-                            <span>${o.items.length} article(s) � ${o.paymentMethod}</span>
+                            <span>${o.items.length} article(s) • ${o.paymentMethod}</span>
                             <span class="order-total">${Number(o.total).toLocaleString()} FCFA</span>
                         </div>
                     </div>
@@ -440,14 +440,14 @@
                         <strong>Paiement :</strong> ${o.paymentMethod}
                     </div>
 
-                    <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#374151;">Articles command�s</div>
+                    <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#374151;">Articles commandés</div>
 
                     ${o.items.map(i => `
                         <div class="modal-item">
                             <img src="${i.imageUrl || 'https://via.placeholder.com/60'}" alt="${i.productName}">
                             <div class="modal-item-info">
                                 <div class="modal-item-name">${i.productName}</div>
-                                <div class="modal-item-qty">Quantit� : ${i.quantity} � ${Number(i.price).toLocaleString()} FCFA</div>
+                                <div class="modal-item-qty">Quantité : ${i.quantity} × ${Number(i.price).toLocaleString()} FCFA</div>
                             </div>
                             <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
                         </div>
@@ -458,7 +458,7 @@
                         <span>${Number(subtotal).toLocaleString()} FCFA</span>
                     </div>
                     <div class="modal-total-row">
-                        <span>?? Livraison</span>
+                        <span>🚚 Livraison</span>
                         <span>${Number(shipping).toLocaleString()} FCFA</span>
                     </div>
                     <div class="modal-total-row grand">
@@ -469,16 +469,16 @@
 ${o.status === "En attente" ? `
     <button onclick="cancelOrder(${o.id})" 
             style="width:100%;background:#fef2f2;color:#ef4444;border:2px solid #ef4444;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:12px;font-size:14px;">
-        ? Annuler la commande
+        ❌ Annuler la commande
     </button>
 ` : ''}
-${o.status === "Livr�e" ? `
+${o.status === "Livrée" ? `
     <div style="margin-top:12px;">
-        <textarea id="refundMotif_${o.id}" placeholder="D�crivez le motif de votre demande de remboursement..."
+        <textarea id="refundMotif_${o.id}" placeholder="Décrivez le motif de votre demande de remboursement..."
             style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:8px;"></textarea>
         <button onclick="requestRefund(${o.id})"
             style="width:100%;background:#fef3c7;color:#92400e;border:2px solid #f59e0b;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;">
-            ?? Demander un remboursement
+            💰 Demander un remboursement
         </button>
     </div>
 ` : ''}

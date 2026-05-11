@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -393,11 +393,11 @@
             padding-top: 80px !important;
         }
     </style>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <header class="site-header">
-        <div class="site-logo" onclick="location.href='index.html'">?? Ranita Market</div>
+        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
         <nav>
             <a href="products.html">Produits</a>
             <a href="cart.html">Panier</a>
@@ -406,13 +406,13 @@
 
     <div class="auth-modal-overlay" id="authModal" style="display:none;">
         <div class="auth-modal">
-            <div class="lock-icon">??</div>
+            <div class="lock-icon">🔒</div>
             <h2>Connexion requise</h2>
-            <p>Vous devez �tre connect� pour finaliser votre commande. Connectez-vous ou cr�ez un compte gratuitement.</p>
+            <p>Vous devez être connecté pour finaliser votre commande. Connectez-vous ou créez un compte gratuitement.</p>
             <div class="auth-modal-actions">
                 <a href="login.html?redirect=checkout.html" class="btn-login-modal">Se connecter</a>
-                <a href="register.html?redirect=checkout.html" class="btn-register-modal">Cr�er un compte</a>
-                <a href="cart.html" class="btn-back-modal">? Retour au panier</a>
+                <a href="register.html?redirect=checkout.html" class="btn-register-modal">Créer un compte</a>
+                <a href="cart.html" class="btn-back-modal">← Retour au panier</a>
             </div>
         </div>
     </div>
@@ -420,25 +420,25 @@
     <div class="checkout-wrapper">
         <div class="checkout-card">
             <h1>Finaliser la commande</h1>
-            <p style="color:#6b7280; font-size:14px; margin-bottom:20px; text-align:center;">V�rifiez vos informations de livraison.</p>
+            <p style="color:#6b7280; font-size:14px; margin-bottom:20px; text-align:center;">Vérifiez vos informations de livraison.</p>
 
             <div class="client-info-bar" id="clientInfoBar" style="display:none;">
-                ? <span id="clientInfoText"></span>
+                ✅ <span id="clientInfoText"></span>
             </div>
 
             <form id="checkoutForm">
                 <input type="text" id="customerName" placeholder="Nom complet" required>
-                <input type="tel" id="customerPhone" placeholder="T�l�phone" required>
+                <input type="tel" id="customerPhone" placeholder="Téléphone" required>
 
 
                 <div style="position:relative; margin-bottom:14px;">
-                    <input type="text" id="customerZoneInput" placeholder="?? Rechercher votre ville ou quartier..."
+                    <input type="text" id="customerZoneInput" placeholder="🔍 Rechercher votre ville ou quartier..."
                            autocomplete="off" oninput="filterZones()" onfocus="filterZones()" required
                            style="width:100%;height:50px;padding:0 14px;border:1px solid #d1d5db;border-radius:12px;background:#f9fafb;font-size:15px;box-sizing:border-box;">
                     <input type="hidden" id="customerZone">
                     <div id="zoneDropdown" style="display:none;position:absolute;top:52px;left:0;right:0;background:white;border:1px solid #d1d5db;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);z-index:999;max-height:250px;overflow-y:auto;"></div>
                 </div>
-                <input type="text" id="customerAddress" placeholder="Adresse pr�cise (rue, num�ro...)" required>
+                <input type="text" id="customerAddress" placeholder="Adresse précise (rue, numéro...)" required>
 
 
 
@@ -446,23 +446,23 @@
                 <span class="payment-label">Mode de paiement</span>
                 <div class="payment-options" style="width:100%;box-sizing:border-box;overflow:hidden;">
                     <div class="payment-option active">
-                        <input type="radio" name="payment" id="pay-livraison" value="Paiement � la livraison" checked>
-                        <label for="pay-livraison">?? Paiement � la livraison</label>
+                        <input type="radio" name="payment" id="pay-livraison" value="Paiement à la livraison" checked>
+                        <label for="pay-livraison">💵 Paiement à la livraison</label>
                     </div>
                     <div class="payment-option disabled">
                         <input type="radio" name="payment" id="pay-orange" value="Orange Money" disabled>
-                        <label for="pay-orange">?? Orange Money</label>
-                        <span class="badge-soon">Bient�t</span>
+                        <label for="pay-orange">🟠 Orange Money</label>
+                        <span class="badge-soon">Bientôt</span>
                     </div>
                     <div class="payment-option disabled">
                         <input type="radio" name="payment" id="pay-wave" value="Wave" disabled>
-                        <label for="pay-wave">?? Wave</label>
-                        <span class="badge-soon">Bient�t</span>
+                        <label for="pay-wave">🌊 Wave</label>
+                        <span class="badge-soon">Bientôt</span>
                     </div>
                     <div class="payment-option disabled">
                         <input type="radio" name="payment" id="pay-mtn" value="MTN MoMo" disabled>
-                        <label for="pay-mtn">?? MTN MoMo</label>
-                        <span class="badge-soon">Bient�t</span>
+                        <label for="pay-mtn">🟡 MTN MoMo</label>
+                        <span class="badge-soon">Bientôt</span>
                     </div>
                 </div>
 
@@ -472,21 +472,21 @@
                         <span id="subtotalDisplay">0 FCFA</span>
                     </div>
                     <div class="summary-line">
-                        <span>?? Frais de livraison</span>
+                        <span>🚚 Frais de livraison</span>
                         <span id="shippingDisplay">1 500 FCFA</span>
                     </div>
                     <div class="summary-line total">
-                        <span>Total � payer</span>
+                        <span>Total à payer</span>
                         <span id="grandTotalDisplay">0 FCFA</span>
                     </div>
                 </div>
 
                 <button type="submit" class="btn-buy" style="width:100%; height:50px; font-size:16px; border:none; cursor:pointer; border-radius:14px;">
-                    ? Confirmer la commande
+                    ✅ Confirmer la commande
                 </button>
             </form>
 
-            <a href="cart.html" class="secondary-link" style="display:block; text-align:center; margin-top:16px;">? Retour au panier</a>
+            <a href="cart.html" class="secondary-link" style="display:block; text-align:center; margin-top:16px;">← Retour au panier</a>
         </div>
     </div>
 
@@ -501,7 +501,7 @@
             document.getElementById("authModal").style.display = "flex";
         } else {
             document.getElementById("clientInfoBar").style.display = "flex";
-            document.getElementById("clientInfoText").textContent = `Connect� en tant que ${client.name || client.email}`;
+            document.getElementById("clientInfoText").textContent = `Connecté en tant que ${client.name || client.email}`;
             if (client.name) document.getElementById("customerName").value = client.name;
             if (client.phone) document.getElementById("customerPhone").value = client.phone;
             if (client.address) document.getElementById("customerAddress").value = client.address;
@@ -521,18 +521,18 @@
             { name: "Cocody", fee: 1500, group: "Abidjan" },
             { name: "Marcory", fee: 1500, group: "Abidjan" },
             { name: "Treichville", fee: 1000, group: "Abidjan" },
-            { name: "Adjam�", fee: 1000, group: "Abidjan" },
+            { name: "Adjamé", fee: 1000, group: "Abidjan" },
             { name: "Yopougon", fee: 2000, group: "Abidjan" },
             { name: "Abobo", fee: 2500, group: "Abidjan" },
             { name: "Koumassi", fee: 1500, group: "Abidjan" },
-            { name: "Port-Bou�t", fee: 2000, group: "Abidjan" },
+            { name: "Port-Bouët", fee: 2000, group: "Abidjan" },
             { name: "Bingerville", fee: 2500, group: "Abidjan" },
             { name: "Riviera", fee: 1500, group: "Abidjan" },
-            { name: "Angr�", fee: 2000, group: "Abidjan" },
+            { name: "Angré", fee: 2000, group: "Abidjan" },
             { name: "Songon", fee: 3000, group: "Abidjan" },
             { name: "Anyama", fee: 3000, group: "Abidjan" },
             // Autres villes
-            { name: "Bouak�", fee: 5000, group: "Autres villes" },
+            { name: "Bouaké", fee: 5000, group: "Autres villes" },
             { name: "Yamoussoukro", fee: 5000, group: "Autres villes" },
             { name: "San Pedro", fee: 7000, group: "Autres villes" },
             { name: "Daloa", fee: 6000, group: "Autres villes" },
@@ -604,7 +604,7 @@
                 clientId: client.id || null,
                 customerName: document.getElementById("customerName").value,
                 customerPhone: document.getElementById("customerPhone").value,
-                customerAddress: zoneName + " � " + document.getElementById("customerAddress").value,
+                customerAddress: zoneName + " — " + document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
                 shippingFee: SHIPPING_FEE,
                 items: cart.map(item => ({
@@ -626,7 +626,7 @@
                 });
                 if (!res.ok) {
                     alert("Erreur commande : " + await res.text());
-                    btn.disabled = false; btn.textContent = "? Confirmer la commande";
+                    btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
                     return;
                 }
                 const data = await res.json();
@@ -634,8 +634,8 @@
                 localStorage.setItem("lastOrderId", data.id);
                 window.location.href = "thank-you.html";
             } catch (err) {
-                alert("Erreur r�seau. Veuillez r�essayer.");
-                btn.disabled = false; btn.textContent = "? Confirmer la commande";
+                alert("Erreur réseau. Veuillez réessayer.");
+                btn.disabled = false; btn.textContent = "✅ Confirmer la commande";
             }
         });
     </script>

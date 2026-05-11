@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -222,15 +222,15 @@
             font-size: 16px;
         }
     </style>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <header class="site-header">
         <div class="site-logo" onclick="window.location.href='index.html'">
-            ?? Ranita Market
+            🛒 Ranita Market
         </div>
         <a href="cart.html" class="cart-link">
-            ?? Panier (<span id="cartCount">0</span>)
+            🛒 Panier (<span id="cartCount">0</span>)
         </a>
     </header>
 
@@ -238,13 +238,13 @@
 
         <section class="products-title">
             <h1>Nos produits</h1>
-            <p>D�couvrez les articles disponibles sur Ranita Market</p>
+            <p>Découvrez les articles disponibles sur Ranita Market</p>
         </section>
 
         <section class="products-toolbar">
-            <input type="text" id="searchInput" placeholder="?? Rechercher un produit..." />
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un produit..." />
             <select id="categoryFilter">
-                <option value="">Toutes les cat�gories</option>
+                <option value="">Toutes les catégories</option>
             </select>
         </section>
 
@@ -282,16 +282,16 @@
                 const categories = await res.json();
                 categories.forEach(parent => {
                     if (parent.children && parent.children.length > 0) {
-                        categoryFilter.innerHTML += `<optgroup label="?? ${parent.name}">`;
+                        categoryFilter.innerHTML += `<optgroup label="📁 ${parent.name}">`;
                         parent.children.forEach(child => {
                             categoryFilter.innerHTML += `<option value="${child.id}">${child.name}</option>`;
                         });
                         categoryFilter.innerHTML += `</optgroup>`;
                     } else {
-                        categoryFilter.innerHTML += `<option value="${parent.id}">?? ${parent.name}</option>`;
+                        categoryFilter.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
                     }
                 });
-            } catch (e) { console.error("Erreur chargement cat�gories", e); }
+            } catch (e) { console.error("Erreur chargement catégories", e); }
         }
 
         async function loadProducts() {
@@ -302,7 +302,7 @@
                 await loadReviews();
                 renderProducts();
             } catch (e) {
-                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">??</span><p>Impossible de charger les produits.</p></div>`;
+                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">😕</span><p>Impossible de charger les produits.</p></div>`;
             }
         }
 
@@ -322,7 +322,7 @@
             const btn = document.querySelector(`[data-id="${id}"]`);
             if (btn) {
                 const orig = btn.textContent;
-                btn.textContent = "? Ajout� !";
+                btn.textContent = "✅ Ajouté !";
                 btn.style.background = "#059669";
                 setTimeout(() => { btn.textContent = orig; btn.style.background = ""; }, 1200);
             }
@@ -345,7 +345,7 @@
             });
 
             if (filtered.length === 0) {
-                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">??</span><p>Aucun produit trouv�.</p></div>`;
+                productsGrid.innerHTML = `<div class="empty-state"><span style="font-size:40px">🔍</span><p>Aucun produit trouvé.</p></div>`;
                 return;
             }
 
@@ -355,13 +355,13 @@
                     : 'https://via.placeholder.com/400x400?text=Ranita';
                 const discount = calcDiscount(p.price, p.oldPrice);
                 const stockLabel = p.stock === 0 ? ''
-                    : p.stock <= 5 ? `<span class="product-stock low">?? Plus que ${p.stock} en stock</span>`
+                    : p.stock <= 5 ? `<span class="product-stock low">⚠️ Plus que ${p.stock} en stock</span>`
                         : `<span class="product-stock">Stock : ${p.stock}</span>`;
 
                 const notes = reviewsMap[p.id];
                 const starsHtml = notes && notes.length > 0 ? (() => {
                     const avg = (notes.reduce((s, n) => s + n, 0) / notes.length).toFixed(1);
-                    const stars = '?'.repeat(Math.round(avg)) + '?'.repeat(5 - Math.round(avg));
+                    const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
                     return `<div style="font-size:12px;color:#f59e0b;display:flex;align-items:center;gap:4px;">
                 <span>${stars}</span><span style="color:#6b7280;">${avg} (${notes.length})</span>
             </div>`;
@@ -385,8 +385,8 @@
                 ${p.stock <= 0
                         ? `<button class="btn-disabled" disabled onclick="event.stopPropagation()">Rupture de stock</button>`
                         : p.variants && p.variants.length > 0
-                            ? `<button class="btn-buy" onclick="event.stopPropagation(); location.href='product-details.html?id=${p.id}'">?? Choisir une variante</button>`
-                            : `<button class="btn-buy" data-id="${p.id}" onclick="event.stopPropagation(); addToCart(${p.id})">?? Ajouter au panier</button>`
+                            ? `<button class="btn-buy" onclick="event.stopPropagation(); location.href='product-details.html?id=${p.id}'">👁 Choisir une variante</button>`
+                            : `<button class="btn-buy" data-id="${p.id}" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 Ajouter au panier</button>`
                     }
             </div>
         </div>`;

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D�tail produit - Ranita</title>
+    <title>Détail produit - Ranita</title>
     <link rel="stylesheet" href="products.css">
     <link rel="stylesheet" href="header.css">
     <style>
@@ -426,14 +426,14 @@
             font-size: 16px;
         }
     </style>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <header class="site-header">
-        <div class="site-logo" onclick="location.href='index.html'">?? Ranita Market</div>
+        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
         <nav>
             <a href="products.html">Produits</a>
-            <a href="cart.html">?? Panier <span class="cart-badge" id="cartCount">0</span></a>
+            <a href="cart.html">🛒 Panier <span class="cart-badge" id="cartCount">0</span></a>
         </nav>
     </header>
 
@@ -472,13 +472,13 @@
                 container.innerHTML = `
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
                 <span style="font-size:28px;font-weight:800;color:#f59e0b;">${moyenne}</span>
-                <span style="font-size:22px;color:#f59e0b;">${"?".repeat(Math.round(moyenne))}${"?".repeat(5 - Math.round(moyenne))}</span>
+                <span style="font-size:22px;color:#f59e0b;">${"★".repeat(Math.round(moyenne))}${"☆".repeat(5 - Math.round(moyenne))}</span>
                 <span style="font-size:13px;color:#6b7280;">${reviews.length} avis</span>
             </div>
             ${slice.map(r => `
             <div style="padding:16px;border-bottom:1px solid #f3f4f6;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                    <span style="color:#f59e0b;font-size:16px;">${"?".repeat(r.note)}${"?".repeat(5 - r.note)}</span>
+                    <span style="color:#f59e0b;font-size:16px;">${"★".repeat(r.note)}${"☆".repeat(5 - r.note)}</span>
                     <strong style="font-size:14px;">${r.client}</strong>
                     <span style="font-size:12px;color:#9ca3af;margin-left:auto;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
                 </div>
@@ -535,7 +535,7 @@
             const addBtn = document.getElementById("addBtn");
 
             if (stock === null) {
-                stockEl.textContent = "S�lectionnez une variante";
+                stockEl.textContent = "Sélectionnez une variante";
                 stockEl.className = "stock-info";
                 if (addBtn) addBtn.disabled = true;
                 return;
@@ -546,13 +546,13 @@
                 stockEl.className = "stock-info out";
                 if (addBtn) { addBtn.disabled = true; addBtn.textContent = "Rupture de stock"; }
             } else if (stock <= 5) {
-                stockEl.textContent = `?? Plus que ${stock} en stock`;
+                stockEl.textContent = `⚠️ Plus que ${stock} en stock`;
                 stockEl.className = "stock-info low";
-                if (addBtn) { addBtn.disabled = false; addBtn.textContent = "?? Ajouter au panier"; }
+                if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; }
             } else {
                 stockEl.textContent = `En stock (${stock} disponibles)`;
                 stockEl.className = "stock-info";
-                if (addBtn) { addBtn.disabled = false; addBtn.textContent = "?? Ajouter au panier"; }
+                if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; }
             }
         }
 
@@ -566,7 +566,7 @@
             if (!currentProduct) return;
             const hasVariants = currentProduct.variants && currentProduct.variants.length > 0;
             if (hasVariants && !selectedVariant) {
-                showToast("?? Choisissez une variante d'abord !");
+                showToast("⚠️ Choisissez une variante d'abord !");
                 return;
             }
             const stock = getStock();
@@ -587,13 +587,13 @@
                     quantity,
                     variant: selectedVariant?.combination || null,
                     variantId: selectedVariant?.id || null,
-                    maxStock: getStock()  // ? ajout
+                    maxStock: getStock()  // ✅ ajout
                 });
             }
 
             localStorage.setItem("cart", JSON.stringify(cart));
             updateCartCount();
-            showToast(`? ${quantity} article(s) ajout�(s) au panier !`);
+            showToast(`✅ ${quantity} article(s) ajouté(s) au panier !`);
         }
 
         async function loadProduct() {
@@ -646,7 +646,7 @@
                         </div>
 
                         <div class="product-info">
-                            <a href="products.html" class="back-link">? Retour aux produits</a>
+                            <a href="products.html" class="back-link">← Retour aux produits</a>
                             ${currentProduct.category ? `<span class="product-badge">${currentProduct.category.name}</span>` : ''}
                             <h1 class="product-title">${currentProduct.name}</h1>
                             ${currentProduct.shortDescription ? `<p class="product-short-desc">${currentProduct.shortDescription}</p>` : ''}
@@ -673,9 +673,9 @@
                             </div>` : ''}
 
                             <div class="qty-block">
-                                <span class="qty-label">Quantit� :</span>
+                                <span class="qty-label">Quantité :</span>
                                 <div class="qty-controls">
-                                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                                    <button class="qty-btn" onclick="changeQty(-1)">−</button>
                                     <input type="number" id="qtyInput" class="qty-input" value="1" min="1" readonly>
                                     <button class="qty-btn" onclick="changeQty(1)">+</button>
                                 </div>
@@ -685,12 +685,12 @@
 
                             ${globalStock <= 0
                     ? `<button class="btn-disabled" disabled>Rupture de stock</button>`
-                    : `<button class="btn-add-cart" id="addBtn" onclick="addToCart()">?? Ajouter au panier</button>`
+                    : `<button class="btn-add-cart" id="addBtn" onclick="addToCart()">🛒 Ajouter au panier</button>`
                 }
 
                             ${attrKeys.length > 0 ? `
                             <div class="attributes-block">
-                                <h4>Caract�ristiques</h4>
+                                <h4>Caractéristiques</h4>
                                 ${attrKeys.map(k => `
                                     <div class="attr-row">
                                         <span class="attr-key">${k}</span>
@@ -710,13 +710,13 @@
 </div>` : ''}
 
 <div class="product-description-full" id="reviewsSection">
-    <h3>? Avis clients</h3>
+    <h3>⭐ Avis clients</h3>
     <div id="reviewsList"><p style="color:#9ca3af;font-size:14px;">Chargement des avis...</p></div>
 </div>
             
                 `;
 
-            // S�lectionner automatiquement la premi�re variante disponible
+            // Sélectionner automatiquement la première variante disponible
             const firstAvailable = currentProduct.variants.find(v => v.stock > 0);
             if (firstAvailable) selectVariant(firstAvailable.id);
 

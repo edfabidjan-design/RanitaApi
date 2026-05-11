@@ -1,32 +1,32 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cr�er un compte</title>
+    <title>Créer un compte</title>
     <link rel="stylesheet" href="auth.css">
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <div class="auth-card">
 
         <div class="auth-logo" onclick="location.href='index.html'">
-            ?? Ranita Market
+            🛒 Ranita Market
         </div>
 
-        <h2>Cr�er un compte</h2>
+        <h2>Créer un compte</h2>
 
         <form id="registerForm">
             <input type="text" id="name" placeholder="Nom complet" required>
             <input type="email" id="email" placeholder="Email" required>
-            <input type="tel" id="phone" placeholder="T�l�phone">
+            <input type="tel" id="phone" placeholder="Téléphone">
             <input type="password" id="password" placeholder="Mot de passe" required>
 
-            <button type="submit">Cr�er mon compte</button>
+            <button type="submit">Créer mon compte</button>
         </form>
 
         <div class="auth-links">
-            <a href="login.html">D�j� un compte ? Se connecter</a>
+            <a href="login.html">Déjà un compte ? Se connecter</a>
         </div>
 
     </div>
@@ -61,7 +61,7 @@
                 return;
             }
 
-            alert("Compte cr�� !");
+            alert("Compte créé !");
             const redirect = new URLSearchParams(window.location.search).get("redirect");
             window.location.href = "login.html" + (redirect ? `?redirect=${redirect}` : "");
         });
