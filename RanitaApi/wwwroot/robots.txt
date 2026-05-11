@@ -1,0 +1,7 @@
+﻿User-agent: *
+Allow: /
+Disallow: /admin-
+Disallow: /checkout.html
+Disallow: /client-orders.html
+
+Sitemap: https://www.ranita-shop.com/sitemap.xml
