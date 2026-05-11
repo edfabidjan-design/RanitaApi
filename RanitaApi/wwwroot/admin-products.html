@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -6,6 +6,11 @@
     <title>Ranita Admin - Produits</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-notifications.js" defer></script>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+
+
     <style>
         .form-section {
             background: white;
@@ -106,21 +111,21 @@
                 cursor: pointer;
             }
     </style>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <header class="admin-header">
-        <div class="logo" onclick="location.href='admin-dashboard.html'">?? Ranita Admin</div>
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html" class="active">Produits</a>
-            <a href="admin-categories.html">Cat�gories</a>
+            <a href="admin-categories.html">Catégories</a>
             <a href="admin-attributes.html">Attributs</a>
             <a href="admin-orders.html">Commandes</a>
             <a href="admin-clients.html">Clients</a>
-            <a href="admin-reviews.html">? Avis</a>
+            <a href="admin-reviews.html">⭐ Avis</a>
         </nav>
-        <button onclick="logout()">D�connexion</button>
+        <button onclick="logout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
@@ -131,14 +136,14 @@
 
             <!-- Infos de base -->
             <div class="form-section">
-                <h3>?? Informations de base</h3>
+                <h3>📦 Informations de base</h3>
                 <div class="form-grid">
                     <div>
                         <label>Nom du produit *</label>
                         <input type="text" id="productName" placeholder="Ex: Chemise Homme Slim" required>
                     </div>
                     <div>
-                        <label>SKU (Code unique) � g�n�r� automatiquement</label>
+                        <label>SKU (Code unique) — généré automatiquement</label>
                         <input type="text" id="productSku" placeholder="Ex: RAN-CHM-001" required readonly
                                style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;">
                     </div>
@@ -147,7 +152,7 @@
                         <input type="text" id="productBrand" placeholder="Ex: Nike, Samsung...">
                     </div>
                     <div>
-                        <label>Cat�gorie *</label>
+                        <label>Catégorie *</label>
                         <select id="categoryId" required onchange="loadAttributeFields()"></select>
                     </div>
                     <div>
@@ -159,11 +164,11 @@
                     </div>
                     <div class="full">
                         <label>Description courte *</label>
-                        <input type="text" id="productShortDescription" placeholder="1-2 phrases r�sumant le produit">
+                        <input type="text" id="productShortDescription" placeholder="1-2 phrases résumant le produit">
                     </div>
                     <div class="full">
                         <label>Description longue</label>
-                        <textarea id="productDescription" placeholder="Description d�taill�e du produit..."></textarea>
+                        <textarea id="productDescription" placeholder="Description détaillée du produit..."></textarea>
                     </div>
                 </div>
             </div>
@@ -171,14 +176,14 @@
 
             <!-- Prix & Stock -->
             <div class="form-section">
-                <h3>?? Prix & Stock</h3>
+                <h3>💰 Prix & Stock</h3>
                 <div class="form-grid">
                     <div>
                         <label>Prix de vente * (FCFA)</label>
                         <input type="number" id="productPrice" placeholder="Ex: 15000" required>
                     </div>
                     <div>
-                        <label>Prix barr� (FCFA)</label>
+                        <label>Prix barré (FCFA)</label>
                         <input type="number" id="productOldPrice" placeholder="Ex: 20000">
                     </div>
                     <div>
@@ -192,7 +197,7 @@
 
             <!-- Images -->
             <div class="form-section">
-                <h3>??? Images (max 5 � la 1�re est l'image principale)</h3>
+                <h3>🖼️ Images (max 5 — la 1ère est l'image principale)</h3>
                 <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
 
                     <!-- Bouton ajout -->
@@ -204,7 +209,7 @@
                                style="padding:8px;border:1px dashed #d1d5db;border-radius:10px;background:#f9fafb;width:200px;">
                     </div>
 
-                    <!-- Galerie aper�u -->
+                    <!-- Galerie aperçu -->
                     <div style="flex:1;">
                         <label style="display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:#374151;">
                             Galerie
@@ -216,7 +221,7 @@
 
             <!-- SEO -->
             <div class="form-section">
-                <h3>?? SEO</h3>
+                <h3>🔍 SEO</h3>
                 <div class="form-grid">
                     <div>
                         <label>Slug URL</label>
@@ -224,29 +229,29 @@
                     </div>
                     <div>
                         <label>Meta description</label>
-                        <input type="text" id="productMetaDescription" placeholder="Description pour Google (160 caract�res max)">
+                        <input type="text" id="productMetaDescription" placeholder="Description pour Google (160 caractères max)">
                     </div>
                 </div>
             </div>
 
             <!-- Attributs dynamiques -->
             <div class="form-section" id="attributesSection" style="display:none;">
-                <h3>??? Attributs</h3>
+                <h3>🏷️ Attributs</h3>
                 <div class="form-grid" id="attributeFields"></div>
             </div>
 
-            <!-- Variantes � apr�s attributs -->
+            <!-- Variantes — après attributs -->
             <div class="form-section" id="variantsSection" style="display:none;">
-                <h3>?? Variantes & Stock</h3>
-                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">S�lectionnez vos attributs ci-dessus puis cliquez sur "G�n�rer les variantes"</p>
-                <button type="button" onclick="generateVariants()" style="background:#3b82f6;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:16px;">?? G�n�rer les variantes</button>
+                <h3>🔀 Variantes & Stock</h3>
+                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">Sélectionnez vos attributs ci-dessus puis cliquez sur "Générer les variantes"</p>
+                <button type="button" onclick="generateVariants()" style="background:#3b82f6;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:16px;">🔀 Générer les variantes</button>
                 <div id="variantsList"></div>
             </div>
 
             <div class="form-actions">
 
-                <button type="submit" class="btn-save">? Enregistrer</button>
-                <button type="button" id="resetBtn" class="btn-reset">?? R�initialiser</button>
+                <button type="submit" class="btn-save">✅ Enregistrer</button>
+                <button type="button" id="resetBtn" class="btn-reset">🔄 Réinitialiser</button>
             </div>
         </form>
 
@@ -262,7 +267,7 @@
                         <th>Prix</th>
                         <th>Ancien Prix</th>
                         <th>Stock</th>
-                        <th>Cat�gorie</th>
+                        <th>Catégorie</th>
                         <th>Statut</th>
                         <th>Image</th>
                         <th>Actions</th>
@@ -277,7 +282,7 @@
 
 
         let productImages = []; // URLs existantes
-        let newImageFiles = []; // Nouveaux fichiers � uploader
+        let newImageFiles = []; // Nouveaux fichiers à uploader
 
 
         async function duplicateProduct(id) {
@@ -307,7 +312,7 @@
             loadProducts();
             const toast = document.createElement("div");
             toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#f59e0b;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
-            toast.textContent = "?? Produit dupliqu� !";
+            toast.textContent = "📋 Produit dupliqué !";
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
@@ -317,7 +322,7 @@
             if (!input.files || !input.files[0]) return;
 
             if (productImages.length + newImageFiles.length >= 5) {
-                alert("Maximum 5 images autoris�es !");
+                alert("Maximum 5 images autorisées !");
                 input.value = "";
                 return;
             }
@@ -344,7 +349,7 @@
                 <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
                 ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
                 <button type="button" onclick="removeExistingImage(${index})"
-                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">?</button>
+                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
                 ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
             </div>
         `;
@@ -359,14 +364,14 @@
                 <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
                 ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
                 <button type="button" onclick="removeNewImage(${index})"
-                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">?</button>
+                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
             </div>
         `;
             });
 
             // Placeholder si vide
             if (productImages.length === 0 && newImageFiles.length === 0) {
-                gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajout�e</p>`;
+                gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajoutée</p>`;
             }
         }
 
@@ -400,11 +405,11 @@
 
             const keys = Object.keys(selectedAttrs);
             if (keys.length === 0) {
-                alert("S�lectionnez d'abord des attributs !");
+                alert("Sélectionnez d'abord des attributs !");
                 return;
             }
 
-            // G�n�rer toutes les combinaisons
+            // Générer toutes les combinaisons
             const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
             const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
 
@@ -461,16 +466,16 @@
             const parents = await res.json();
             const select = document.getElementById("categoryId");
 
-            select.innerHTML = `<option value="">-- Choisir une cat�gorie --</option>`;
+            select.innerHTML = `<option value="">-- Choisir une catégorie --</option>`;
             parents.forEach(parent => {
                 if (parent.children && parent.children.length > 0) {
-                    select.innerHTML += `<optgroup label="?? ${parent.name}">`;
+                    select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
                     parent.children.forEach(child => {
                         select.innerHTML += `<option value="${child.id}">${child.name}</option>`;
                     });
                     select.innerHTML += `</optgroup>`;
                 } else {
-                    select.innerHTML += `<option value="${parent.id}">?? ${parent.name}</option>`;
+                    select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
                 }
             });
         }
@@ -532,16 +537,16 @@
                     <td>${p.id}</td>
                     <td>${p.name}</td>
                     <td>${Number(p.price).toLocaleString()} FCFA</td>
-                    <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "�"}</td>
+                    <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
                     <td>${p.stock}</td>
-                    <td>${p.category?.name || "�"}</td>
-                    <td>${p.isActive ? '? Actif' : '? Inactif'}</td>
-                    <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "�"}</td>
+                    <td>${p.category?.name || "—"}</td>
+                    <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
+                    <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
                     <td>
 <div style="display:flex;flex-direction:column;gap:6px;">
-    <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">?? Modifier</button>
-    <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">?? Dupliquer</button>
-    <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">??? Supprimer</button>
+    <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">✏️ Modifier</button>
+    <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">📋 Dupliquer</button>
+    <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">🗑️ Supprimer</button>
 </div>
 
                     </td>
@@ -555,11 +560,11 @@
             const res = await fetch(`${API_BASE}/products/${id}`);
             const p = await res.json();
 
-            // Remplir cat�gorie D'ABORD
+            // Remplir catégorie D'ABORD
             document.getElementById("categoryId").value = p.categoryId || "";
             await loadAttributeFields();
 
-            // Remplir les champs APR�S loadAttributeFields
+            // Remplir les champs APRÈS loadAttributeFields
             document.getElementById("productId").value = p.id;
             document.getElementById("productName").value = p.name || "";
             document.getElementById("productBrand").value = p.brand || "";
@@ -682,7 +687,7 @@
                 formData.append("imageFiles", file);
             });
 
-            // Image principale = premi�re
+            // Image principale = première
             if (productImages.length > 0) {
                 formData.append("ImageUrl", productImages[0]);
             }
@@ -713,7 +718,7 @@
 
             const toast = document.createElement("div");
             toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#10b981;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
-            toast.textContent = "? Produit enregistr� avec succ�s !";
+            toast.textContent = "✅ Produit enregistré avec succès !";
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         });
@@ -758,7 +763,7 @@
 
         document.getElementById("resetBtn").addEventListener("click", resetForm);
 
-        // Auto-g�n�rer le slug depuis le nom
+        // Auto-générer le slug depuis le nom
         document.getElementById("productName").addEventListener("input", function () {
             const slug = this.value
                 .toLowerCase()

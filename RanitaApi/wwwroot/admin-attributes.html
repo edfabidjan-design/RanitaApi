@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -6,34 +6,38 @@
     <title>Ranita Admin - Attributs</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-notifications.js" defer></script>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+
+</head>
 <body>
 
     <header class="admin-header">
-        <div class="logo" onclick="location.href='admin-dashboard.html'">?? Ranita Admin</div>
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Cat�gories</a>
+            <a href="admin-categories.html">Catégories</a>
             <a href="admin-attributes.html" class="active">Attributs</a>
             <a href="admin-orders.html">Commandes</a>
             <a href="admin-clients.html">Clients</a>
-            <a href="admin-reviews.html">? Avis</a>
+            <a href="admin-reviews.html">⭐ Avis</a>
         </nav>
-        <button onclick="logout()">D�connexion</button>
+        <button onclick="logout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
         <h1>Gestion des attributs</h1>
 
-        <!-- S�lecteur de cat�gorie -->
+        <!-- Sélecteur de catégorie -->
         <div style="margin-bottom:24px;">
             <label style="font-weight:700;font-size:15px;display:block;margin-bottom:8px;">
-                Choisir une cat�gorie :
+                Choisir une catégorie :
             </label>
             <select id="selectedCategory" onchange="loadAttributes()"
                     style="padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;width:100%;max-width:400px;">
-                <option value="">-- S�lectionner une cat�gorie --</option>
+                <option value="">-- Sélectionner une catégorie --</option>
             </select>
         </div>
 
@@ -52,7 +56,7 @@
                     <option value="select">Liste de choix</option>
                 </select>
 
-                <input type="text" id="attributeOptions" placeholder="Options s�par�es par virgule (ex: S,M,L,XL)"
+                <input type="text" id="attributeOptions" placeholder="Options séparées par virgule (ex: S,M,L,XL)"
                        style="display:none;flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;">
 
                 <button type="submit"
@@ -61,7 +65,7 @@
                 </button>
                 <button type="button" onclick="resetForm()"
                         style="background:#f3f4f6;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;">
-                    R�initialiser
+                    Réinitialiser
                 </button>
             </form>
 
@@ -81,7 +85,7 @@
 
     const API = "https://ranitaapi-production.up.railway.app/api";
 
-    // Charger les cat�gories dans le select
+    // Charger les catégories dans le select
     async function loadCategories() {
         const res = await fetch(`${API}/categories`);
         const parents = await res.json();
@@ -89,18 +93,18 @@
 
         parents.forEach(parent => {
             if (parent.children && parent.children.length > 0) {
-                select.innerHTML += `<optgroup label="?? ${parent.name}">`;
+                select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
                 parent.children.forEach(child => {
                     select.innerHTML += `<option value="${child.id}">${child.name}</option>`;
                 });
                 select.innerHTML += `</optgroup>`;
             } else {
-                select.innerHTML += `<option value="${parent.id}">?? ${parent.name}</option>`;
+                select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
             }
         });
     }
 
-    // Charger les attributs de la cat�gorie s�lectionn�e
+    // Charger les attributs de la catégorie sélectionnée
     async function loadAttributes() {
         const categoryId = document.getElementById("selectedCategory").value;
         if (!categoryId) {
@@ -116,7 +120,7 @@
         const list = document.getElementById("attributesList");
 
         if (attrs.length === 0) {
-            list.innerHTML = `<p style="color:#6b7280;text-align:center;padding:20px;">Aucun attribut pour cette cat�gorie.</p>`;
+            list.innerHTML = `<p style="color:#6b7280;text-align:center;padding:20px;">Aucun attribut pour cette catégorie.</p>`;
             return;
         }
 
@@ -140,16 +144,16 @@
                                 </span>
                             </td>
                             <td style="padding:12px 16px;color:#6b7280;font-size:13px;">
-                                ${a.attributeOptions || '�'}
+                                ${a.attributeOptions || '—'}
                             </td>
                             <td style="padding:12px 16px;">
                                 <button onclick="editAttribute(${a.id}, '${a.attributeName}', '${a.attributeType}', '${a.attributeOptions}')"
                                         style="background:#f0fdf4;color:#059669;border:1px solid #10b981;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;margin-right:6px;">
-                                    ?? Modifier
+                                    ✏️ Modifier
                                 </button>
                                 <button onclick="deleteAttribute(${a.id})"
                                         style="background:#fff0f0;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">
-                                    ??? Supprimer
+                                    🗑️ Supprimer
                                 </button>
                             </td>
                         </tr>

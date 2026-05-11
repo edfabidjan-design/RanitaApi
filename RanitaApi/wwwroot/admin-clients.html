@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -6,6 +6,11 @@
     <title>Ranita Admin - Clients</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-notifications.js" defer></script>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+
+
     <style>
         .client-avatar {
             width: 36px;
@@ -160,30 +165,30 @@
             color: #991b1b;
         }
     </style>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+</head>
 <body>
 
     <header class="admin-header">
-        <div class="logo" onclick="location.href='admin-dashboard.html'">?? Ranita Admin</div>
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Cat�gories</a>
+            <a href="admin-categories.html">Catégories</a>
             <a href="admin-attributes.html">Attributs</a>
             <a href="admin-orders.html">Commandes</a>
-            <a href="admin-reviews.html">? Avis</a>
+            <a href="admin-reviews.html">⭐ Avis</a>
             <a href="admin-clients.html" class="active">Clients</a>
         </nav>
-        <button onclick="logout()">D�connexion</button>
+        <button onclick="logout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
-        <h1>?? Gestion des clients</h1>
+        <h1>👥 Gestion des clients</h1>
 
         <div class="stats-bar" id="statsBar"></div>
 
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="?? Rechercher un client..." oninput="filterClients()">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un client..." oninput="filterClients()">
         </div>
 
         <div class="table-wrap">
@@ -193,9 +198,9 @@
                         <th>#</th>
                         <th>Client</th>
                         <th>Email</th>
-                        <th>T�l�phone</th>
+                        <th>Téléphone</th>
                         <th>Commandes</th>
-                        <th>Total d�pens�</th>
+                        <th>Total dépensé</th>
                         <th>Inscrit le</th>
                         <th>Actions</th>
                     </tr>
@@ -250,7 +255,7 @@
                         const orders = allOrders.filter(o => o.clientId === c.id);
                         return orders.length === 0;
                     }).length}</div>
-                    <div class="stat-label">Jamais command�</div>
+                    <div class="stat-label">Jamais commandé</div>
                 </div>
             `;
 
@@ -261,12 +266,12 @@
             const tbody = document.getElementById("clientsTable");
 
             if (clients.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouv�</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = clients.map(c => {
-                const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annul�e");
+                const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulée");
                 const totalDepense = orders.reduce((s, o) => s + o.total, 0);
                 const initiale = (c.fullName || c.email || "?")[0].toUpperCase();
 
@@ -280,12 +285,12 @@
                             </div>
                         </td>
                         <td>${c.email}</td>
-                        <td>${c.phone || "�"}</td>
+                        <td>${c.phone || "—"}</td>
                         <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
                         <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
                         <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
                         <td>
-                            <button onclick="showClientDetails(${c.id})">?? Voir</button>
+                            <button onclick="showClientDetails(${c.id})">👁 Voir</button>
                         </td>
                     </tr>
                 `;
@@ -307,35 +312,35 @@
             if (!c) return;
 
             const orders = allOrders.filter(o => o.clientId === clientId);
-            const totalDepense = orders.filter(o => o.status !== "Annul�e").reduce((s, o) => s + o.total, 0);
+            const totalDepense = orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0);
 
             function getBadge(status) {
                 switch(status) {
                     case "En attente": return "badge-attente";
-                    case "Valid�e": return "badge-validee";
-                    case "Livr�e": return "badge-livree";
-                    case "Annul�e": return "badge-annulee";
+                    case "Validée": return "badge-validee";
+                    case "Livrée": return "badge-livree";
+                    case "Annulée": return "badge-annulee";
                     default: return "";
                 }
             }
 
             document.getElementById("modalContent").innerHTML = `
-                <h3>?? ${c.fullName}</h3>
+                <h3>👤 ${c.fullName}</h3>
                 <div class="modal-info">
                     <strong>Email :</strong> ${c.email}<br>
-                    <strong>T�l�phone :</strong> ${c.phone || "�"}<br>
+                    <strong>Téléphone :</strong> ${c.phone || "—"}<br>
                     <strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br>
-                    <strong>Total d�pens� :</strong> ${Number(totalDepense).toLocaleString()} FCFA
+                    <strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA
                 </div>
 
                 <div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#374151;">
-                    ?? Commandes (${orders.length})
+                    📦 Commandes (${orders.length})
                 </div>
 
                 ${orders.length === 0 ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` :
                     orders.map(o => `
                         <div class="order-row">
-                            <span><strong>#${o.id}</strong> � ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
+                            <span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
                             <span>
                                 <span class="status-badge ${getBadge(o.status)}">${o.status}</span>
                                 &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong>

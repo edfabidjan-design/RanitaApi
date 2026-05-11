@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -6,23 +6,28 @@
     <title>Ranita Admin - Avis</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-notifications.js" defer></script>
-<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+
+
+</head>
 <body>
     <header class="admin-header">
-        <div class="logo" onclick="location.href='admin-dashboard.html'">?? Ranita Admin</div>
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Cat�gories</a>
+            <a href="admin-categories.html">Catégories</a>
             <a href="admin-orders.html">Commandes</a>
             <a href="admin-clients.html">Clients</a>
             <a href="admin-reviews.html" class="active">Avis</a>
         </nav>
-        <button onclick="logout()">D�connexion</button>
+        <button onclick="logout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
-        <h1>? Gestion des avis clients</h1>
+        <h1>⭐ Gestion des avis clients</h1>
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead>
@@ -63,21 +68,21 @@
                 <td>${r.id}</td>
                 <td>${r.produit}</td>
                 <td>${r.client}</td>
-                <td style="color:#f59e0b;font-size:16px;">${"?".repeat(r.note)}${"?".repeat(5 - r.note)}</td>
-                <td>${r.commentaire || "�"}</td>
+                <td style="color:#f59e0b;font-size:16px;">${"★".repeat(r.note)}${"☆".repeat(5 - r.note)}</td>
+                <td>${r.commentaire || "—"}</td>
                 <td>${new Date(r.createdAt).toLocaleDateString('fr-FR')}</td>
                 <td>${r.approuve
-                    ? '<span style="color:#10b981;font-weight:700;">? Approuv�</span>'
-                    : '<span style="color:#f59e0b;font-weight:700;">? En attente</span>'
+                    ? '<span style="color:#10b981;font-weight:700;">✅ Approuvé</span>'
+                    : '<span style="color:#f59e0b;font-weight:700;">⏳ En attente</span>'
                 }</td>
                 <td style="display:flex;gap:8px;">
                     ${!r.approuve ? `<button onclick="approve(${r.id})"
                         style="background:#10b981;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">
-                        ? Approuver
+                        ✅ Approuver
                     </button>` : ''}
                     <button onclick="deleteReview(${r.id})"
                         style="background:#ef4444;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">
-                        ??? Supprimer
+                        🗑️ Supprimer
                     </button>
                 </td>
             </tr>
