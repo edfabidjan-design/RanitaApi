@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -156,7 +156,7 @@
                 background: #fef2f2;
             }
 
-        /* RÉSUMÉ */
+        /* R�SUM� */
         .cart-summary {
             background: white;
             border-radius: 14px;
@@ -274,19 +274,19 @@
                 }
         }
     </style>
-</head>
+<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
 <body>
 
     <header class="site-header">
-        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
+        <div class="site-logo" onclick="location.href='index.html'">?? Ranita Market</div>
         <nav>
             <a href="products.html">Produits</a>
-            <a href="cart.html">🛒 Panier</a>
+            <a href="cart.html">?? Panier</a>
         </nav>
     </header>
 
     <main class="cart-page" style="padding-top: 80px;">
-        <h1>🛒 Mon panier</h1>
+        <h1>?? Mon panier</h1>
         <div id="cartContainer"></div>
         <div id="cartSummary"></div>
     </main>
@@ -301,7 +301,7 @@
             if (cart.length === 0) {
                 container.innerHTML = `
                         <div class="empty-cart">
-                            <div style="font-size:60px">🛒</div>
+                            <div style="font-size:60px">??</div>
                             <p>Votre panier est vide.</p>
                             <a href="products.html" class="btn-shop">Voir les produits</a>
                         </div>`;
@@ -326,15 +326,15 @@
                         <div class="cart-info">
                             <h3>${item.name}</h3>
                             ${item.variant ? `<span class="cart-variant">${item.variant}</span>` : ''}
-                            <div class="cart-price">${Number(item.price).toLocaleString()} FCFA / unité</div>
+                            <div class="cart-price">${Number(item.price).toLocaleString()} FCFA / unit�</div>
                             <div class="cart-subtotal">${Number(subtotal).toLocaleString()} FCFA</div>
                         </div>
                         <div class="qty-controls">
-                            <button class="qty-btn" onclick="changeQty('${item.cartKey || item.id}', -1)">−</button>
+                            <button class="qty-btn" onclick="changeQty('${item.cartKey || item.id}', -1)">-</button>
                             <span class="qty-num">${item.quantity}</span>
                             <button class="qty-btn" onclick="changeQty('${item.cartKey || item.id}', 1)">+</button>
                         </div>
-                        <button class="btn-remove" onclick="removeItem('${item.cartKey || item.id}')" title="Supprimer">🗑</button>
+                        <button class="btn-remove" onclick="removeItem('${item.cartKey || item.id}')" title="Supprimer">??</button>
                     </div>`;
             }).join('');
 
@@ -346,15 +346,15 @@
                         </div>
                         <div class="summary-row">
                             <span>Livraison</span>
-                            <span>À confirmer</span>
+                            <span>� confirmer</span>
                         </div>
                         <div class="summary-total">
                             <span>Total</span>
                             <span>${Number(total).toLocaleString()} FCFA</span>
                         </div>
-                        <a href="checkout.html" class="btn-checkout">✅ Passer la commande</a>
-                        <button onclick="clearCart()" class="btn-clear">🗑 Vider le panier</button>
-                        <a href="products.html" class="btn-continue">← Continuer les achats</a>
+                        <a href="checkout.html" class="btn-checkout">? Passer la commande</a>
+                        <button onclick="clearCart()" class="btn-clear">?? Vider le panier</button>
+                        <a href="products.html" class="btn-continue">? Continuer les achats</a>
                     </div>`;
         }
 
