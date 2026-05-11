@@ -4,150 +4,240 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendeurs — Ranita Admin</title>
-    <link rel="stylesheet" href="admin.css">
 
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
 
 
     <style>
-        :root {
-            --primary: #e8604c;
-            --primary-dark: #c94a38;
-            --bg: #f5f5f0;
-            --card: #ffffff;
-            --text: #1a1a1a;
-            --text-muted: #6b6b6b;
-            --border: #e0e0d8;
-            --success: #2d9e6b;
-            --warning: #e8a020;
-            --danger: #d93025;
-            --info: #1a73e8;
-            --pending: #f0a500;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+            overflow-x: hidden;
         }
 
-        /* ── HEADER ── */
-        .page-header {
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            padding: 20px 32px;
+        /* ── HEADER ADMIN ── */
+        .admin-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111827;
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .admin-header nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            align-items: center;
+        }
+
+            .admin-header nav a {
+                position: relative;
+                color: white;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 14px;
+                white-space: nowrap;
+                padding: 4px 0;
+            }
+
+                .admin-header nav a.active::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -4px;
+                    left: 0;
+                    width: 100%;
+                    height: 3px;
+                    background: #22c55e;
+                    border-radius: 2px;
+                }
+
+                .admin-header nav a:hover {
+                    color: #22c55e;
+                }
+
+        .admin-header button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 999px;
+            padding: 1px 6px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-left: 3px;
+            vertical-align: middle;
+        }
+
+        /* ── CONTAINER ── */
+        .admin-container {
+            padding: 24px 30px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* ── PAGE TITLE ── */
+        .page-title {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-            .page-header h1 {
+            .page-title h1 {
                 font-size: 22px;
-                font-weight: 700;
-                color: var(--text);
+                font-weight: 800;
+                color: #111827;
+                margin: 0;
             }
 
-                .page-header h1 span {
-                    color: var(--primary);
-                }
-
-        .stats-bar {
+        .stats-pills {
             display: flex;
-            gap: 24px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .stat-pill {
-            background: var(--bg);
-            border: 1px solid var(--border);
+            background: white;
+            border: 1px solid #e5e7eb;
             border-radius: 20px;
-            padding: 6px 16px;
+            padding: 6px 14px;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text-muted);
+            color: #374151;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-            .stat-pill .dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-            }
-
-        .dot-pending {
-            background: var(--pending);
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
         }
 
-        .dot-success {
-            background: var(--success);
+        .dot-orange {
+            background: #f59e0b;
         }
 
-        .dot-danger {
-            background: var(--danger);
+        .dot-green {
+            background: #10b981;
+        }
+
+        .dot-red {
+            background: #ef4444;
         }
 
         /* ── TABS ── */
         .tabs {
             display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 20px;
             gap: 0;
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            padding: 0 32px;
+            background: white;
+            border-radius: 12px 12px 0 0;
+            overflow: hidden;
         }
 
         .tab {
-            padding: 14px 24px;
+            padding: 14px 22px;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-muted);
+            color: #6b7280;
             cursor: pointer;
             border-bottom: 3px solid transparent;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             user-select: none;
+            white-space: nowrap;
         }
 
             .tab:hover {
-                color: var(--primary);
+                color: #111827;
             }
 
             .tab.active {
-                color: var(--primary);
-                border-bottom-color: var(--primary);
+                color: #111827;
+                border-bottom-color: #111827;
+                background: #f9fafb;
             }
 
-        .badge {
-            background: var(--primary);
+        .tab-badge {
+            background: #ef4444;
             color: white;
             border-radius: 10px;
-            padding: 2px 7px;
+            padding: 1px 7px;
             font-size: 11px;
-            font-weight: 700;
-            min-width: 18px;
-            text-align: center;
+            font-weight: 800;
         }
 
-            .badge.hidden {
+            .tab-badge.hidden {
                 display: none;
             }
 
-        /* ── CONTENU ── */
-        .content {
-            padding: 24px 32px;
-            max-width: 1200px;
+        /* ── FILTRES ── */
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
+        .filter-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid #d1d5db;
+            background: white;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .filter-btn:hover {
+                border-color: #111827;
+                color: #111827;
+            }
+
+            .filter-btn.active {
+                background: #111827;
+                color: white;
+                border-color: #111827;
+            }
+
+        /* ── SECTIONS ── */
         .section {
             display: none;
         }
@@ -156,64 +246,34 @@
                 display: block;
             }
 
-        /* ── FILTRES ── */
-        .filters {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 7px 16px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-            .filter-btn:hover {
-                border-color: var(--primary);
-                color: var(--primary);
-            }
-
-            .filter-btn.active {
-                background: var(--primary);
-                color: white;
-                border-color: var(--primary);
-            }
-
         /* ── CARDS VENDEURS ── */
         .seller-card {
-            background: var(--card);
-            border: 1px solid var(--border);
+            background: white;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 20px 24px;
-            margin-bottom: 12px;
+            padding: 18px 20px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             transition: box-shadow 0.2s;
         }
 
             .seller-card:hover {
-                box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
             }
 
         .seller-avatar {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #111827, #374151);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
             color: white;
             flex-shrink: 0;
         }
@@ -224,147 +284,132 @@
         }
 
         .seller-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text);
+            font-size: 15px;
+            font-weight: 800;
+            color: #111827;
             margin-bottom: 4px;
         }
 
         .seller-meta {
-            font-size: 13px;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: #6b7280;
             display: flex;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
-            .seller-meta span {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-
+        /* STATUS BADGES */
         .status-badge {
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
-        .status-Pending {
-            background: #fff8e6;
-            color: #b07800;
-            border: 1px solid #f0c84a;
+        .s-Pending {
+            background: #fef3c7;
+            color: #92400e;
         }
 
-        .status-Approved {
-            background: #e8f5ef;
-            color: #1a7a4a;
-            border: 1px solid #6fcfa0;
+        .s-Approved {
+            background: #d1fae5;
+            color: #065f46;
         }
 
-        .status-Rejected {
-            background: #fdecea;
-            color: #c0392b;
-            border: 1px solid #f0a090;
+        .s-Rejected {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
-        .status-Suspended {
-            background: #f0f0f0;
-            color: #666;
-            border: 1px solid #ccc;
+        .s-Suspended {
+            background: #f3f4f6;
+            color: #6b7280;
         }
 
         .seller-actions {
             display: flex;
             gap: 8px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
 
+        /* BOUTONS */
         .btn {
-            padding: 8px 16px;
+            padding: 7px 14px;
             border-radius: 8px;
             border: none;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            white-space: nowrap;
         }
 
         .btn-approve {
-            background: var(--success);
-            color: white;
+            background: #d1fae5;
+            color: #065f46;
         }
 
             .btn-approve:hover {
-                background: #247a55;
+                background: #10b981;
+                color: white;
             }
 
         .btn-reject {
-            background: #fdecea;
-            color: var(--danger);
-            border: 1px solid #f0a090;
+            background: #fee2e2;
+            color: #991b1b;
         }
 
             .btn-reject:hover {
-                background: #fbd0cc;
-            }
-
-        .btn-detail {
-            background: var(--bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-            .btn-detail:hover {
-                background: var(--border);
+                background: #ef4444;
+                color: white;
             }
 
         .btn-suspend {
-            background: #fff3e0;
-            color: #e65100;
-            border: 1px solid #ffcc80;
+            background: #fef3c7;
+            color: #92400e;
         }
 
             .btn-suspend:hover {
-                background: #ffe0b2;
+                background: #f59e0b;
+                color: white;
             }
 
         /* ── PRODUITS ── */
         .product-card {
-            background: var(--card);
-            border: 1px solid var(--border);
+            background: white;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            transition: box-shadow 0.2s;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
-            .product-card:hover {
-                box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            }
-
         .product-img {
-            width: 64px;
-            height: 64px;
+            width: 58px;
+            height: 58px;
             border-radius: 8px;
-            object-fit: cover;
-            background: var(--bg);
-            border: 1px solid var(--border);
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
             flex-shrink: 0;
+            overflow: hidden;
         }
+
+            .product-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
 
         .product-info {
             flex: 1;
@@ -372,40 +417,41 @@
         }
 
         .product-name {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
+            color: #111827;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .product-meta {
-            font-size: 13px;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: #6b7280;
             display: flex;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         .product-price {
             font-size: 16px;
-            font-weight: 700;
-            color: var(--primary);
+            font-weight: 800;
+            color: #059669;
             white-space: nowrap;
         }
 
         /* ── PAYOUTS ── */
         .payout-card {
-            background: var(--card);
-            border: 1px solid var(--border);
+            background: white;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .payout-amounts {
@@ -416,14 +462,38 @@
         }
 
         .payout-net {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
-            color: var(--success);
+            color: #059669;
         }
 
-        .payout-commission {
-            font-size: 12px;
-            color: var(--text-muted);
+        .payout-detail {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* ── EMPTY ── */
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #9ca3af;
+        }
+
+            .empty .icon {
+                font-size: 40px;
+                margin-bottom: 10px;
+            }
+
+            .empty p {
+                font-size: 14px;
+            }
+
+        /* ── LOADING ── */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #9ca3af;
+            font-size: 14px;
         }
 
         /* ── MODAL ── */
@@ -432,9 +502,10 @@
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
             .modal-overlay.open {
@@ -442,108 +513,40 @@
             }
 
         .modal {
-            background: var(--card);
-            border-radius: 16px;
+            background: white;
+            border-radius: 14px;
             padding: 28px;
             width: 100%;
-            max-width: 480px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
         }
 
             .modal h3 {
-                font-size: 18px;
-                font-weight: 700;
+                font-size: 17px;
+                font-weight: 800;
                 margin-bottom: 16px;
+                color: #111827;
             }
 
-            .modal textarea, .modal input {
+            .modal textarea,
+            .modal input {
                 width: 100%;
-                padding: 10px 14px;
-                border: 1px solid var(--border);
+                padding: 10px 13px;
+                border: 1px solid #d1d5db;
                 border-radius: 8px;
                 font-size: 14px;
-                margin-bottom: 16px;
+                margin-bottom: 14px;
                 font-family: inherit;
                 resize: vertical;
+                box-sizing: border-box;
+                outline: none;
             }
 
-        .modal-actions {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-        }
+                .modal textarea:focus,
+                .modal input:focus {
+                    border-color: #111827;
+                }
 
-        .btn-cancel {
-            background: var(--bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-        .btn-confirm-reject {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-confirm-approve {
-            background: var(--success);
-            color: white;
-        }
-
-        /* ── EMPTY STATE ── */
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-            .empty .icon {
-                font-size: 48px;
-                margin-bottom: 12px;
-            }
-
-            .empty p {
-                font-size: 15px;
-            }
-
-        /* ── LOADING ── */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        /* ── TOAST ── */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #1a1a1a;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 9999;
-        }
-
-            .toast.show {
-                transform: translateY(0);
-                opacity: 1;
-            }
-
-            .toast.success {
-                background: var(--success);
-            }
-
-            .toast.error {
-                background: var(--danger);
-            }
-
-        /* ── COMMISSION INPUT ── */
         .commission-row {
             display: flex;
             align-items: center;
@@ -553,8 +556,9 @@
 
             .commission-row label {
                 font-size: 13px;
-                color: var(--text-muted);
+                color: #6b7280;
                 white-space: nowrap;
+                font-weight: 600;
             }
 
             .commission-row input {
@@ -562,14 +566,90 @@
                 margin-bottom: 0;
             }
 
-        @media (max-width: 768px) {
-            .page-header {
-                flex-direction: column;
-                gap: 12px;
-                align-items: flex-start;
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .btn-modal-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-modal-approve {
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+            .btn-modal-approve:hover {
+                background: #047857;
             }
 
-            .content {
+        .btn-modal-reject {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+            .btn-modal-reject:hover {
+                background: #dc2626;
+            }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #111827;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 9999;
+            max-width: 300px;
+        }
+
+            .toast.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .toast.success {
+                background: #059669;
+            }
+
+            .toast.error {
+                background: #ef4444;
+            }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                padding: 12px 16px;
+            }
+
+            .admin-container {
                 padding: 16px;
             }
 
@@ -582,7 +662,6 @@
             }
 
             .tabs {
-                padding: 0 16px;
                 overflow-x: auto;
             }
         }
@@ -590,34 +669,50 @@
 </head>
 <body>
 
-    <!-- HEADER -->
-    <div class="page-header">
-        <h1>Gestion <span>Vendeurs</span></h1>
-        <div class="stats-bar">
-            <div class="stat-pill"><span class="dot dot-pending"></span><span id="stat-pending">0</span> en attente</div>
-            <div class="stat-pill"><span class="dot dot-success"></span><span id="stat-approved">0</span> approuvés</div>
-            <div class="stat-pill"><span class="dot dot-danger"></span><span id="stat-products">0</span> produits à valider</div>
-        </div>
+    <!-- ── HEADER ADMIN (même que le reste) ── -->
+    <div class="admin-header">
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛍️ Ranita Admin</div>
+        <nav>
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="admin-products.html">Produits</a>
+            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-attributes.html">Attributs</a>
+            <a href="admin-clients.html">Clients</a>
+            <a href="admin-reviews.html">⭐ Avis <span class="nav-badge" id="nav-avis">0</span></a>
+            <a href="admin-orders.html">Commandes <span class="nav-badge" id="nav-orders">0</span></a>
+            <a href="admin-sellers.html" class="active">Vendeurs <span class="nav-badge" id="nav-sellers">0</span></a>
+        </nav>
+        <button onclick="logout()">Déconnexion</button>
     </div>
 
-    <!-- TABS -->
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('sellers')">
-            Demandes vendeurs
-            <span class="badge" id="badge-sellers">0</span>
-        </div>
-        <div class="tab" onclick="switchTab('products')">
-            Produits à valider
-            <span class="badge" id="badge-products">0</span>
-        </div>
-        <div class="tab" onclick="switchTab('payouts')">
-            Paiements vendeurs
-            <span class="badge" id="badge-payouts">0</span>
-        </div>
-    </div>
+    <!-- ── CONTENU ── -->
+    <div class="admin-container">
 
-    <!-- CONTENU -->
-    <div class="content">
+        <!-- Titre + stats -->
+        <div class="page-title">
+            <h1>📦 Gestion Vendeurs</h1>
+            <div class="stats-pills">
+                <div class="stat-pill"><span class="dot dot-orange"></span><span id="stat-pending">0</span> en attente</div>
+                <div class="stat-pill"><span class="dot dot-green"></span><span id="stat-approved">0</span> approuvés</div>
+                <div class="stat-pill"><span class="dot dot-red"></span><span id="stat-products">0</span> produits à valider</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('sellers', this)">
+                Demandes vendeurs
+                <span class="tab-badge hidden" id="badge-sellers">0</span>
+            </div>
+            <div class="tab" onclick="switchTab('products', this)">
+                Produits à valider
+                <span class="tab-badge hidden" id="badge-products">0</span>
+            </div>
+            <div class="tab" onclick="switchTab('payouts', this)">
+                Paiements vendeurs
+                <span class="tab-badge hidden" id="badge-payouts">0</span>
+            </div>
+        </div>
 
         <!-- ── SECTION VENDEURS ── -->
         <div class="section active" id="section-sellers">
@@ -652,407 +747,353 @@
 
     </div>
 
-    <!-- MODAL REFUS VENDEUR -->
-    <div class="modal-overlay" id="modal-reject-seller">
+    <!-- MODAL APPROUVER -->
+    <div class="modal-overlay" id="modal-approve">
         <div class="modal">
-            <h3>Refuser cette boutique</h3>
-            <textarea id="reject-seller-reason" rows="3" placeholder="Motif du refus (obligatoire)..."></textarea>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('modal-reject-seller')">Annuler</button>
-                <button class="btn btn-confirm-reject" onclick="confirmRejectSeller()">Confirmer le refus</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL APPROUVER VENDEUR (avec commission) -->
-    <div class="modal-overlay" id="modal-approve-seller">
-        <div class="modal">
-            <h3>Approuver cette boutique</h3>
+            <h3>✅ Approuver cette boutique</h3>
             <div class="commission-row">
                 <label>Commission Ranita (%)</label>
-                <input type="number" id="approve-commission" value="10" min="0" max="50" step="1">
+                <input type="number" id="approve-commission" value="10" min="0" max="50">
             </div>
             <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('modal-approve-seller')">Annuler</button>
-                <button class="btn btn-confirm-approve" onclick="confirmApproveSeller()">Approuver</button>
+                <button class="btn-modal-cancel" onclick="closeModal('modal-approve')">Annuler</button>
+                <button class="btn-modal-approve" onclick="confirmApprove()">Approuver</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL REFUS PRODUIT -->
+    <!-- MODAL REFUSER VENDEUR -->
+    <div class="modal-overlay" id="modal-reject">
+        <div class="modal">
+            <h3>❌ Refuser cette boutique</h3>
+            <textarea id="reject-reason" rows="3" placeholder="Motif du refus (obligatoire)..."></textarea>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" onclick="closeModal('modal-reject')">Annuler</button>
+                <button class="btn-modal-reject" onclick="confirmReject()">Confirmer le refus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REFUSER PRODUIT -->
     <div class="modal-overlay" id="modal-reject-product">
         <div class="modal">
-            <h3>Refuser ce produit</h3>
-            <textarea id="reject-product-reason" rows="3" placeholder="Motif du refus (ex: photos insuffisantes, prix incorrect...)"></textarea>
+            <h3>❌ Refuser ce produit</h3>
+            <textarea id="reject-product-reason" rows="3" placeholder="Motif du refus..."></textarea>
             <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('modal-reject-product')">Annuler</button>
-                <button class="btn btn-confirm-reject" onclick="confirmRejectProduct()">Confirmer le refus</button>
+                <button class="btn-modal-cancel" onclick="closeModal('modal-reject-product')">Annuler</button>
+                <button class="btn-modal-reject" onclick="confirmRejectProduct()">Confirmer</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL MARQUER PAYÉ -->
-    <div class="modal-overlay" id="modal-mark-paid">
+    <!-- MODAL PAYER -->
+    <div class="modal-overlay" id="modal-paid">
         <div class="modal">
-            <h3>Marquer comme payé</h3>
+            <h3>💸 Marquer comme payé</h3>
             <input type="text" id="transaction-ref" placeholder="Référence transaction (ex: OM-2026-XXXX)">
             <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('modal-mark-paid')">Annuler</button>
-                <button class="btn btn-confirm-approve" onclick="confirmMarkPaid()">Confirmer le paiement</button>
+                <button class="btn-modal-cancel" onclick="closeModal('modal-paid')">Annuler</button>
+                <button class="btn-modal-approve" onclick="confirmPaid()">Confirmer le paiement</button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
     <script>
-const API = 'https://ranitaapi-production.up.railway.app/api';
+        const API = 'https://ranitaapi-production.up.railway.app/api';
+        let allSellers = [], allProducts = [], allPayouts = [];
+        let currentSellerId = null, currentProductId = null, currentPayoutId = null;
 
-let currentSellerId = null;
-let currentProductId = null;
-let currentPayoutId = null;
-let allSellers = [];
-let allProducts = [];
-let allPayouts = [];
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAll();
+            loadNavBadges();
+        });
 
-// ── INIT ─────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-    loadSellers();
-    loadProducts();
-    loadPayouts();
-    loadBadges();
-});
+        async function loadAll() {
+            await Promise.all([loadSellers(), loadProducts(), loadPayouts()]);
+        }
 
-// ── TABS ─────────────────────────────────────────────────────────────
-function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    document.getElementById('section-' + tab).classList.add('active');
-}
+        // ── NAV BADGES (comme les autres pages admin) ─────────────────────────
+        async function loadNavBadges() {
+            try {
+                const [orders, reviews, sellers] = await Promise.all([
+                    fetch(`${API}/orders`).then(r => r.json()),
+                    fetch(`${API}/reviews`).then(r => r.json()),
+                    fetch(`${API}/admin/sellers?status=Pending`).then(r => r.json()),
+                ]);
+                const pending = Array.isArray(orders) ? orders.filter(o => o.status === 'En attente').length : 0;
+                const unrev = Array.isArray(reviews) ? reviews.filter(r => !r.approuve).length : 0;
+                const sp = Array.isArray(sellers) ? sellers.length : 0;
+                setBadge('nav-orders', pending);
+                setBadge('nav-avis', unrev);
+                setBadge('nav-sellers', sp);
+            } catch (e) { }
+        }
 
-// ── BADGES ───────────────────────────────────────────────────────────
-async function loadBadges() {
-    try {
-        const [s, p, py] = await Promise.all([
-            fetch(`${API}/admin/sellers?status=Pending`).then(r => r.json()),
-            fetch(`${API}/admin/sellers/products?status=Pending`).then(r => r.json()),
-            fetch(`${API}/admin/sellers/payouts?status=Pending`).then(r => r.json()),
-        ]);
+        function setBadge(id, count) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = count;
+            el.style.display = count > 0 ? 'inline' : 'none';
+        }
 
-        const sp = s.length || 0;
-        const pp = p.length || 0;
-        const payp = py.length || 0;
+        // ── TABS ─────────────────────────────────────────────────────────────
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('section-' + tab).classList.add('active');
+        }
 
-        document.getElementById('badge-sellers').textContent = sp;
-        document.getElementById('badge-products').textContent = pp;
-        document.getElementById('badge-payouts').textContent = payp;
-        document.getElementById('badge-sellers').classList.toggle('hidden', sp === 0);
-        document.getElementById('badge-products').classList.toggle('hidden', pp === 0);
-        document.getElementById('badge-payouts').classList.toggle('hidden', payp === 0);
-        document.getElementById('stat-pending').textContent = sp;
-        document.getElementById('stat-products').textContent = pp;
-    } catch(e) {}
-}
+        // ── VENDEURS ──────────────────────────────────────────────────────────
+        async function loadSellers() {
+            try {
+                const res = await fetch(`${API}/admin/sellers`);
+                allSellers = await res.json();
+                const pending = allSellers.filter(s => s.status === 'Pending').length;
+                const approved = allSellers.filter(s => s.status === 'Approved').length;
+                document.getElementById('stat-pending').textContent = pending;
+                document.getElementById('stat-approved').textContent = approved;
+                const b = document.getElementById('badge-sellers');
+                b.textContent = pending;
+                b.classList.toggle('hidden', pending === 0);
+                renderSellers(allSellers);
+            } catch (e) {
+                document.getElementById('sellers-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
+            }
+        }
 
-// ── VENDEURS ─────────────────────────────────────────────────────────
-async function loadSellers() {
-    try {
-        const res = await fetch(`${API}/admin/sellers`);
-        allSellers = await res.json();
-        const approved = allSellers.filter(s => s.status === 'Approved').length;
-        document.getElementById('stat-approved').textContent = approved;
-        renderSellers(allSellers);
-    } catch(e) {
-        document.getElementById('sellers-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
-    }
-}
+        function filterSellers(status, btn) {
+            document.querySelectorAll('#section-sellers .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderSellers(status === 'all' ? allSellers : allSellers.filter(s => s.status === status));
+        }
 
-function filterSellers(status, btn) {
-    document.querySelectorAll('#section-sellers .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const filtered = status === 'all' ? allSellers : allSellers.filter(s => s.status === status);
-    renderSellers(filtered);
-}
-
-function renderSellers(sellers) {
-    const el = document.getElementById('sellers-list');
-    if (!sellers.length) {
-        el.innerHTML = '<div class="empty"><div class="icon">🏪</div><p>Aucun vendeur trouvé</p></div>';
-        return;
-    }
-    el.innerHTML = sellers.map(s => `
-        <div class="seller-card">
-            <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
-            <div class="seller-info">
-                <div class="seller-name">${s.shopName}</div>
-                <div class="seller-meta">
-                    <span>👤 ${s.clientName}</span>
-                    <span>📧 ${s.clientEmail}</span>
-                    <span>📞 ${s.phoneNumber}</span>
-                    <span>🪪 CNI: ${s.nationalIdNumber}</span>
-                    <span>💰 Commission: ${Math.round(s.commissionRate * 100)}%</span>
-                    <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
+        function renderSellers(list) {
+            const el = document.getElementById('sellers-list');
+            if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">🏪</div><p>Aucun vendeur trouvé</p></div>'; return; }
+            el.innerHTML = list.map(s => `
+            <div class="seller-card">
+                <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
+                <div class="seller-info">
+                    <div class="seller-name">${s.shopName}</div>
+                    <div class="seller-meta">
+                        <span>👤 ${s.clientName}</span>
+                        <span>📧 ${s.clientEmail}</span>
+                        <span>📞 ${s.phoneNumber}</span>
+                        <span>🪪 CNI: ${s.nationalIdNumber}</span>
+                        <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
+                        <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
+                    </div>
                 </div>
-            </div>
-            <span class="status-badge status-${s.status}">${labelStatus(s.status)}</span>
-            <div class="seller-actions">
-                ${s.status === 'Pending' ? `
-                    <button class="btn btn-approve" onclick="openApproveSeller(${s.id})">✓ Approuver</button>
-                    <button class="btn btn-reject" onclick="openRejectSeller(${s.id})">✗ Refuser</button>
-                ` : ''}
-                ${s.status === 'Approved' ? `
-                    <button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>
-                ` : ''}
-                ${s.status === 'Suspended' ? `
-                    <button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>
-                ` : ''}
-            </div>
-        </div>
-    `).join('');
-}
-
-function labelStatus(s) {
-    return { Pending: 'En attente', Approved: 'Approuvé', Rejected: 'Refusé', Suspended: 'Suspendu' }[s] || s;
-}
-
-function openApproveSeller(id) {
-    currentSellerId = id;
-    document.getElementById('approve-commission').value = 10;
-    openModal('modal-approve-seller');
-}
-
-function openRejectSeller(id) {
-    currentSellerId = id;
-    document.getElementById('reject-seller-reason').value = '';
-    openModal('modal-reject-seller');
-}
-
-async function confirmApproveSeller() {
-    const commission = parseFloat(document.getElementById('approve-commission').value) / 100;
-    await reviewSeller(currentSellerId, true, null, commission);
-    closeModal('modal-approve-seller');
-}
-
-async function confirmRejectSeller() {
-    const reason = document.getElementById('reject-seller-reason').value.trim();
-    if (!reason) { showToast('Le motif est obligatoire', 'error'); return; }
-    await reviewSeller(currentSellerId, false, reason, null);
-    closeModal('modal-reject-seller');
-}
-
-async function reviewSeller(id, approved, reason, commission) {
-    try {
-        const body = { approved };
-        if (reason) body.rejectionReason = reason;
-        if (commission !== null) body.commissionRate = commission;
-        const res = await fetch(`${API}/admin/sellers/${id}/review`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (res.ok) {
-            showToast(approved ? 'Boutique approuvée ✓' : 'Boutique refusée', approved ? 'success' : '');
-            loadSellers();
-            loadBadges();
-        }
-    } catch(e) { showToast('Erreur réseau', 'error'); }
-}
-
-async function suspendSeller(id) {
-    try {
-        const res = await fetch(`${API}/admin/sellers/${id}/suspend`, { method: 'PUT' });
-        if (res.ok) {
-            const data = await res.json();
-            showToast(data.message, 'success');
-            loadSellers();
-        }
-    } catch(e) { showToast('Erreur réseau', 'error'); }
-}
-
-// ── PRODUITS ─────────────────────────────────────────────────────────
-async function loadProducts() {
-    try {
-        const res = await fetch(`${API}/admin/sellers/products`);
-        allProducts = await res.json();
-        renderProducts(allProducts.filter(p => p.approvalStatus === 'Pending'));
-    } catch(e) {
-        document.getElementById('products-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
-    }
-}
-
-function filterProducts(status, btn) {
-    document.querySelectorAll('#section-products .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderProducts(allProducts.filter(p => p.approvalStatus === status));
-}
-
-function renderProducts(products) {
-    const el = document.getElementById('products-list');
-    if (!products.length) {
-        el.innerHTML = '<div class="empty"><div class="icon">📦</div><p>Aucun produit trouvé</p></div>';
-        return;
-    }
-    el.innerHTML = products.map(p => `
-        <div class="product-card">
-            <div class="product-img">
-                ${p.images && p.images.length > 0
-                    ? `<img src="${p.images[0]}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" onerror="this.style.display='none'">`
-                    : '📦'}
-            </div>
-            <div class="product-info">
-                <div class="product-name">${p.name}</div>
-                <div class="product-meta">
-                    <span>🏪 ${p.shopName}</span>
-                    <span>📦 Stock: ${p.stock}</span>
-                    <span>🏷️ ${p.category || 'Sans catégorie'}</span>
-                    <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
+                <div class="seller-actions">
+                    ${s.status === 'Pending' ? `
+                        <button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button>
+                        <button class="btn btn-reject"  onclick="openReject(${s.id})">✗ Refuser</button>
+                    ` : ''}
+                    ${s.status === 'Approved' ? `
+                        <button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>
+                    ` : ''}
+                    ${s.status === 'Suspended' ? `
+                        <button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>
+                    ` : ''}
                 </div>
-                ${p.description ? `<div style="font-size:13px;color:var(--text-muted);margin-top:6px;max-width:500px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.description}</div>` : ''}
-            </div>
-            <div class="product-price">${formatPrice(p.price)}</div>
-            <span class="status-badge status-${p.approvalStatus}">${labelStatus(p.approvalStatus)}</span>
-            <div class="seller-actions">
-                ${p.approvalStatus === 'Pending' ? `
-                    <button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button>
-                    <button class="btn btn-reject" onclick="openRejectProduct(${p.id})">✗ Refuser</button>
-                ` : ''}
-            </div>
-        </div>
-    `).join('');
-}
-
-async function approveProduct(id) {
-    try {
-        const res = await fetch(`${API}/admin/sellers/products/${id}/review`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ approved: true })
-        });
-        if (res.ok) {
-            showToast('Produit publié sur le site ✓', 'success');
-            loadProducts();
-            loadBadges();
+            </div>`).join('');
         }
-    } catch(e) { showToast('Erreur réseau', 'error'); }
-}
 
-function openRejectProduct(id) {
-    currentProductId = id;
-    document.getElementById('reject-product-reason').value = '';
-    openModal('modal-reject-product');
-}
-
-async function confirmRejectProduct() {
-    const reason = document.getElementById('reject-product-reason').value.trim();
-    try {
-        const res = await fetch(`${API}/admin/sellers/products/${currentProductId}/review`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ approved: false, rejectionReason: reason })
-        });
-        if (res.ok) {
-            showToast('Produit refusé', '');
-            closeModal('modal-reject-product');
-            loadProducts();
-            loadBadges();
+        function statusLabel(s) {
+            return { Pending: 'En attente', Approved: 'Approuvé', Rejected: 'Refusé', Suspended: 'Suspendu' }[s] || s;
         }
-    } catch(e) { showToast('Erreur réseau', 'error'); }
-}
 
-// ── PAYOUTS ───────────────────────────────────────────────────────────
-async function loadPayouts() {
-    try {
-        const res = await fetch(`${API}/admin/sellers/payouts`);
-        allPayouts = await res.json();
-        renderPayouts(allPayouts.filter(p => p.status === 'Pending'));
-    } catch(e) {
-        document.getElementById('payouts-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
-    }
-}
+        function openApprove(id) { currentSellerId = id; document.getElementById('approve-commission').value = 10; openModal('modal-approve'); }
+        function openReject(id) { currentSellerId = id; document.getElementById('reject-reason').value = ''; openModal('modal-reject'); }
 
-function filterPayouts(status, btn) {
-    document.querySelectorAll('#section-payouts .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderPayouts(allPayouts.filter(p => p.status === status));
-}
+        async function confirmApprove() {
+            const commission = parseFloat(document.getElementById('approve-commission').value) / 100;
+            await reviewSeller(currentSellerId, true, null, commission);
+            closeModal('modal-approve');
+        }
 
-function renderPayouts(payouts) {
-    const el = document.getElementById('payouts-list');
-    if (!payouts.length) {
-        el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement trouvé</p></div>';
-        return;
-    }
-    el.innerHTML = payouts.map(p => `
-        <div class="payout-card">
-            <div class="seller-avatar" style="background:linear-gradient(135deg,#2d9e6b,#1a7a4a)">${p.shopName.charAt(0).toUpperCase()}</div>
-            <div class="seller-info">
-                <div class="seller-name">${p.shopName}</div>
-                <div class="seller-meta">
-                    <span>🧾 Commande #${p.orderId || '—'}</span>
-                    <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
-                    ${p.paidAt ? `<span>✅ Payé le ${new Date(p.paidAt).toLocaleDateString('fr-FR')}</span>` : ''}
-                    ${p.transactionReference ? `<span>🔖 Réf: ${p.transactionReference}</span>` : ''}
+        async function confirmReject() {
+            const reason = document.getElementById('reject-reason').value.trim();
+            if (!reason) { showToast('Le motif est obligatoire', 'error'); return; }
+            await reviewSeller(currentSellerId, false, reason, null);
+            closeModal('modal-reject');
+        }
+
+        async function reviewSeller(id, approved, reason, commission) {
+            try {
+                const body = { approved };
+                if (reason) body.rejectionReason = reason;
+                if (commission !== null) body.commissionRate = commission;
+                const res = await fetch(`${API}/admin/sellers/${id}/review`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+                });
+                if (res.ok) { showToast(approved ? 'Boutique approuvée ✓' : 'Boutique refusée', approved ? 'success' : ''); loadSellers(); loadNavBadges(); }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        async function suspendSeller(id) {
+            try {
+                const res = await fetch(`${API}/admin/sellers/${id}/suspend`, { method: 'PUT' });
+                if (res.ok) { const d = await res.json(); showToast(d.message, 'success'); loadSellers(); }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        // ── PRODUITS ──────────────────────────────────────────────────────────
+        async function loadProducts() {
+            try {
+                const res = await fetch(`${API}/admin/sellers/products`);
+                allProducts = await res.json();
+                const pending = allProducts.filter(p => p.approvalStatus === 'Pending').length;
+                document.getElementById('stat-products').textContent = pending;
+                const b = document.getElementById('badge-products');
+                b.textContent = pending;
+                b.classList.toggle('hidden', pending === 0);
+                renderProducts(allProducts.filter(p => p.approvalStatus === 'Pending'));
+            } catch (e) {
+                document.getElementById('products-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
+            }
+        }
+
+        function filterProducts(status, btn) {
+            document.querySelectorAll('#section-products .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProducts(allProducts.filter(p => p.approvalStatus === status));
+        }
+
+        function renderProducts(list) {
+            const el = document.getElementById('products-list');
+            if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">📦</div><p>Aucun produit trouvé</p></div>'; return; }
+            el.innerHTML = list.map(p => `
+            <div class="product-card">
+                <div class="product-img">
+                    ${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}
                 </div>
-            </div>
-            <div class="payout-amounts">
-                <div class="payout-net">${formatPrice(p.netAmount)}</div>
-                <div class="payout-commission">Commission: ${formatPrice(p.commissionAmount)}</div>
-                <div class="payout-commission">Total brut: ${formatPrice(p.grossAmount)}</div>
-            </div>
-            <span class="status-badge status-${p.status === 'Paid' ? 'Approved' : 'Pending'}">${p.status === 'Paid' ? 'Payé' : 'À payer'}</span>
-            <div class="seller-actions">
-                ${p.status === 'Pending' ? `
-                    <button class="btn btn-approve" onclick="openMarkPaid(${p.id})">✓ Marquer payé</button>
-                ` : ''}
-            </div>
-        </div>
-    `).join('');
-}
-
-function openMarkPaid(id) {
-    currentPayoutId = id;
-    document.getElementById('transaction-ref').value = '';
-    openModal('modal-mark-paid');
-}
-
-async function confirmMarkPaid() {
-    const ref = document.getElementById('transaction-ref').value.trim();
-    if (!ref) { showToast('La référence est obligatoire', 'error'); return; }
-    try {
-        const res = await fetch(`${API}/admin/sellers/payouts/${currentPayoutId}/paid`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ transactionReference: ref })
-        });
-        if (res.ok) {
-            showToast('Paiement confirmé ✓', 'success');
-            closeModal('modal-mark-paid');
-            loadPayouts();
-            loadBadges();
+                <div class="product-info">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-meta">
+                        <span>🏪 ${p.shopName}</span>
+                        <span>📦 Stock: ${p.stock}</span>
+                        <span>🏷️ ${p.category || 'Sans catégorie'}</span>
+                        <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                </div>
+                <div class="product-price">${formatPrice(p.price)}</div>
+                <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
+                <div class="seller-actions">
+                    ${p.approvalStatus === 'Pending' ? `
+                        <button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button>
+                        <button class="btn btn-reject"  onclick="openRejectProduct(${p.id})">✗ Refuser</button>
+                    ` : ''}
+                </div>
+            </div>`).join('');
         }
-    } catch(e) { showToast('Erreur réseau', 'error'); }
-}
 
-// ── UTILS ─────────────────────────────────────────────────────────────
-function formatPrice(p) {
-    return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p);
-}
+        async function approveProduct(id) {
+            try {
+                const res = await fetch(`${API}/admin/sellers/products/${id}/review`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approved: true })
+                });
+                if (res.ok) { showToast('Produit publié sur le site ✓', 'success'); loadProducts(); }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+        function openRejectProduct(id) { currentProductId = id; document.getElementById('reject-product-reason').value = ''; openModal('modal-reject-product'); }
 
-document.querySelectorAll('.modal-overlay').forEach(m => {
-    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
+        async function confirmRejectProduct() {
+            try {
+                const res = await fetch(`${API}/admin/sellers/products/${currentProductId}/review`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ approved: false, rejectionReason: document.getElementById('reject-product-reason').value.trim() })
+                });
+                if (res.ok) { showToast('Produit refusé', ''); closeModal('modal-reject-product'); loadProducts(); }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
 
-function showToast(msg, type = '') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast show ' + type;
-    setTimeout(() => { t.className = 'toast'; }, 3000);
-}
+        // ── PAYOUTS ───────────────────────────────────────────────────────────
+        async function loadPayouts() {
+            try {
+                const res = await fetch(`${API}/admin/sellers/payouts`);
+                allPayouts = await res.json();
+                const pending = allPayouts.filter(p => p.status === 'Pending').length;
+                const b = document.getElementById('badge-payouts');
+                b.textContent = pending;
+                b.classList.toggle('hidden', pending === 0);
+                renderPayouts(allPayouts.filter(p => p.status === 'Pending'));
+            } catch (e) { }
+        }
+
+        function filterPayouts(status, btn) {
+            document.querySelectorAll('#section-payouts .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderPayouts(allPayouts.filter(p => p.status === status));
+        }
+
+        function renderPayouts(list) {
+            const el = document.getElementById('payouts-list');
+            if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement trouvé</p></div>'; return; }
+            el.innerHTML = list.map(p => `
+            <div class="payout-card">
+                <div class="seller-avatar" style="background:linear-gradient(135deg,#059669,#047857)">${p.shopName.charAt(0).toUpperCase()}</div>
+                <div class="seller-info">
+                    <div class="seller-name">${p.shopName}</div>
+                    <div class="seller-meta">
+                        <span>🧾 Commande #${p.orderId || '—'}</span>
+                        <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                        ${p.transactionReference ? `<span>🔖 Réf: ${p.transactionReference}</span>` : ''}
+                    </div>
+                </div>
+                <div class="payout-amounts">
+                    <div class="payout-net">${formatPrice(p.netAmount)}</div>
+                    <div class="payout-detail">Commission: ${formatPrice(p.commissionAmount)}</div>
+                    <div class="payout-detail">Brut: ${formatPrice(p.grossAmount)}</div>
+                </div>
+                <span class="status-badge ${p.status === 'Paid' ? 's-Approved' : 's-Pending'}">${p.status === 'Paid' ? 'Payé' : 'À payer'}</span>
+                <div class="seller-actions">
+                    ${p.status === 'Pending' ? `<button class="btn btn-approve" onclick="openPaid(${p.id})">✓ Marquer payé</button>` : ''}
+                </div>
+            </div>`).join('');
+        }
+
+        function openPaid(id) { currentPayoutId = id; document.getElementById('transaction-ref').value = ''; openModal('modal-paid'); }
+
+        async function confirmPaid() {
+            const ref = document.getElementById('transaction-ref').value.trim();
+            if (!ref) { showToast('La référence est obligatoire', 'error'); return; }
+            try {
+                const res = await fetch(`${API}/admin/sellers/payouts/${currentPayoutId}/paid`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transactionReference: ref })
+                });
+                if (res.ok) { showToast('Paiement confirmé ✓', 'success'); closeModal('modal-paid'); loadPayouts(); }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        // ── UTILS ─────────────────────────────────────────────────────────────
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+            m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+        });
+
+        function formatPrice(p) {
+            return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0);
+        }
+
+        function showToast(msg, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show ' + type;
+            setTimeout(() => { t.className = 'toast'; }, 3000);
+        }
+
+        function logout() {
+            localStorage.removeItem('adminUser');
+            window.location.href = 'admin-login.html';
+        }
     </script>
 </body>
 </html>
