@@ -172,8 +172,46 @@ namespace RanitaApi.Controllers
                     }
                     catch (Exception ex) { Console.WriteLine("PUSH ADMIN ERROR: " + ex.Message); }
 
+
+                    
+
+                    // ✅ Push notification CLIENT à la passation de commande
+                    if (clientId.HasValue)
+                    {
+                        try
+                        {
+                            using var scopeClient = _scopeFactory.CreateScope();
+                            var dbClient = scopeClient.ServiceProvider.GetRequiredService<AppDbContext>();
+                            var clientSubs = await dbClient.ClientPushSubscriptions
+                                .Where(s => s.ClientId == clientId.Value)
+                                .ToListAsync();
+                            var pushClientNew = new WebPushClient();
+                            var vapidNew = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
+                            var payloadNew = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                title = "✅ Commande confirmée !",
+                                body = $"Votre commande #{orderId} de {orderTotal.ToString("N0")} FCFA a bien été reçue."
+                            });
+                            foreach (var s in clientSubs)
+                            {
+                                try
+                                {
+                                    var pushSub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                                    await pushClientNew.SendNotificationAsync(pushSub, payloadNew, vapidNew);
+                                }
+                                catch { }
+                            }
+                        }
+                        catch (Exception ex) { Console.WriteLine("PUSH CLIENT NEW ORDER ERROR: " + ex.Message); }
+                    }
+
                     // Email confirmation client
                     if (clientId.HasValue)
+
+
+
+                        // Email confirmation client
+                        if (clientId.HasValue)
                     {
                         using var scope = _scopeFactory.CreateScope();
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
