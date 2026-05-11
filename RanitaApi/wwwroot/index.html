@@ -136,7 +136,7 @@
             deferredPrompt = e;
 
             // Ne pas afficher si déjà installé ou refusé
-            if (!localStorage.getItem('installDismissed')) {
+            if (!sessionStorage.getItem('installDismissed')) {
                 setTimeout(() => {
                     document.getElementById('installBanner').style.display = 'block';
                 }, 3000);
@@ -151,9 +151,10 @@
             document.getElementById('installBanner').style.display = 'none';
         }
 
+        // Par :
         function dismissBanner() {
             document.getElementById('installBanner').style.display = 'none';
-            localStorage.setItem('installDismissed', '1');
+            sessionStorage.setItem('installDismissed', '1');
         }
 
         // Cacher si déjà installé
