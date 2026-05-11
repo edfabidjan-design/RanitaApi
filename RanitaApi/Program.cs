@@ -429,5 +429,82 @@ catch (Exception ex) { Console.WriteLine("ClientPushSubscriptions error: " + ex.
 
 
 
+// ── Sellers table ──────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""Sellers"" (
+            ""Id""                SERIAL PRIMARY KEY,
+            ""ClientId""          INT NOT NULL REFERENCES ""Clients""(""Id"") ON DELETE CASCADE,
+            ""ShopName""          TEXT NOT NULL DEFAULT '',
+            ""ShopDescription""   TEXT,
+            ""PhoneNumber""       TEXT NOT NULL DEFAULT '',
+            ""NationalIdNumber""  TEXT NOT NULL DEFAULT '',
+            ""ShopLogoUrl""       TEXT,
+            ""CommissionRate""    NUMERIC(5,4) NOT NULL DEFAULT 0.10,
+            ""PaymentMethod""     TEXT,
+            ""PaymentDetails""    TEXT,
+            ""Status""            TEXT NOT NULL DEFAULT 'Pending',
+            ""RejectionReason""   TEXT,
+            ""CreatedAt""         TIMESTAMP NOT NULL DEFAULT NOW(),
+            ""UpdatedAt""         TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("Sellers error: " + ex.Message); }
+
+// ── SellerProducts table ───────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""SellerProducts"" (
+            ""Id""               SERIAL PRIMARY KEY,
+            ""SellerId""         INT NOT NULL REFERENCES ""Sellers""(""Id"") ON DELETE CASCADE,
+            ""ProductId""        INT NULL,
+            ""Name""             TEXT NOT NULL DEFAULT '',
+            ""Description""      TEXT,
+            ""Price""            NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""OldPrice""         NUMERIC(18,2) NULL,
+            ""Stock""            INT NOT NULL DEFAULT 0,
+            ""Category""         TEXT,
+            ""Images""           TEXT NOT NULL DEFAULT '[]',
+            ""ApprovalStatus""   TEXT NOT NULL DEFAULT 'Pending',
+            ""RejectionReason""  TEXT,
+            ""CreatedAt""        TIMESTAMP NOT NULL DEFAULT NOW(),
+            ""UpdatedAt""        TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("SellerProducts error: " + ex.Message); }
+
+// ── SellerPayouts table ────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""SellerPayouts"" (
+            ""Id""                   SERIAL PRIMARY KEY,
+            ""SellerId""             INT NOT NULL REFERENCES ""Sellers""(""Id"") ON DELETE CASCADE,
+            ""OrderId""              INT NULL,
+            ""GrossAmount""          NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""CommissionAmount""     NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""NetAmount""            NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""Status""               TEXT NOT NULL DEFAULT 'Pending',
+            ""TransactionReference"" TEXT,
+            ""Notes""                TEXT,
+            ""CreatedAt""            TIMESTAMP NOT NULL DEFAULT NOW(),
+            ""PaidAt""               TIMESTAMP NULL
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("SellerPayouts error: " + ex.Message); }
+
+
+
 
 app.Run();

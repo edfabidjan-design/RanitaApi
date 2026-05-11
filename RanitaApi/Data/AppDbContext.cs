@@ -21,8 +21,47 @@ namespace RanitaApi.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ClientPushSubscription> ClientPushSubscriptions { get; set; }
         public DbSet<PushSubscriptionModel> PushSubscriptions { get; set; }
+
+        public DbSet<Seller> Sellers { get; set; }
+        public DbSet<SellerProduct> SellerProducts { get; set; }
+        public DbSet<SellerPayout> SellerPayouts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
+            modelBuilder.Entity<Seller>(entity =>
+            {
+                entity.Property(s => s.CommissionRate).HasPrecision(5, 4);
+
+                entity.HasOne(s => s.Client)
+                      .WithMany()
+                      .HasForeignKey(s => s.ClientId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<SellerProduct>(entity =>
+            {
+                entity.Property(sp => sp.Price).HasPrecision(18, 2);
+                entity.Property(sp => sp.OldPrice).HasPrecision(18, 2);
+
+                entity.HasOne(sp => sp.Seller)
+                      .WithMany(s => s.SellerProducts)
+                      .HasForeignKey(sp => sp.SellerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<SellerPayout>(entity =>
+            {
+                entity.Property(p => p.GrossAmount).HasPrecision(18, 2);
+                entity.Property(p => p.CommissionAmount).HasPrecision(18, 2);
+                entity.Property(p => p.NetAmount).HasPrecision(18, 2);
+
+                entity.HasOne(p => p.Seller)
+                      .WithMany(s => s.Payouts)
+                      .HasForeignKey(p => p.SellerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
 
 
             modelBuilder.Entity<Review>()
