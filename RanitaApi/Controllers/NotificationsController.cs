@@ -47,4 +47,18 @@ public class NotificationsController : ControllerBase
         }
         return Ok();
     }
+
+
+    [HttpPost("subscribe-client")]
+    public async Task<IActionResult> SubscribeClient([FromBody] ClientPushSubscription sub)
+    {
+        var exists = await _db.ClientPushSubscriptions
+            .AnyAsync(s => s.Endpoint == sub.Endpoint);
+        if (!exists)
+        {
+            _db.ClientPushSubscriptions.Add(sub);
+            await _db.SaveChangesAsync();
+        }
+        return Ok();
+    }
 }

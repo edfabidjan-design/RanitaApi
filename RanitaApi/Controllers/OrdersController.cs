@@ -15,6 +15,10 @@ namespace RanitaApi.Controllers
         private readonly EmailService _emailService;
         private readonly IServiceScopeFactory _scopeFactory;
 
+        private const string VapidPublic = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
+        private const string VapidPrivate = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
+        private const string VapidSubject = "mailto:admin@ranita-shop.com";
+
         public OrdersController(AppDbContext context, EmailService emailService, IServiceScopeFactory scopeFactory)
         {
             _context = context;
@@ -22,7 +26,6 @@ namespace RanitaApi.Controllers
             _scopeFactory = scopeFactory;
         }
 
-        // ✅ GET ALL (admin)
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -45,22 +48,12 @@ namespace RanitaApi.Controllers
                 o.RefundMotif,
                 o.ClientId,
                 Client = o.Client == null ? null : new { o.Client.Id, o.Client.FullName, o.Client.Email },
-                Items = o.Items.Select(i => new {
-                    i.Id,
-                    i.ProductId,
-                    i.ProductName,
-                    i.Price,
-                    i.Quantity,
-                    i.ImageUrl,
-                    i.VariantId,
-                    i.VariantName
-                })
+                Items = o.Items.Select(i => new { i.Id, i.ProductId, i.ProductName, i.Price, i.Quantity, i.ImageUrl, i.VariantId, i.VariantName })
             });
 
             return Ok(result);
         }
 
-        // ✅ GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -82,20 +75,10 @@ namespace RanitaApi.Controllers
                 o.Status,
                 o.CreatedAt,
                 o.ClientId,
-                Items = o.Items.Select(i => new {
-                    i.Id,
-                    i.ProductId,
-                    i.ProductName,
-                    i.Price,
-                    i.Quantity,
-                    i.ImageUrl,
-                    i.VariantId,
-                    i.VariantName
-                })
+                Items = o.Items.Select(i => new { i.Id, i.ProductId, i.ProductName, i.Price, i.Quantity, i.ImageUrl, i.VariantId, i.VariantName })
             });
         }
 
-        // ✅ CREATE
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
         {
@@ -152,7 +135,6 @@ namespace RanitaApi.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // ✅ Emails en arrière-plan — ne bloque pas la réponse
             var orderId = order.Id;
             var customerName = order.CustomerName;
             var customerPhone = order.CustomerPhone;
@@ -165,21 +147,18 @@ namespace RanitaApi.Controllers
             {
                 try
                 {
+                    // Email admin
                     await _emailService.SendNewOrderNotificationAsync(
                         orderId, customerName, customerPhone, customerAddress, orderTotal);
 
-                    // ✅ Push notification
+                    // Push notification ADMIN
                     try
                     {
                         using var scope = _scopeFactory.CreateScope();
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var subs = await db.PushSubscriptions.ToListAsync();
-                        var pushClient = new WebPush.WebPushClient();
-                        var vapid = new WebPush.VapidDetails(
-                            "mailto:admin@ranita-shop.com",
-                            "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY",
-                            "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs"
-                        );
+                        var pushClient = new WebPushClient();
+                        var vapid = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
                         var payload = System.Text.Json.JsonSerializer.Serialize(new
                         {
                             title = "🛒 Nouvelle commande !",
@@ -187,21 +166,16 @@ namespace RanitaApi.Controllers
                         });
                         foreach (var s in subs)
                         {
-                            try
-                            {
-                                var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                                await pushClient.SendNotificationAsync(sub, payload, vapid);
-                            }
+                            try { var sub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth); await pushClient.SendNotificationAsync(sub, payload, vapid); }
                             catch { }
                         }
                     }
-                    catch (Exception ex) { Console.WriteLine("PUSH ERROR: " + ex.Message); }
+                    catch (Exception ex) { Console.WriteLine("PUSH ADMIN ERROR: " + ex.Message); }
 
-
-
+                    // Email confirmation client
                     if (clientId.HasValue)
                     {
-                        using var scope = _scopeFactory.CreateScope(); // ✅ plus de HttpContext
+                        using var scope = _scopeFactory.CreateScope();
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
                         if (client != null && !string.IsNullOrEmpty(client.Email))
@@ -215,7 +189,6 @@ namespace RanitaApi.Controllers
             return Ok(new { order.Id, order.Total, order.Status });
         }
 
-        // ✅ UPDATE STATUS (admin)
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto dto)
         {
@@ -264,7 +237,6 @@ namespace RanitaApi.Controllers
 
             await _context.SaveChangesAsync();
 
-            // ✅ Email client en arrière-plan
             var orderId = order.Id;
             var clientId = order.ClientId;
             var newStatus = dto.Status;
@@ -276,12 +248,40 @@ namespace RanitaApi.Controllers
                 {
                     if (clientId.HasValue)
                     {
+                        // Email client
                         using var scope = _scopeFactory.CreateScope();
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
                         if (client != null && !string.IsNullOrEmpty(client.Email))
                             await _emailService.SendOrderStatusUpdateAsync(
                                 client.Email, client.FullName, orderId, newStatus, orderItems);
+
+                        // Push notification CLIENT
+                        try
+                        {
+                            using var scope2 = _scopeFactory.CreateScope();
+                            var db2 = scope2.ServiceProvider.GetRequiredService<AppDbContext>();
+                            var clientSubs = await db2.ClientPushSubscriptions
+                                .Where(s => s.ClientId == clientId.Value)
+                                .ToListAsync();
+                            var pushClient = new WebPushClient();
+                            var vapid = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
+                            var payload = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                title = "🛒 Ranita - Commande mise à jour",
+                                body = $"Votre commande #{orderId} est maintenant : {newStatus}"
+                            });
+                            foreach (var s in clientSubs)
+                            {
+                                try
+                                {
+                                    var pushSub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                                    await pushClient.SendNotificationAsync(pushSub, payload, vapid);
+                                }
+                                catch { }
+                            }
+                        }
+                        catch (Exception ex) { Console.WriteLine("PUSH CLIENT ERROR: " + ex.Message); }
                     }
                 }
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
@@ -290,7 +290,6 @@ namespace RanitaApi.Controllers
             return Ok(new { order.Id, order.Status });
         }
 
-        // ✅ ANNULER commande (client)
         [HttpPost("{id}/cancel")]
         public async Task<IActionResult> Cancel(int id)
         {
@@ -299,7 +298,6 @@ namespace RanitaApi.Controllers
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null) return NotFound();
-
             if (order.Status != "En attente")
                 return BadRequest("Seules les commandes en attente peuvent être annulées.");
 
@@ -323,8 +321,6 @@ namespace RanitaApi.Controllers
             return Ok("Commande annulée");
         }
 
-
-
         [HttpPost("{id}/refund-request")]
         public async Task<IActionResult> RefundRequest(int id, [FromBody] RefundRequestDto dto)
         {
@@ -339,8 +335,6 @@ namespace RanitaApi.Controllers
             return Ok("Demande de remboursement envoyée.");
         }
 
-
-
         [HttpPost("{id}/refund-approve")]
         public async Task<IActionResult> RefundApprove(int id)
         {
@@ -351,7 +345,6 @@ namespace RanitaApi.Controllers
             if (order == null) return NotFound();
             if (order.Status != "Remboursement demandé") return BadRequest("Statut invalide.");
 
-            // Remettre le stock
             foreach (var item in order.Items)
             {
                 if (item.VariantId.HasValue)
@@ -383,8 +376,6 @@ namespace RanitaApi.Controllers
             return Ok("Remboursement rejeté.");
         }
     }
-
-
 
     public class CreateOrderDto
     {

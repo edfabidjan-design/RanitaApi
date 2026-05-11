@@ -410,4 +410,24 @@ catch (Exception ex) { Console.WriteLine("PushSubscriptions error: " + ex.Messag
 
 
 
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""ClientPushSubscriptions"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""ClientId"" INT NOT NULL,
+            ""Endpoint"" TEXT NOT NULL,
+            ""P256dh"" TEXT NOT NULL,
+            ""Auth"" TEXT NOT NULL
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("ClientPushSubscriptions error: " + ex.Message); }
+
+
+
+
+
 app.Run();
