@@ -168,13 +168,13 @@
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-categories.html">Catï¿½gories</a>
             <a href="admin-attributes.html">Attributs</a>
             <a href="admin-orders.html">Commandes</a>
             <a href="admin-reviews.html">? Avis</a>
             <a href="admin-clients.html" class="active">Clients</a>
         </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <button onclick="logout()">Dï¿½connexion</button>
     </header>
 
     <div class="admin-container">
@@ -193,9 +193,9 @@
                         <th>#</th>
                         <th>Client</th>
                         <th>Email</th>
-                        <th>Téléphone</th>
+                        <th>Tï¿½lï¿½phone</th>
                         <th>Commandes</th>
-                        <th>Total dépensé</th>
+                        <th>Total dï¿½pensï¿½</th>
                         <th>Inscrit le</th>
                         <th>Actions</th>
                     </tr>
@@ -250,7 +250,7 @@
                         const orders = allOrders.filter(o => o.clientId === c.id);
                         return orders.length === 0;
                     }).length}</div>
-                    <div class="stat-label">Jamais commandé</div>
+                    <div class="stat-label">Jamais commandï¿½</div>
                 </div>
             `;
 
@@ -261,12 +261,12 @@
             const tbody = document.getElementById("clientsTable");
 
             if (clients.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvï¿½</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = clients.map(c => {
-                const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulée");
+                const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulï¿½e");
                 const totalDepense = orders.reduce((s, o) => s + o.total, 0);
                 const initiale = (c.fullName || c.email || "?")[0].toUpperCase();
 
@@ -280,7 +280,7 @@
                             </div>
                         </td>
                         <td>${c.email}</td>
-                        <td>${c.phone || "—"}</td>
+                        <td>${c.phone || "ï¿½"}</td>
                         <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
                         <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
                         <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
@@ -307,14 +307,14 @@
             if (!c) return;
 
             const orders = allOrders.filter(o => o.clientId === clientId);
-            const totalDepense = orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0);
+            const totalDepense = orders.filter(o => o.status !== "Annulï¿½e").reduce((s, o) => s + o.total, 0);
 
             function getBadge(status) {
                 switch(status) {
                     case "En attente": return "badge-attente";
-                    case "Validée": return "badge-validee";
-                    case "Livrée": return "badge-livree";
-                    case "Annulée": return "badge-annulee";
+                    case "Validï¿½e": return "badge-validee";
+                    case "Livrï¿½e": return "badge-livree";
+                    case "Annulï¿½e": return "badge-annulee";
                     default: return "";
                 }
             }
@@ -323,9 +323,9 @@
                 <h3>?? ${c.fullName}</h3>
                 <div class="modal-info">
                     <strong>Email :</strong> ${c.email}<br>
-                    <strong>Téléphone :</strong> ${c.phone || "—"}<br>
+                    <strong>Tï¿½lï¿½phone :</strong> ${c.phone || "ï¿½"}<br>
                     <strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br>
-                    <strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA
+                    <strong>Total dï¿½pensï¿½ :</strong> ${Number(totalDepense).toLocaleString()} FCFA
                 </div>
 
                 <div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#374151;">
@@ -335,7 +335,7 @@
                 ${orders.length === 0 ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` :
                     orders.map(o => `
                         <div class="order-row">
-                            <span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
+                            <span><strong>#${o.id}</strong> ï¿½ ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
                             <span>
                                 <span class="status-badge ${getBadge(o.status)}">${o.status}</span>
                                 &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong>

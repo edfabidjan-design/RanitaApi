@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranita Admin - Catégories</title>
+    <title>Ranita Admin - Catï¿½gories</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-notifications.js" defer></script>
 <link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#10b981"></head>
@@ -18,26 +18,26 @@
             <a href="admin-attributes.html">Attributs</a>
             <a href="admin-clients.html">Clients</a>
             <a href="admin-reviews.html">? Avis</a>
-            <a href="admin-categories.html" class="active">Catégories</a>
+            <a href="admin-categories.html" class="active">Catï¿½gories</a>
         </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <button onclick="logout()">Dï¿½connexion</button>
     </header>
 
     <div class="admin-container">
-        <h1>Gestion des catégories</h1>
+        <h1>Gestion des catï¿½gories</h1>
 
         <form id="categoryForm" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
             <input type="hidden" id="categoryId">
-            <input type="text" id="categoryName" placeholder="Nom de la catégorie" required
+            <input type="text" id="categoryName" placeholder="Nom de la catï¿½gorie" required
                    style="flex:1;padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;">
             <select id="categoryParent" style="padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;">
-                <option value="">— Catégorie parente (optionnel) —</option>
+                <option value="">ï¿½ Catï¿½gorie parente (optionnel) ï¿½</option>
             </select>
             <button type="submit" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;">
                 Enregistrer
             </button>
             <button type="button" id="resetBtn" style="background:#f3f4f6;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;">
-                Réinitialiser
+                Rï¿½initialiser
             </button>
         </form>
 
@@ -62,7 +62,7 @@
             // Remplir le select des parents
             const select = document.getElementById("categoryParent");
             const currentId = document.getElementById("categoryId").value;
-            select.innerHTML = `<option value="">— Catégorie parente (optionnel) —</option>`;
+            select.innerHTML = `<option value="">ï¿½ Catï¿½gorie parente (optionnel) ï¿½</option>`;
             parents.forEach(p => {
                 if (p.id != currentId) {
                     select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
@@ -91,7 +91,7 @@
                             </button>
                             <button onclick="addChild(${parent.id}, '${parent.name}')"
                                     style="background:#eff6ff;color:#3b82f6;border:1px solid #3b82f6;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">
-                                ? Sous-catégorie
+                                ? Sous-catï¿½gorie
                             </button>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
         }
 
         async function deleteCategory(id) {
-            if (!confirm("Supprimer cette catégorie ?")) return;
+            if (!confirm("Supprimer cette catï¿½gorie ?")) return;
             await fetch(`${API}/${id}`, { method: "DELETE" });
             loadCategories();
         }

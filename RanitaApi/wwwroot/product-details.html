@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détail produit - Ranita</title>
+    <title>Dï¿½tail produit - Ranita</title>
     <link rel="stylesheet" href="products.css">
     <link rel="stylesheet" href="header.css">
     <style>
@@ -535,7 +535,7 @@
             const addBtn = document.getElementById("addBtn");
 
             if (stock === null) {
-                stockEl.textContent = "Sélectionnez une variante";
+                stockEl.textContent = "Sï¿½lectionnez une variante";
                 stockEl.className = "stock-info";
                 if (addBtn) addBtn.disabled = true;
                 return;
@@ -593,7 +593,7 @@
 
             localStorage.setItem("cart", JSON.stringify(cart));
             updateCartCount();
-            showToast(`? ${quantity} article(s) ajouté(s) au panier !`);
+            showToast(`? ${quantity} article(s) ajoutï¿½(s) au panier !`);
         }
 
         async function loadProduct() {
@@ -673,7 +673,7 @@
                             </div>` : ''}
 
                             <div class="qty-block">
-                                <span class="qty-label">Quantité :</span>
+                                <span class="qty-label">Quantitï¿½ :</span>
                                 <div class="qty-controls">
                                     <button class="qty-btn" onclick="changeQty(-1)">-</button>
                                     <input type="number" id="qtyInput" class="qty-input" value="1" min="1" readonly>
@@ -690,7 +690,7 @@
 
                             ${attrKeys.length > 0 ? `
                             <div class="attributes-block">
-                                <h4>Caractéristiques</h4>
+                                <h4>Caractï¿½ristiques</h4>
                                 ${attrKeys.map(k => `
                                     <div class="attr-row">
                                         <span class="attr-key">${k}</span>
@@ -716,7 +716,7 @@
             
                 `;
 
-            // Sélectionner automatiquement la première variante disponible
+            // Sï¿½lectionner automatiquement la premiï¿½re variante disponible
             const firstAvailable = currentProduct.variants.find(v => v.stock > 0);
             if (firstAvailable) selectVariant(firstAvailable.id);
 

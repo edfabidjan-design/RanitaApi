@@ -304,7 +304,7 @@
         <nav>
             <a href="products.html">Produits</a>
             <a href="cart.html">Panier</a>
-            <a href="javascript:void(0)" onclick="logoutClient()">Déconnexion</a>
+            <a href="javascript:void(0)" onclick="logoutClient()">Dï¿½connexion</a>
         </nav>
     </header>
 
@@ -340,7 +340,7 @@
 
             if (!res.ok) { alert(await res.text()); return; }
 
-            alert("? Demande de remboursement envoyée !");
+            alert("? Demande de remboursement envoyï¿½e !");
             document.getElementById("modalOverlay").classList.remove("open");
             loadOrders();
         }
@@ -349,9 +349,9 @@
         function getStatusClass(status) {
             switch (status) {
                 case "En attente": return "status-en-attente";
-                case "Validée": return "status-validee";
-                case "Livrée": return "status-livree";
-                case "Annulée": return "status-annulee";
+                case "Validï¿½e": return "status-validee";
+                case "Livrï¿½e": return "status-livree";
+                case "Annulï¿½e": return "status-annulee";
                 default: return "status-en-attente";
             }
         }
@@ -369,7 +369,7 @@
                 return;
             }
 
-            alert("Commande annulée avec succès.");
+            alert("Commande annulï¿½e avec succï¿½s.");
             document.getElementById("modalOverlay").classList.remove("open");
             loadOrders();
         }
@@ -390,8 +390,8 @@
                 container.innerHTML = `
                         <div class="empty-state">
                             <div style="font-size:60px">??</div>
-                            <p>Vous n'avez pas encore passé de commande.</p>
-                            <a href="products.html" class="btn-shop">Découvrir les produits</a>
+                            <p>Vous n'avez pas encore passï¿½ de commande.</p>
+                            <a href="products.html" class="btn-shop">Dï¿½couvrir les produits</a>
                         </div>`;
                 return;
             }
@@ -411,7 +411,7 @@
                             `).join('')}
                         </div>
                         <div class="order-summary">
-                            <span>${o.items.length} article(s) • ${o.paymentMethod}</span>
+                            <span>${o.items.length} article(s) ï¿½ ${o.paymentMethod}</span>
                             <span class="order-total">${Number(o.total).toLocaleString()} FCFA</span>
                         </div>
                     </div>
@@ -440,14 +440,14 @@
                         <strong>Paiement :</strong> ${o.paymentMethod}
                     </div>
 
-                    <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#374151;">Articles commandés</div>
+                    <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#374151;">Articles commandï¿½s</div>
 
                     ${o.items.map(i => `
                         <div class="modal-item">
                             <img src="${i.imageUrl || 'https://via.placeholder.com/60'}" alt="${i.productName}">
                             <div class="modal-item-info">
                                 <div class="modal-item-name">${i.productName}</div>
-                                <div class="modal-item-qty">Quantité : ${i.quantity} × ${Number(i.price).toLocaleString()} FCFA</div>
+                                <div class="modal-item-qty">Quantitï¿½ : ${i.quantity} ï¿½ ${Number(i.price).toLocaleString()} FCFA</div>
                             </div>
                             <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
                         </div>
@@ -472,9 +472,9 @@ ${o.status === "En attente" ? `
         ? Annuler la commande
     </button>
 ` : ''}
-${o.status === "Livrée" ? `
+${o.status === "Livrï¿½e" ? `
     <div style="margin-top:12px;">
-        <textarea id="refundMotif_${o.id}" placeholder="Décrivez le motif de votre demande de remboursement..."
+        <textarea id="refundMotif_${o.id}" placeholder="Dï¿½crivez le motif de votre demande de remboursement..."
             style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:8px;"></textarea>
         <button onclick="requestRefund(${o.id})"
             style="width:100%;background:#fef3c7;color:#92400e;border:2px solid #f59e0b;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;">

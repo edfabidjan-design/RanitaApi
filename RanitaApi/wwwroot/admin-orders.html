@@ -196,13 +196,13 @@
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-categories.html">Catï¿½gories</a>
             <a href="admin-attributes.html">Attributs</a>
             <a href="admin-clients.html">Clients</a>
             <a href="admin-reviews.html">? Avis</a>
             <a href="admin-orders.html" class="active">Commandes</a>
         </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <button onclick="logout()">Dï¿½connexion</button>
     </header>
 
     <div class="admin-container">
@@ -216,13 +216,13 @@
                     <tr>
                         <th>#</th>
                         <th>Client</th>
-                        <th>Téléphone</th>
+                        <th>Tï¿½lï¿½phone</th>
                         <th>Adresse</th>
                         <th>Paiement</th>
                         <th>Total</th>
                         <th>Statut</th>
                         <th>Date</th>
-                        <th>Détails</th>
+                        <th>Dï¿½tails</th>
                     </tr>
                 </thead>
                 <tbody id="ordersTable"></tbody>
@@ -230,7 +230,7 @@
         </div>
     </div>
 
-    <!-- MODAL DÉTAILS -->
+    <!-- MODAL Dï¿½TAILS -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" id="modalContent"></div>
     </div>
@@ -249,12 +249,12 @@
         function getStatusClass(status) {
             switch (status) {
                 case "En attente": return "status-pending";
-                case "Validée": return "status-validated";
-                case "Livrée": return "status-delivered";
-                case "Annulée": return "status-cancelled";
-                case "Remboursement demandé": return "status-refund";
-                case "Remboursé": return "status-refunded";
-                case "Remboursement rejeté": return "status-cancelled";
+                case "Validï¿½e": return "status-validated";
+                case "Livrï¿½e": return "status-delivered";
+                case "Annulï¿½e": return "status-cancelled";
+                case "Remboursement demandï¿½": return "status-refund";
+                case "Remboursï¿½": return "status-refunded";
+                case "Remboursement rejetï¿½": return "status-cancelled";
                 default: return "";
             }
         }
@@ -262,11 +262,11 @@
         function getStatusStyle(status) {
             switch (status) {
                 case "En attente": return "background:#fef3c7;color:#92400e;border-color:#f59e0b;";
-                case "Validée": return "background:#dbeafe;color:#1e40af;border-color:#3b82f6;";
-                case "Livrée": return "background:#d1fae5;color:#065f46;border-color:#10b981;";
-                case "Annulée": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
-                case "Remboursé": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
-                case "Remboursement rejeté": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
+                case "Validï¿½e": return "background:#dbeafe;color:#1e40af;border-color:#3b82f6;";
+                case "Livrï¿½e": return "background:#d1fae5;color:#065f46;border-color:#10b981;";
+                case "Annulï¿½e": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
+                case "Remboursï¿½": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
+                case "Remboursement rejetï¿½": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
                 default: return "";
             }
         }
@@ -297,9 +297,9 @@
             const stats = {
                 total: orders.length,
                 attente: orders.filter(o => o.status === "En attente").length,
-                validee: orders.filter(o => o.status === "Validée").length,
-                livree: orders.filter(o => o.status === "Livrée").length,
-                ca: orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0)
+                validee: orders.filter(o => o.status === "Validï¿½e").length,
+                livree: orders.filter(o => o.status === "Livrï¿½e").length,
+                ca: orders.filter(o => o.status !== "Annulï¿½e").reduce((s, o) => s + o.total, 0)
             };
 
             document.getElementById("statsBar").innerHTML = `
@@ -313,23 +313,23 @@
                         </div>
                         <div class="stat-card" style="border-top:3px solid #3b82f6;">
                             <div class="stat-num">${stats.validee}</div>
-                            <div class="stat-label">Validées</div>
+                            <div class="stat-label">Validï¿½es</div>
                         </div>
                         <div class="stat-card" style="border-top:3px solid #10b981;">
                             <div class="stat-num">${stats.livree}</div>
-                            <div class="stat-label">Livrées</div>
+                            <div class="stat-label">Livrï¿½es</div>
                         </div>
                         <div class="stat-card" style="border-top:3px solid #ef4444;">
-                           <div class="stat-num">${orders.filter(o => o.status === "Annulée").length}</div>
-                           <div class="stat-label">Annulées</div>
+                           <div class="stat-num">${orders.filter(o => o.status === "Annulï¿½e").length}</div>
+                           <div class="stat-label">Annulï¿½es</div>
                        </div>
                        <div class="stat-card" style="border-top:3px solid #ef4444;">
-                            <div class="stat-num">${orders.filter(o => o.status === "Remboursé").length}</div>
-                            <div class="stat-label">Remboursés</div>
+                            <div class="stat-num">${orders.filter(o => o.status === "Remboursï¿½").length}</div>
+                            <div class="stat-label">Remboursï¿½s</div>
                         </div>
                         <div class="stat-card" style="border-top:3px solid #f59e0b;">
-                            <div class="stat-num">${orders.filter(o => o.status === "Remboursement demandé").length}</div>
-                            <div class="stat-label">Remb. demandés</div>
+                            <div class="stat-num">${orders.filter(o => o.status === "Remboursement demandï¿½").length}</div>
+                            <div class="stat-label">Remb. demandï¿½s</div>
                         </div>
                         <div class="stat-card" style="border-top:3px solid #8b5cf6;">
                             <div class="stat-num">${Number(stats.ca).toLocaleString()} FCFA</div>
@@ -351,9 +351,9 @@
             <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
 
 <td>
-        ${o.status === "Remboursement demandé" ? `
+        ${o.status === "Remboursement demandï¿½" ? `
             <div style="display:flex;flex-direction:column;gap:6px;">
-                <span class="status-badge status-refund">?? Remboursement demandé</span>
+                <span class="status-badge status-refund">?? Remboursement demandï¿½</span>
                 <button onclick="approveRefund(${o.id})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">? Valider</button>
                 <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">? Rejeter</button>
             </div>
@@ -361,11 +361,11 @@
 <select class="status-select" style="${getStatusStyle(o.status)}"
             onchange="updateStatus(${o.id}, this.value, this)">
                 <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-                <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-                <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-                <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
-                <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
+                <option ${o.status === "Validï¿½e" ? "selected" : ""}>Validï¿½e</option>
+                <option ${o.status === "Livrï¿½e" ? "selected" : ""}>Livrï¿½e</option>
+                <option ${o.status === "Annulï¿½e" ? "selected" : ""}>Annulï¿½e</option>
+                <option ${o.status === "Remboursï¿½" ? "selected" : ""}>Remboursï¿½</option>
+                <option ${o.status === "Remboursement rejetï¿½" ? "selected" : ""}>Remboursement rejetï¿½</option>
             </select>
         `}
 </td>
@@ -405,7 +405,7 @@
                 <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}">
                 <div class="modal-item-info">
                     <div class="modal-item-name">${i.productName}</div>
-                    <div class="modal-item-qty">Quantité : ${i.quantity}${i.variantName ? ` • ${i.variantName}` : ''}</div>
+                    <div class="modal-item-qty">Quantitï¿½ : ${i.quantity}${i.variantName ? ` ï¿½ ${i.variantName}` : ''}</div>
                 </div>
                 <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
             </div>
@@ -417,7 +417,7 @@
             <h3>Commande #${o.id}</h3>
             <div class="order-info">
                 <strong>Client :</strong> ${o.customerName}<br>
-                <strong>Téléphone :</strong> ${o.customerPhone}<br>
+                <strong>Tï¿½lï¿½phone :</strong> ${o.customerPhone}<br>
                 <strong>Adresse :</strong> ${o.customerAddress}<br>
                 <strong>Paiement :</strong> ${o.paymentMethod}<br>
                 <strong>Date :</strong> ${new Date(o.createdAt).toLocaleString('fr-FR')}
@@ -436,7 +436,7 @@
                 <span>${Number(subtotal).toLocaleString()} FCFA</span>
             </div>
             <div class="modal-total">
-                <span>Total payé</span>
+                <span>Total payï¿½</span>
                 <span style="color:#10b981;">${Number(o.total).toLocaleString()} FCFA</span>
             </div>
             <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">

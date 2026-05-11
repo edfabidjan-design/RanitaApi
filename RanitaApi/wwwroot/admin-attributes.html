@@ -14,26 +14,26 @@
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-categories.html">Catï¿½gories</a>
             <a href="admin-attributes.html" class="active">Attributs</a>
             <a href="admin-orders.html">Commandes</a>
             <a href="admin-clients.html">Clients</a>
             <a href="admin-reviews.html">? Avis</a>
         </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <button onclick="logout()">Dï¿½connexion</button>
     </header>
 
     <div class="admin-container">
         <h1>Gestion des attributs</h1>
 
-        <!-- Sélecteur de catégorie -->
+        <!-- Sï¿½lecteur de catï¿½gorie -->
         <div style="margin-bottom:24px;">
             <label style="font-weight:700;font-size:15px;display:block;margin-bottom:8px;">
-                Choisir une catégorie :
+                Choisir une catï¿½gorie :
             </label>
             <select id="selectedCategory" onchange="loadAttributes()"
                     style="padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;width:100%;max-width:400px;">
-                <option value="">-- Sélectionner une catégorie --</option>
+                <option value="">-- Sï¿½lectionner une catï¿½gorie --</option>
             </select>
         </div>
 
@@ -52,7 +52,7 @@
                     <option value="select">Liste de choix</option>
                 </select>
 
-                <input type="text" id="attributeOptions" placeholder="Options séparées par virgule (ex: S,M,L,XL)"
+                <input type="text" id="attributeOptions" placeholder="Options sï¿½parï¿½es par virgule (ex: S,M,L,XL)"
                        style="display:none;flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;">
 
                 <button type="submit"
@@ -61,7 +61,7 @@
                 </button>
                 <button type="button" onclick="resetForm()"
                         style="background:#f3f4f6;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;">
-                    Réinitialiser
+                    Rï¿½initialiser
                 </button>
             </form>
 
@@ -81,7 +81,7 @@
 
     const API = "https://ranitaapi-production.up.railway.app/api";
 
-    // Charger les catégories dans le select
+    // Charger les catï¿½gories dans le select
     async function loadCategories() {
         const res = await fetch(`${API}/categories`);
         const parents = await res.json();
@@ -100,7 +100,7 @@
         });
     }
 
-    // Charger les attributs de la catégorie sélectionnée
+    // Charger les attributs de la catï¿½gorie sï¿½lectionnï¿½e
     async function loadAttributes() {
         const categoryId = document.getElementById("selectedCategory").value;
         if (!categoryId) {
@@ -116,7 +116,7 @@
         const list = document.getElementById("attributesList");
 
         if (attrs.length === 0) {
-            list.innerHTML = `<p style="color:#6b7280;text-align:center;padding:20px;">Aucun attribut pour cette catégorie.</p>`;
+            list.innerHTML = `<p style="color:#6b7280;text-align:center;padding:20px;">Aucun attribut pour cette catï¿½gorie.</p>`;
             return;
         }
 
@@ -140,7 +140,7 @@
                                 </span>
                             </td>
                             <td style="padding:12px 16px;color:#6b7280;font-size:13px;">
-                                ${a.attributeOptions || '—'}
+                                ${a.attributeOptions || 'ï¿½'}
                             </td>
                             <td style="padding:12px 16px;">
                                 <button onclick="editAttribute(${a.id}, '${a.attributeName}', '${a.attributeType}', '${a.attributeOptions}')"

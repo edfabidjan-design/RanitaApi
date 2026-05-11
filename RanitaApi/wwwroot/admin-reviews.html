@@ -13,12 +13,12 @@
         <nav>
             <a href="admin-dashboard.html">Dashboard</a>
             <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-categories.html">Catï¿½gories</a>
             <a href="admin-orders.html">Commandes</a>
             <a href="admin-clients.html">Clients</a>
             <a href="admin-reviews.html" class="active">Avis</a>
         </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <button onclick="logout()">Dï¿½connexion</button>
     </header>
 
     <div class="admin-container">
@@ -64,10 +64,10 @@
                 <td>${r.produit}</td>
                 <td>${r.client}</td>
                 <td style="color:#f59e0b;font-size:16px;">${"?".repeat(r.note)}${"?".repeat(5 - r.note)}</td>
-                <td>${r.commentaire || "—"}</td>
+                <td>${r.commentaire || "ï¿½"}</td>
                 <td>${new Date(r.createdAt).toLocaleDateString('fr-FR')}</td>
                 <td>${r.approuve
-                    ? '<span style="color:#10b981;font-weight:700;">? Approuvé</span>'
+                    ? '<span style="color:#10b981;font-weight:700;">? Approuvï¿½</span>'
                     : '<span style="color:#f59e0b;font-weight:700;">? En attente</span>'
                 }</td>
                 <td style="display:flex;gap:8px;">

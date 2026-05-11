@@ -408,10 +408,10 @@
         <div class="auth-modal">
             <div class="lock-icon">??</div>
             <h2>Connexion requise</h2>
-            <p>Vous devez être connecté pour finaliser votre commande. Connectez-vous ou créez un compte gratuitement.</p>
+            <p>Vous devez ï¿½tre connectï¿½ pour finaliser votre commande. Connectez-vous ou crï¿½ez un compte gratuitement.</p>
             <div class="auth-modal-actions">
                 <a href="login.html?redirect=checkout.html" class="btn-login-modal">Se connecter</a>
-                <a href="register.html?redirect=checkout.html" class="btn-register-modal">Créer un compte</a>
+                <a href="register.html?redirect=checkout.html" class="btn-register-modal">Crï¿½er un compte</a>
                 <a href="cart.html" class="btn-back-modal">? Retour au panier</a>
             </div>
         </div>
@@ -420,7 +420,7 @@
     <div class="checkout-wrapper">
         <div class="checkout-card">
             <h1>Finaliser la commande</h1>
-            <p style="color:#6b7280; font-size:14px; margin-bottom:20px; text-align:center;">Vérifiez vos informations de livraison.</p>
+            <p style="color:#6b7280; font-size:14px; margin-bottom:20px; text-align:center;">Vï¿½rifiez vos informations de livraison.</p>
 
             <div class="client-info-bar" id="clientInfoBar" style="display:none;">
                 ? <span id="clientInfoText"></span>
@@ -428,7 +428,7 @@
 
             <form id="checkoutForm">
                 <input type="text" id="customerName" placeholder="Nom complet" required>
-                <input type="tel" id="customerPhone" placeholder="Téléphone" required>
+                <input type="tel" id="customerPhone" placeholder="Tï¿½lï¿½phone" required>
 
 
                 <div style="position:relative; margin-bottom:14px;">
@@ -438,7 +438,7 @@
                     <input type="hidden" id="customerZone">
                     <div id="zoneDropdown" style="display:none;position:absolute;top:52px;left:0;right:0;background:white;border:1px solid #d1d5db;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);z-index:999;max-height:250px;overflow-y:auto;"></div>
                 </div>
-                <input type="text" id="customerAddress" placeholder="Adresse précise (rue, numéro...)" required>
+                <input type="text" id="customerAddress" placeholder="Adresse prï¿½cise (rue, numï¿½ro...)" required>
 
 
 
@@ -446,23 +446,23 @@
                 <span class="payment-label">Mode de paiement</span>
                 <div class="payment-options" style="width:100%;box-sizing:border-box;overflow:hidden;">
                     <div class="payment-option active">
-                        <input type="radio" name="payment" id="pay-livraison" value="Paiement à la livraison" checked>
-                        <label for="pay-livraison">?? Paiement à la livraison</label>
+                        <input type="radio" name="payment" id="pay-livraison" value="Paiement ï¿½ la livraison" checked>
+                        <label for="pay-livraison">?? Paiement ï¿½ la livraison</label>
                     </div>
                     <div class="payment-option disabled">
                         <input type="radio" name="payment" id="pay-orange" value="Orange Money" disabled>
                         <label for="pay-orange">?? Orange Money</label>
-                        <span class="badge-soon">Bientôt</span>
+                        <span class="badge-soon">Bientï¿½t</span>
                     </div>
                     <div class="payment-option disabled">
                         <input type="radio" name="payment" id="pay-wave" value="Wave" disabled>
                         <label for="pay-wave">?? Wave</label>
-                        <span class="badge-soon">Bientôt</span>
+                        <span class="badge-soon">Bientï¿½t</span>
                     </div>
                     <div class="payment-option disabled">
                         <input type="radio" name="payment" id="pay-mtn" value="MTN MoMo" disabled>
                         <label for="pay-mtn">?? MTN MoMo</label>
-                        <span class="badge-soon">Bientôt</span>
+                        <span class="badge-soon">Bientï¿½t</span>
                     </div>
                 </div>
 
@@ -476,7 +476,7 @@
                         <span id="shippingDisplay">1 500 FCFA</span>
                     </div>
                     <div class="summary-line total">
-                        <span>Total à payer</span>
+                        <span>Total ï¿½ payer</span>
                         <span id="grandTotalDisplay">0 FCFA</span>
                     </div>
                 </div>
@@ -501,7 +501,7 @@
             document.getElementById("authModal").style.display = "flex";
         } else {
             document.getElementById("clientInfoBar").style.display = "flex";
-            document.getElementById("clientInfoText").textContent = `Connecté en tant que ${client.name || client.email}`;
+            document.getElementById("clientInfoText").textContent = `Connectï¿½ en tant que ${client.name || client.email}`;
             if (client.name) document.getElementById("customerName").value = client.name;
             if (client.phone) document.getElementById("customerPhone").value = client.phone;
             if (client.address) document.getElementById("customerAddress").value = client.address;
@@ -521,18 +521,18 @@
             { name: "Cocody", fee: 1500, group: "Abidjan" },
             { name: "Marcory", fee: 1500, group: "Abidjan" },
             { name: "Treichville", fee: 1000, group: "Abidjan" },
-            { name: "Adjamé", fee: 1000, group: "Abidjan" },
+            { name: "Adjamï¿½", fee: 1000, group: "Abidjan" },
             { name: "Yopougon", fee: 2000, group: "Abidjan" },
             { name: "Abobo", fee: 2500, group: "Abidjan" },
             { name: "Koumassi", fee: 1500, group: "Abidjan" },
-            { name: "Port-Bouët", fee: 2000, group: "Abidjan" },
+            { name: "Port-Bouï¿½t", fee: 2000, group: "Abidjan" },
             { name: "Bingerville", fee: 2500, group: "Abidjan" },
             { name: "Riviera", fee: 1500, group: "Abidjan" },
-            { name: "Angré", fee: 2000, group: "Abidjan" },
+            { name: "Angrï¿½", fee: 2000, group: "Abidjan" },
             { name: "Songon", fee: 3000, group: "Abidjan" },
             { name: "Anyama", fee: 3000, group: "Abidjan" },
             // Autres villes
-            { name: "Bouaké", fee: 5000, group: "Autres villes" },
+            { name: "Bouakï¿½", fee: 5000, group: "Autres villes" },
             { name: "Yamoussoukro", fee: 5000, group: "Autres villes" },
             { name: "San Pedro", fee: 7000, group: "Autres villes" },
             { name: "Daloa", fee: 6000, group: "Autres villes" },
@@ -604,7 +604,7 @@
                 clientId: client.id || null,
                 customerName: document.getElementById("customerName").value,
                 customerPhone: document.getElementById("customerPhone").value,
-                customerAddress: zoneName + " — " + document.getElementById("customerAddress").value,
+                customerAddress: zoneName + " ï¿½ " + document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
                 shippingFee: SHIPPING_FEE,
                 items: cart.map(item => ({
@@ -634,7 +634,7 @@
                 localStorage.setItem("lastOrderId", data.id);
                 window.location.href = "thank-you.html";
             } catch (err) {
-                alert("Erreur réseau. Veuillez réessayer.");
+                alert("Erreur rï¿½seau. Veuillez rï¿½essayer.");
                 btn.disabled = false; btn.textContent = "? Confirmer la commande";
             }
         });
