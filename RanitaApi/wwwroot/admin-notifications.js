@@ -57,3 +57,36 @@ async function loadNavBadges() {
 
 window.addEventListener("load", loadNavBadges);
 setInterval(loadNavBadges, 20000);
+
+// Push notifications
+async function registerPush() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    try {
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
+
+        const existing = await reg.pushManager.getSubscription();
+        if (existing) return;
+
+        const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: 'BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY'
+        });
+
+        await fetch('https://ranitaapi-production.up.railway.app/api/notifications/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                endpoint: sub.endpoint,
+                p256dh: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('p256dh')))),
+                auth: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth'))))
+            })
+        });
+        console.log('Push enregistré !');
+    } catch (e) {
+        console.error('Push error:', e);
+    }
+}
+
+window.addEventListener('load', registerPush);

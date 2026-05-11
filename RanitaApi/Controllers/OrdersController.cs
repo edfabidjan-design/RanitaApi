@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
 using RanitaApi.Services;
+using WebPush;
 
 namespace RanitaApi.Controllers
 {
@@ -166,6 +167,37 @@ namespace RanitaApi.Controllers
                 {
                     await _emailService.SendNewOrderNotificationAsync(
                         orderId, customerName, customerPhone, customerAddress, orderTotal);
+
+                    // ✅ Push notification
+                    try
+                    {
+                        using var scope = _scopeFactory.CreateScope();
+                        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                        var subs = await db.PushSubscriptions.ToListAsync();
+                        var pushClient = new WebPush.WebPushClient();
+                        var vapid = new WebPush.VapidDetails(
+                            "mailto:admin@ranita-shop.com",
+                            "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY",
+                            "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs"
+                        );
+                        var payload = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            title = "🛒 Nouvelle commande !",
+                            body = $"{customerName} — {orderTotal.ToString("N0")} FCFA"
+                        });
+                        foreach (var s in subs)
+                        {
+                            try
+                            {
+                                var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                                await pushClient.SendNotificationAsync(sub, payload, vapid);
+                            }
+                            catch { }
+                        }
+                    }
+                    catch (Exception ex) { Console.WriteLine("PUSH ERROR: " + ex.Message); }
+
+
 
                     if (clientId.HasValue)
                     {

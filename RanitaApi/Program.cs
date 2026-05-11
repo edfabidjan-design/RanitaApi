@@ -44,6 +44,10 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+
+
+
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -384,6 +388,26 @@ try
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""RefundMotif"" TEXT NULL;");
 }
 catch (Exception ex) { Console.WriteLine("Orders.RefundMotif error: " + ex.Message); }
+
+
+
+// ── PushSubscriptions table ─────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""PushSubscriptions"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""Endpoint"" TEXT NOT NULL,
+            ""P256dh"" TEXT NOT NULL,
+            ""Auth"" TEXT NOT NULL
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("PushSubscriptions error: " + ex.Message); }
+
+
 
 
 app.Run();

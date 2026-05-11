@@ -19,6 +19,7 @@ namespace RanitaApi.Data
         public DbSet<CategoryAttribute> CategoryAttributes { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<PushSubscriptionModel> PushSubscriptions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
