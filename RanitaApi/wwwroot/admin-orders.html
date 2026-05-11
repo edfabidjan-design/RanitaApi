@@ -266,6 +266,19 @@
             }
         }
 
+        function getStatusStyle(status) {
+            switch (status) {
+                case "En attente": return "background:#fef3c7;color:#92400e;border-color:#f59e0b;";
+                case "Validée": return "background:#dbeafe;color:#1e40af;border-color:#3b82f6;";
+                case "Livrée": return "background:#d1fae5;color:#065f46;border-color:#10b981;";
+                case "Annulée": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
+                case "Remboursé": return "background:#d1fae5;color:#065f46;border-color:#10b981;";
+                case "Remboursement rejeté": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
+                default: return "";
+            }
+        }
+
+
         async function approveRefund(id) {
             if (!confirm("Valider le remboursement et remettre le stock ?")) return;
             const res = await fetch(`${API_BASE}/orders/${id}/refund-approve`, { method: "POST" });
@@ -354,8 +367,8 @@
             <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
         </div>
     ` : `
-        <select class="status-select ${getStatusClass(o.status)}"
-                onchange="updateStatus(${o.id}, this.value, this)">
+<select class="status-select" style="${getStatusStyle(o.status)}"
+        onchange="updateStatus(${o.id}, this.value, this)">
             <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
             <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
             <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
@@ -388,7 +401,7 @@
                 return;
             }
 
-            selectEl.className = `status-select ${getStatusClass(status)}`;
+            selectEl.style.cssText = getStatusStyle(status);
 
             // ✅ Recharger les stats
             loadOrders();
