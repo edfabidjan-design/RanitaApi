@@ -12,7 +12,7 @@ async function loadNavBadges() {
         try {
             const resReviews = await fetch(API_BASE_NOTIF + "/reviews");
             const reviews = await resReviews.json();
-            countReviews = reviews.filter(r => r.status === "En attente" || (!r.approved && !r.rejected && r.status !== "Approuvé")).length;
+            countReviews = reviews.filter(r => r.approuve === false).length;
         } catch (e) { }
 
         // Ajouter style une seule fois
