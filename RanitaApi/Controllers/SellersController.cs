@@ -96,7 +96,7 @@ namespace RanitaApi.Controllers
             if (seller.Status != "Approved")
                 return BadRequest(new { message = "Votre boutique doit être approuvée" });
 
-            // Lire tout depuis Request.Form directement
+            // Lire depuis Request.Form directement
             var name = Request.Form["name"].ToString().Trim();
             var desc = Request.Form["description"].ToString().Trim();
             var shortDesc = Request.Form["shortDescription"].ToString().Trim();
@@ -123,22 +123,24 @@ namespace RanitaApi.Controllers
                 catch { }
             }
 
-            // Nouveaux fichiers uploadés
+            // Upload vers Cloudinary (même logique que ProductsController)
             if (Request.Form.Files.Count > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsFolder);
+                var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+                var cloudinary = new CloudinaryDotNet.Cloudinary(cloudinaryUrl);
+                cloudinary.Api.Secure = true;
 
                 foreach (var file in Request.Form.Files.Take(5 - imageUrls.Count))
                 {
                     if (file.Length > 0)
                     {
-                        var ext = Path.GetExtension(file.FileName);
-                        var fileName = $"{Guid.NewGuid()}{ext}";
-                        var filePath = Path.Combine(uploadsFolder, fileName);
-                        using var stream = new FileStream(filePath, FileMode.Create);
-                        await file.CopyToAsync(stream);
-                        imageUrls.Add($"/uploads/{fileName}");
+                        await using var stream = file.OpenReadStream();
+                        var uploadResult = await cloudinary.UploadAsync(new CloudinaryDotNet.Actions.ImageUploadParams
+                        {
+                            File = new CloudinaryDotNet.FileDescription(file.FileName, stream),
+                            Folder = "ranita-products"
+                        });
+                        imageUrls.Add(uploadResult.SecureUrl.ToString());
                     }
                 }
             }
