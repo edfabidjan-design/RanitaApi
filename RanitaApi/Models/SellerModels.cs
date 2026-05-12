@@ -71,6 +71,9 @@ namespace RanitaApi.Models
         public int Stock { get; set; } = 0;
 
         public string? Category { get; set; }
+        public string? Sku { get; set; }
+        public string? Brand { get; set; }
+        public string? ShortDescription { get; set; }
 
         // JSON array d'URLs, comme tu fais avec Images sur Product
         public string Images { get; set; } = "[]";

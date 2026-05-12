@@ -481,6 +481,32 @@ try
 }
 catch (Exception ex) { Console.WriteLine("SellerProducts error: " + ex.Message); }
 
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""SellerProducts"" ADD COLUMN IF NOT EXISTS ""Sku"" TEXT;");
+}
+catch (Exception ex) { Console.WriteLine("SellerProducts.Sku error: " + ex.Message); }
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""SellerProducts"" ADD COLUMN IF NOT EXISTS ""Brand"" TEXT;");
+}
+catch (Exception ex) { Console.WriteLine("SellerProducts.Brand error: " + ex.Message); }
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""SellerProducts"" ADD COLUMN IF NOT EXISTS ""ShortDescription"" TEXT;");
+}
+catch (Exception ex) { Console.WriteLine("SellerProducts.ShortDescription error: " + ex.Message); }
+
+
+
 // ── SellerPayouts table ────────────────────────────────────────
 try
 {
