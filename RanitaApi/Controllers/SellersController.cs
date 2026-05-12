@@ -276,5 +276,128 @@ namespace RanitaApi.Controllers
                 CreatedAt = p.CreatedAt
             };
         }
+
+
+        // DELETE /api/sellers/{sellerId}/products/{productId}
+        [HttpDelete("{sellerId}/products/{productId}")]
+        public async Task<IActionResult> DeleteProduct(int sellerId, int productId)
+        {
+            var product = await _db.SellerProducts
+                .FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
+
+            if (product == null)
+                return NotFound(new { message = "Produit introuvable" });
+
+            // Ne peut supprimer que si pas encore approuvé
+            if (product.ApprovalStatus == "Approved")
+                return BadRequest(new { message = "Impossible de supprimer un produit déjà publié" });
+
+            _db.SellerProducts.Remove(product);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Produit supprimé" });
+        }
+
+        // PUT /api/sellers/{sellerId}/products/{productId}
+        [HttpPut("{sellerId}/products/{productId}")]
+        public async Task<IActionResult> UpdateProduct(int sellerId, int productId)
+        {
+            var product = await _db.SellerProducts
+                .FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
+
+            if (product == null)
+                return NotFound(new { message = "Produit introuvable" });
+
+            if (product.ApprovalStatus == "Approved")
+                return BadRequest(new { message = "Impossible de modifier un produit déjà publié" });
+
+            // Lire depuis Request.Form
+            var name = Request.Form["name"].ToString().Trim();
+            var desc = Request.Form["description"].ToString().Trim();
+            var shortDesc = Request.Form["shortDescription"].ToString().Trim();
+            var category = Request.Form["category"].ToString().Trim();
+            var sku = Request.Form["sku"].ToString().Trim();
+            var brand = Request.Form["brand"].ToString().Trim();
+            var imagesJson = Request.Form["images"].ToString();
+
+            decimal.TryParse(Request.Form["price"], System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out decimal price);
+            decimal.TryParse(Request.Form["oldPrice"], System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out decimal oldPrice);
+            int.TryParse(Request.Form["stock"], out int stock);
+
+            // Images existantes
+            var imageUrls = new List<string>();
+            if (!string.IsNullOrEmpty(imagesJson))
+            {
+                try
+                {
+                    var existing = System.Text.Json.JsonSerializer.Deserialize<List<string>>(imagesJson);
+                    if (existing != null) imageUrls.AddRange(existing);
+                }
+                catch { }
+            }
+
+            // Nouvelles images Cloudinary
+            if (Request.Form.Files.Count > 0)
+            {
+                var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+                var cloudinary = new CloudinaryDotNet.Cloudinary(cloudinaryUrl);
+                cloudinary.Api.Secure = true;
+
+                foreach (var file in Request.Form.Files.Take(5 - imageUrls.Count))
+                {
+                    if (file.Length > 0)
+                    {
+                        await using var stream = file.OpenReadStream();
+                        var uploadResult = await cloudinary.UploadAsync(new CloudinaryDotNet.Actions.ImageUploadParams
+                        {
+                            File = new CloudinaryDotNet.FileDescription(file.FileName, stream),
+                            Folder = "ranita-products"
+                        });
+                        imageUrls.Add(uploadResult.SecureUrl.ToString());
+                    }
+                }
+            }
+
+            // Mettre à jour
+            product.Name = name;
+            product.Description = desc;
+            product.ShortDescription = shortDesc;
+            product.Brand = brand;
+            product.Sku = sku;
+            product.Price = price;
+            product.OldPrice = oldPrice > 0 ? oldPrice : null;
+            product.Stock = stock;
+            product.Category = category;
+            product.Images = System.Text.Json.JsonSerializer.Serialize(imageUrls);
+            product.ApprovalStatus = "Pending"; // Repassé en attente après modification
+            product.UpdatedAt = DateTime.UtcNow;
+
+            // Variantes
+            var variantsJson = Request.Form["variants"].ToString();
+            if (!string.IsNullOrEmpty(variantsJson))
+            {
+                try
+                {
+                    var variants = System.Text.Json.JsonSerializer.Deserialize<List<System.Text.Json.JsonElement>>(variantsJson);
+                    if (variants != null)
+                    {
+                        int totalStock = 0;
+                        foreach (var v in variants)
+                        {
+                            if (v.TryGetProperty("stock", out var stockProp) &&
+                                int.TryParse(stockProp.ToString(), out int vs))
+                                totalStock += vs;
+                        }
+                        product.Stock = totalStock;
+                    }
+                }
+                catch { }
+            }
+
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "Produit mis à jour", productId = product.Id });
+        }
     }
 }

@@ -1044,6 +1044,60 @@
             }
         });
 
+
+        async function deleteProduct(id) {
+            if (!confirm('Supprimer ce produit ?')) return;
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products/${id}`, { method: 'DELETE' });
+                if (res.ok) { showToast('Produit supprimé ✓', 'success'); loadMyProducts(); }
+                else { const d = await res.json(); showToast(d.message || 'Erreur', 'error'); }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        function editProduct(id) {
+            // Trouver le produit dans la liste
+            fetch(`${API}/sellers/${sellerId}/products`)
+                .then(r => r.json())
+                .then(products => {
+                    const p = products.find(x => x.id === id);
+                    if (!p) return;
+                    // Pré-remplir le formulaire
+                    document.getElementById('modal-product-title').textContent = 'Modifier le produit';
+                    document.getElementById('p-id').value = p.id;
+                    document.getElementById('p-name').value = p.name || '';
+                    document.getElementById('p-sku').value = p.sku || '';
+                    document.getElementById('p-brand').value = p.brand || '';
+                    document.getElementById('p-short-desc').value = p.shortDescription || '';
+                    document.getElementById('p-description').value = p.description || '';
+                    document.getElementById('p-price').value = p.price || '';
+                    document.getElementById('p-old-price').value = p.oldPrice || '';
+                    document.getElementById('p-stock').value = p.stock || '';
+
+                    // Images existantes
+                    productImages = Array.isArray(p.images) ? p.images : [];
+                    newImageFiles = [];
+                    renderGallery();
+
+                    // Catégorie
+                    loadCategories().then(() => {
+                        document.getElementById('p-category').value = '';
+                        // Chercher par nom
+                        const opts = document.getElementById('p-category').options;
+                        for (let i = 0; i < opts.length; i++) {
+                            if (opts[i].text === p.category) {
+                                document.getElementById('p-category').value = opts[i].value;
+                                loadProductAttributes();
+                                break;
+                            }
+                        }
+                    });
+
+                    openModal('modal-product');
+                });
+        }
+
+
+
         function toggleMenu() {
             const m = document.getElementById('clientMenu');
             if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
@@ -1129,15 +1183,21 @@
                     let imgs = [];
                     if (Array.isArray(p.images)) { imgs = p.images; } else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
                     return `
-                <div class="my-product">
-                    <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-                    <div class="my-product-info">
-                        <div class="my-product-name">${p.name}</div>
-                        <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
-                    </div>
-                    <div class="my-product-price">${formatPrice(p.price)}</div>
-                    <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
-                </div>`;
+<div class="my-product">
+    <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+    <div class="my-product-info">
+        <div class="my-product-name">${p.name}</div>
+        <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
+    </div>
+    <div class="my-product-price">${formatPrice(p.price)}</div>
+    <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+        ${p.approvalStatus !== 'Approved' ? `
+            <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
+            <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
+        ` : ''}
+    </div>
+</div>`;
                 }).join('');
             } catch (e) { }
         }
@@ -1303,6 +1363,14 @@
 
         // ── SOUMETTRE PRODUIT ─────────────────────────────────────────────────
         async function submitProduct() {
+
+            const productId = document.getElementById('p-id').value;
+            const url = productId
+                ? `${API}/sellers/${sellerId}/products/${productId}`
+                : `${API}/sellers/${sellerId}/products`;
+            const method = productId ? 'PUT' : 'POST';
+
+
             const name = document.getElementById('p-name').value.trim();
             const price = parseFloat(document.getElementById('p-price').value);
             const catId = document.getElementById('p-category').value;
@@ -1344,8 +1412,8 @@
             }
 
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products`, {
-                    method: 'POST',
+                const res = await fetch(url, {
+                    method: method,
                     body: formData
                 });
 
