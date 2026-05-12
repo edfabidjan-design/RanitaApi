@@ -166,6 +166,29 @@ namespace RanitaApi.Controllers
             _db.SellerProducts.Add(product);
             await _db.SaveChangesAsync();
 
+            // Sauvegarder les variantes
+            var variantsJson = Request.Form["variants"].ToString();
+            if (!string.IsNullOrEmpty(variantsJson))
+            {
+                try
+                {
+                    var variants = System.Text.Json.JsonSerializer.Deserialize<List<dynamic>>(variantsJson);
+                    if (variants != null)
+                    {
+                        int totalStock = 0;
+                        foreach (var v in variants)
+                        {
+                            var stockStr = v.GetProperty("stock").ToString();
+                            if (int.TryParse(stockStr, out int vs))
+                                totalStock += vs;
+                        }
+                        product.Stock = totalStock;
+                        await _db.SaveChangesAsync();
+                    }
+                }
+                catch { }
+            }
+
             return Ok(new { message = "Produit soumis, en attente de validation", productId = product.Id });
         }
 
