@@ -233,6 +233,8 @@ namespace RanitaApi.Controllers
                 OldPrice = p.OldPrice,
                 Stock = p.Stock,
                 Category = p.Category,
+                Sku = p.Sku,      // ← AJOUTER
+                Brand = p.Brand,    // ← AJOUTER
                 Images = images,
                 ApprovalStatus = p.ApprovalStatus,
                 RejectionReason = p.RejectionReason,

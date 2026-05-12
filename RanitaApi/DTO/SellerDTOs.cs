@@ -100,6 +100,8 @@ namespace RanitaApi.DTOs
         public string ApprovalStatus { get; set; } = string.Empty;
         public string? RejectionReason { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string? Sku { get; set; }
+        public string? Brand { get; set; }
     }
 
     public class ReviewProductDto
