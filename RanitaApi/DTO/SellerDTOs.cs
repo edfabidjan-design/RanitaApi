@@ -102,6 +102,7 @@ namespace RanitaApi.DTOs
         public DateTime CreatedAt { get; set; }
         public string? Sku { get; set; }
         public string? Brand { get; set; }
+        public int TotalStock { get; set; }
     }
 
     public class ReviewProductDto
