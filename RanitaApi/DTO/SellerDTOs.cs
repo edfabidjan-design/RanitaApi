@@ -141,9 +141,9 @@ namespace RanitaApi.DTOs
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? ShortDescription { get; set; }
-        public decimal Price { get; set; }
-        public decimal? OldPrice { get; set; }
-        public int Stock { get; set; } = 0;
+        public string? Price { get; set; }  // ← string au lieu de decimal
+        public string? OldPrice { get; set; }  // ← string au lieu de decimal?
+        public string? Stock { get; set; }  // ← string au lieu de int
         public string? Category { get; set; }
         public string? Sku { get; set; }
         public string? Brand { get; set; }
@@ -152,4 +152,3 @@ namespace RanitaApi.DTOs
         public string? Variants { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }
     }
-}

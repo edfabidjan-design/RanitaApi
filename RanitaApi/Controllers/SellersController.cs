@@ -131,34 +131,28 @@ namespace RanitaApi.Controllers
                     }
                 }
             }
-            // Forcer la lecture correcte depuis FormData
-            if (int.TryParse(Request.Form["stock"], out int stockValue))
-                dto.Stock = stockValue;
-
-            if (decimal.TryParse(Request.Form["price"],
+            // Parser les valeurs
+            int.TryParse(Request.Form["stock"], out int stockValue);
+            decimal.TryParse(Request.Form["price"],
                 System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture,
-                out decimal priceValue))
-                dto.Price = priceValue;
-
-            if (decimal.TryParse(Request.Form["oldPrice"],
+                out decimal priceValue);
+            decimal.TryParse(Request.Form["oldPrice"],
                 System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture,
-                out decimal oldPriceValue))
-                dto.OldPrice = oldPriceValue;
-
+                out decimal oldPriceValue);
 
             var product = new SellerProduct
             {
                 SellerId = sellerId,
                 Name = dto.Name?.Trim() ?? "",
                 Description = dto.Description?.Trim(),
-                Price = dto.Price,
-                Sku = dto.Sku?.Trim(),
-                Brand = dto.Brand?.Trim(),
                 ShortDescription = dto.ShortDescription?.Trim(),
-                OldPrice = dto.OldPrice,
-                Stock = dto.Stock,
+                Brand = dto.Brand?.Trim(),
+                Sku = dto.Sku?.Trim(),
+                Price = priceValue,
+                OldPrice = oldPriceValue > 0 ? oldPriceValue : null,
+                Stock = stockValue,
                 Category = dto.Category,
                 Images = System.Text.Json.JsonSerializer.Serialize(imageUrls),
                 ApprovalStatus = "Pending",
