@@ -1130,10 +1130,10 @@
                     if (Array.isArray(p.images)) { imgs = p.images; } else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
                     return `
                 <div class="my-product">
-                    <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+                    <div class="my-product-img">${imgs.length ? `<img src="${imgs[0].startsWith('/') ? imgs[0] : '/uploads/' + imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
                     <div class="my-product-info">
                         <div class="my-product-name">${p.name}</div>
-                        <div class="my-product-meta">SKU: ${p.sku || '—'} · ${p.category || 'Sans catégorie'}</div>S
+                        <div class="my-product-meta">SKU: ${p.sku || '—'} · ${p.category || 'Sans catégorie'}</div>
                     </div>
                     <div class="my-product-price">${formatPrice(p.price)}</div>
                     <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
