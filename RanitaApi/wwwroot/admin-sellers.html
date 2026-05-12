@@ -884,10 +884,10 @@
     <span>📞 ${s.phoneNumber}</span>
     <span>🪪 CNI: ${s.nationalIdNumber}</span>
     <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
+    ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
     <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
 </div>
-${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:8px 10px;background:#f9fafb;border-radius:8px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
-${s.paymentMethod ? `<div style="font-size:12px;color:#6b7280;margin-top:4px;">💳 ${s.paymentMethod.replace('_', ' ')} ${s.paymentDetails ? '— ' + s.paymentDetails : ''}</div>` : ''}
+${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
                 </div>
                 <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
                 <div class="seller-actions">

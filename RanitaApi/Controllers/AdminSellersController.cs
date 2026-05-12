@@ -41,10 +41,12 @@ namespace RanitaApi.Controllers
                 ClientName = s.Client?.FullName ?? "",
                 ClientEmail = s.Client?.Email ?? "",
                 s.ShopName,
+                s.ShopDescription,   // ← AJOUTER
                 s.PhoneNumber,
                 s.NationalIdNumber,
                 s.CommissionRate,
-                s.PaymentMethod,
+                s.PaymentMethod,     // ← AJOUTER
+                s.PaymentDetails,    // ← AJOUTER
                 s.Status,
                 s.RejectionReason,
                 s.CreatedAt
