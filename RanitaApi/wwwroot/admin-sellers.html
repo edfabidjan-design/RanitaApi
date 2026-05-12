@@ -814,6 +814,35 @@
             await Promise.all([loadSellers(), loadProducts(), loadPayouts()]);
         }
 
+        function viewProduct(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+
+            const imgs = Array.isArray(p.images) ? p.images : [];
+
+            document.getElementById('product-detail-content').innerHTML = `
+        <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+            ${imgs.map(img => `<img src="${img}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">`).join('')}
+            ${!imgs.length ? '<div style="width:100px;height:100px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>' : ''}
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;width:140px;">Boutique</td><td style="padding:8px 0;font-weight:600;">${p.shopName}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Nom</td><td style="padding:8px 0;font-weight:600;">${p.name}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">SKU</td><td style="padding:8px 0;">${p.sku || '—'}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Marque</td><td style="padding:8px 0;">${p.brand || '—'}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Catégorie</td><td style="padding:8px 0;">${p.category || '—'}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix</td><td style="padding:8px 0;font-weight:700;color:#059669;">${formatPrice(p.price)}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix barré</td><td style="padding:8px 0;">${p.oldPrice ? formatPrice(p.oldPrice) : '—'}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Stock</td><td style="padding:8px 0;">${p.stock}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description courte</td><td style="padding:8px 0;">${p.shortDescription || '—'}</td></tr>
+            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description</td><td style="padding:8px 0;max-width:300px;">${p.description || '—'}</td></tr>
+            <tr><td style="padding:8px 0;color:#6b7280;">Soumis le</td><td style="padding:8px 0;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</td></tr>
+        </table>
+    `;
+            openModal('modal-product-detail');
+        }
+
+
         // ── NAV BADGES (comme les autres pages admin) ─────────────────────────
         async function loadNavBadges() {
             try {
@@ -874,35 +903,35 @@
             const el = document.getElementById('sellers-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">🏪</div><p>Aucun vendeur trouvé</p></div>'; return; }
             el.innerHTML = list.map(s => `
-            <div class="seller-card">
-                <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
-                <div class="seller-info">
-                    <div class="seller-name">${s.shopName}</div>
+                <div class="seller-card">
+                    <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
+                    <div class="seller-info">
+                        <div class="seller-name">${s.shopName}</div>
 <div class="seller-meta">
-    <span>👤 ${s.clientName}</span>
-    <span>📧 ${s.clientEmail}</span>
-    <span>📞 ${s.phoneNumber}</span>
-    <span>🪪 CNI: ${s.nationalIdNumber}</span>
-    <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
-    ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
-    <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
+        <span>👤 ${s.clientName}</span>
+        <span>📧 ${s.clientEmail}</span>
+        <span>📞 ${s.phoneNumber}</span>
+        <span>🪪 CNI: ${s.nationalIdNumber}</span>
+        <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
+        ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
+        <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
 </div>
 ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
-                </div>
-                <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
-                <div class="seller-actions">
-                    ${s.status === 'Pending' ? `
-                        <button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button>
-                        <button class="btn btn-reject"  onclick="openReject(${s.id})">✗ Refuser</button>
-                    ` : ''}
-                    ${s.status === 'Approved' ? `
-                        <button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>
-                    ` : ''}
-                    ${s.status === 'Suspended' ? `
-                        <button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>
-                    ` : ''}
-                </div>
-            </div>`).join('');
+                    </div>
+                    <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
+                    <div class="seller-actions">
+                        ${s.status === 'Pending' ? `
+                            <button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button>
+                            <button class="btn btn-reject"  onclick="openReject(${s.id})">✗ Refuser</button>
+                        ` : ''}
+                        ${s.status === 'Approved' ? `
+                            <button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>
+                        ` : ''}
+                        ${s.status === 'Suspended' ? `
+                            <button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>
+                        ` : ''}
+                    </div>
+                </div>`).join('');
         }
 
         function statusLabel(s) {
@@ -970,28 +999,29 @@ ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;p
             const el = document.getElementById('products-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">📦</div><p>Aucun produit trouvé</p></div>'; return; }
             el.innerHTML = list.map(p => `
-            <div class="product-card">
-                <div class="product-img">
-                    ${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}
-                </div>
-                <div class="product-info">
-                    <div class="product-name">${p.name}</div>
-                    <div class="product-meta">
-                        <span>🏪 ${p.shopName}</span>
-                        <span>📦 Stock: ${p.stock}</span>
-                        <span>🏷️ ${p.category || 'Sans catégorie'}</span>
-                        <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                <div class="product-card">
+                    <div class="product-img">
+                        ${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}
                     </div>
-                </div>
-                <div class="product-price">${formatPrice(p.price)}</div>
-                <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
-                <div class="seller-actions">
-                    ${p.approvalStatus === 'Pending' ? `
-                        <button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button>
-                        <button class="btn btn-reject"  onclick="openRejectProduct(${p.id})">✗ Refuser</button>
-                    ` : ''}
-                </div>
-            </div>`).join('');
+                    <div class="product-info">
+                        <div class="product-name">${p.name}</div>
+                        <div class="product-meta">
+                            <span>🏪 ${p.shopName}</span>
+                            <span>📦 Stock: ${p.stock}</span>
+                            <span>🏷️ ${p.category || 'Sans catégorie'}</span>
+                            <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                    </div>
+                    <div class="product-price">${formatPrice(p.price)}</div>
+                    <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
+                    <div class="seller-actions">
+<button class="btn btn-detail" onclick="viewProduct(${p.id})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;">👁 Détails</button>
+${p.approvalStatus === 'Pending' ? `
+        <button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button>
+        <button class="btn btn-reject"  onclick="openRejectProduct(${p.id})">✗ Refuser</button>
+` : ''}
+                    </div>
+                </div>`).join('');
         }
 
         async function approveProduct(id) {
@@ -1038,26 +1068,26 @@ ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;p
             const el = document.getElementById('payouts-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement trouvé</p></div>'; return; }
             el.innerHTML = list.map(p => `
-            <div class="payout-card">
-                <div class="seller-avatar" style="background:linear-gradient(135deg,#059669,#047857)">${p.shopName.charAt(0).toUpperCase()}</div>
-                <div class="seller-info">
-                    <div class="seller-name">${p.shopName}</div>
-                    <div class="seller-meta">
-                        <span>🧾 Commande #${p.orderId || '—'}</span>
-                        <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
-                        ${p.transactionReference ? `<span>🔖 Réf: ${p.transactionReference}</span>` : ''}
+                <div class="payout-card">
+                    <div class="seller-avatar" style="background:linear-gradient(135deg,#059669,#047857)">${p.shopName.charAt(0).toUpperCase()}</div>
+                    <div class="seller-info">
+                        <div class="seller-name">${p.shopName}</div>
+                        <div class="seller-meta">
+                            <span>🧾 Commande #${p.orderId || '—'}</span>
+                            <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                            ${p.transactionReference ? `<span>🔖 Réf: ${p.transactionReference}</span>` : ''}
+                        </div>
                     </div>
-                </div>
-                <div class="payout-amounts">
-                    <div class="payout-net">${formatPrice(p.netAmount)}</div>
-                    <div class="payout-detail">Commission: ${formatPrice(p.commissionAmount)}</div>
-                    <div class="payout-detail">Brut: ${formatPrice(p.grossAmount)}</div>
-                </div>
-                <span class="status-badge ${p.status === 'Paid' ? 's-Approved' : 's-Pending'}">${p.status === 'Paid' ? 'Payé' : 'À payer'}</span>
-                <div class="seller-actions">
-                    ${p.status === 'Pending' ? `<button class="btn btn-approve" onclick="openPaid(${p.id})">✓ Marquer payé</button>` : ''}
-                </div>
-            </div>`).join('');
+                    <div class="payout-amounts">
+                        <div class="payout-net">${formatPrice(p.netAmount)}</div>
+                        <div class="payout-detail">Commission: ${formatPrice(p.commissionAmount)}</div>
+                        <div class="payout-detail">Brut: ${formatPrice(p.grossAmount)}</div>
+                    </div>
+                    <span class="status-badge ${p.status === 'Paid' ? 's-Approved' : 's-Pending'}">${p.status === 'Paid' ? 'Payé' : 'À payer'}</span>
+                    <div class="seller-actions">
+                        ${p.status === 'Pending' ? `<button class="btn btn-approve" onclick="openPaid(${p.id})">✓ Marquer payé</button>` : ''}
+                    </div>
+                </div>`).join('');
         }
 
         function openPaid(id) { currentPayoutId = id; document.getElementById('transaction-ref').value = ''; openModal('modal-paid'); }
@@ -1097,5 +1127,19 @@ ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;p
             window.location.href = 'admin-login.html';
         }
     </script>
+
+
+    <!-- MODAL DÉTAIL PRODUIT -->
+    <div class="modal-overlay" id="modal-product-detail">
+        <div class="modal" style="max-width:600px;">
+            <h3>📦 Détail du produit</h3>
+            <div id="product-detail-content"></div>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" onclick="closeModal('modal-product-detail')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 </html>
