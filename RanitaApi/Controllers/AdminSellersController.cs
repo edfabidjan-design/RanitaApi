@@ -172,6 +172,9 @@ namespace RanitaApi.Controllers
                     p.ProductId,
                     p.Name,
                     p.Description,
+                    p.ShortDescription,   // ← AJOUTER
+                    p.Brand,              // ← AJOUTER
+                    p.Sku,                // ← AJOUTER
                     p.Price,
                     p.OldPrice,
                     p.Stock,
