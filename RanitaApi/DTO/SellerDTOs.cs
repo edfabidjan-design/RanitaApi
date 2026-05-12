@@ -152,3 +152,4 @@ namespace RanitaApi.DTOs
         public string? Variants { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }
     }
+}
