@@ -87,73 +87,74 @@ namespace RanitaApi.Controllers
 
         // POST /api/sellers/{sellerId}/products
         [HttpPost("{sellerId}/products")]
-        public async Task<IActionResult> SubmitProduct(int sellerId, [FromForm] SellerProductFormDto dto)
+        public async Task<IActionResult> SubmitProduct(int sellerId)
         {
             var seller = await _db.Sellers.FindAsync(sellerId);
             if (seller == null)
                 return NotFound(new { message = "Boutique introuvable" });
 
             if (seller.Status != "Approved")
-                return BadRequest(new { message = "Votre boutique doit être approuvée pour soumettre des produits" });
+                return BadRequest(new { message = "Votre boutique doit être approuvée" });
 
-            // Gérer les images uploadées (même logique que ProductsController)
+            // Lire tout depuis Request.Form directement
+            var name = Request.Form["name"].ToString().Trim();
+            var desc = Request.Form["description"].ToString().Trim();
+            var shortDesc = Request.Form["shortDescription"].ToString().Trim();
+            var category = Request.Form["category"].ToString().Trim();
+            var sku = Request.Form["sku"].ToString().Trim();
+            var brand = Request.Form["brand"].ToString().Trim();
+            var imagesJson = Request.Form["images"].ToString();
+
+            decimal.TryParse(Request.Form["price"], System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out decimal price);
+            decimal.TryParse(Request.Form["oldPrice"], System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out decimal oldPrice);
+            int.TryParse(Request.Form["stock"], out int stock);
+
+            // Images existantes
             var imageUrls = new List<string>();
-
-            // Images existantes (URLs déjà stockées)
-            if (!string.IsNullOrEmpty(dto.Images))
+            if (!string.IsNullOrEmpty(imagesJson))
             {
                 try
                 {
-                    var existing = System.Text.Json.JsonSerializer.Deserialize<List<string>>(dto.Images);
+                    var existing = System.Text.Json.JsonSerializer.Deserialize<List<string>>(imagesJson);
                     if (existing != null) imageUrls.AddRange(existing);
                 }
                 catch { }
             }
 
             // Nouveaux fichiers uploadés
-            if (dto.ImageFiles != null && dto.ImageFiles.Count > 0)
+            if (Request.Form.Files.Count > 0)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                 Directory.CreateDirectory(uploadsFolder);
 
-                foreach (var file in dto.ImageFiles.Take(5 - imageUrls.Count))
+                foreach (var file in Request.Form.Files.Take(5 - imageUrls.Count))
                 {
                     if (file.Length > 0)
                     {
                         var ext = Path.GetExtension(file.FileName);
                         var fileName = $"{Guid.NewGuid()}{ext}";
                         var filePath = Path.Combine(uploadsFolder, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                            await file.CopyToAsync(stream);
-
+                        using var stream = new FileStream(filePath, FileMode.Create);
+                        await file.CopyToAsync(stream);
                         imageUrls.Add($"/uploads/{fileName}");
                     }
                 }
             }
-            // Parser les valeurs
-            int.TryParse(Request.Form["stock"], out int stockValue);
-            decimal.TryParse(Request.Form["price"],
-                System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture,
-                out decimal priceValue);
-            decimal.TryParse(Request.Form["oldPrice"],
-                System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture,
-                out decimal oldPriceValue);
 
             var product = new SellerProduct
             {
                 SellerId = sellerId,
-                Name = dto.Name?.Trim() ?? "",
-                Description = dto.Description?.Trim(),
-                ShortDescription = dto.ShortDescription?.Trim(),
-                Brand = dto.Brand?.Trim(),
-                Sku = dto.Sku?.Trim(),
-                Price = priceValue,
-                OldPrice = oldPriceValue > 0 ? oldPriceValue : null,
-                Stock = stockValue,
-                Category = dto.Category,
+                Name = name,
+                Description = desc,
+                ShortDescription = shortDesc,
+                Brand = brand,
+                Sku = sku,
+                Price = price,
+                OldPrice = oldPrice > 0 ? oldPrice : null,
+                Stock = stock,
+                Category = category,
                 Images = System.Text.Json.JsonSerializer.Serialize(imageUrls),
                 ApprovalStatus = "Pending",
                 CreatedAt = DateTime.UtcNow,
@@ -165,7 +166,6 @@ namespace RanitaApi.Controllers
 
             return Ok(new { message = "Produit soumis, en attente de validation", productId = product.Id });
         }
-
 
 
         // ── PAYOUTS DU VENDEUR ────────────────────────────────────────────
