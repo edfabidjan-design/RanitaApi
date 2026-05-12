@@ -1127,13 +1127,13 @@
                 const bclass = { Pending: 'badge-pending', Approved: 'badge-approved', Rejected: 'badge-rejected' };
                 el.innerHTML = products.map(p => {
                     let imgs = [];
-                    try { imgs = JSON.parse(p.images || '[]'); } catch (e) { }
+                    if (Array.isArray(p.images)) { imgs = p.images; } else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
                     return `
                 <div class="my-product">
                     <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
                     <div class="my-product-info">
                         <div class="my-product-name">${p.name}</div>
-                        <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock} · ${p.category || 'Sans catégorie'}</div>
+                        <div class="my-product-meta">SKU: ${p.sku || '—'} · ${p.category || 'Sans catégorie'}</div>S
                     </div>
                     <div class="my-product-price">${formatPrice(p.price)}</div>
                     <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
