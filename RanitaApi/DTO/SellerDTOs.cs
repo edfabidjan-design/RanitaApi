@@ -132,4 +132,22 @@ namespace RanitaApi.DTOs
         public string TransactionReference { get; set; } = string.Empty;
         public string? Notes { get; set; }
     }
+
+
+    public class SellerProductFormDto
+    {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? ShortDescription { get; set; }
+        public decimal Price { get; set; }
+        public decimal? OldPrice { get; set; }
+        public int Stock { get; set; }
+        public string? Category { get; set; }
+        public string? Sku { get; set; }
+        public string? Brand { get; set; }
+        public string? Attributes { get; set; }
+        public string? Images { get; set; }
+        public string? Variants { get; set; }
+        public List<IFormFile>? ImageFiles { get; set; }
+    }
 }

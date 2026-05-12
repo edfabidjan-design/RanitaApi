@@ -85,10 +85,9 @@ namespace RanitaApi.Controllers
             return Ok(result);
         }
 
-        // ── SOUMETTRE UN PRODUIT ──────────────────────────────────────────
         // POST /api/sellers/{sellerId}/products
         [HttpPost("{sellerId}/products")]
-        public async Task<IActionResult> SubmitProduct(int sellerId, [FromBody] SellerProductCreateDto dto)
+        public async Task<IActionResult> SubmitProduct(int sellerId, [FromForm] SellerProductFormDto dto)
         {
             var seller = await _db.Sellers.FindAsync(sellerId);
             if (seller == null)
@@ -97,16 +96,52 @@ namespace RanitaApi.Controllers
             if (seller.Status != "Approved")
                 return BadRequest(new { message = "Votre boutique doit être approuvée pour soumettre des produits" });
 
+            // Gérer les images uploadées (même logique que ProductsController)
+            var imageUrls = new List<string>();
+
+            // Images existantes (URLs déjà stockées)
+            if (!string.IsNullOrEmpty(dto.Images))
+            {
+                try
+                {
+                    var existing = System.Text.Json.JsonSerializer.Deserialize<List<string>>(dto.Images);
+                    if (existing != null) imageUrls.AddRange(existing);
+                }
+                catch { }
+            }
+
+            // Nouveaux fichiers uploadés
+            if (dto.ImageFiles != null && dto.ImageFiles.Count > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                Directory.CreateDirectory(uploadsFolder);
+
+                foreach (var file in dto.ImageFiles.Take(5 - imageUrls.Count))
+                {
+                    if (file.Length > 0)
+                    {
+                        var ext = Path.GetExtension(file.FileName);
+                        var fileName = $"{Guid.NewGuid()}{ext}";
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                            await file.CopyToAsync(stream);
+
+                        imageUrls.Add($"/uploads/{fileName}");
+                    }
+                }
+            }
+
             var product = new SellerProduct
             {
                 SellerId = sellerId,
-                Name = dto.Name.Trim(),
+                Name = dto.Name?.Trim() ?? "",
                 Description = dto.Description?.Trim(),
                 Price = dto.Price,
                 OldPrice = dto.OldPrice,
                 Stock = dto.Stock,
                 Category = dto.Category,
-                Images = JsonSerializer.Serialize(dto.Images),
+                Images = System.Text.Json.JsonSerializer.Serialize(imageUrls),
                 ApprovalStatus = "Pending",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -117,6 +152,8 @@ namespace RanitaApi.Controllers
 
             return Ok(new { message = "Produit soumis, en attente de validation", productId = product.Id });
         }
+
+
 
         // ── PAYOUTS DU VENDEUR ────────────────────────────────────────────
         // GET /api/sellers/{sellerId}/payouts
