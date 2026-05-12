@@ -218,28 +218,33 @@ namespace RanitaApi.Controllers
             // Si approuvé : créer le produit dans la table Products principale
             if (dto.Approved && product.ProductId == null && product.Seller != null)
             {
+                // Parser les images
+                List<string> imageList = new();
+                try { imageList = JsonSerializer.Deserialize<List<string>>(product.Images) ?? new(); }
+                catch { }
+
                 var newProduct = new Product
                 {
                     Name = product.Name,
                     Description = product.Description ?? "",
-                    ShortDescription = "",
+                    ShortDescription = product.ShortDescription ?? "",
                     Price = product.Price,
                     OldPrice = product.OldPrice,
                     Stock = product.Stock,
                     Images = product.Images,
-                    ImageUrl = "",
+                    ImageUrl = imageList.Count > 0 ? imageList[0] : "",
                     IsActive = true,
-                    Brand = product.Seller.ShopName,
+                    Brand = product.Brand ?? product.Seller.ShopName,
                     Slug = GenerateSlug(product.Name),
-                    MetaDescription = "",
-                    Sku = $"SELL-{product.SellerId}-{product.Id}",
+                    MetaDescription = product.ShortDescription ?? "",
+                    Sku = product.Sku ?? $"SELL-{product.SellerId}-{product.Id}",
                 };
 
                 _db.Products.Add(newProduct);
                 await _db.SaveChangesAsync();
 
                 product.ProductId = newProduct.Id;
-            }
+            }S
 
             await _db.SaveChangesAsync();
 
