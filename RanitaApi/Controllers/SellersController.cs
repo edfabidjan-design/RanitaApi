@@ -131,6 +131,22 @@ namespace RanitaApi.Controllers
                     }
                 }
             }
+            // Forcer la lecture correcte depuis FormData
+            if (int.TryParse(Request.Form["stock"], out int stockValue))
+                dto.Stock = stockValue;
+
+            if (decimal.TryParse(Request.Form["price"],
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out decimal priceValue))
+                dto.Price = priceValue;
+
+            if (decimal.TryParse(Request.Form["oldPrice"],
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out decimal oldPriceValue))
+                dto.OldPrice = oldPriceValue;
+
 
             var product = new SellerProduct
             {

@@ -143,7 +143,7 @@ namespace RanitaApi.DTOs
         public string? ShortDescription { get; set; }
         public decimal Price { get; set; }
         public decimal? OldPrice { get; set; }
-        public int Stock { get; set; }
+        public int Stock { get; set; } = 0;
         public string? Category { get; set; }
         public string? Sku { get; set; }
         public string? Brand { get; set; }
