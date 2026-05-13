@@ -1534,29 +1534,26 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
 
             if (!name || !price || !catId) { showToast('Nom, prix et catégorie sont obligatoires', 'error'); return; }
 
-            // Vérifier que les variantes sont générées si la catégorie a des attributs select
+            const btn = document.getElementById('btn-save-product');
+
+            // Vérifier que les variantes sont générées
             const variantSection = document.getElementById('p-variants-section');
-            const variantsList = document.getElementById('p-variants-list');
             if (variantSection.style.display !== 'none' && !window._variantLabels) {
                 showToast('Veuillez générer et remplir les variantes', 'error');
-                btn.disabled = false; btn.textContent = 'Soumettre pour validation';
                 return;
             }
 
-            // Vérifier que tous les stocks de variantes sont remplis
+            // Vérifier stocks variantes
             if (window._variantLabels) {
                 for (let i = 0; i < window._variantLabels.length; i++) {
                     const stockInput = document.getElementById(`variant_stock_${i}`);
                     if (!stockInput || stockInput.value === '' || parseInt(stockInput.value) < 0) {
                         showToast('Veuillez renseigner le stock de toutes les variantes', 'error');
-                        btn.disabled = false; btn.textContent = 'Soumettre pour validation';
                         return;
                     }
                 }
             }
 
-
-            const btn = document.getElementById('btn-save-product');
             btn.disabled = true; btn.textContent = 'Envoi en cours...';
 
             // Collecter attributs
@@ -1607,6 +1604,11 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
             } catch (e) { showToast('Erreur réseau', 'error'); }
 
             btn.disabled = false; btn.textContent = 'Soumettre pour validation';
+        }
+
+        function viewProductDetail(productId) {
+            if (productId) window.open(`product-details.html?id=${productId}`, '_blank');
+            else showToast('Produit pas encore publié', 'error');
         }
 
         // ── UTILS ──────────────────────────────────────────────────────────────
