@@ -88,18 +88,18 @@
             const data = await res.json();
 
             if (!res.ok) {
-                alert(data);
+                alert(data.message || data);
                 return;
             }
 
             localStorage.setItem("client", JSON.stringify(data));
 
-            // ✅ Demander permission notifications
-            await registerClientPush(data.id);
-
-            alert("Connexion OK");
+            // Rediriger immédiatement
             const redirect = new URLSearchParams(window.location.search).get("redirect");
             window.location.href = redirect || "products.html";
+
+            // Enregistrer push en arrière-plan (sans bloquer)
+            registerClientPush(data.id);
         });
     </script>
 
