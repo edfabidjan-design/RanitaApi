@@ -1192,16 +1192,46 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
     </div>
     <div class="my-product-price">${formatPrice(p.price)}</div>
     <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
-    <div style="display:flex;gap:6px;flex-shrink:0;">
-        ${p.approvalStatus !== 'Approved' ? `
-            <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
-            <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
-        ` : ''}
-    </div>
+<div style="display:flex;gap:6px;flex-shrink:0;">
+    ${p.approvalStatus !== 'Approved' ? `
+        <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
+        <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
+    ` : `
+        <button onclick="viewProductDetail(${p.productId})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️</button>
+        <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fef3c7' : '#d1fae5'};color:${p.isActive !== false ? '#92400e' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️' : '▶️'}</button>
+    `}
+</div>
 </div>`;
                 }).join('');
             } catch (e) { }
         }
+
+        function viewProductDetail(productId) {
+            if (productId) window.open(`product-details.html?id=${productId}`, '_blank');
+            else showToast('Produit pas encore publié', 'error');
+        }
+
+
+        function viewProductDetail(id) {
+            if (p.productId) {
+                window.open(`product-details.html?id=${p.productId}`, '_blank');
+            }
+        }
+
+        async function toggleProduct(sellerProductId, isActive) {
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products/${sellerProductId}/toggle`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isActive: !isActive })
+                });
+                if (res.ok) {
+                    showToast(isActive ? 'Produit désactivé' : 'Produit activé ✓', 'success');
+                    loadMyProducts();
+                }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
 
         // ── CATÉGORIES ────────────────────────────────────────────────────────
         async function loadCategories() {

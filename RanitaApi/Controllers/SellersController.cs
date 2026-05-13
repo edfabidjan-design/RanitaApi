@@ -401,5 +401,25 @@ namespace RanitaApi.Controllers
             await _db.SaveChangesAsync();
             return Ok(new { message = "Produit mis à jour", productId = product.Id });
         }
+
+
+        [HttpPut("{sellerId}/products/{productId}/toggle")]
+        public async Task<IActionResult> ToggleProduct(int sellerId, int productId, [FromBody] JsonElement body)
+        {
+            var sellerProduct = await _db.SellerProducts
+                .FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
+
+            if (sellerProduct == null) return NotFound();
+            if (sellerProduct.ProductId == null) return BadRequest(new { message = "Produit pas encore publié" });
+
+            var product = await _db.Products.FindAsync(sellerProduct.ProductId);
+            if (product == null) return NotFound();
+
+            bool isActive = body.GetProperty("isActive").GetBoolean();
+            product.IsActive = isActive;
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = isActive ? "Produit activé" : "Produit désactivé", isActive });
+        }
     }
 }
