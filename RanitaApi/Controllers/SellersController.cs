@@ -183,6 +183,7 @@ namespace RanitaApi.Controllers
                                 totalStock += vs;
                         }
                         product.Stock = totalStock;
+                        product.Variants = variantsJson; // ← AJOUTER
                         await _db.SaveChangesAsync();
                     }
                 }
@@ -391,6 +392,7 @@ namespace RanitaApi.Controllers
                                 totalStock += vs;
                         }
                         product.Stock = totalStock;
+                        product.Variants = variantsJson; // ← AJOUTER
                     }
                 }
                 catch { }
