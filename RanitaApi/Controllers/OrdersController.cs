@@ -275,6 +275,32 @@ namespace RanitaApi.Controllers
 
             await _context.SaveChangesAsync();
 
+
+            // Échec livraison — remettre le stock
+            if (dto.Status == "Échec livraison" && ancienStatut != "Échec livraison")
+            {
+                foreach (var item in order.Items)
+                {
+                    if (item.VariantId.HasValue)
+                    {
+                        var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
+                        if (variant != null) variant.Stock += item.Quantity;
+                    }
+                    else
+                    {
+                        var product = await _context.Products.FindAsync(item.ProductId);
+                        if (product != null) product.Stock += item.Quantity;
+                    }
+                }
+
+                // Annuler le payout si créé
+                var payouts = await _context.SellerPayouts
+                    .Where(p => p.OrderId == order.Id && p.Status == "Pending")
+                    .ToListAsync();
+                _context.SellerPayouts.RemoveRange(payouts);
+            }
+
+
             // Payout automatique quand commande Livrée
             if (dto.Status == "Livrée" && ancienStatut != "Livrée")
             {
