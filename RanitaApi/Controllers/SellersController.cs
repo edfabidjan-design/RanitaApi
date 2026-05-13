@@ -81,7 +81,45 @@ namespace RanitaApi.Controllers
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
-            var result = products.Select(p => MapProductToDto(p, "")).ToList();
+            var productIds = products
+                .Where(p => p.ProductId.HasValue)
+                .Select(p => p.ProductId.Value).ToList();
+
+            var mainProducts = await _db.Products
+                .Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+
+            var result = products.Select(p => {
+                List<string> images;
+                try { images = JsonSerializer.Deserialize<List<string>>(p.Images) ?? new(); }
+                catch { images = new(); }
+
+                bool? isActive = null;
+                if (p.ProductId.HasValue && mainProducts.ContainsKey(p.ProductId.Value))
+                    isActive = mainProducts[p.ProductId.Value].IsActive;
+
+                return new
+                {
+                    p.Id,
+                    p.SellerId,
+                    p.ProductId,
+                    p.Name,
+                    p.Description,
+                    p.ShortDescription,
+                    p.Price,
+                    p.OldPrice,
+                    p.Stock,
+                    p.Category,
+                    p.Sku,
+                    p.Brand,
+                    Images = images,
+                    p.ApprovalStatus,
+                    p.RejectionReason,
+                    p.CreatedAt,
+                    IsActive = isActive
+                };
+            });
+
             return Ok(result);
         }
 
@@ -309,8 +347,7 @@ namespace RanitaApi.Controllers
             if (product == null)
                 return NotFound(new { message = "Produit introuvable" });
 
-            if (product.ApprovalStatus == "Approved")
-                return BadRequest(new { message = "Impossible de modifier un produit déjà publié" });
+            // On permet la modification même si Approuvé — repassera en Pending
 
             // Lire depuis Request.Form
             var name = Request.Form["name"].ToString().Trim();
@@ -421,5 +458,7 @@ namespace RanitaApi.Controllers
 
             return Ok(new { message = isActive ? "Produit activé" : "Produit désactivé", isActive });
         }
+
+
     }
 }

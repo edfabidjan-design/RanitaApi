@@ -1198,6 +1198,7 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
         <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
 ` : `
     <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
+    <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️ Modifier</button>
     <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️ Désactiver' : '▶️ Activer'}</button>
 `}
 </div>

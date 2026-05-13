@@ -103,6 +103,7 @@ namespace RanitaApi.DTOs
         public string? Sku { get; set; }
         public string? Brand { get; set; }
         public int TotalStock { get; set; }
+        public bool? IsActive { get; set; }
     }
 
     public class ReviewProductDto
