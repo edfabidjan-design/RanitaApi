@@ -919,9 +919,15 @@
             </div>
             <!-- ONGLETS -->
             <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;">
-                <button id="tab-products" onclick="switchTab('products')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">📦 Mes produits</button>
-                <button id="tab-orders" onclick="switchTab('orders')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">🛒 Mes commandes</button>
-                <button id="tab-failed" onclick="switchTab('failed')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">❌ Échecs livraison</button>
+                <button id="tab-products" onclick="switchTab('products')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">
+                    📦 Mes produits <span id="badge-products" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
+                </button>
+                <button id="tab-orders" onclick="switchTab('orders')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
+                    🛒 Mes commandes <span id="badge-orders" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
+                </button>
+                <button id="tab-failed" onclick="switchTab('failed')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
+                    ❌ Échecs livraison <span id="badge-failed" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
+                </button>
             </div>
 
             <!-- CONTENU PRODUITS -->
@@ -1272,6 +1278,7 @@
                     showPage('page-dashboard');
                     loadMyProducts();
                     loadCategories();
+                    loadBadges(); 
                    
 
                 } else {
@@ -1341,6 +1348,36 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
 
 
 
+
+        async function loadBadges() {
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const products = await res.json();
+
+                // Badge produits — nombre en attente
+                const pending = products.filter(p => p.approvalStatus === 'Pending').length;
+                const badgeP = document.getElementById('badge-products');
+                if (pending > 0) { badgeP.textContent = pending; badgeP.style.display = 'inline'; }
+                else badgeP.style.display = 'none';
+            } catch (e) { }
+
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const orders = await res.json();
+
+                // Badge commandes — nouvelles commandes (En attente)
+                const newOrders = orders.filter(o => o.status === 'En attente').length;
+                const badgeO = document.getElementById('badge-orders');
+                if (newOrders > 0) { badgeO.textContent = newOrders; badgeO.style.display = 'inline'; }
+                else badgeO.style.display = 'none';
+
+                // Badge échecs livraison
+                const failed = orders.filter(o => o.status === 'Échec livraison').length;
+                const badgeF = document.getElementById('badge-failed');
+                if (failed > 0) { badgeF.textContent = failed; badgeF.style.display = 'inline'; }
+                else badgeF.style.display = 'none';
+            } catch (e) { }
+        }
 
 
 
