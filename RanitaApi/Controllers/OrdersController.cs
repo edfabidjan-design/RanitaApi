@@ -164,6 +164,7 @@ namespace RanitaApi.Controllers
                             title = "🛒 Nouvelle commande !",
                             body = $"{customerName} — {orderTotal.ToString("N0")} FCFA"
                         });
+
                         foreach (var s in subs)
                         {
                             try { var sub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth); await pushClient.SendNotificationAsync(sub, payload, vapid); }
@@ -407,11 +408,22 @@ namespace RanitaApi.Controllers
                                 .ToListAsync();
                             var pushClient = new WebPushClient();
                             var vapid = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
+                            var (notifTitle, notifBody) = newStatus switch
+                            {
+                                "Validée" => ("✅ Commande confirmée !", $"Votre commande #{orderId} a été confirmée et sera bientôt expédiée."),
+                                "En cours" => ("🚚 Commande en route !", $"Votre commande #{orderId} est en cours de livraison."),
+                                "Livrée" => ("📦 Commande livrée !", $"Votre commande #{orderId} a été livrée. Merci pour votre achat !"),
+                                "Annulée" => ("❌ Commande annulée", $"Votre commande #{orderId} a été annulée."),
+                                "Échec livraison" => ("⚠️ Échec de livraison", $"La livraison de votre commande #{orderId} a échoué. Nous vous recontactons."),
+                                "Remboursé" => ("💸 Remboursement effectué", $"Votre remboursement pour la commande #{orderId} a été effectué."),
+                                _ => ("🛒 Commande mise à jour", $"Votre commande #{orderId} est maintenant : {newStatus}")
+                            };
                             var payload = System.Text.Json.JsonSerializer.Serialize(new
                             {
-                                title = "🛒 Ranita - Commande mise à jour",
-                                body = $"Votre commande #{orderId} est maintenant : {newStatus}"
+                                title = notifTitle,
+                                body = notifBody
                             });
+
                             foreach (var s in clientSubs)
                             {
                                 try
