@@ -251,6 +251,7 @@
                 case "Validée": return "status-validated";
                 case "Livrée": return "status-delivered";
                 case "Annulée": return "status-cancelled";
+                case "Échec livraison": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
                 case "Remboursement demandé": return "status-refund";
                 case "Remboursé": return "status-refunded";
                 case "Remboursement rejeté": return "status-cancelled";
@@ -333,6 +334,7 @@
                         <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
                         <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
                         <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+                        <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
                         <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
                         <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
                     </select>
