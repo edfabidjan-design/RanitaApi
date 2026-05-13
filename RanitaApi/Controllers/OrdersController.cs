@@ -298,6 +298,8 @@ namespace RanitaApi.Controllers
                     .Where(p => p.OrderId == order.Id && p.Status == "Pending")
                     .ToListAsync();
                 _context.SellerPayouts.RemoveRange(payouts);
+
+                await _context.SaveChangesAsync();
             }
 
 
