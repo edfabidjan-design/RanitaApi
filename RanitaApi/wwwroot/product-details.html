@@ -653,7 +653,7 @@
                         <div class="product-info">
                             <a href="products.html" class="back-link">← Retour aux produits</a>
 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    ${currentProduct.category ? `<span class="product-badge">${currentProduct.category.name}</span>` : ''}
+    ${currentProduct.category ? `<span class="product-badge">${currentProduct.category.name}</span>` : currentProduct.categoryId ? '' : ''}
     <span id="seller-badge"></span>
 </div>
 <h1 class="product-title">${currentProduct.name}</h1>
