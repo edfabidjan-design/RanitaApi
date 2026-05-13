@@ -120,6 +120,45 @@ namespace RanitaApi.Controllers
 
             await _db.SaveChangesAsync();
 
+            // Notifier le vendeur
+            try
+            {
+                var sellerWithClient = await _db.Sellers
+                    .Include(s => s.Client)
+                    .FirstOrDefaultAsync(s => s.Id == id);
+
+                if (sellerWithClient?.Client != null)
+                {
+                    var vendorSubs = await _db.ClientPushSubscriptions
+                        .Where(s => s.ClientId == sellerWithClient.ClientId)
+                        .ToListAsync();
+
+                    var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
+                    var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                    var pushClient = new WebPush.WebPushClient();
+                    var vapidDetails = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
+                    var payload = System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        title = dto.Approved ? "🎉 Boutique approuvée !" : "❌ Boutique refusée",
+
+                        body = dto.Approved
+                            ? $"Votre boutique \"{sellerWithClient.ShopName}\" est maintenant active !"
+                            : $"Votre boutique a été refusée. Motif : {dto.RejectionReason ?? "Non spécifié"}"
+                    });
+
+                    foreach (var s in vendorSubs)
+                    {
+                        try
+                        {
+                            var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                            await pushClient.SendNotificationAsync(sub, payload, vapidDetails);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+
             var action = dto.Approved ? "approuvée" : "refusée";
             return Ok(new { message = $"Boutique {action}", status = seller.Status });
         }

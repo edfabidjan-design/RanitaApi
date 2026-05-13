@@ -909,7 +909,10 @@
                     <div class="dash-title" id="dash-shop-name">Ma boutique</div>
                     <div class="dash-desc" id="dash-shop-desc"></div>
                 </div>
-                <span class="badge badge-approved">Boutique active</span>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <span class="badge badge-approved">Boutique active</span>
+                    <button onclick="openEditProfile()" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">⚙️ Modifier profil</button>
+                </div>
             </div>
             <div class="dash-stats">
                 <div class="dash-stat"><div class="label">Produits publiés</div><div class="value" id="dash-total-products">—</div></div>
@@ -1066,19 +1069,19 @@
             if (client) {
                 clientId = client.id;
                 authNav.innerHTML = `
-                <div style="position:relative;display:inline-block;">
-                    <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
-                        👤 ${client.name ? client.name.split(' ')[0] : 'Mon compte'} ▾
-                    </button>
-                    <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
-                        <a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#111827;text-decoration:none;font-weight:600;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>
-                        <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
-                    </div>
-                </div>`;
+                    <div style="position:relative;display:inline-block;">
+                        <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
+                            👤 ${client.name ? client.name.split(' ')[0] : 'Mon compte'} ▾
+                        </button>
+                        <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
+                            <a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#111827;text-decoration:none;font-weight:600;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>
+                            <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
+                        </div>
+                    </div>`;
             } else {
                 authNav.innerHTML = `
-                <a href="login.html?redirect=vendeur.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
-                <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
+                    <a href="login.html?redirect=vendeur.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
+                    <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
             }
         });
 
@@ -1105,31 +1108,31 @@
                 el.innerHTML = orders.map(o => {
                     const sc = statusColors[o.status] || { bg: '#f3f4f6', color: '#374151' };
                     return `
-            <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                    <div>
-                        <span style="font-weight:700;font-size:15px;">Commande #${o.id}</span>
-                        <span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
+                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                        <div>
+                            <span style="font-weight:700;font-size:15px;">Commande #${o.id}</span>
+                            <span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="background:${sc.bg};color:${sc.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span>
+                            <span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span>
+                        </div>
                     </div>
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <span style="background:${sc.bg};color:${sc.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span>
-                        <span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span>
+                    <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
+                    <div style="border-top:1px solid #f3f4f6;padding-top:10px;">
+                        ${o.items.map(i => `
+                            <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
+                                ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
+                                <div style="flex:1;">
+                                    <div style="font-size:13px;font-weight:600;">${i.productName}</div>
+                                    ${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}
+                                </div>
+                                <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
+                                <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
+                            </div>`).join('')}
                     </div>
-                </div>
-                <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
-                <div style="border-top:1px solid #f3f4f6;padding-top:10px;">
-                    ${o.items.map(i => `
-                        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
-                            ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
-                            <div style="flex:1;">
-                                <div style="font-size:13px;font-weight:600;">${i.productName}</div>
-                                ${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}
-                            </div>
-                            <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
-                            <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
-                        </div>`).join('')}
-                </div>
-            </div>`;
+                </div>`;
                 }).join('');
             } catch (e) { }
         }
@@ -1191,15 +1194,15 @@
                 }
 
                 el.innerHTML = failed.map(o => `
-        <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <span style="font-weight:700;">Commande #${o.id}</span>
-                <span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span>
-            </div>
-            <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
-            <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
-            <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
-        </div>`).join('');
+            <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="font-weight:700;">Commande #${o.id}</span>
+                    <span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span>
+                </div>
+                <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
+                <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
+                <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
+            </div>`).join('');
             } catch (e) { }
         }
 
@@ -1283,10 +1286,10 @@
                 sellerId = s.id;
                 if (s.status === 'Pending') {
                     document.getElementById('pending-info').innerHTML = `
-                    <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
-                    <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
-                    <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
-                    <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
+                        <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
+                        <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
+                        <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
+                        <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
                     showPage('page-pending');
                 } else if (s.status === 'Rejected') {
                     document.getElementById('rejected-reason').textContent = s.rejectionReason ? `Motif : ${s.rejectionReason}` : 'Votre demande n\'a pas été acceptée.';
@@ -1298,11 +1301,12 @@
                     document.getElementById('dash-pending-products').textContent = s.pendingProducts;
                     document.getElementById('dash-earnings').textContent = formatPrice(s.totalEarnings);
                     document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
+                    sellerData = s;
                     showPage('page-dashboard');
                     loadMyProducts();
                     loadCategories();
-                    loadBadges(); 
-                   
+                    loadBadges();
+
 
                 } else {
                     document.querySelector('#page-pending .status-icon').textContent = '⏸️';
@@ -1346,22 +1350,22 @@
                     if (Array.isArray(p.images)) { imgs = p.images; } else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
                     return `
 <div class="my-product">
-    <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-    <div class="my-product-info">
-        <div class="my-product-name">${p.name}</div>
-       <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
+        <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+        <div class="my-product-info">
+            <div class="my-product-name">${p.name}</div>
+           <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
 ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:12px;color:#991b1b;background:#fee2e2;padding:4px 8px;border-radius:6px;margin-top:4px;">❌ Motif : ${p.rejectionReason}</div>` : ''}
-    </div>
-    <div class="my-product-price">${formatPrice(p.price)}</div>
-    <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
+        </div>
+        <div class="my-product-price">${formatPrice(p.price)}</div>
+        <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
 <div style="display:flex;gap:6px;flex-shrink:0;">
-    ${p.approvalStatus !== 'Approved' ? `
-        <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
-        <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
+        ${p.approvalStatus !== 'Approved' ? `
+            <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
+            <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
 ` : `
-    <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
-    <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️ Modifier</button>
-    <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️ Désactiver' : '▶️ Activer'}</button>
+        <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
+        <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️ Modifier</button>
+        <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️ Désactiver' : '▶️ Activer'}</button>
 `}
 </div>
 </div>`;
@@ -1468,20 +1472,20 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
 
                 section.style.display = 'block';
                 fields.innerHTML = attrs.map(a => `
-                <div class="attr-field full">
-                    <label>${a.attributeName}</label>
-                    ${a.attributeType === 'select'
+                    <div class="attr-field full">
+                        <label>${a.attributeName}</label>
+                        ${a.attributeType === 'select'
                         ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-                            ${a.attributeOptions.split(',').map(o => `
-                                <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;">
-                                    <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')">
-                                    <span>${o.trim()}</span>
-                                </label>`).join('')}
-                            <input type="hidden" id="attr_${a.attributeName}" value="">
-                           </div>`
+                                ${a.attributeOptions.split(',').map(o => `
+                                    <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;">
+                                        <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')">
+                                        <span>${o.trim()}</span>
+                                    </label>`).join('')}
+                                <input type="hidden" id="attr_${a.attributeName}" value="">
+                               </div>`
                         : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}" id="attr_${a.attributeName}" placeholder="${a.attributeName}">`
                     }
-                </div>`).join('');
+                    </div>`).join('');
 
                 const hasSelect = attrs.some(a => a.attributeType === 'select');
                 varSection.style.display = hasSelect ? 'block' : 'none';
@@ -1511,16 +1515,61 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
             window._variantLabels = labels;
 
             document.getElementById('p-variants-list').innerHTML = `
-            <table class="variant-table">
-                <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
-                <tbody>${labels.map((label, i) => `
-                    <tr>
-                        <td>${label}</td>
-                        <td><input type="number" id="variant_stock_${i}" value="0" min="0"></td>
-                    </tr>`).join('')}
-                </tbody>
-            </table>`;
+                <table class="variant-table">
+                    <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
+                    <tbody>${labels.map((label, i) => `
+                        <tr>
+                            <td>${label}</td>
+                            <td><input type="number" id="variant_stock_${i}" value="0" min="0"></td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`;
         }
+
+
+        let sellerData = null;
+
+        function openEditProfile() {
+            if (!sellerData) return;
+            document.getElementById('profile-name').value = sellerData.shopName || '';
+            document.getElementById('profile-desc').value = sellerData.shopDescription || '';
+            document.getElementById('profile-phone').value = sellerData.phoneNumber || '';
+            document.getElementById('profile-payment').value = sellerData.paymentMethod || '';
+            document.getElementById('profile-payment-details').value = sellerData.paymentDetails || '';
+            openModal('modal-profile');
+        }
+
+        async function saveProfile() {
+            const body = {
+                shopName: document.getElementById('profile-name').value.trim(),
+                shopDescription: document.getElementById('profile-desc').value.trim(),
+                phoneNumber: document.getElementById('profile-phone').value.trim(),
+                paymentMethod: document.getElementById('profile-payment').value,
+                paymentDetails: document.getElementById('profile-payment-details').value.trim()
+            };
+
+            if (!body.shopName) { showToast('Le nom est obligatoire', 'error'); return; }
+
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/profile`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                if (res.ok) {
+                    showToast('Profil mis à jour ✓', 'success');
+                    closeModal('modal-profile');
+                    // Mettre à jour l'affichage
+                    document.getElementById('dash-shop-name').textContent = body.shopName;
+                    document.getElementById('dash-shop-desc').textContent = body.shopDescription;
+                    sellerData.shopName = body.shopName;
+                    sellerData.shopDescription = body.shopDescription;
+                } else {
+                    showToast('Erreur', 'error');
+                }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
 
         // ── IMAGES ────────────────────────────────────────────────────────────
         function handleImageUpload(input) {
@@ -1543,23 +1592,23 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
             productImages.forEach((url, i) => {
                 const isMain = i === 0;
                 gallery.innerHTML += `
-                <div class="img-thumb ${isMain ? 'main' : ''}">
-                    <img src="${url}">
-                    ${isMain ? '<span class="main-label">Principal</span>' : ''}
-                    <button type="button" class="btn-remove" onclick="removeExistingImage(${i})">✕</button>
-                    ${!isMain ? `<button type="button" class="btn-main" onclick="setMainImage(${i})">Principal</button>` : ''}
-                </div>`;
+                    <div class="img-thumb ${isMain ? 'main' : ''}">
+                        <img src="${url}">
+                        ${isMain ? '<span class="main-label">Principal</span>' : ''}
+                        <button type="button" class="btn-remove" onclick="removeExistingImage(${i})">✕</button>
+                        ${!isMain ? `<button type="button" class="btn-main" onclick="setMainImage(${i})">Principal</button>` : ''}
+                    </div>`;
             });
 
             newImageFiles.forEach((file, i) => {
                 const url = URL.createObjectURL(file);
                 const isMain = productImages.length === 0 && i === 0;
                 gallery.innerHTML += `
-                <div class="img-thumb ${isMain ? 'main' : ''}">
-                    <img src="${url}">
-                    ${isMain ? '<span class="main-label">Principal</span>' : ''}
-                    <button type="button" class="btn-remove" onclick="removeNewImage(${i})">✕</button>
-                </div>`;
+                    <div class="img-thumb ${isMain ? 'main' : ''}">
+                        <img src="${url}">
+                        ${isMain ? '<span class="main-label">Principal</span>' : ''}
+                        <button type="button" class="btn-remove" onclick="removeNewImage(${i})">✕</button>
+                    </div>`;
             });
         }
 
@@ -1684,5 +1733,51 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
         function formatPrice(p) { return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0); }
         function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3500); }
     </script>
+
+
+
+
+    <div class="modal-overlay" id="modal-profile">
+        <div class="modal" style="max-width:500px;">
+            <h3>⚙️ Mon profil boutique</h3>
+            <div class="form-section">
+                <div class="form-grid">
+                    <div class="full">
+                        <label>Nom de la boutique</label>
+                        <input type="text" id="profile-name" placeholder="Nom de votre boutique">
+                    </div>
+                    <div class="full">
+                        <label>Description</label>
+                        <textarea id="profile-desc" rows="3" placeholder="Décrivez votre boutique..."></textarea>
+                    </div>
+                    <div class="full">
+                        <label>Téléphone</label>
+                        <input type="tel" id="profile-phone" placeholder="07 XX XX XX XX">
+                    </div>
+                    <div>
+                        <label>Moyen de paiement</label>
+                        <select id="profile-payment">
+                            <option value="">Choisir...</option>
+                            <option value="ORANGE_MONEY">Orange Money</option>
+                            <option value="MTN_MONEY">MTN Money</option>
+                            <option value="WAVE">Wave</option>
+                            <option value="MOOV_MONEY">Moov Money</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Numéro</label>
+                        <input type="text" id="profile-payment-details" placeholder="Numéro Mobile Money">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('modal-profile')">Annuler</button>
+                <button class="btn-save" onclick="saveProfile()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+
+
 </body>
 </html>

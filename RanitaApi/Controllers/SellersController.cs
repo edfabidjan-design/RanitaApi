@@ -50,6 +50,32 @@ namespace RanitaApi.Controllers
             _db.Sellers.Add(seller);
             await _db.SaveChangesAsync();
 
+            // Notifier l'admin
+            try
+            {
+                var adminSubs = await _db.PushSubscriptions.ToListAsync();
+                var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
+                var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                var pushAdmin = new WebPush.WebPushClient();
+                var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
+                var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    title = "🏪 Nouveau vendeur !",
+                    body = $"\"{dto.ShopName}\" vient de s'inscrire sur Ranita Market."
+                });
+
+                foreach (var s in adminSubs)
+                {
+                    try
+                    {
+                        var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                        await pushAdmin.SendNotificationAsync(sub, payloadAdmin, vapidAdmin);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
             return Ok(new { message = "Demande envoyée, en attente de validation", sellerId = seller.Id });
         }
 
@@ -508,6 +534,24 @@ namespace RanitaApi.Controllers
             });
 
             return Ok(result);
+        }
+
+        // PUT /api/sellers/{sellerId}/profile
+        [HttpPut("{sellerId}/profile")]
+        public async Task<IActionResult> UpdateProfile(int sellerId, [FromBody] UpdateSellerProfileDto dto)
+        {
+            var seller = await _db.Sellers.FindAsync(sellerId);
+            if (seller == null) return NotFound(new { message = "Boutique introuvable" });
+
+            seller.ShopName = dto.ShopName?.Trim() ?? seller.ShopName;
+            seller.ShopDescription = dto.ShopDescription?.Trim();
+            seller.PhoneNumber = dto.PhoneNumber?.Trim() ?? seller.PhoneNumber;
+            seller.PaymentMethod = dto.PaymentMethod ?? seller.PaymentMethod;
+            seller.PaymentDetails = dto.PaymentDetails?.Trim() ?? seller.PaymentDetails;
+            seller.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "Profil mis à jour ✓" });
         }
     }
 }

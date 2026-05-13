@@ -154,4 +154,13 @@ namespace RanitaApi.DTOs
         public string? Variants { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }
     }
+
+    public class UpdateSellerProfileDto
+    {
+        public string? ShopName { get; set; }
+        public string? ShopDescription { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? PaymentMethod { get; set; }
+        public string? PaymentDetails { get; set; }
+    }
 }
