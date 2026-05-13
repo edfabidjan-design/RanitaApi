@@ -459,6 +459,55 @@ namespace RanitaApi.Controllers
             return Ok(new { message = isActive ? "Produit activé" : "Produit désactivé", isActive });
         }
 
+        // GET /api/sellers/{sellerId}/orders
+        [HttpGet("{sellerId}/orders")]
+        public async Task<IActionResult> GetMyOrders(int sellerId)
+        {
+            // Trouver tous les ProductId du vendeur approuvés
+            var sellerProductIds = await _db.SellerProducts
+                .Where(p => p.SellerId == sellerId && p.ApprovalStatus == "Approved" && p.ProductId != null)
+                .Select(p => p.ProductId.Value)
+                .ToListAsync();
 
+            if (!sellerProductIds.Any())
+                return Ok(new List<object>());
+
+            // Trouver les commandes contenant ces produits
+            var orders = await _db.Orders
+                .Include(o => o.Items)
+                .Where(o => o.Items.Any(i => sellerProductIds.Contains(i.ProductId)))
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+
+            var result = orders.Select(o => new
+            {
+                o.Id,
+                o.CustomerName,
+                o.CustomerPhone,
+                o.CustomerAddress,
+                o.Total,
+                o.Status,
+                o.CreatedAt,
+                // Seulement les items du vendeur
+                Items = o.Items
+                    .Where(i => sellerProductIds.Contains(i.ProductId))
+                    .Select(i => new
+                    {
+                        i.ProductId,
+                        i.ProductName,
+                        i.Price,
+                        i.Quantity,
+                        i.ImageUrl,
+                        i.VariantName,
+                        Subtotal = i.Price * i.Quantity
+                    }),
+                // Montant vendeur sur cette commande
+                SellerTotal = o.Items
+                    .Where(i => sellerProductIds.Contains(i.ProductId))
+                    .Sum(i => i.Price * i.Quantity)
+            });
+
+            return Ok(result);
+        }
     }
 }
