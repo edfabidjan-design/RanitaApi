@@ -216,62 +216,93 @@ namespace RanitaApi.Controllers
                 product.RejectionReason = dto.RejectionReason;
 
             // Si approuvé : créer le produit dans la table Products principale
-            if (dto.Approved && product.ProductId == null && product.Seller != null)
+            if (dto.Approved && product.Seller != null)
             {
-                // Parser les images
                 List<string> imageList = new();
                 try { imageList = JsonSerializer.Deserialize<List<string>>(product.Images) ?? new(); }
                 catch { }
 
-                // Trouver la catégorie par nom
-                var categoryEntity = await _db.Categories
-                    .FirstOrDefaultAsync(c => c.Name == product.Category);
-
-                var newProduct = new Product
+                if (product.ProductId == null)
                 {
-                    Name = product.Name,
-                    Description = product.Description ?? "",
-                    ShortDescription = product.ShortDescription ?? "",
-                    Price = product.Price,
-                    OldPrice = product.OldPrice,
-                    Stock = product.Stock,
-                    Images = product.Images,
-                    ImageUrl = imageList.Count > 0 ? imageList[0] : "",
-                    IsActive = true,
-                    Brand = product.Brand ?? product.Seller.ShopName,
-                    Slug = GenerateSlug(product.Name),
-                    MetaDescription = product.ShortDescription ?? "",
-                    Sku = product.Sku ?? $"SELL-{product.SellerId}-{product.Id}",
-                    CategoryId = categoryEntity?.Id,  // ← AJOUTER
-                };
-
-                _db.Products.Add(newProduct);
-                await _db.SaveChangesAsync();
-
-                product.ProductId = newProduct.Id;
-
-                // Copier les variantes
-                if (!string.IsNullOrEmpty(product.Variants) && product.Variants != "[]")
-                {
-                    try
+                    // Nouveau produit — créer
+                    var newProduct = new Product
                     {
-                        var variants = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariant>>(
-                            product.Variants,
-                            new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                        );
-                        if (variants != null)
+                        Name = product.Name,
+                        Description = product.Description ?? "",
+                        ShortDescription = product.ShortDescription ?? "",
+                        Price = product.Price,
+                        OldPrice = product.OldPrice,
+                        Stock = product.Stock,
+                        Images = product.Images,
+                        ImageUrl = imageList.Count > 0 ? imageList[0] : "",
+                        IsActive = true,
+                        Brand = product.Brand ?? product.Seller.ShopName,
+                        Slug = GenerateSlug(product.Name),
+                        MetaDescription = product.ShortDescription ?? "",
+                        Sku = product.Sku ?? $"SELL-{product.SellerId}-{product.Id}",
+                        CategoryId = (await _db.Categories.FirstOrDefaultAsync(c => c.Name == product.Category))?.Id
+                    };
+
+                    _db.Products.Add(newProduct);
+                    await _db.SaveChangesAsync();
+                    product.ProductId = newProduct.Id;
+
+                    // Copier variantes
+                    if (!string.IsNullOrEmpty(product.Variants) && product.Variants != "[]")
+                    {
+                        try
                         {
-                            foreach (var v in variants)
+                            var variants = JsonSerializer.Deserialize<List<ProductVariant>>(
+                                product.Variants,
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            if (variants != null)
                             {
-                                v.Id = 0;
-                                v.ProductId = newProduct.Id;
-                                _db.ProductVariants.Add(v);
+                                foreach (var v in variants) { v.Id = 0; v.ProductId = newProduct.Id; _db.ProductVariants.Add(v); }
+                                await _db.SaveChangesAsync();
                             }
                         }
+                        catch { }
                     }
-                    catch (Exception ex) { Console.WriteLine($"Variants copy error: {ex.Message}"); }
                 }
+                else
+                {
+                    // Produit existant — METTRE À JOUR
+                    var existing = await _db.Products.FindAsync(product.ProductId);
+                    if (existing != null)
+                    {
+                        existing.Name = product.Name;
+                        existing.Description = product.Description ?? "";
+                        existing.ShortDescription = product.ShortDescription ?? "";
+                        existing.Price = product.Price;
+                        existing.OldPrice = product.OldPrice;
+                        existing.Stock = product.Stock;
+                        existing.Images = product.Images;
+                        existing.ImageUrl = imageList.Count > 0 ? imageList[0] : existing.ImageUrl;
+                        existing.Brand = product.Brand ?? product.Seller.ShopName;
+                        existing.Sku = product.Sku ?? existing.Sku;
+                        existing.IsActive = true;
+                        existing.CategoryId = (await _db.Categories.FirstOrDefaultAsync(c => c.Name == product.Category))?.Id ?? existing.CategoryId;
 
+                        // Re-copier variantes
+                        if (!string.IsNullOrEmpty(product.Variants) && product.Variants != "[]")
+                        {
+                            try
+                            {
+                                var variants = JsonSerializer.Deserialize<List<ProductVariant>>(
+                                    product.Variants,
+                                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                                if (variants != null && variants.Count > 0)
+                                {
+                                    var old = _db.ProductVariants.Where(v => v.ProductId == existing.Id);
+                                    _db.ProductVariants.RemoveRange(old);
+                                    await _db.SaveChangesAsync();
+                                    foreach (var v in variants) { v.Id = 0; v.ProductId = existing.Id; _db.ProductVariants.Add(v); }
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
             }
 
             await _db.SaveChangesAsync();
