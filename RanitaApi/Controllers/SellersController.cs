@@ -553,5 +553,48 @@ namespace RanitaApi.Controllers
             await _db.SaveChangesAsync();
             return Ok(new { message = "Profil mis à jour ✓" });
         }
+
+
+
+        // GET /api/sellers/{sellerId}/public
+        [HttpGet("{sellerId}/public")]
+        public async Task<IActionResult> GetPublic(int sellerId)
+        {
+            var seller = await _db.Sellers
+                .FirstOrDefaultAsync(s => s.Id == sellerId && s.Status == "Approved");
+
+            if (seller == null) return NotFound();
+
+            var products = await _db.Products
+                .Include(p => p.Category)
+                .Include(p => p.Variants)
+                .Where(p => _db.SellerProducts.Any(sp =>
+                    sp.SellerId == sellerId &&
+                    sp.ProductId == p.Id &&
+                    sp.ApprovalStatus == "Approved") && p.IsActive)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                seller.Id,
+                seller.ShopName,
+                seller.ShopDescription,
+                TotalProducts = products.Count,
+                Products = products.Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Price,
+                    p.OldPrice,
+                    p.ImageUrl,
+                    p.Images,
+                    p.ShortDescription,
+                    Stock = p.Variants != null && p.Variants.Any()
+                        ? p.Variants.Sum(v => v.Stock)
+                        : p.Stock,
+                    Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name }
+                })
+            });
+        }
     }
 }
