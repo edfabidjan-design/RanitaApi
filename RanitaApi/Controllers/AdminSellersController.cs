@@ -244,7 +244,7 @@ namespace RanitaApi.Controllers
                 await _db.SaveChangesAsync();
 
                 product.ProductId = newProduct.Id;
-            }S
+            }
 
             await _db.SaveChangesAsync();
 
