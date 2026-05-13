@@ -223,6 +223,10 @@ namespace RanitaApi.Controllers
                 try { imageList = JsonSerializer.Deserialize<List<string>>(product.Images) ?? new(); }
                 catch { }
 
+                // Trouver la catégorie par nom
+                var categoryEntity = await _db.Categories
+                    .FirstOrDefaultAsync(c => c.Name == product.Category);
+
                 var newProduct = new Product
                 {
                     Name = product.Name,
@@ -238,6 +242,7 @@ namespace RanitaApi.Controllers
                     Slug = GenerateSlug(product.Name),
                     MetaDescription = product.ShortDescription ?? "",
                     Sku = product.Sku ?? $"SELL-{product.SellerId}-{product.Id}",
+                    CategoryId = categoryEntity?.Id,  // ← AJOUTER
                 };
 
                 _db.Products.Add(newProduct);
