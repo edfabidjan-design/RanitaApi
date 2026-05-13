@@ -1064,31 +1064,109 @@ ${p.approvalStatus === 'Pending' ? `
             renderPayouts(allPayouts.filter(p => p.status === status));
         }
 
-        function renderPayouts(list) {
+        function renderPayouts(payouts) {
             const el = document.getElementById('payouts-list');
-            if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement trouvé</p></div>'; return; }
-            el.innerHTML = list.map(p => `
-                <div class="payout-card">
-                    <div class="seller-avatar" style="background:linear-gradient(135deg,#059669,#047857)">${p.shopName.charAt(0).toUpperCase()}</div>
-                    <div class="seller-info">
-                        <div class="seller-name">${p.shopName}</div>
-                        <div class="seller-meta">
-                            <span>🧾 Commande #${p.orderId || '—'}</span>
-                            <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
-                            ${p.transactionReference ? `<span>🔖 Réf: ${p.transactionReference}</span>` : ''}
-                        </div>
+
+            if (!payouts.length) {
+                el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement.</p></div>';
+                return;
+            }
+
+            // Regrouper par vendeur
+            const byVendor = {};
+            payouts.forEach(p => {
+                if (!byVendor[p.sellerId]) {
+                    byVendor[p.sellerId] = {
+                        sellerId: p.sellerId,
+                        shopName: p.shopName,
+                        payouts: [],
+                        total: 0,
+                        status: p.status
+                    };
+                }
+                byVendor[p.sellerId].payouts.push(p);
+                byVendor[p.sellerId].total += p.netAmount;
+            });
+
+            el.innerHTML = Object.values(byVendor).map(vendor => `
+        <div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:44px;height:44px;background:#10b981;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${vendor.shopName[0]}</div>
+                    <div>
+                        <div style="font-weight:800;font-size:16px;">${vendor.shopName}</div>
+                        <div style="font-size:12px;color:#6b7280;">${vendor.payouts.length} commande(s)</div>
                     </div>
-                    <div class="payout-amounts">
-                        <div class="payout-net">${formatPrice(p.netAmount)}</div>
-                        <div class="payout-detail">Commission: ${formatPrice(p.commissionAmount)}</div>
-                        <div class="payout-detail">Brut: ${formatPrice(p.grossAmount)}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:20px;font-weight:800;color:#10b981;">${formatPrice(vendor.total)}</div>
+                    <div style="font-size:12px;color:#6b7280;">Net après commission</div>
+                </div>
+            </div>
+
+            <div style="border-top:1px solid #f3f4f6;padding-top:12px;margin-bottom:14px;">
+                ${vendor.payouts.map(p => `
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;font-size:13px;">
+                    <div>
+                        <span style="font-weight:600;">Commande #${p.orderId}</span>
+                        <span style="color:#6b7280;margin-left:8px;">📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
                     </div>
-                    <span class="status-badge ${p.status === 'Paid' ? 's-Approved' : 's-Pending'}">${p.status === 'Paid' ? 'Payé' : 'À payer'}</span>
-                    <div class="seller-actions">
-                        ${p.status === 'Pending' ? `<button class="btn btn-approve" onclick="openPaid(${p.id})">✓ Marquer payé</button>` : ''}
+                    <div style="text-align:right;">
+                        <div style="font-weight:700;color:#10b981;">${formatPrice(p.netAmount)}</div>
+                        <div style="font-size:11px;color:#9ca3af;">Brut: ${formatPrice(p.grossAmount)} · Commission: ${formatPrice(p.commissionAmount)}</div>
                     </div>
-                </div>`).join('');
+                </div>`).join('')}
+            </div>
+
+            ${vendor.status === 'Pending' ? `
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <input type="text" id="ref-${vendor.sellerId}" placeholder="Référence transaction (ex: OM-XXXXXXX)" 
+                    style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
+                <button onclick="payAllVendor(${vendor.sellerId}, '${vendor.shopName}')" 
+                    style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">
+                    ✓ Payer ${formatPrice(vendor.total)}
+                </button>
+            </div>
+            ` : `
+            <div style="font-size:13px;color:#6b7280;">
+                ✅ Payé le ${new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR')}
+                ${vendor.payouts[0].transactionReference ? `· Réf: ${vendor.payouts[0].transactionReference}` : ''}
+            </div>
+            `}
+        </div>
+    `).join('');
         }
+
+
+        async function payAllVendor(sellerId, shopName) {
+            const ref = document.getElementById(`ref-${sellerId}`).value.trim();
+            if (!ref) { showToast('Entrez une référence de transaction', 'error'); return; }
+
+            if (!confirm(`Confirmer le paiement de tous les payouts de ${shopName} ?`)) return;
+
+            // Trouver tous les payouts pending de ce vendeur
+            const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending');
+
+            let success = 0;
+            for (const p of pending) {
+                try {
+                    const res = await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ transactionReference: ref, notes: `Paiement groupé - ${shopName}` })
+                    });
+                    if (res.ok) success++;
+                } catch (e) { }
+            }
+
+            if (success > 0) {
+                showToast(`${success} paiement(s) marqués comme payés ✓`, 'success');
+                loadPayouts();
+            } else {
+                showToast('Erreur lors du paiement', 'error');
+            }
+        }
+
 
         function openPaid(id) { currentPayoutId = id; document.getElementById('transaction-ref').value = ''; openModal('modal-paid'); }
 
