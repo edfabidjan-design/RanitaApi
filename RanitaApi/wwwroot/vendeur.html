@@ -1342,11 +1342,7 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
 
 
 
-        function viewProductDetail(id) {
-            if (p.productId) {
-                window.open(`product-details.html?id=${p.productId}`, '_blank');
-            }
-        }
+
 
         async function toggleProduct(sellerProductId, isActive) {
             try {
