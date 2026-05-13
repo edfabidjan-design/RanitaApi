@@ -1196,20 +1196,17 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
     ${p.approvalStatus !== 'Approved' ? `
         <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
         <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
-    ` : `
-        <button onclick="viewProductDetail(${p.productId})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️</button>
-        <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fef3c7' : '#d1fae5'};color:${p.isActive !== false ? '#92400e' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️' : '▶️'}</button>
-    `}
+` : `
+    <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
+    <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️ Désactiver' : '▶️ Activer'}</button>
+`}
 </div>
 </div>`;
                 }).join('');
             } catch (e) { }
         }
 
-        function viewProductDetail(productId) {
-            if (productId) window.open(`product-details.html?id=${productId}`, '_blank');
-            else showToast('Produit pas encore publié', 'error');
-        }
+
 
 
         function viewProductDetail(id) {
