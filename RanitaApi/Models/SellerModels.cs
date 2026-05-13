@@ -77,6 +77,7 @@ namespace RanitaApi.Models
 
         // JSON array d'URLs, comme tu fais avec Images sur Product
         public string Images { get; set; } = "[]";
+        public string Variants { get; set; } = "[]";
 
         // "Pending" | "Approved" | "Rejected"
         public string ApprovalStatus { get; set; } = "Pending";

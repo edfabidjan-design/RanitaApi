@@ -533,4 +533,14 @@ catch (Exception ex) { Console.WriteLine("SellerPayouts error: " + ex.Message); 
 
 
 
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""SellerProducts"" ADD COLUMN IF NOT EXISTS ""Variants"" TEXT NOT NULL DEFAULT '[]';");
+}
+catch (Exception ex) { Console.WriteLine("SellerProducts.Variants error: " + ex.Message); }
+
+
+
 app.Run();

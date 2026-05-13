@@ -244,6 +244,29 @@ namespace RanitaApi.Controllers
                 await _db.SaveChangesAsync();
 
                 product.ProductId = newProduct.Id;
+
+                // Copier les variantes
+                if (!string.IsNullOrEmpty(product.Variants) && product.Variants != "[]")
+                {
+                    try
+                    {
+                        var variants = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariant>>(
+                            product.Variants,
+                            new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                        );
+                        if (variants != null)
+                        {
+                            foreach (var v in variants)
+                            {
+                                v.Id = 0;
+                                v.ProductId = newProduct.Id;
+                                _db.ProductVariants.Add(v);
+                            }
+                        }
+                    }
+                    catch (Exception ex) { Console.WriteLine($"Variants copy error: {ex.Message}"); }
+                }
+
             }
 
             await _db.SaveChangesAsync();
