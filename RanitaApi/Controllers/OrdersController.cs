@@ -205,6 +205,46 @@ namespace RanitaApi.Controllers
                         catch (Exception ex) { Console.WriteLine("PUSH CLIENT NEW ORDER ERROR: " + ex.Message); }
                     }
 
+                    // Push notification VENDEURS concernés
+                    try
+                    {
+                        using var scopeVendor = _scopeFactory.CreateScope();
+                        var dbVendor = scopeVendor.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                        foreach (var item in orderItems)
+                        {
+                            var sellerProduct = await dbVendor.SellerProducts
+                                .Include(sp => sp.Seller)
+                                .FirstOrDefaultAsync(sp => sp.ProductId == item.ProductId && sp.ApprovalStatus == "Approved");
+
+                            if (sellerProduct?.Seller == null) continue;
+
+                            var vendorSubs = await dbVendor.ClientPushSubscriptions
+                                .Where(s => s.ClientId == sellerProduct.Seller.ClientId)
+                                .ToListAsync();
+
+                            var pushVendor = new WebPushClient();
+                            var vapidVendor = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
+                            var payloadVendor = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                title = "🛒 Nouvelle vente !",
+                                body = $"{item.ProductName} x{item.Quantity} — {(item.Price * item.Quantity).ToString("N0")} FCFA"
+                            });
+
+                            foreach (var s in vendorSubs)
+                            {
+                                try
+                                {
+                                    var sub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                                    await pushVendor.SendNotificationAsync(sub, payloadVendor, vapidVendor);
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                    catch (Exception ex) { Console.WriteLine("PUSH VENDOR ORDER ERROR: " + ex.Message); }
+
+
                     // Email confirmation client
                     if (clientId.HasValue)
 
@@ -387,6 +427,52 @@ namespace RanitaApi.Controllers
                 }
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
             });
+
+            // Push vendeur quand commande livrée
+            if (newStatus == "Livrée")
+            {
+                try
+                {
+                    using var scopeV = _scopeFactory.CreateScope();
+                    var dbV = scopeV.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                    var sellerProductIds = orderItems.Select(i => i.ProductId).ToList();
+                    var sellerProducts = await dbV.SellerProducts
+                        .Include(sp => sp.Seller)
+                        .Where(sp => sellerProductIds.Contains(sp.ProductId ?? 0) && sp.ApprovalStatus == "Approved")
+                        .ToListAsync();
+
+                    var notifiedSellers = new HashSet<int>();
+                    foreach (var sp in sellerProducts)
+                    {
+                        if (sp.Seller == null || notifiedSellers.Contains(sp.SellerId)) continue;
+                        notifiedSellers.Add(sp.SellerId);
+
+                        var vendorSubs = await dbV.ClientPushSubscriptions
+                            .Where(s => s.ClientId == sp.Seller.ClientId)
+                            .ToListAsync();
+
+                        var pushV = new WebPushClient();
+                        var vapidV = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
+                        var payloadV = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            title = "💰 Paiement en cours !",
+                            body = $"Commande #{orderId} livrée — votre paiement est en cours de traitement."
+                        });
+
+                        foreach (var s in vendorSubs)
+                        {
+                            try
+                            {
+                                var sub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                                await pushV.SendNotificationAsync(sub, payloadV, vapidV);
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                catch (Exception ex) { Console.WriteLine("PUSH VENDOR DELIVERED ERROR: " + ex.Message); }
+            }
 
             return Ok(new { order.Id, order.Status });
         }

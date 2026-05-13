@@ -353,7 +353,10 @@ namespace RanitaApi.Controllers
         [HttpPut("payouts/{id}/paid")]
         public async Task<IActionResult> MarkPaid(int id, [FromBody] MarkPayoutPaidDto dto)
         {
-            var payout = await _db.SellerPayouts.FindAsync(id);
+            var payout = await _db.SellerPayouts
+                .Include(p => p.Seller)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (payout == null) return NotFound();
 
             payout.Status = "Paid";
@@ -362,8 +365,44 @@ namespace RanitaApi.Controllers
             payout.PaidAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
+
+            // Notifier le vendeur
+            try
+            {
+                if (payout.Seller != null)
+                {
+                    var vendorSubs = await _db.ClientPushSubscriptions
+                        .Where(s => s.ClientId == payout.Seller.ClientId)
+                        .ToListAsync();
+
+                    var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
+                    var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                    var vapidSubject = "mailto:contact@ranita-shop.com";
+
+                    var pushClient = new WebPush.WebPushClient();
+                    var vapidDetails = new WebPush.VapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+                    var payload = System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        title = "💸 Paiement reçu !",
+                        body = $"Votre paiement de {payout.NetAmount.ToString("N0")} FCFA a été effectué. Réf: {dto.TransactionReference}"
+                    });
+
+                    foreach (var s in vendorSubs)
+                    {
+                        try
+                        {
+                            var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                            await pushClient.SendNotificationAsync(sub, payload, vapidDetails);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+
             return Ok(new { message = "Payout marqué comme payé" });
         }
+
 
         // ══════════════════════════════════════════════════════════════════
         // DÉCLENCHEMENT PAYOUT (à appeler quand commande = "Livré")
