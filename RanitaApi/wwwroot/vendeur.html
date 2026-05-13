@@ -1135,7 +1135,6 @@
         }
 
         function switchTab(tab) {
-            // Cacher toutes les sections
             ['products', 'orders', 'failed'].forEach(t => {
                 document.getElementById(`section-${t}`).style.display = 'none';
                 const btn = document.getElementById(`tab-${t}`);
@@ -1143,13 +1142,15 @@
                 btn.style.borderBottom = '3px solid transparent';
             });
 
-            // Afficher la section active
             document.getElementById(`section-${tab}`).style.display = 'block';
             const activeBtn = document.getElementById(`tab-${tab}`);
             activeBtn.style.color = '#10b981';
             activeBtn.style.borderBottom = '3px solid #10b981';
 
-            // Charger les données si nécessaire
+            // Cacher le badge de l'onglet actif
+            const badge = document.getElementById(`badge-${tab}`);
+            if (badge) badge.style.display = 'none';
+
             if (tab === 'orders') loadMyOrders();
             if (tab === 'failed') loadFailedDeliveries();
         }
