@@ -230,6 +230,35 @@ namespace RanitaApi.Controllers
             _db.SellerProducts.Add(product);
             await _db.SaveChangesAsync();
 
+
+            // Notifier l'admin
+            try
+            {
+                var adminSubs = await _db.PushSubscriptions.ToListAsync();
+                var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
+                var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                var pushAdmin = new WebPush.WebPushClient();
+                var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
+                var sellerName = seller.ShopName;
+                var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    title = "📦 Nouveau produit à valider !",
+                    body = $"\"{name}\" soumis par {sellerName} — en attente de validation."
+                });
+
+                foreach (var s in adminSubs)
+                {
+                    try
+                    {
+                        var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                        await pushAdmin.SendNotificationAsync(sub, payloadAdmin, vapidAdmin);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+
             // Sauvegarder les variantes
             var variantsJson = Request.Form["variants"].ToString();
             if (!string.IsNullOrEmpty(variantsJson))
@@ -462,6 +491,34 @@ namespace RanitaApi.Controllers
             }
 
             await _db.SaveChangesAsync();
+
+            // Notifier l'admin — produit modifié
+            try
+            {
+                var adminSubs = await _db.PushSubscriptions.ToListAsync();
+                var sellerInfo = await _db.Sellers.FindAsync(sellerId);
+                var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
+                var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                var pushAdmin = new WebPush.WebPushClient();
+                var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
+                var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    title = "✏️ Produit modifié à re-valider !",
+                    body = $"\"{product.Name}\" modifié par {sellerInfo?.ShopName ?? "un vendeur"} — en attente de validation."
+                });
+
+                foreach (var s in adminSubs)
+                {
+                    try
+                    {
+                        var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
+                        await pushAdmin.SendNotificationAsync(sub, payloadAdmin, vapidAdmin);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
             return Ok(new { message = "Produit mis à jour", productId = product.Id });
         }
 
