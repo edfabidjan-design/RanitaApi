@@ -1147,12 +1147,34 @@
             activeBtn.style.color = '#10b981';
             activeBtn.style.borderBottom = '3px solid #10b981';
 
-            // Cacher le badge de l'onglet actif
+            // Cacher badge et sauvegarder
             const badge = document.getElementById(`badge-${tab}`);
             if (badge) badge.style.display = 'none';
 
-            if (tab === 'orders') loadMyOrders();
-            if (tab === 'failed') loadFailedDeliveries();
+            // Sauvegarder que l'onglet a été vu
+            if (tab === 'orders') {
+                fetch(`${API}/sellers/${sellerId}/orders`)
+                    .then(r => r.json())
+                    .then(orders => {
+                        localStorage.setItem(`badge-orders-${sellerId}`, orders.filter(o => o.status === 'En attente').length);
+                        loadMyOrders();
+                    });
+            }
+            if (tab === 'failed') {
+                fetch(`${API}/sellers/${sellerId}/orders`)
+                    .then(r => r.json())
+                    .then(orders => {
+                        localStorage.setItem(`badge-failed-${sellerId}`, orders.filter(o => o.status === 'Échec livraison').length);
+                        loadFailedDeliveries();
+                    });
+            }
+            if (tab === 'products') {
+                fetch(`${API}/sellers/${sellerId}/products`)
+                    .then(r => r.json())
+                    .then(products => {
+                        localStorage.setItem(`badge-products-${sellerId}`, products.filter(p => p.approvalStatus === 'Pending').length);
+                    });
+            }
         }
 
         async function loadFailedDeliveries() {
@@ -1354,29 +1376,34 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
             try {
                 const res = await fetch(`${API}/sellers/${sellerId}/products`);
                 const products = await res.json();
-
-                // Badge produits — nombre en attente
                 const pending = products.filter(p => p.approvalStatus === 'Pending').length;
                 const badgeP = document.getElementById('badge-products');
-                if (pending > 0) { badgeP.textContent = pending; badgeP.style.display = 'inline'; }
-                else badgeP.style.display = 'none';
+                const lastPending = parseInt(localStorage.getItem(`badge-products-${sellerId}`) || '0');
+                if (pending > lastPending) {
+                    badgeP.textContent = pending - lastPending;
+                    badgeP.style.display = 'inline';
+                } else badgeP.style.display = 'none';
             } catch (e) { }
 
             try {
                 const res = await fetch(`${API}/sellers/${sellerId}/orders`);
                 const orders = await res.json();
 
-                // Badge commandes — nouvelles commandes (En attente)
                 const newOrders = orders.filter(o => o.status === 'En attente').length;
                 const badgeO = document.getElementById('badge-orders');
-                if (newOrders > 0) { badgeO.textContent = newOrders; badgeO.style.display = 'inline'; }
-                else badgeO.style.display = 'none';
+                const lastOrders = parseInt(localStorage.getItem(`badge-orders-${sellerId}`) || '0');
+                if (newOrders > lastOrders) {
+                    badgeO.textContent = newOrders - lastOrders;
+                    badgeO.style.display = 'inline';
+                } else badgeO.style.display = 'none';
 
-                // Badge échecs livraison
                 const failed = orders.filter(o => o.status === 'Échec livraison').length;
                 const badgeF = document.getElementById('badge-failed');
-                if (failed > 0) { badgeF.textContent = failed; badgeF.style.display = 'inline'; }
-                else badgeF.style.display = 'none';
+                const lastFailed = parseInt(localStorage.getItem(`badge-failed-${sellerId}`) || '0');
+                if (failed > lastFailed) {
+                    badgeF.textContent = failed - lastFailed;
+                    badgeF.style.display = 'inline';
+                } else badgeF.style.display = 'none';
             } catch (e) { }
         }
 
