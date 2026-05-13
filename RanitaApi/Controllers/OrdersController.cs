@@ -275,6 +275,41 @@ namespace RanitaApi.Controllers
 
             await _context.SaveChangesAsync();
 
+            // Payout automatique quand commande Livrée
+            if (dto.Status == "Livrée" && ancienStatut != "Livrée")
+            {
+                foreach (var item in order.Items)
+                {
+                    var sellerProduct = await _context.SellerProducts
+                        .Include(sp => sp.Seller)
+                        .FirstOrDefaultAsync(sp => sp.ProductId == item.ProductId && sp.ApprovalStatus == "Approved");
+
+                    if (sellerProduct?.Seller == null) continue;
+
+                    // Éviter les doublons
+                    var alreadyExists = await _context.SellerPayouts
+                        .AnyAsync(p => p.OrderId == order.Id && p.SellerId == sellerProduct.SellerId);
+                    if (alreadyExists) continue;
+
+                    var gross = item.Price * item.Quantity;
+                    var commission = Math.Round(gross * sellerProduct.Seller.CommissionRate, 2);
+                    var net = gross - commission;
+
+                    _context.SellerPayouts.Add(new SellerPayout
+                    {
+                        SellerId = sellerProduct.SellerId,
+                        OrderId = order.Id,
+                        GrossAmount = gross,
+                        CommissionAmount = commission,
+                        NetAmount = net,
+                        Status = "Pending",
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+
             var orderId = order.Id;
             var clientId = order.ClientId;
             var newStatus = dto.Status;
