@@ -652,8 +652,11 @@
 
                         <div class="product-info">
                             <a href="products.html" class="back-link">← Retour aux produits</a>
-                            ${currentProduct.category ? `<span class="product-badge">${currentProduct.category.name}</span>` : ''}
-                            <h1 class="product-title">${currentProduct.name}</h1>
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    ${currentProduct.category ? `<span class="product-badge">${currentProduct.category.name}</span>` : ''}
+    <span id="seller-badge"></span>
+</div>
+<h1 class="product-title">${currentProduct.name}</h1>
                             ${currentProduct.shortDescription ? `<p class="product-short-desc">${currentProduct.shortDescription}</p>` : ''}
 
                             <div class="price-block">
@@ -729,7 +732,24 @@
         }
 
         
-        loadProduct().then(() => loadReviews());
+        loadProduct().then(() => { loadReviews(); loadSellerInfo(); });
+
+        async function loadSellerInfo() {
+            try {
+                // Chercher si ce produit appartient à un vendeur
+                const res = await fetch(`${API_BASE}/sellers/product/${productId}`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data.sellerId) {
+                    document.getElementById('seller-badge').innerHTML = `
+                <a href="boutique.html?id=${data.sellerId}" 
+                   style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">
+                    🏪 ${data.shopName}
+                </a>`;
+                }
+            } catch (e) { }
+        }
+
     </script>
 </body>
 </html>

@@ -596,5 +596,22 @@ namespace RanitaApi.Controllers
                 })
             });
         }
+
+        // GET /api/sellers/product/{productId}
+        [HttpGet("product/{productId}")]
+        public async Task<IActionResult> GetByProductId(int productId)
+        {
+            var sellerProduct = await _db.SellerProducts
+                .Include(sp => sp.Seller)
+                .FirstOrDefaultAsync(sp => sp.ProductId == productId && sp.ApprovalStatus == "Approved");
+
+            if (sellerProduct?.Seller == null) return NotFound();
+
+            return Ok(new
+            {
+                SellerId = sellerProduct.SellerId,
+                ShopName = sellerProduct.Seller.ShopName
+            });
+        }
     }
 }
