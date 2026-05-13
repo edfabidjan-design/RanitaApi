@@ -917,12 +917,42 @@
                 <div class="dash-stat"><div class="label">Gains totaux</div><div class="value green" id="dash-earnings">—</div></div>
                 <div class="dash-stat"><div class="label">À recevoir</div><div class="value orange" id="dash-pending-payouts">—</div></div>
             </div>
-            <div class="section-header">
-                <div class="section-title">Mes produits</div>
-                <button class="btn-add" onclick="openAddProduct()">+ Ajouter un produit</button>
+            <!-- ONGLETS -->
+            <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;">
+                <button id="tab-products" onclick="switchTab('products')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">📦 Mes produits</button>
+                <button id="tab-orders" onclick="switchTab('orders')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">🛒 Mes commandes</button>
+                <button id="tab-failed" onclick="switchTab('failed')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">❌ Échecs livraison</button>
             </div>
-            <div id="my-products-list">
-                <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
+
+            <!-- CONTENU PRODUITS -->
+            <div id="section-products">
+                <div class="section-header">
+                    <div class="section-title">Mes produits</div>
+                    <button class="btn-add" onclick="openAddProduct()">+ Ajouter un produit</button>
+                </div>
+                <div id="my-products-list">
+                    <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
+                </div>
+            </div>
+
+            <!-- CONTENU COMMANDES -->
+            <div id="section-orders" style="display:none;">
+                <div class="section-header">
+                    <div class="section-title">Mes commandes</div>
+                </div>
+                <div id="my-orders-list">
+                    <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
+                </div>
+            </div>
+
+            <!-- CONTENU ÉCHECS -->
+            <div id="section-failed" style="display:none;">
+                <div class="section-header">
+                    <div class="section-title">Échecs de livraison</div>
+                </div>
+                <div id="my-failed-list">
+                    <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
+                </div>
             </div>
 
             <div style="margin-top:32px;">
@@ -1105,6 +1135,51 @@
             } catch (e) { }
         }
 
+        function switchTab(tab) {
+            // Cacher toutes les sections
+            ['products', 'orders', 'failed'].forEach(t => {
+                document.getElementById(`section-${t}`).style.display = 'none';
+                const btn = document.getElementById(`tab-${t}`);
+                btn.style.color = '#6b7280';
+                btn.style.borderBottom = '3px solid transparent';
+            });
+
+            // Afficher la section active
+            document.getElementById(`section-${tab}`).style.display = 'block';
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            activeBtn.style.color = '#10b981';
+            activeBtn.style.borderBottom = '3px solid #10b981';
+
+            // Charger les données si nécessaire
+            if (tab === 'orders') loadMyOrders();
+            if (tab === 'failed') loadFailedDeliveries();
+        }
+
+        async function loadFailedDeliveries() {
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const orders = await res.json();
+                const el = document.getElementById('my-failed-list');
+
+                const failed = orders.filter(o => o.status === 'Échec livraison' || o.status === 'Annulée');
+
+                if (!failed.length) {
+                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun échec de livraison.</div>';
+                    return;
+                }
+
+                el.innerHTML = failed.map(o => `
+        <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-weight:700;">Commande #${o.id}</span>
+                <span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span>
+            </div>
+            <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
+            <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
+            <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
+        </div>`).join('');
+            } catch (e) { }
+        }
 
 
         async function deleteProduct(id) {
@@ -1204,7 +1279,7 @@
                     showPage('page-dashboard');
                     loadMyProducts();
                     loadCategories();
-                    loadMyOrders();
+                   
 
                 } else {
                     document.querySelector('#page-pending .status-icon').textContent = '⏸️';
