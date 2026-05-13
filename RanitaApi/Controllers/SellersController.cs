@@ -55,7 +55,7 @@ namespace RanitaApi.Controllers
             {
                 var adminSubs = await _db.PushSubscriptions.ToListAsync();
                 var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
-                var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                var vapidPrivateKey = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
                 var pushAdmin = new WebPush.WebPushClient();
                 var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
                 var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
@@ -236,7 +236,7 @@ namespace RanitaApi.Controllers
             {
                 var adminSubs = await _db.PushSubscriptions.ToListAsync();
                 var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
-                var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                var vapidPrivateKey = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
                 var pushAdmin = new WebPush.WebPushClient();
                 var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
                 var sellerName = seller.ShopName;
@@ -498,7 +498,7 @@ namespace RanitaApi.Controllers
                 var adminSubs = await _db.PushSubscriptions.ToListAsync();
                 var sellerInfo = await _db.Sellers.FindAsync(sellerId);
                 var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
-                var vapidPrivateKey = Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY") ?? "";
+                var vapidPrivateKey = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
                 var pushAdmin = new WebPush.WebPushClient();
                 var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
                 var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
