@@ -94,6 +94,7 @@ namespace RanitaApi.Controllers
             };
 
             decimal total = 0;
+            // APRÈS
             foreach (var item in dto.Items)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
@@ -110,12 +111,31 @@ namespace RanitaApi.Controllers
                 };
                 total += product.Price * item.Quantity;
                 order.Items.Add(orderItem);
+
                 if (item.VariantId.HasValue)
                 {
                     var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
-                    if (variant != null) variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
+                    if (variant != null)
+                    {
+                        variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
+
+                        // ✅ Déduire aussi dans SellerProduct
+                        var sp = await _context.SellerProducts
+                            .FirstOrDefaultAsync(x => x.ProductId == product.Id && x.ApprovalStatus == "Approved");
+                        if (sp != null)
+                            sp.Stock = Math.Max(0, sp.Stock - item.Quantity);
+                    }
                 }
-                else product.Stock = Math.Max(0, product.Stock - item.Quantity);
+                else
+                {
+                    product.Stock = Math.Max(0, product.Stock - item.Quantity);
+
+                    // ✅ Déduire aussi dans SellerProduct
+                    var sp = await _context.SellerProducts
+                        .FirstOrDefaultAsync(x => x.ProductId == product.Id && x.ApprovalStatus == "Approved");
+                    if (sp != null)
+                        sp.Stock = product.Stock;
+                }
             }
 
             total += dto.ShippingFee;
