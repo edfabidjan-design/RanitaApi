@@ -646,23 +646,107 @@
 
         @media (max-width: 768px) {
             .admin-header {
-                padding: 12px 16px;
+                padding: 10px 14px;
+                gap: 8px;
             }
+
+                .admin-header nav {
+                    gap: 4px 10px;
+                    font-size: 12px;
+                }
+
+                    .admin-header nav a {
+                        font-size: 12px;
+                    }
 
             .admin-container {
-                padding: 16px;
+                padding: 12px;
             }
 
-            .seller-card {
-                flex-wrap: wrap;
+            .page-title {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .seller-actions {
+            .stats-pills {
                 width: 100%;
+            }
+
+            .stat-pill {
+                font-size: 12px;
+                padding: 5px 10px;
             }
 
             .tabs {
                 overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .tab {
+                padding: 10px 14px;
+                font-size: 13px;
+                flex-shrink: 0;
+            }
+
+            .seller-card {
+                flex-wrap: wrap;
+                padding: 14px;
+                gap: 10px;
+            }
+
+            .seller-info {
+                width: calc(100% - 64px);
+            }
+
+            .seller-meta {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .seller-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .product-card {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .product-info {
+                width: calc(100% - 72px);
+            }
+
+            .product-meta {
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .product-price {
+                width: 100%;
+            }
+            /* Payouts responsive */
+            #payouts-list > div {
+                padding: 14px !important;
+            }
+
+            #payouts-list input[type="text"] {
+                width: 100% !important;
+                min-width: unset !important;
+            }
+
+            #payouts-list button {
+                width: 100% !important;
+            }
+
+            #payouts-list > div > div:last-child {
+                flex-direction: column !important;
+            }
+
+            .modal {
+                padding: 20px 16px;
+                max-width: 100% !important;
             }
         }
     </style>
