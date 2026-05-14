@@ -43,10 +43,15 @@
             if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
             try {
                 const reg = await navigator.serviceWorker.register('/sw-client.js');
-                const permission = await Notification.requestPermission();
-                if (permission !== 'granted') return;
 
-                // Forcer le re-enregistrement pour avoir le bon clientId
+                // Demander permission seulement si pas encore accordée
+                if (Notification.permission === 'default') {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') return;
+                }
+                if (Notification.permission !== 'granted') return;
+
+                // Forcer re-enregistrement
                 const existing = await reg.pushManager.getSubscription();
                 if (existing) await existing.unsubscribe();
 
@@ -94,12 +99,10 @@
 
             localStorage.setItem("client", JSON.stringify(data));
 
-            // Rediriger immédiatement
+            // Enregistrer push PUIS rediriger
+            await registerClientPush(data.id);
             const redirect = new URLSearchParams(window.location.search).get("redirect");
             window.location.href = redirect || "products.html";
-
-            // Enregistrer push en arrière-plan (sans bloquer)
-            registerClientPush(data.id);
         });
     </script>
 
