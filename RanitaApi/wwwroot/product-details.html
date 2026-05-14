@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="products.css">
     <link rel="stylesheet" href="header.css">
 
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json"
     <meta name="theme-color" content="#10b981">
 
 
@@ -632,8 +632,15 @@
                 : currentProduct.stock;
 
             document.getElementById("productDetails").innerHTML = `
-                    <div class="product-page">
-                        <div class="gallery">
+    <div style="max-width:1100px;margin:16px auto 0;padding:0 20px;">
+        <a href="products.html" class="back-link">← Retour aux produits</a>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            ${currentProduct.category ? `<span class="product-badge">${currentProduct.category.name}</span>` : ''}
+            <span id="seller-badge"></span>
+        </div>
+    </div>
+    <div class="product-page">
+        <div class="gallery">
                             <div class="gallery-main">
                                 <img id="mainImg" src="${images[0]}" alt="${currentProduct.name}">
                             </div>
@@ -651,11 +658,7 @@
                         </div>
 
                         <div class="product-info">
-                            <a href="products.html" class="back-link">← Retour aux produits</a>
-<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    ${currentProduct.category ? `<span class="product-badge">${currentProduct.category.name}</span>` : currentProduct.categoryId ? '' : ''}
-    <span id="seller-badge"></span>
-</div>
+
 <h1 class="product-title">${currentProduct.name}</h1>
                             ${currentProduct.shortDescription ? `<p class="product-short-desc">${currentProduct.shortDescription}</p>` : ''}
 
@@ -741,7 +744,7 @@
                 if (!res.ok) return;
                 const data = await res.json();
                 if (data.sellerId) {
-                    document.getElementById('seller-badge').innerHTML = `
+                    document.getElementById('seller-badge-top').innerHTML = `
                 <a href="boutique.html?id=${data.sellerId}" 
                    style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">
                     🏪 ${data.shopName}
