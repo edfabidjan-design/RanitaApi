@@ -1082,7 +1082,7 @@
                     </div>`;
             } else {
                 authNav.innerHTML = `
-                    <a href="login.html?redirect=vendeur.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
+                   <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
                     <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
             }
         });
@@ -1276,7 +1276,11 @@
 
         // ── DÉMARRER ──────────────────────────────────────────────────────────
         function checkAndStart() {
-            if (!clientId) { showPage('page-login-required'); return; }
+            const seller = JSON.parse(localStorage.getItem('seller')) || null;
+            if (!seller) {
+                window.location.href = 'vendeur-login.html';
+                return;
+            }
             loadSellerStatus();
         }
 
