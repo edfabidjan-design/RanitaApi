@@ -299,7 +299,7 @@ namespace RanitaApi.Controllers
                     await _emailService.SendPayoutToSellerAsync(
                         sellerEmail,
                         payout.Seller!.ShopName,
-                        payout.OrderId,
+                        payout.OrderId ?? 0,
                         payout.NetAmount,
                         payout.Seller.PaymentMethod,
                         payout.Seller.PaymentDetails
@@ -629,5 +629,6 @@ namespace RanitaApi.Controllers
     public class MarkPayoutPaidDto
     {
         public string? TransactionReference { get; set; }
+        public string? Notes { get; set; }
     }
 }
