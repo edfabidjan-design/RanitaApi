@@ -29,7 +29,6 @@
                 display: block;
             }
 
-        /* ── HERO ── */
         .hero {
             background: #111827;
             color: white;
@@ -109,7 +108,6 @@
                 transform: translateY(-1px);
             }
 
-        /* ── AVANTAGES ── */
         .avantages {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
@@ -144,7 +142,6 @@
             line-height: 1.5;
         }
 
-        /* ── INSCRIPTION ── */
         .form-container {
             max-width: 620px;
             margin: 0 auto;
@@ -185,9 +182,7 @@
                 letter-spacing: 0.4px;
             }
 
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
+            .form-group input, .form-group select, .form-group textarea {
                 width: 100%;
                 padding: 11px 14px;
                 border: 1px solid #d1d5db;
@@ -200,9 +195,7 @@
                 transition: border-color 0.2s, box-shadow 0.2s;
             }
 
-                .form-group input:focus,
-                .form-group select:focus,
-                .form-group textarea:focus {
+                .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
                     border-color: #10b981;
                     box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
                     background: white;
@@ -245,7 +238,6 @@
             line-height: 1.5;
         }
 
-        /* ── STATUS ── */
         .status-container {
             max-width: 480px;
             margin: 60px auto;
@@ -324,7 +316,6 @@
             color: #991b1b;
         }
 
-        /* ── DASHBOARD ── */
         .dashboard {
             max-width: 1000px;
             margin: 0 auto;
@@ -414,7 +405,6 @@
                 background: #059669;
             }
 
-        /* ── PRODUIT CARD ── */
         .my-product {
             background: white;
             border: 1px solid #e5e7eb;
@@ -424,6 +414,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
+            flex-wrap: wrap;
         }
 
         .my-product-img {
@@ -472,7 +463,6 @@
             white-space: nowrap;
         }
 
-        /* ── MODAL PRODUIT ── */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -505,7 +495,6 @@
                 margin-bottom: 20px;
             }
 
-        /* ── FORM SECTIONS (identique admin) ── */
         .form-section {
             background: #f9fafb;
             border: 1px solid #e5e7eb;
@@ -543,9 +532,7 @@
                 letter-spacing: 0.3px;
             }
 
-            .form-grid input,
-            .form-grid select,
-            .form-grid textarea {
+            .form-grid input, .form-grid select, .form-grid textarea {
                 width: 100%;
                 padding: 10px 12px;
                 border: 1px solid #d1d5db;
@@ -558,9 +545,7 @@
                 box-sizing: border-box;
             }
 
-                .form-grid input:focus,
-                .form-grid select:focus,
-                .form-grid textarea:focus {
+                .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
                     border-color: #10b981;
                 }
 
@@ -569,7 +554,6 @@
                 min-height: 70px;
             }
 
-        /* ── GALERIE IMAGES ── */
         .image-gallery {
             display: flex;
             flex-wrap: wrap;
@@ -639,7 +623,6 @@
                 white-space: nowrap;
             }
 
-        /* ── VARIANTES ── */
         .attr-field {
             display: flex;
             flex-direction: column;
@@ -674,7 +657,6 @@
                 font-size: 13px;
             }
 
-        /* ── MODAL ACTIONS ── */
         .modal-actions {
             display: flex;
             gap: 10px;
@@ -713,7 +695,6 @@
                 cursor: not-allowed;
             }
 
-        /* ── LOGIN PROMPT ── */
         .login-prompt {
             text-align: center;
             padding: 80px 24px;
@@ -736,7 +717,6 @@
                 font-size: 14px;
             }
 
-        /* ── TOAST ── */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -792,7 +772,6 @@
 </head>
 <body>
 
-    <!-- ── HEADER ── -->
     <header class="site-header">
         <div class="site-logo" onclick="window.location.href='index.html'">🛒 Ranita Market</div>
         <nav style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
@@ -803,7 +782,7 @@
         </nav>
     </header>
 
-    <!-- ══ LANDING ══════════════════════════════════════════════════════ -->
+    <!-- LANDING -->
     <div class="page active" id="page-landing">
         <div class="hero">
             <div class="hero-tag">Ranita Market</div>
@@ -824,17 +803,7 @@
         </div>
     </div>
 
-    <!-- ══ LOGIN REQUIS ══════════════════════════════════════════════════ -->
-    <div class="page" id="page-login-required">
-        <div class="login-prompt">
-            <div class="icon">🔐</div>
-            <h2>Connexion requise</h2>
-            <p>Vous devez être connecté pour créer une boutique.</p>
-            <a href="/vendeur-login.html" style="display:inline-block;background:#10b981;color:white;padding:12px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;">Se connecter</a>
-        </div>
-    </div>
-
-    <!-- ══ FORMULAIRE INSCRIPTION ════════════════════════════════════════ -->
+    <!-- FORMULAIRE INSCRIPTION -->
     <div class="page" id="page-register">
         <div class="form-container">
             <div class="form-card">
@@ -880,7 +849,7 @@
         </div>
     </div>
 
-    <!-- ══ EN ATTENTE ════════════════════════════════════════════════════ -->
+    <!-- EN ATTENTE -->
     <div class="page" id="page-pending">
         <div class="status-container">
             <div class="status-icon">⏳</div>
@@ -891,7 +860,7 @@
         </div>
     </div>
 
-    <!-- ══ REFUSÉ ════════════════════════════════════════════════════════ -->
+    <!-- REFUSÉ -->
     <div class="page" id="page-rejected">
         <div class="status-container">
             <div class="status-icon">❌</div>
@@ -901,7 +870,7 @@
         </div>
     </div>
 
-    <!-- ══ DASHBOARD ═════════════════════════════════════════════════════ -->
+    <!-- DASHBOARD -->
     <div class="page" id="page-dashboard">
         <div class="dashboard">
             <div class="dash-header">
@@ -920,7 +889,6 @@
                 <div class="dash-stat"><div class="label">Gains totaux</div><div class="value green" id="dash-earnings">—</div></div>
                 <div class="dash-stat"><div class="label">À recevoir</div><div class="value orange" id="dash-pending-payouts">—</div></div>
             </div>
-            <!-- ONGLETS -->
             <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;">
                 <button id="tab-products" onclick="switchTab('products')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">
                     📦 Mes produits <span id="badge-products" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
@@ -932,125 +900,95 @@
                     ❌ Échecs livraison <span id="badge-failed" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
                 </button>
             </div>
-
-            <!-- CONTENU PRODUITS -->
             <div id="section-products">
                 <div class="section-header">
                     <div class="section-title">Mes produits</div>
                     <button class="btn-add" onclick="openAddProduct()">+ Ajouter un produit</button>
                 </div>
-                <div id="my-products-list">
-                    <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
-                </div>
+                <div id="my-products-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
-
-            <!-- CONTENU COMMANDES -->
             <div id="section-orders" style="display:none;">
-                <div class="section-header">
-                    <div class="section-title">Mes commandes</div>
-                </div>
-                <div id="my-orders-list">
-                    <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
-                </div>
+                <div class="section-header"><div class="section-title">Mes commandes</div></div>
+                <div id="my-orders-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
-
-            <!-- CONTENU ÉCHECS -->
             <div id="section-failed" style="display:none;">
-                <div class="section-header">
-                    <div class="section-title">Échecs de livraison</div>
-                </div>
-                <div id="my-failed-list">
-                    <div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div>
-                </div>
+                <div class="section-header"><div class="section-title">Échecs de livraison</div></div>
+                <div id="my-failed-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
-
-
         </div>
     </div>
 
-    <!-- ══ MODAL AJOUT / MODIF PRODUIT ══════════════════════════════════ -->
+    <!-- MODAL PRODUIT -->
     <div class="modal-overlay" id="modal-product">
         <div class="modal">
             <h3 id="modal-product-title">Ajouter un produit</h3>
             <input type="hidden" id="p-id">
-
-            <!-- Infos de base -->
             <div class="form-section">
                 <h4>📦 Informations de base</h4>
                 <div class="form-grid">
-                    <div>
-                        <label>Nom du produit *</label>
-                        <input type="text" id="p-name" placeholder="Ex: Chemise Homme Slim">
-                    </div>
-                    <div>
-                        <label>SKU — généré automatiquement</label>
-                        <input type="text" id="p-sku" placeholder="RAN-XXX-0000" readonly style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;">
-                    </div>
-                    <div>
-                        <label>Marque</label>
-                        <input type="text" id="p-brand" placeholder="Ex: Nike, Samsung...">
-                    </div>
-                    <div>
-                        <label>Catégorie *</label>
-                        <select id="p-category" onchange="loadProductAttributes()"></select>
-                    </div>
-                    <div class="full">
-                        <label>Description courte *</label>
-                        <input type="text" id="p-short-desc" placeholder="1-2 phrases résumant le produit">
-                    </div>
-                    <div class="full">
-                        <label>Description longue</label>
-                        <textarea id="p-description" rows="3" placeholder="Description détaillée..."></textarea>
-                    </div>
+                    <div><label>Nom du produit *</label><input type="text" id="p-name" placeholder="Ex: Chemise Homme Slim"></div>
+                    <div><label>SKU — généré automatiquement</label><input type="text" id="p-sku" placeholder="RAN-XXX-0000" readonly style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;"></div>
+                    <div><label>Marque</label><input type="text" id="p-brand" placeholder="Ex: Nike, Samsung..."></div>
+                    <div><label>Catégorie *</label><select id="p-category" onchange="loadProductAttributes()"></select></div>
+                    <div class="full"><label>Description courte *</label><input type="text" id="p-short-desc" placeholder="1-2 phrases résumant le produit"></div>
+                    <div class="full"><label>Description longue</label><textarea id="p-description" rows="3" placeholder="Description détaillée..."></textarea></div>
                 </div>
             </div>
-
-            <!-- Prix & Stock -->
             <div class="form-section">
                 <h4>💰 Prix & Stock</h4>
                 <div class="form-grid">
-                    <div>
-                        <label>Prix de vente * (FCFA)</label>
-                        <input type="number" id="p-price" placeholder="Ex: 15000" min="0">
-                    </div>
-                    <div>
-                        <label>Prix barré (FCFA)</label>
-                        <input type="number" id="p-old-price" placeholder="Ex: 20000" min="0">
-                    </div>
-                    <div>
-                        <label>Stock global</label>
-                        <input type="number" id="p-stock" placeholder="Ex: 50" min="0">
-                    </div>
+                    <div><label>Prix de vente * (FCFA)</label><input type="number" id="p-price" placeholder="Ex: 15000" min="0"></div>
+                    <div><label>Prix barré (FCFA)</label><input type="number" id="p-old-price" placeholder="Ex: 20000" min="0"></div>
+                    <div><label>Stock global</label><input type="number" id="p-stock" placeholder="Ex: 50" min="0"></div>
                 </div>
             </div>
-
-            <!-- Images -->
             <div class="form-section">
                 <h4>🖼️ Images (max 5 — la 1ère est l'image principale)</h4>
-                <input type="file" id="p-image-file" accept="image/*" onchange="handleImageUpload(this)"
-                       style="padding:8px;border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;width:100%;font-size:13px;">
-                <div class="image-gallery" id="p-image-gallery">
-                    <p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutée</p>
-                </div>
+                <input type="file" id="p-image-file" accept="image/*" onchange="handleImageUpload(this)" style="padding:8px;border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;width:100%;font-size:13px;">
+                <div class="image-gallery" id="p-image-gallery"><p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutée</p></div>
             </div>
-
-            <!-- Attributs dynamiques -->
             <div class="form-section" id="p-attributes-section" style="display:none;">
                 <h4>🏷️ Attributs</h4>
                 <div class="form-grid" id="p-attribute-fields"></div>
             </div>
-
-            <!-- Variantes -->
             <div class="form-section" id="p-variants-section" style="display:none;">
                 <h4>🔀 Variantes & Stock</h4>
                 <p style="font-size:12px;color:#6b7280;margin-bottom:10px;">Sélectionnez vos attributs ci-dessus puis cliquez sur "Générer"</p>
                 <button type="button" onclick="generateVariants()" style="background:#3b82f6;color:white;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;margin-bottom:12px;">🔀 Générer les variantes</button>
                 <div id="p-variants-list"></div>
             </div>
-
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal('modal-product')">Annuler</button>
                 <button class="btn-save" id="btn-save-product" onclick="submitProduct()">Soumettre pour validation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PROFIL -->
+    <div class="modal-overlay" id="modal-profile">
+        <div class="modal" style="max-width:500px;">
+            <h3>⚙️ Mon profil boutique</h3>
+            <div class="form-section">
+                <div class="form-grid">
+                    <div class="full"><label>Nom de la boutique</label><input type="text" id="profile-name" placeholder="Nom de votre boutique"></div>
+                    <div class="full"><label>Description</label><textarea id="profile-desc" rows="3" placeholder="Décrivez votre boutique..."></textarea></div>
+                    <div class="full"><label>Téléphone</label><input type="tel" id="profile-phone" placeholder="07 XX XX XX XX"></div>
+                    <div>
+                        <label>Moyen de paiement</label>
+                        <select id="profile-payment">
+                            <option value="">Choisir...</option>
+                            <option value="ORANGE_MONEY">Orange Money</option>
+                            <option value="MTN_MONEY">MTN Money</option>
+                            <option value="WAVE">Wave</option>
+                            <option value="MOOV_MONEY">Moov Money</option>
+                        </select>
+                    </div>
+                    <div><label>Numéro</label><input type="text" id="profile-payment-details" placeholder="Numéro Mobile Money"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('modal-profile')">Annuler</button>
+                <button class="btn-save" onclick="saveProfile()">Enregistrer</button>
             </div>
         </div>
     </div>
@@ -1061,153 +999,214 @@
         const API = 'https://ranitaapi-production.up.railway.app/api';
         let clientId = null, sellerId = null;
         let productImages = [], newImageFiles = [];
+        let sellerData = null;
 
-        // ── INIT ──────────────────────────────────────────────────────────────
+        // ══════════════════════════════════════════════════════
+        // INIT — appelé au chargement de la page
+        // ══════════════════════════════════════════════════════
         window.addEventListener('DOMContentLoaded', () => {
-            const client = JSON.parse(localStorage.getItem('seller')) || null;
-            if (client) clientId = client.clientId;
-            
-            const authNav = document.getElementById('authNav');
-            if (client) {
-                clientId = client.id;
-                authNav.innerHTML = `
-                    <div style="position:relative;display:inline-block;">
-                        <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
-                            👤 ${client.name ? client.name.split(' ')[0] : 'Mon compte'} ▾
-                        </button>
-                        <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
-                            <a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#111827;text-decoration:none;font-weight:600;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>
-                            <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
-                        </div>
-                    </div>`;
+            const stored = localStorage.getItem('seller');
+            const seller = stored ? JSON.parse(stored) : null;
+
+            if (seller) {
+                // ✅ FIX 1 : récupérer clientId depuis tous les champs possibles
+                // (selon ce que ton API retourne au login)
+                clientId = seller.clientId || seller.id || seller.userId || seller.sellerId || null;
+
+                // Construire le menu nav connecté
+                buildAuthNav(seller);
+
+                // ✅ FIX PRINCIPAL : charger le statut automatiquement sans attendre le clic
+                loadSellerStatus();
             } else {
-                authNav.innerHTML = `
-                   <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
-                    <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
+                // Non connecté → nav avec boutons connexion/inscription
+                document.getElementById('authNav').innerHTML = `
+                        <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
+                        <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
             }
         });
 
+        function buildAuthNav(seller) {
+            const firstName = seller.name ? seller.name.split(' ')[0] : (seller.firstName || 'Mon compte');
+            document.getElementById('authNav').innerHTML = `
+                    <div style="position:relative;display:inline-block;">
+                        <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
+                            👤 ${firstName} ▾
+                        </button>
+                        <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
+                            <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
+                        </div>
+                    </div>`;
+        }
 
-        async function loadMyOrders() {
+        function toggleMenu() {
+            const m = document.getElementById('clientMenu');
+            if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ✅ FIX 2 : supprimer 'seller' (pas 'client') + recharger
+        function logout() {
+            localStorage.removeItem('seller');
+            window.location.reload();
+        }
+
+        document.addEventListener('click', e => {
+            const m = document.getElementById('clientMenu');
+            if (m && !e.target.closest('#authNav')) m.style.display = 'none';
+        });
+
+        // ── BOUTON CTA landing ────────────────────────────────
+        function checkAndStart() {
+            const seller = JSON.parse(localStorage.getItem('seller') || 'null');
+            if (!seller) {
+                window.location.href = 'vendeur-login.html';
+                return;
+            }
+            // Si déjà chargé (dashboard visible), ne pas recharger
+            if (document.getElementById('page-dashboard').classList.contains('active')) return;
+            loadSellerStatus();
+        }
+
+        // ── CHARGER STATUT VENDEUR ────────────────────────────
+        async function loadSellerStatus() {
+            // ✅ FIX 3 : si clientId est null, log un warning clair
+            if (!clientId) {
+                console.error('clientId est null — vérifiez la réponse JSON de /api/sellers/login');
+                // Afficher le formulaire d'inscription en dernier recours
+                showPage('page-register');
+                return;
+            }
+
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
-                const orders = await res.json();
-                const el = document.getElementById('my-orders-list');
+                const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
 
-                if (!orders.length) {
-                    el.innerHTML = '<div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Aucune commande pour le moment.</div>';
+                if (res.status === 404) {
+                    showPage('page-register');
                     return;
                 }
 
-                const statusColors = {
-                    'En attente': { bg: '#fef3c7', color: '#92400e' },
-                    'Confirmée': { bg: '#dbeafe', color: '#1e40af' },
-                    'En cours': { bg: '#e0e7ff', color: '#3730a3' },
-                    'Livrée': { bg: '#d1fae5', color: '#065f46' },
-                    'Annulée': { bg: '#fee2e2', color: '#991b1b' }
-                };
+                const s = await res.json();
+                sellerId = s.id;
 
-                el.innerHTML = orders.map(o => {
-                    const sc = statusColors[o.status] || { bg: '#f3f4f6', color: '#374151' };
+                if (s.status === 'Pending') {
+                    document.getElementById('pending-info').innerHTML = `
+                            <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
+                            <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
+                            <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
+                            <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
+                    showPage('page-pending');
+
+                } else if (s.status === 'Rejected') {
+                    document.getElementById('rejected-reason').textContent = s.rejectionReason
+                        ? `Motif : ${s.rejectionReason}`
+                        : 'Votre demande n\'a pas été acceptée.';
+                    showPage('page-rejected');
+
+                } else if (s.status === 'Approved') {
+                    document.getElementById('dash-shop-name').textContent = s.shopName;
+                    document.getElementById('dash-shop-desc').textContent = s.shopDescription || '';
+                    document.getElementById('dash-total-products').textContent = s.totalProducts ?? '0';
+                    document.getElementById('dash-pending-products').textContent = s.pendingProducts ?? '0';
+                    document.getElementById('dash-earnings').textContent = formatPrice(s.totalEarnings);
+                    document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
+                    sellerData = s;
+                    showPage('page-dashboard');
+                    loadMyProducts();
+                    loadCategories();
+                    loadBadges();
+
+                } else {
+                    // Suspendu
+                    document.querySelector('#page-pending .status-icon').textContent = '⏸️';
+                    document.querySelector('#page-pending .status-title').textContent = 'Boutique suspendue';
+                    document.querySelector('#page-pending .status-desc').textContent = 'Contactez le support Ranita.';
+                    showPage('page-pending');
+                }
+
+            } catch (e) {
+                console.error('loadSellerStatus error:', e);
+                showPage('page-register');
+            }
+        }
+
+        // ── INSCRIPTION ───────────────────────────────────────
+        async function submitRegistration() {
+            const btn = document.getElementById('btn-register');
+            const shopName = document.getElementById('shopName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const nationalIdNumber = document.getElementById('nationalIdNumber').value.trim();
+            if (!shopName || !phoneNumber || !nationalIdNumber) {
+                showToast('Remplissez tous les champs obligatoires (*)', 'error');
+                return;
+            }
+            btn.disabled = true; btn.textContent = 'Envoi en cours...';
+            try {
+                const res = await fetch(`${API}/sellers/register?clientId=${clientId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        shopName,
+                        shopDescription: document.getElementById('shopDescription').value.trim(),
+                        phoneNumber,
+                        nationalIdNumber,
+                        paymentMethod: document.getElementById('paymentMethod').value,
+                        paymentDetails: document.getElementById('paymentDetails').value.trim()
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('Demande envoyée ! Réponse sous 24h ✓', 'success');
+                    setTimeout(() => loadSellerStatus(), 1500);
+                } else {
+                    showToast(data.message || 'Erreur', 'error');
+                    btn.disabled = false; btn.textContent = 'Envoyer ma demande →';
+                }
+            } catch (e) {
+                showToast('Erreur réseau', 'error');
+                btn.disabled = false; btn.textContent = 'Envoyer ma demande →';
+            }
+        }
+
+        // ── MES PRODUITS ──────────────────────────────────────
+        async function loadMyProducts() {
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const products = await res.json();
+                const el = document.getElementById('my-products-list');
+                if (!products.length) {
+                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit. Ajoutez votre premier produit !</div>';
+                    return;
+                }
+                const labels = { Pending: 'En attente', Approved: 'Publié', Rejected: 'Refusé' };
+                const bclass = { Pending: 'badge-pending', Approved: 'badge-approved', Rejected: 'badge-rejected' };
+                el.innerHTML = products.map(p => {
+                    let imgs = [];
+                    if (Array.isArray(p.images)) { imgs = p.images; }
+                    else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
                     return `
-                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                        <div>
-                            <span style="font-weight:700;font-size:15px;">Commande #${o.id}</span>
-                            <span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span style="background:${sc.bg};color:${sc.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span>
-                            <span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span>
-                        </div>
-                    </div>
-                    <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
-                    <div style="border-top:1px solid #f3f4f6;padding-top:10px;">
-                        ${o.items.map(i => `
-                            <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
-                                ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
-                                <div style="flex:1;">
-                                    <div style="font-size:13px;font-weight:600;">${i.productName}</div>
-                                    ${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}
-                                </div>
-                                <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
-                                <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
-                            </div>`).join('')}
-                    </div>
-                </div>`;
+                        <div class="my-product">
+                            <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+                            <div class="my-product-info">
+                                <div class="my-product-name">${p.name}</div>
+                                <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
+                                ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:12px;color:#991b1b;background:#fee2e2;padding:4px 8px;border-radius:6px;margin-top:4px;">❌ Motif : ${p.rejectionReason}</div>` : ''}
+                            </div>
+                            <div class="my-product-price">${formatPrice(p.price)}</div>
+                            <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
+                            <div style="display:flex;gap:6px;flex-shrink:0;">
+                                ${p.approvalStatus !== 'Approved' ? `
+                                    <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
+                                    <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
+                                ` : `
+                                    <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
+                                    <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
+                                    <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️' : '▶️'}</button>
+                                `}
+                            </div>
+                        </div>`;
                 }).join('');
-            } catch (e) { }
+            } catch (e) { console.error('loadMyProducts:', e); }
         }
-
-        function switchTab(tab) {
-            ['products', 'orders', 'failed'].forEach(t => {
-                document.getElementById(`section-${t}`).style.display = 'none';
-                const btn = document.getElementById(`tab-${t}`);
-                btn.style.color = '#6b7280';
-                btn.style.borderBottom = '3px solid transparent';
-            });
-
-            document.getElementById(`section-${tab}`).style.display = 'block';
-            const activeBtn = document.getElementById(`tab-${tab}`);
-            activeBtn.style.color = '#10b981';
-            activeBtn.style.borderBottom = '3px solid #10b981';
-
-            // Cacher badge et sauvegarder
-            const badge = document.getElementById(`badge-${tab}`);
-            if (badge) badge.style.display = 'none';
-
-            // Sauvegarder que l'onglet a été vu
-            if (tab === 'orders') {
-                fetch(`${API}/sellers/${sellerId}/orders`)
-                    .then(r => r.json())
-                    .then(orders => {
-                        localStorage.setItem(`badge-orders-${sellerId}`, orders.filter(o => o.status === 'En attente').length);
-                        loadMyOrders();
-                    });
-            }
-            if (tab === 'failed') {
-                fetch(`${API}/sellers/${sellerId}/orders`)
-                    .then(r => r.json())
-                    .then(orders => {
-                        localStorage.setItem(`badge-failed-${sellerId}`, orders.filter(o => o.status === 'Échec livraison').length);
-                        loadFailedDeliveries();
-                    });
-            }
-            if (tab === 'products') {
-                fetch(`${API}/sellers/${sellerId}/products`)
-                    .then(r => r.json())
-                    .then(products => {
-                        localStorage.setItem(`badge-products-${sellerId}`, products.filter(p => p.approvalStatus === 'Pending').length);
-                    });
-            }
-        }
-
-        async function loadFailedDeliveries() {
-            try {
-                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
-                const orders = await res.json();
-                const el = document.getElementById('my-failed-list');
-
-                const failed = orders.filter(o => o.status === 'Échec livraison' || o.status === 'Annulée');
-
-                if (!failed.length) {
-                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun échec de livraison.</div>';
-                    return;
-                }
-
-                el.innerHTML = failed.map(o => `
-            <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                    <span style="font-weight:700;">Commande #${o.id}</span>
-                    <span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span>
-                </div>
-                <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
-                <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
-                <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
-            </div>`).join('');
-            } catch (e) { }
-        }
-
 
         async function deleteProduct(id) {
             if (!confirm('Supprimer ce produit ?')) return;
@@ -1219,13 +1218,11 @@
         }
 
         function editProduct(id) {
-            // Trouver le produit dans la liste
             fetch(`${API}/sellers/${sellerId}/products`)
                 .then(r => r.json())
                 .then(products => {
                     const p = products.find(x => x.id === id);
                     if (!p) return;
-                    // Pré-remplir le formulaire
                     document.getElementById('modal-product-title').textContent = 'Modifier le produit';
                     document.getElementById('p-id').value = p.id;
                     document.getElementById('p-name').value = p.name || '';
@@ -1236,16 +1233,10 @@
                     document.getElementById('p-price').value = p.price || '';
                     document.getElementById('p-old-price').value = p.oldPrice || '';
                     document.getElementById('p-stock').value = p.stock || '';
-
-                    // Images existantes
                     productImages = Array.isArray(p.images) ? p.images : [];
                     newImageFiles = [];
                     renderGallery();
-
-                    // Catégorie
                     loadCategories().then(() => {
-                        document.getElementById('p-category').value = '';
-                        // Chercher par nom
                         const opts = document.getElementById('p-category').options;
                         for (let i = 0; i < opts.length; i++) {
                             if (opts[i].text === p.category) {
@@ -1255,169 +1246,9 @@
                             }
                         }
                     });
-
                     openModal('modal-product');
                 });
         }
-
-
-
-        function toggleMenu() {
-            const m = document.getElementById('clientMenu');
-            if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function logout() { localStorage.removeItem('client'); window.location.reload(); }
-
-        document.addEventListener('click', e => {
-            const m = document.getElementById('clientMenu');
-            if (m && !e.target.closest('#authNav')) m.style.display = 'none';
-        });
-
-        // ── DÉMARRER ──────────────────────────────────────────────────────────
-        function checkAndStart() {
-            const seller = JSON.parse(localStorage.getItem('seller')) || null;
-            if (!seller) {
-                window.location.href = 'vendeur-login.html';
-                return;
-            }
-            loadSellerStatus();
-        }
-
-        async function loadSellerStatus() {
-            try {
-                const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
-                if (res.status === 404) { showPage('page-register'); return; }
-                const s = await res.json();
-                sellerId = s.id;
-                if (s.status === 'Pending') {
-                    document.getElementById('pending-info').innerHTML = `
-                        <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
-                        <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
-                        <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
-                        <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
-                    showPage('page-pending');
-                } else if (s.status === 'Rejected') {
-                    document.getElementById('rejected-reason').textContent = s.rejectionReason ? `Motif : ${s.rejectionReason}` : 'Votre demande n\'a pas été acceptée.';
-                    showPage('page-rejected');
-                } else if (s.status === 'Approved') {
-                    document.getElementById('dash-shop-name').textContent = s.shopName;
-                    document.getElementById('dash-shop-desc').textContent = s.shopDescription || '';
-                    document.getElementById('dash-total-products').textContent = s.totalProducts;
-                    document.getElementById('dash-pending-products').textContent = s.pendingProducts;
-                    document.getElementById('dash-earnings').textContent = formatPrice(s.totalEarnings);
-                    document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
-                    sellerData = s;
-                    showPage('page-dashboard');
-                    loadMyProducts();
-                    loadCategories();
-                    loadBadges();
-
-
-                } else {
-                    document.querySelector('#page-pending .status-icon').textContent = '⏸️';
-                    document.querySelector('#page-pending .status-title').textContent = 'Boutique suspendue';
-                    document.querySelector('#page-pending .status-desc').textContent = 'Contactez le support Ranita.';
-                    showPage('page-pending');
-                }
-            } catch (e) { showPage('page-register'); }
-        }
-
-        // ── INSCRIPTION ───────────────────────────────────────────────────────
-        async function submitRegistration() {
-            const btn = document.getElementById('btn-register');
-            const shopName = document.getElementById('shopName').value.trim();
-            const phoneNumber = document.getElementById('phoneNumber').value.trim();
-            const nationalIdNumber = document.getElementById('nationalIdNumber').value.trim();
-            if (!shopName || !phoneNumber || !nationalIdNumber) { showToast('Remplissez tous les champs obligatoires (*)', 'error'); return; }
-            btn.disabled = true; btn.textContent = 'Envoi en cours...';
-            try {
-                const res = await fetch(`${API}/sellers/register?clientId=${clientId}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ shopName, shopDescription: document.getElementById('shopDescription').value.trim(), phoneNumber, nationalIdNumber, paymentMethod: document.getElementById('paymentMethod').value, paymentDetails: document.getElementById('paymentDetails').value.trim() })
-                });
-                const data = await res.json();
-                if (res.ok) { showToast('Demande envoyée ! Réponse sous 24h ✓', 'success'); setTimeout(() => loadSellerStatus(), 1500); }
-                else { showToast(data.message || 'Erreur', 'error'); btn.disabled = false; btn.textContent = 'Envoyer ma demande →'; }
-            } catch (e) { showToast('Erreur réseau', 'error'); btn.disabled = false; btn.textContent = 'Envoyer ma demande →'; }
-        }
-
-        // ── MES PRODUITS ──────────────────────────────────────────────────────
-        async function loadMyProducts() {
-            try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products`);
-                const products = await res.json();
-                const el = document.getElementById('my-products-list');
-                if (!products.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit. Ajoutez votre premier produit !</div>'; return; }
-                const labels = { Pending: 'En attente', Approved: 'Publié', Rejected: 'Refusé' };
-                const bclass = { Pending: 'badge-pending', Approved: 'badge-approved', Rejected: 'badge-rejected' };
-                el.innerHTML = products.map(p => {
-                    let imgs = [];
-                    if (Array.isArray(p.images)) { imgs = p.images; } else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
-                    return `
-<div class="my-product">
-        <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-        <div class="my-product-info">
-            <div class="my-product-name">${p.name}</div>
-           <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
-${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:12px;color:#991b1b;background:#fee2e2;padding:4px 8px;border-radius:6px;margin-top:4px;">❌ Motif : ${p.rejectionReason}</div>` : ''}
-        </div>
-        <div class="my-product-price">${formatPrice(p.price)}</div>
-        <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
-<div style="display:flex;gap:6px;flex-shrink:0;">
-        ${p.approvalStatus !== 'Approved' ? `
-            <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
-            <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
-` : `
-        <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
-        <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️ Modifier</button>
-        <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️ Désactiver' : '▶️ Activer'}</button>
-`}
-</div>
-</div>`;
-                }).join('');
-            } catch (e) { }
-        }
-
-
-
-
-        async function loadBadges() {
-            try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products`);
-                const products = await res.json();
-                const pending = products.filter(p => p.approvalStatus === 'Pending').length;
-                const badgeP = document.getElementById('badge-products');
-                const lastPending = parseInt(localStorage.getItem(`badge-products-${sellerId}`) || '0');
-                if (pending > lastPending) {
-                    badgeP.textContent = pending - lastPending;
-                    badgeP.style.display = 'inline';
-                } else badgeP.style.display = 'none';
-            } catch (e) { }
-
-            try {
-                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
-                const orders = await res.json();
-
-                const newOrders = orders.filter(o => o.status === 'En attente').length;
-                const badgeO = document.getElementById('badge-orders');
-                const lastOrders = parseInt(localStorage.getItem(`badge-orders-${sellerId}`) || '0');
-                if (newOrders > lastOrders) {
-                    badgeO.textContent = newOrders - lastOrders;
-                    badgeO.style.display = 'inline';
-                } else badgeO.style.display = 'none';
-
-                const failed = orders.filter(o => o.status === 'Échec livraison').length;
-                const badgeF = document.getElementById('badge-failed');
-                const lastFailed = parseInt(localStorage.getItem(`badge-failed-${sellerId}`) || '0');
-                if (failed > lastFailed) {
-                    badgeF.textContent = failed - lastFailed;
-                    badgeF.style.display = 'inline';
-                } else badgeF.style.display = 'none';
-            } catch (e) { }
-        }
-
-
 
         async function toggleProduct(sellerProductId, isActive) {
             try {
@@ -1426,115 +1257,97 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ isActive: !isActive })
                 });
-                if (res.ok) {
-                    showToast(isActive ? 'Produit désactivé' : 'Produit activé ✓', 'success');
-                    loadMyProducts();
-                }
+                if (res.ok) { showToast(isActive ? 'Produit désactivé' : 'Produit activé ✓', 'success'); loadMyProducts(); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
-
-        // ── CATÉGORIES ────────────────────────────────────────────────────────
-        async function loadCategories() {
+        // ── COMMANDES ─────────────────────────────────────────
+        async function loadMyOrders() {
             try {
-                const res = await fetch(`${API}/categories`);
-                const parents = await res.json();
-                const select = document.getElementById('p-category');
-                select.innerHTML = '<option value="">-- Choisir une catégorie --</option>';
-                parents.forEach(parent => {
-                    if (parent.children && parent.children.length > 0) {
-                        select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
-                        parent.children.forEach(child => {
-                            select.innerHTML += `<option value="${child.id}">${child.name}</option>`;
-                        });
-                        select.innerHTML += `</optgroup>`;
-                    } else {
-                        select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
-                    }
-                });
+                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const orders = await res.json();
+                const el = document.getElementById('my-orders-list');
+                if (!orders.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Aucune commande pour le moment.</div>'; return; }
+                const sc = { 'En attente': { bg: '#fef3c7', color: '#92400e' }, 'Confirmée': { bg: '#dbeafe', color: '#1e40af' }, 'En cours': { bg: '#e0e7ff', color: '#3730a3' }, 'Livrée': { bg: '#d1fae5', color: '#065f46' }, 'Annulée': { bg: '#fee2e2', color: '#991b1b' } };
+                el.innerHTML = orders.map(o => {
+                    const s = sc[o.status] || { bg: '#f3f4f6', color: '#374151' };
+                    return `<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                                <div><span style="font-weight:700;font-size:15px;">Commande #${o.id}</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span></div>
+                                <div style="display:flex;align-items:center;gap:10px;"><span style="background:${s.bg};color:${s.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span><span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span></div>
+                            </div>
+                            <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
+                            <div style="border-top:1px solid #f3f4f6;padding-top:10px;">${o.items.map(i => `
+                                <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
+                                    ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
+                                    <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${i.productName}</div>${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}</div>
+                                    <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
+                                    <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
+                                </div>`).join('')}</div>
+                        </div>`;
+                }).join('');
             } catch (e) { }
         }
 
-        // ── ATTRIBUTS DYNAMIQUES ──────────────────────────────────────────────
-        async function loadProductAttributes() {
-            const catId = document.getElementById('p-category').value;
-            const section = document.getElementById('p-attributes-section');
-            const fields = document.getElementById('p-attribute-fields');
-            const varSection = document.getElementById('p-variants-section');
-
-            if (!catId) { section.style.display = 'none'; varSection.style.display = 'none'; return; }
-
-            // Auto-générer SKU si nouveau produit
-            if (!document.getElementById('p-id').value) {
-                const catText = document.getElementById('p-category').options[document.getElementById('p-category').selectedIndex]?.text || 'PRD';
-                const prefix = catText.substring(0, 3).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                document.getElementById('p-sku').value = `RAN-${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
-            }
-
+        async function loadFailedDeliveries() {
             try {
-                const res = await fetch(`${API}/category-attributes/${catId}`);
-                const attrs = await res.json();
-                if (!attrs.length) { section.style.display = 'none'; varSection.style.display = 'none'; return; }
-
-                section.style.display = 'block';
-                fields.innerHTML = attrs.map(a => `
-                    <div class="attr-field full">
-                        <label>${a.attributeName}</label>
-                        ${a.attributeType === 'select'
-                        ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-                                ${a.attributeOptions.split(',').map(o => `
-                                    <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;">
-                                        <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')">
-                                        <span>${o.trim()}</span>
-                                    </label>`).join('')}
-                                <input type="hidden" id="attr_${a.attributeName}" value="">
-                               </div>`
-                        : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}" id="attr_${a.attributeName}" placeholder="${a.attributeName}">`
-                    }
-                    </div>`).join('');
-
-                const hasSelect = attrs.some(a => a.attributeType === 'select');
-                varSection.style.display = hasSelect ? 'block' : 'none';
-                document.getElementById('p-variants-list').innerHTML = '';
-                window._variantLabels = null;
+                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const orders = await res.json();
+                const el = document.getElementById('my-failed-list');
+                const failed = orders.filter(o => o.status === 'Échec livraison' || o.status === 'Annulée');
+                if (!failed.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun échec de livraison.</div>'; return; }
+                el.innerHTML = failed.map(o => `
+                        <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-weight:700;">Commande #${o.id}</span><span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span></div>
+                            <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
+                            <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
+                            <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
+                        </div>`).join('');
             } catch (e) { }
         }
 
-        function updateAttrHidden(attrName) {
-            const checked = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
-            document.getElementById(`attr_${attrName}`).value = Array.from(checked).map(cb => cb.value).join(',');
-        }
-
-        // ── VARIANTES ─────────────────────────────────────────────────────────
-        function generateVariants() {
-            const attrFields = document.querySelectorAll('[id^="attr_"]');
-            const selectedAttrs = {};
-            attrFields.forEach(el => {
-                const key = el.id.replace('attr_', '');
-                if (el.value) selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
+        function switchTab(tab) {
+            ['products', 'orders', 'failed'].forEach(t => {
+                document.getElementById(`section-${t}`).style.display = 'none';
+                const btn = document.getElementById(`tab-${t}`);
+                btn.style.color = '#6b7280'; btn.style.borderBottom = '3px solid transparent';
             });
-            const keys = Object.keys(selectedAttrs);
-            if (!keys.length) { showToast('Sélectionnez d\'abord des attributs !', 'error'); return; }
-
-            const combinations = keys.map(k => selectedAttrs[k]).reduce((acc, curr) => acc.flatMap(a => curr.map(b => [...a, b])), [[]]);
-            const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
-            window._variantLabels = labels;
-
-            document.getElementById('p-variants-list').innerHTML = `
-                <table class="variant-table">
-                    <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
-                    <tbody>${labels.map((label, i) => `
-                        <tr>
-                            <td>${label}</td>
-                            <td><input type="number" id="variant_stock_${i}" value="0" min="0"></td>
-                        </tr>`).join('')}
-                    </tbody>
-                </table>`;
+            document.getElementById(`section-${tab}`).style.display = 'block';
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            activeBtn.style.color = '#10b981'; activeBtn.style.borderBottom = '3px solid #10b981';
+            const badge = document.getElementById(`badge-${tab}`);
+            if (badge) badge.style.display = 'none';
+            if (tab === 'orders') loadMyOrders();
+            if (tab === 'failed') loadFailedDeliveries();
         }
 
+        async function loadBadges() {
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const products = await res.json();
+                const pending = products.filter(p => p.approvalStatus === 'Pending').length;
+                const badgeP = document.getElementById('badge-products');
+                const last = parseInt(localStorage.getItem(`badge-products-${sellerId}`) || '0');
+                badgeP.style.display = pending > last ? 'inline' : 'none';
+                if (pending > last) badgeP.textContent = pending - last;
+            } catch (e) { }
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const orders = await res.json();
+                const newO = orders.filter(o => o.status === 'En attente').length;
+                const lastO = parseInt(localStorage.getItem(`badge-orders-${sellerId}`) || '0');
+                const badgeO = document.getElementById('badge-orders');
+                badgeO.style.display = newO > lastO ? 'inline' : 'none';
+                if (newO > lastO) badgeO.textContent = newO - lastO;
+                const failed = orders.filter(o => o.status === 'Échec livraison').length;
+                const lastF = parseInt(localStorage.getItem(`badge-failed-${sellerId}`) || '0');
+                const badgeF = document.getElementById('badge-failed');
+                badgeF.style.display = failed > lastF ? 'inline' : 'none';
+                if (failed > lastF) badgeF.textContent = failed - lastF;
+            } catch (e) { }
+        }
 
-        let sellerData = null;
-
+        // ── PROFIL ────────────────────────────────────────────
         function openEditProfile() {
             if (!sellerData) return;
             document.getElementById('profile-name').value = sellerData.shopName || '';
@@ -1553,68 +1366,114 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
                 paymentMethod: document.getElementById('profile-payment').value,
                 paymentDetails: document.getElementById('profile-payment-details').value.trim()
             };
-
             if (!body.shopName) { showToast('Le nom est obligatoire', 'error'); return; }
-
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/profile`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
+                const res = await fetch(`${API}/sellers/${sellerId}/profile`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
                 if (res.ok) {
-                    showToast('Profil mis à jour ✓', 'success');
-                    closeModal('modal-profile');
-                    // Mettre à jour l'affichage
+                    showToast('Profil mis à jour ✓', 'success'); closeModal('modal-profile');
                     document.getElementById('dash-shop-name').textContent = body.shopName;
                     document.getElementById('dash-shop-desc').textContent = body.shopDescription;
-                    sellerData.shopName = body.shopName;
-                    sellerData.shopDescription = body.shopDescription;
-                } else {
-                    showToast('Erreur', 'error');
-                }
+                    sellerData.shopName = body.shopName; sellerData.shopDescription = body.shopDescription;
+                } else { showToast('Erreur', 'error'); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
+        // ── CATÉGORIES ────────────────────────────────────────
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API}/categories`);
+                const parents = await res.json();
+                const select = document.getElementById('p-category');
+                select.innerHTML = '<option value="">-- Choisir une catégorie --</option>';
+                parents.forEach(parent => {
+                    if (parent.children && parent.children.length > 0) {
+                        select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
+                        parent.children.forEach(child => { select.innerHTML += `<option value="${child.id}">${child.name}</option>`; });
+                        select.innerHTML += `</optgroup>`;
+                    } else {
+                        select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
+                    }
+                });
+            } catch (e) { }
+        }
 
-        // ── IMAGES ────────────────────────────────────────────────────────────
+        // ── ATTRIBUTS ─────────────────────────────────────────
+        async function loadProductAttributes() {
+            const catId = document.getElementById('p-category').value;
+            const section = document.getElementById('p-attributes-section');
+            const fields = document.getElementById('p-attribute-fields');
+            const varSection = document.getElementById('p-variants-section');
+            if (!catId) { section.style.display = 'none'; varSection.style.display = 'none'; return; }
+            if (!document.getElementById('p-id').value) {
+                const catText = document.getElementById('p-category').options[document.getElementById('p-category').selectedIndex]?.text || 'PRD';
+                const prefix = catText.substring(0, 3).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                document.getElementById('p-sku').value = `RAN-${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
+            }
+            try {
+                const res = await fetch(`${API}/category-attributes/${catId}`);
+                const attrs = await res.json();
+                if (!attrs.length) { section.style.display = 'none'; varSection.style.display = 'none'; return; }
+                section.style.display = 'block';
+                fields.innerHTML = attrs.map(a => `
+                        <div class="attr-field full">
+                            <label>${a.attributeName}</label>
+                            ${a.attributeType === 'select'
+                        ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+                                    ${a.attributeOptions.split(',').map(o => `
+                                        <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;">
+                                            <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')">
+                                            <span>${o.trim()}</span>
+                                        </label>`).join('')}
+                                    <input type="hidden" id="attr_${a.attributeName}" value=""></div>`
+                        : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}" id="attr_${a.attributeName}" placeholder="${a.attributeName}">`}
+                        </div>`).join('');
+                varSection.style.display = attrs.some(a => a.attributeType === 'select') ? 'block' : 'none';
+                document.getElementById('p-variants-list').innerHTML = '';
+                window._variantLabels = null;
+            } catch (e) { }
+        }
+
+        function updateAttrHidden(attrName) {
+            const checked = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
+            document.getElementById(`attr_${attrName}`).value = Array.from(checked).map(cb => cb.value).join(',');
+        }
+
+        // ── VARIANTES ─────────────────────────────────────────
+        function generateVariants() {
+            const attrFields = document.querySelectorAll('[id^="attr_"]');
+            const selectedAttrs = {};
+            attrFields.forEach(el => { const key = el.id.replace('attr_', ''); if (el.value) selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v); });
+            const keys = Object.keys(selectedAttrs);
+            if (!keys.length) { showToast('Sélectionnez d\'abord des attributs !', 'error'); return; }
+            const combinations = keys.map(k => selectedAttrs[k]).reduce((acc, curr) => acc.flatMap(a => curr.map(b => [...a, b])), [[]]);
+            const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
+            window._variantLabels = labels;
+            document.getElementById('p-variants-list').innerHTML = `
+                    <table class="variant-table">
+                        <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
+                        <tbody>${labels.map((label, i) => `<tr><td>${label}</td><td><input type="number" id="variant_stock_${i}" value="0" min="0"></td></tr>`).join('')}</tbody>
+                    </table>`;
+        }
+
+        // ── IMAGES ────────────────────────────────────────────
         function handleImageUpload(input) {
             if (!input.files || !input.files[0]) return;
             if (productImages.length + newImageFiles.length >= 5) { showToast('Maximum 5 images !', 'error'); input.value = ''; return; }
-            newImageFiles.push(input.files[0]);
-            renderGallery();
-            input.value = '';
+            newImageFiles.push(input.files[0]); renderGallery(); input.value = '';
         }
 
         function renderGallery() {
             const gallery = document.getElementById('p-image-gallery');
             gallery.innerHTML = '';
-
-            if (!productImages.length && !newImageFiles.length) {
-                gallery.innerHTML = '<p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutée</p>';
-                return;
-            }
-
+            if (!productImages.length && !newImageFiles.length) { gallery.innerHTML = '<p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutée</p>'; return; }
             productImages.forEach((url, i) => {
                 const isMain = i === 0;
-                gallery.innerHTML += `
-                    <div class="img-thumb ${isMain ? 'main' : ''}">
-                        <img src="${url}">
-                        ${isMain ? '<span class="main-label">Principal</span>' : ''}
-                        <button type="button" class="btn-remove" onclick="removeExistingImage(${i})">✕</button>
-                        ${!isMain ? `<button type="button" class="btn-main" onclick="setMainImage(${i})">Principal</button>` : ''}
-                    </div>`;
+                gallery.innerHTML += `<div class="img-thumb ${isMain ? 'main' : ''}"><img src="${url}">${isMain ? '<span class="main-label">Principal</span>' : ''}<button type="button" class="btn-remove" onclick="removeExistingImage(${i})">✕</button>${!isMain ? `<button type="button" class="btn-main" onclick="setMainImage(${i})">Principal</button>` : ''}</div>`;
             });
-
             newImageFiles.forEach((file, i) => {
                 const url = URL.createObjectURL(file);
                 const isMain = productImages.length === 0 && i === 0;
-                gallery.innerHTML += `
-                    <div class="img-thumb ${isMain ? 'main' : ''}">
-                        <img src="${url}">
-                        ${isMain ? '<span class="main-label">Principal</span>' : ''}
-                        <button type="button" class="btn-remove" onclick="removeNewImage(${i})">✕</button>
-                    </div>`;
+                gallery.innerHTML += `<div class="img-thumb ${isMain ? 'main' : ''}"><img src="${url}">${isMain ? '<span class="main-label">Principal</span>' : ''}<button type="button" class="btn-remove" onclick="removeNewImage(${i})">✕</button></div>`;
             });
         }
 
@@ -1622,7 +1481,7 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
         function removeNewImage(i) { newImageFiles.splice(i, 1); renderGallery(); }
         function setMainImage(i) { productImages.unshift(productImages.splice(i, 1)[0]); renderGallery(); }
 
-        // ── MODAL PRODUIT ─────────────────────────────────────────────────────
+        // ── MODAL PRODUIT ─────────────────────────────────────
         function openAddProduct() {
             document.getElementById('modal-product-title').textContent = 'Ajouter un produit';
             document.getElementById('p-id').value = '';
@@ -1632,56 +1491,33 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
             document.getElementById('p-variants-section').style.display = 'none';
             document.getElementById('p-variants-list').innerHTML = '';
             document.getElementById('p-attribute-fields').innerHTML = '';
-            productImages = []; newImageFiles = [];
-            renderGallery();
+            productImages = []; newImageFiles = []; renderGallery();
             window._variantLabels = null;
             openModal('modal-product');
         }
 
-        // ── SOUMETTRE PRODUIT ─────────────────────────────────────────────────
+        // ── SOUMETTRE PRODUIT ─────────────────────────────────
         async function submitProduct() {
-
             const productId = document.getElementById('p-id').value;
-            const url = productId
-                ? `${API}/sellers/${sellerId}/products/${productId}`
-                : `${API}/sellers/${sellerId}/products`;
+            const url = productId ? `${API}/sellers/${sellerId}/products/${productId}` : `${API}/sellers/${sellerId}/products`;
             const method = productId ? 'PUT' : 'POST';
-
-
             const name = document.getElementById('p-name').value.trim();
             const price = parseFloat(document.getElementById('p-price').value);
             const catId = document.getElementById('p-category').value;
-
             if (!name || !price || !catId) { showToast('Nom, prix et catégorie sont obligatoires', 'error'); return; }
-
             const btn = document.getElementById('btn-save-product');
-
-            // Vérifier que les variantes sont générées
             const variantSection = document.getElementById('p-variants-section');
-            if (variantSection.style.display !== 'none' && !window._variantLabels) {
-                showToast('Veuillez générer et remplir les variantes', 'error');
-                return;
-            }
-
-            // Vérifier stocks variantes
+            if (variantSection.style.display !== 'none' && !window._variantLabels) { showToast('Veuillez générer les variantes', 'error'); return; }
             if (window._variantLabels) {
                 for (let i = 0; i < window._variantLabels.length; i++) {
-                    const stockInput = document.getElementById(`variant_stock_${i}`);
-                    if (!stockInput || stockInput.value === '' || parseInt(stockInput.value) < 0) {
-                        showToast('Veuillez renseigner le stock de toutes les variantes', 'error');
-                        return;
-                    }
+                    const si = document.getElementById(`variant_stock_${i}`);
+                    if (!si || si.value === '' || parseInt(si.value) < 0) { showToast('Renseignez le stock de toutes les variantes', 'error'); return; }
                 }
             }
-
             btn.disabled = true; btn.textContent = 'Envoi en cours...';
-
-            // Collecter attributs
             const attrFields = document.querySelectorAll('[id^="attr_"]');
             const attributes = {};
             attrFields.forEach(el => { const key = el.id.replace('attr_', ''); if (el.value) attributes[key] = el.value; });
-
-            // Upload images via FormData
             const formData = new FormData();
             formData.append('name', name);
             formData.append('description', document.getElementById('p-description').value.trim());
@@ -1694,35 +1530,16 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
             formData.append('brand', document.getElementById('p-brand').value.trim());
             formData.append('attributes', JSON.stringify(attributes));
             formData.append('images', JSON.stringify(productImages));
-
-            // Nouvelles images
             newImageFiles.forEach(file => formData.append('imageFiles', file));
-
-            // Variantes
             if (window._variantLabels) {
-                const variants = window._variantLabels.map((label, i) => ({
-                    combination: label,
-                    stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0)
-                }));
+                const variants = window._variantLabels.map((label, i) => ({ combination: label, stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0) }));
                 formData.append('variants', JSON.stringify(variants));
             }
-
             try {
-                const res = await fetch(url, {
-                    method: method,
-                    body: formData
-                });
-
-                if (res.ok) {
-                    showToast('Produit soumis pour validation ✓', 'success');
-                    closeModal('modal-product');
-                    loadMyProducts();
-                } else {
-                    const data = await res.json().catch(() => ({}));
-                    showToast(data.message || 'Erreur lors de l\'envoi', 'error');
-                }
+                const res = await fetch(url, { method, body: formData });
+                if (res.ok) { showToast('Produit soumis pour validation ✓', 'success'); closeModal('modal-product'); loadMyProducts(); }
+                else { const data = await res.json().catch(() => ({})); showToast(data.message || 'Erreur lors de l\'envoi', 'error'); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
-
             btn.disabled = false; btn.textContent = 'Soumettre pour validation';
         }
 
@@ -1731,7 +1548,7 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
             else showToast('Produit pas encore publié', 'error');
         }
 
-        // ── UTILS ──────────────────────────────────────────────────────────────
+        // ── UTILS ─────────────────────────────────────────────
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0, 0); }
         function openModal(id) { document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -1739,51 +1556,5 @@ ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:
         function formatPrice(p) { return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0); }
         function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3500); }
     </script>
-
-
-
-
-    <div class="modal-overlay" id="modal-profile">
-        <div class="modal" style="max-width:500px;">
-            <h3>⚙️ Mon profil boutique</h3>
-            <div class="form-section">
-                <div class="form-grid">
-                    <div class="full">
-                        <label>Nom de la boutique</label>
-                        <input type="text" id="profile-name" placeholder="Nom de votre boutique">
-                    </div>
-                    <div class="full">
-                        <label>Description</label>
-                        <textarea id="profile-desc" rows="3" placeholder="Décrivez votre boutique..."></textarea>
-                    </div>
-                    <div class="full">
-                        <label>Téléphone</label>
-                        <input type="tel" id="profile-phone" placeholder="07 XX XX XX XX">
-                    </div>
-                    <div>
-                        <label>Moyen de paiement</label>
-                        <select id="profile-payment">
-                            <option value="">Choisir...</option>
-                            <option value="ORANGE_MONEY">Orange Money</option>
-                            <option value="MTN_MONEY">MTN Money</option>
-                            <option value="WAVE">Wave</option>
-                            <option value="MOOV_MONEY">Moov Money</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Numéro</label>
-                        <input type="text" id="profile-payment-details" placeholder="Numéro Mobile Money">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal('modal-profile')">Annuler</button>
-                <button class="btn-save" onclick="saveProfile()">Enregistrer</button>
-            </div>
-        </div>
-    </div>
-
-
-
 </body>
 </html>
