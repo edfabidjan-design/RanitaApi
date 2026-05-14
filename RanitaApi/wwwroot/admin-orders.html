@@ -262,6 +262,7 @@
         function getStatusStyle(status) {
             switch (status) {
                 case "En attente": return "background:#fef3c7;color:#92400e;border-color:#f59e0b;";
+                case "Confirmée par vendeur": return "background:#e0e7ff;color:#3730a3;border-color:#6366f1;";
                 case "Validée": return "background:#dbeafe;color:#1e40af;border-color:#3b82f6;";
                 case "Livrée": return "background:#d1fae5;color:#065f46;border-color:#10b981;";
                 case "Annulée": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
@@ -329,15 +330,22 @@
                         <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
                     </div>
                 ` : `
-                    <select class="status-select" style="${getStatusStyle(o.status)}" onchange="updateStatus(${o.id}, this.value, this)">
-                        <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                        <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-                        <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-                        <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-                        <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
-                        <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
-                        <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
-                    </select>
+<select class="status-select" style="${getStatusStyle(o.status)}" onchange="updateStatus(${o.id}, this.value, this)">
+    <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+    <option ${o.status === "Confirmée par vendeur" ? "selected" : ""}>Confirmée par vendeur</option>
+    <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+    <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+    <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+    <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
+    <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
+    <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
+</select>
+${o.status === "Confirmée par vendeur" ? `
+    <div style="margin-top:6px;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;">
+        ✅ Vendeur a confirmé — prêt à livrer !
+    </div>` : ''}
+
+
                 `}
             </td>
             <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
