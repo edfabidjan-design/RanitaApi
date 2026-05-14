@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Commissions — Ranita Admin</title>
+    <link rel="stylesheet" href="admin-style.css">
     <style>
-        /* ── Variables ── */
         :root {
             --green: #10b981;
             --green-dark: #059669;
@@ -19,67 +19,59 @@
             --gray-900: #111827;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-900);
-        }
-
-        /* ── Layout ── */
-        .page {
-            max-width: 900px;
-            margin: 32px auto;
-            padding: 0 20px 60px;
-        }
-
-        /* ── Header ── */
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .page-title {
-            font-size: 22px;
-            font-weight: 800;
-        }
-
-        .page-subtitle {
-            font-size: 13px;
-            color: var(--gray-500);
-            margin-top: 2px;
-        }
-
-        /* ── Cards ── */
-        .card {
+        .stat-card {
             background: white;
             border: 1px solid var(--gray-200);
-            border-radius: 16px;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+            .stat-card .lbl {
+                font-size: 11px;
+                color: var(--gray-500);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 8px;
+            }
+
+            .stat-card .val {
+                font-size: 22px;
+                font-weight: 800;
+            }
+
+                .stat-card .val.green {
+                    color: var(--green);
+                }
+
+                .stat-card .val.orange {
+                    color: var(--orange);
+                }
+
+        .comm-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 14px;
             padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .card-title {
+        .comm-card-title {
             font-size: 15px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             padding-bottom: 12px;
             border-bottom: 2px solid var(--gray-100);
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        /* ── Global rate ── */
         .global-rate-block {
             display: flex;
             align-items: center;
@@ -90,7 +82,7 @@
         .rate-input-wrap {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: var(--gray-50);
             border: 2px solid var(--gray-200);
             border-radius: 12px;
@@ -111,6 +103,7 @@
                 color: var(--green);
                 outline: none;
                 text-align: center;
+                padding: 0;
             }
 
             .rate-input-wrap span {
@@ -125,13 +118,12 @@
             line-height: 1.6;
         }
 
-        /* ── Simulation ── */
         .simulation {
             background: var(--gray-50);
             border: 1px solid var(--gray-200);
             border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
+            padding: 16px 20px;
+            margin-top: 18px;
             display: flex;
             gap: 24px;
             flex-wrap: wrap;
@@ -143,6 +135,7 @@
             align-items: center;
             gap: 8px;
             font-size: 14px;
+            color: var(--gray-700);
         }
 
             .sim-input input {
@@ -157,7 +150,7 @@
 
         .sim-results {
             display: flex;
-            gap: 20px;
+            gap: 24px;
             flex-wrap: wrap;
         }
 
@@ -175,21 +168,17 @@
                 color: var(--gray-500);
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
-            }
-
-            .sim-result.green .val {
-                color: var(--green);
+                margin-top: 2px;
             }
 
             .sim-result.red .val {
                 color: var(--red);
             }
 
-            .sim-result.orange .val {
-                color: var(--orange);
+            .sim-result.green .val {
+                color: var(--green);
             }
 
-        /* ── Table catégories ── */
         .cat-table {
             width: 100%;
             border-collapse: collapse;
@@ -212,6 +201,7 @@
                 border-bottom: 1px solid var(--gray-100);
                 font-size: 14px;
                 vertical-align: middle;
+                background: white;
             }
 
             .cat-table tr:last-child td {
@@ -251,18 +241,20 @@
             }
 
         .btn-clear {
-            background: none;
+            background: none !important;
             border: none;
             color: var(--gray-500);
             cursor: pointer;
-            font-size: 16px;
-            padding: 2px 6px;
+            font-size: 14px;
+            padding: 4px 8px;
             border-radius: 6px;
             transition: color 0.2s;
+            line-height: 1;
         }
 
             .btn-clear:hover {
-                color: var(--red);
+                color: var(--red) !important;
+                background: #fee2e2 !important;
             }
 
         .effective-rate {
@@ -275,32 +267,32 @@
                 font-weight: 700;
             }
 
-        /* ── Bouton save ── */
-        .btn-save {
-            background: var(--green);
-            color: white;
+        .btn-save-comm {
+            background: linear-gradient(135deg, #059669, #047857) !important;
+            color: white !important;
             border: none;
-            padding: 12px 32px;
-            border-radius: 12px;
-            font-size: 15px;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
         }
 
-            .btn-save:hover {
-                background: var(--green-dark);
-                transform: translateY(-1px);
-            }
-
-            .btn-save:disabled {
+            .btn-save-comm:disabled {
                 opacity: 0.6;
                 cursor: not-allowed;
-                transform: none;
             }
 
-        /* ── Toast ── */
-        .toast {
+        .page-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .comm-toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
@@ -316,54 +308,18 @@
             z-index: 9999;
         }
 
-            .toast.show {
+            .comm-toast.show {
                 transform: translateY(0);
                 opacity: 1;
             }
 
-            .toast.success {
+            .comm-toast.success {
                 background: var(--green);
             }
 
-            .toast.error {
+            .comm-toast.error {
                 background: var(--red);
             }
-
-        /* ── Stats bar ── */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-            .stat-card .lbl {
-                font-size: 11px;
-                color: var(--gray-500);
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 6px;
-            }
-
-            .stat-card .val {
-                font-size: 20px;
-                font-weight: 800;
-            }
-
-                .stat-card .val.green {
-                    color: var(--green);
-                }
-
-                .stat-card .val.orange {
-                    color: var(--orange);
-                }
 
         @media (max-width: 600px) {
             .global-rate-block {
@@ -379,27 +335,41 @@
 </head>
 <body>
 
-    <div class="page">
+    <!-- ── HEADER ADMIN ── -->
+    <div class="admin-header">
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
+        <nav>
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="admin-products.html">Produits</a>
+            <a href="admin-categories.html">Catégories</a>
+            <a href="admin-attributes.html">Attributs</a>
+            <a href="admin-clients.html">Clients</a>
+            <a href="admin-reviews.html">⭐ Avis</a>
+            <a href="admin-orders.html">Commandes</a>
+            <a href="admin-sellers.html">Vendeurs</a>
+            <a href="admin-commissions.html" class="active">⚙️ Commissions</a>
+        </nav>
+        <button onclick="logout()">Déconnexion</button>
+    </div>
 
-        <!-- Header -->
-        <div class="page-header">
-            <div>
-                <div class="page-title">⚙️ Gestion des commissions</div>
-                <div class="page-subtitle">Définissez le taux global et les overrides par catégorie</div>
-            </div>
-            <button class="btn-save" id="btnSave" onclick="saveCommissions()">💾 Enregistrer</button>
+    <!-- ── CONTENU ── -->
+    <div class="admin-container">
+
+        <div class="page-title-row">
+            <h1 style="margin:0;">⚙️ Gestion des commissions</h1>
+            <button class="btn-save-comm" id="btnSave" onclick="saveCommissions()">💾 Enregistrer</button>
         </div>
 
         <!-- Stats -->
-        <div class="stats-bar" id="statsBar">
+        <div class="stats-bar">
             <div class="stat-card"><div class="lbl">Taux global actuel</div><div class="val green" id="stat-global">—</div></div>
             <div class="stat-card"><div class="lbl">Catégories avec override</div><div class="val orange" id="stat-overrides">—</div></div>
             <div class="stat-card"><div class="lbl">Commission perçue (total)</div><div class="val green" id="stat-total-commission">—</div></div>
         </div>
 
         <!-- Taux global -->
-        <div class="card">
-            <div class="card-title">🌍 Taux de commission global</div>
+        <div class="comm-card">
+            <div class="comm-card-title">🌍 Taux de commission global</div>
             <div class="global-rate-block">
                 <div class="rate-input-wrap">
                     <input type="number" id="globalRate" min="0" max="100" step="0.5" value="10"
@@ -411,8 +381,6 @@
                     sauf celles avec un override défini ci-dessous.
                 </div>
             </div>
-
-            <!-- Simulation -->
             <div class="simulation">
                 <div class="sim-input">
                     <span>Pour une vente de</span>
@@ -420,25 +388,19 @@
                     <span>FCFA</span>
                 </div>
                 <div class="sim-results">
-                    <div class="sim-result">
-                        <div class="val" id="sim-gross">15 000</div>
-                        <div class="lbl">Brut vendeur</div>
-                    </div>
-                    <div class="sim-result red">
-                        <div class="val" id="sim-commission">—</div>
-                        <div class="lbl">Commission Ranita</div>
-                    </div>
-                    <div class="sim-result green">
-                        <div class="val" id="sim-net">—</div>
-                        <div class="lbl">Net vendeur</div>
-                    </div>
+                    <div class="sim-result"><div class="val" id="sim-gross">15 000</div><div class="lbl">Brut vendeur</div></div>
+                    <div class="sim-result red"><div class="val" id="sim-commission">—</div><div class="lbl">Commission Ranita</div></div>
+                    <div class="sim-result green"><div class="val" id="sim-net">—</div><div class="lbl">Net vendeur</div></div>
                 </div>
             </div>
         </div>
 
         <!-- Overrides par catégorie -->
-        <div class="card">
-            <div class="card-title">📁 Override par catégorie <span style="font-size:12px;color:var(--gray-500);font-weight:400;">(vide = utilise le taux global)</span></div>
+        <div class="comm-card">
+            <div class="comm-card-title">
+                📁 Override par catégorie
+                <span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:8px;">(vide = utilise le taux global)</span>
+            </div>
             <div id="catTableWrap">
                 <div style="text-align:center;padding:30px;color:var(--gray-500);">Chargement des catégories...</div>
             </div>
@@ -446,213 +408,165 @@
 
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="comm-toast" id="commToast"></div>
 
     <script>
-    const API = 'https://ranitaapi-production.up.railway.app/api';
-    let commissionData = null;
+        const API = 'https://ranitaapi-production.up.railway.app/api';
+        let commissionData = null;
 
-    // ── INIT ─────────────────────────────────────────────────────────────────
-    window.addEventListener('DOMContentLoaded', async () => {
-        await loadCommissions();
-        await loadStats();
-    });
-
-    // ── CHARGER LES DONNÉES ───────────────────────────────────────────────────
-    async function loadCommissions() {
-        try {
-            const res = await fetch(`${API}/settings/commission`);
-            commissionData = await res.json();
-
-            // Taux global
-            const globalPct = Math.round(commissionData.globalRate * 100 * 10) / 10;
-            document.getElementById('globalRate').value = globalPct;
-            document.getElementById('stat-global').textContent = globalPct + '%';
-
-            // Overrides
-            const overrideCount = commissionData.categories.filter(c => c.hasOverride).length;
-            document.getElementById('stat-overrides').textContent = overrideCount;
-
-            renderCategoryTable(commissionData.categories);
-            updateSimulation();
-        } catch (e) {
-            console.error('loadCommissions:', e);
-            showToast('Erreur de chargement', 'error');
-        }
-    }
-
-    async function loadStats() {
-        try {
-            const res = await fetch(`${API}/sellers/payouts/all`).catch(() => null);
-            if (!res || !res.ok) return;
-            const payouts = await res.json();
-            const total = payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0);
-            document.getElementById('stat-total-commission').textContent =
-                new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(total);
-        } catch (e) {}
-    }
-
-    // ── TABLEAU CATÉGORIES ───────────────────────────────────────────────────
-    function renderCategoryTable(categories) {
-        if (!categories.length) {
-            document.getElementById('catTableWrap').innerHTML =
-                '<p style="color:var(--gray-500);font-size:14px;padding:10px;">Aucune sous-catégorie trouvée.</p>';
-            return;
-        }
-
-        const rows = categories.map(c => {
-            const overridePct = c.hasOverride ? Math.round(c.rate * 100 * 10) / 10 : '';
-            return `
-            <tr>
-                <td><strong>${c.categoryName}</strong></td>
-                <td>
-                    <div class="override-cell">
-                        <input type="number"
-                               class="override-input ${c.hasOverride ? 'has-value' : ''}"
-                               id="cat_${c.categoryId}"
-                               data-cat-id="${c.categoryId}"
-                               data-cat-name="${c.categoryName}"
-                               value="${overridePct}"
-                               min="0" max="100" step="0.5"
-                               placeholder="—"
-                               oninput="onOverrideChange(this)">
-                        <button class="btn-clear" onclick="clearOverride(${c.categoryId})" title="Supprimer l'override">✕</button>
-                        <span>%</span>
-                    </div>
-                </td>
-                <td>
-                    <span class="effective-rate ${c.hasOverride ? 'override' : ''}" id="eff_${c.categoryId}">
-                        ${c.hasOverride
-                            ? `✓ ${Math.round(c.rate * 100 * 10) / 10}% (override)`
-                            : `→ ${Math.round(commissionData.globalRate * 100 * 10) / 10}% (global)`}
-                    </span>
-                </td>
-            </tr>`;
-        }).join('');
-
-        document.getElementById('catTableWrap').innerHTML = `
-            <table class="cat-table">
-                <thead>
-                    <tr>
-                        <th>Catégorie</th>
-                        <th>Taux override</th>
-                        <th>Taux effectif</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>`;
-    }
-
-    function onOverrideChange(input) {
-        const hasVal = input.value !== '';
-        input.classList.toggle('has-value', hasVal);
-        const globalPct = parseFloat(document.getElementById('globalRate').value) || 10;
-        const effEl = document.getElementById(`eff_${input.dataset.catId}`);
-        if (effEl) {
-            if (hasVal) {
-                effEl.textContent = `✓ ${input.value}% (override)`;
-                effEl.className = 'effective-rate override';
-            } else {
-                effEl.textContent = `→ ${globalPct}% (global)`;
-                effEl.className = 'effective-rate';
-            }
-        }
-    }
-
-    function clearOverride(catId) {
-        const input = document.getElementById(`cat_${catId}`);
-        if (input) {
-            input.value = '';
-            input.classList.remove('has-value');
-            onOverrideChange(input);
-        }
-    }
-
-    function updateEffectiveRates() {
-        const globalPct = parseFloat(document.getElementById('globalRate').value) || 10;
-        document.querySelectorAll('.override-input').forEach(input => {
-            const effEl = document.getElementById(`eff_${input.dataset.catId}`);
-            if (!effEl) return;
-            if (input.value === '') {
-                effEl.textContent = `→ ${globalPct}% (global)`;
-                effEl.className = 'effective-rate';
-            }
-        });
-        document.getElementById('stat-global').textContent = globalPct + '%';
-    }
-
-    // ── SIMULATION ───────────────────────────────────────────────────────────
-    function updateSimulation() {
-        const globalPct = parseFloat(document.getElementById('globalRate').value) || 10;
-        const amount = parseFloat(document.getElementById('simAmount').value) || 0;
-        const rate = globalPct / 100;
-        const commission = Math.round(amount * rate);
-        const net = amount - commission;
-        const fmt = v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F';
-        document.getElementById('sim-gross').textContent = fmt(amount);
-        document.getElementById('sim-commission').textContent = fmt(commission);
-        document.getElementById('sim-net').textContent = fmt(net);
-    }
-
-    // ── SAUVEGARDER ──────────────────────────────────────────────────────────
-    async function saveCommissions() {
-        const btn = document.getElementById('btnSave');
-        btn.disabled = true;
-        btn.textContent = 'Enregistrement...';
-
-        const globalPct = parseFloat(document.getElementById('globalRate').value);
-        if (isNaN(globalPct) || globalPct < 0 || globalPct > 100) {
-            showToast('Taux global invalide (0–100%)', 'error');
-            btn.disabled = false; btn.textContent = '💾 Enregistrer';
-            return;
-        }
-
-        const overrides = [];
-        document.querySelectorAll('.override-input').forEach(input => {
-            const catId = parseInt(input.dataset.catId);
-            const catName = input.dataset.catName;
-            const val = input.value;
-            overrides.push({
-                categoryId: catId,
-                categoryName: catName,
-                rate: val === '' ? null : parseFloat(val) / 100
-            });
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('adminToken');
+            if (!token) { location.href = 'admin-login.html'; return; }
+            await loadCommissions();
+            await loadStats();
         });
 
-        try {
-            const res = await fetch(`${API}/settings/commission`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    globalRate: globalPct / 100,
-                    categoryOverrides: overrides
-                })
-            });
-            if (res.ok) {
-                showToast('Commissions enregistrées ✓', 'success');
-                // Mettre à jour les stats
-                const overrideCount = overrides.filter(o => o.rate !== null).length;
+        function logout() {
+            localStorage.removeItem('adminToken');
+            location.href = 'admin-login.html';
+        }
+
+        async function loadCommissions() {
+            try {
+                const res = await fetch(`${API}/settings/commission`);
+                commissionData = await res.json();
+                const globalPct = Math.round(commissionData.globalRate * 100 * 10) / 10;
+                document.getElementById('globalRate').value = globalPct;
                 document.getElementById('stat-global').textContent = globalPct + '%';
+                const overrideCount = commissionData.categories.filter(c => c.hasOverride).length;
                 document.getElementById('stat-overrides').textContent = overrideCount;
-            } else {
-                const data = await res.json();
-                showToast(data.message || 'Erreur', 'error');
+                renderCategoryTable(commissionData.categories);
+                updateSimulation();
+            } catch (e) {
+                showToast('Erreur de chargement', 'error');
             }
-        } catch (e) {
-            showToast('Erreur réseau', 'error');
         }
 
-        btn.disabled = false;
-        btn.textContent = '💾 Enregistrer';
-    }
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API}/sellers/payouts/all`).catch(() => null);
+                if (!res || !res.ok) return;
+                const payouts = await res.json();
+                const total = payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0);
+                document.getElementById('stat-total-commission').textContent =
+                    new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(total);
+            } catch (e) { }
+        }
 
-    // ── TOAST ────────────────────────────────────────────────────────────────
-    function showToast(msg, type = '') {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.className = 'toast show ' + type;
-        setTimeout(() => { t.className = 'toast'; }, 3500);
-    }
+        function renderCategoryTable(categories) {
+            if (!categories.length) {
+                document.getElementById('catTableWrap').innerHTML =
+                    '<p style="color:var(--gray-500);font-size:14px;padding:10px;">Aucune sous-catégorie trouvée.</p>';
+                return;
+            }
+            const rows = categories.map(c => {
+                const overridePct = c.hasOverride ? Math.round(c.rate * 100 * 10) / 10 : '';
+                return `<tr>
+                        <td><strong>${c.categoryName}</strong></td>
+                        <td>
+                            <div class="override-cell">
+                                <input type="number" class="override-input ${c.hasOverride ? 'has-value' : ''}"
+                                       id="cat_${c.categoryId}" data-cat-id="${c.categoryId}" data-cat-name="${c.categoryName}"
+                                       value="${overridePct}" min="0" max="100" step="0.5" placeholder="—"
+                                       oninput="onOverrideChange(this)">
+                                <button class="btn-clear" onclick="clearOverride(${c.categoryId})">✕</button>
+                                <span>%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="effective-rate ${c.hasOverride ? 'override' : ''}" id="eff_${c.categoryId}">
+                                ${c.hasOverride
+                        ? `✓ ${Math.round(c.rate * 100 * 10) / 10}% (override)`
+                        : `→ ${Math.round(commissionData.globalRate * 100 * 10) / 10}% (global)`}
+                            </span>
+                        </td>
+                    </tr>`;
+            }).join('');
+            document.getElementById('catTableWrap').innerHTML = `
+                    <table class="cat-table">
+                        <thead><tr><th>Catégorie</th><th>Taux override</th><th>Taux effectif</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+        }
+
+        function onOverrideChange(input) {
+            const hasVal = input.value !== '';
+            input.classList.toggle('has-value', hasVal);
+            const globalPct = parseFloat(document.getElementById('globalRate').value) || 10;
+            const effEl = document.getElementById(`eff_${input.dataset.catId}`);
+            if (effEl) {
+                effEl.textContent = hasVal ? `✓ ${input.value}% (override)` : `→ ${globalPct}% (global)`;
+                effEl.className = 'effective-rate' + (hasVal ? ' override' : '');
+            }
+        }
+
+        function clearOverride(catId) {
+            const input = document.getElementById(`cat_${catId}`);
+            if (input) { input.value = ''; input.classList.remove('has-value'); onOverrideChange(input); }
+        }
+
+        function updateEffectiveRates() {
+            const globalPct = parseFloat(document.getElementById('globalRate').value) || 10;
+            document.querySelectorAll('.override-input').forEach(input => {
+                if (input.value === '') {
+                    const effEl = document.getElementById(`eff_${input.dataset.catId}`);
+                    if (effEl) { effEl.textContent = `→ ${globalPct}% (global)`; effEl.className = 'effective-rate'; }
+                }
+            });
+            document.getElementById('stat-global').textContent = globalPct + '%';
+        }
+
+        function updateSimulation() {
+            const globalPct = parseFloat(document.getElementById('globalRate').value) || 10;
+            const amount = parseFloat(document.getElementById('simAmount').value) || 0;
+            const commission = Math.round(amount * globalPct / 100);
+            const net = amount - commission;
+            const fmt = v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F';
+            document.getElementById('sim-gross').textContent = fmt(amount);
+            document.getElementById('sim-commission').textContent = fmt(commission);
+            document.getElementById('sim-net').textContent = fmt(net);
+        }
+
+        async function saveCommissions() {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true; btn.textContent = 'Enregistrement...';
+            const globalPct = parseFloat(document.getElementById('globalRate').value);
+            if (isNaN(globalPct) || globalPct < 0 || globalPct > 100) {
+                showToast('Taux global invalide (0–100%)', 'error');
+                btn.disabled = false; btn.textContent = '💾 Enregistrer'; return;
+            }
+            const overrides = [];
+            document.querySelectorAll('.override-input').forEach(input => {
+                overrides.push({
+                    categoryId: parseInt(input.dataset.catId),
+                    categoryName: input.dataset.catName,
+                    rate: input.value === '' ? null : parseFloat(input.value) / 100
+                });
+            });
+            try {
+                const res = await fetch(`${API}/settings/commission`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ globalRate: globalPct / 100, categoryOverrides: overrides })
+                });
+                if (res.ok) {
+                    showToast('Commissions enregistrées ✓', 'success');
+                    document.getElementById('stat-global').textContent = globalPct + '%';
+                    document.getElementById('stat-overrides').textContent = overrides.filter(o => o.rate !== null).length;
+                } else {
+                    const data = await res.json();
+                    showToast(data.message || 'Erreur', 'error');
+                }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+            btn.disabled = false; btn.textContent = '💾 Enregistrer';
+        }
+
+        function showToast(msg, type = '') {
+            const t = document.getElementById('commToast');
+            t.textContent = msg;
+            t.className = 'comm-toast show ' + type;
+            setTimeout(() => { t.className = 'comm-toast'; }, 3500);
+        }
     </script>
 </body>
 </html>
