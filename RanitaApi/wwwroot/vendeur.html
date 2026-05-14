@@ -777,7 +777,7 @@
         <nav style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
             <a href="products.html">Produits</a>
             <a href="cart.html">Panier</a>
-            <a href="vendeur.html" style="color:#10b981 !important;font-weight:800;">Vendre</a>
+            <a href="register.html" style="color:#10b981 !important;font-weight:800;">Vendre</a>
             <div id="authNav" style="display:inline-flex;align-items:center;"></div>
         </nav>
     </header>
@@ -1005,24 +1005,22 @@
         // INIT — appelé au chargement de la page
         // ══════════════════════════════════════════════════════
         window.addEventListener('DOMContentLoaded', () => {
-            const stored = localStorage.getItem('seller');
-            const seller = stored ? JSON.parse(stored) : null;
+            const sellerStored = localStorage.getItem('seller');
+            const clientStored = localStorage.getItem('client');
 
-            if (seller) {
-                // ✅ FIX 1 : récupérer clientId depuis tous les champs possibles
-                // (selon ce que ton API retourne au login)
-                clientId = seller.clientId || seller.id || seller.userId || seller.sellerId || null;
+            const seller = sellerStored ? JSON.parse(sellerStored) : null;
+            const client = clientStored ? JSON.parse(clientStored) : null;
 
-                // Construire le menu nav connecté
-                buildAuthNav(seller);
+            clientId = seller?.clientId || seller?.id || client?.id || client?.clientId || null;
 
-                // ✅ FIX PRINCIPAL : charger le statut automatiquement sans attendre le clic
+            if (clientId) {
+                const displayName = seller?.name || client?.fullName || client?.name || 'Mon compte';
+                buildAuthNav({ name: displayName });
                 loadSellerStatus();
             } else {
-                // Non connecté → nav avec boutons connexion/inscription
                 document.getElementById('authNav').innerHTML = `
-                        <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
-                        <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
+            <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
+            <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
             }
         });
 
