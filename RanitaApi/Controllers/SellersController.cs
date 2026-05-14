@@ -624,7 +624,36 @@ namespace RanitaApi.Controllers
             TotalEarnings = s.Payouts.Where(p => p.Status == "Paid").Sum(p => p.NetAmount),
             PendingPayouts = s.Payouts.Where(p => p.Status == "Pending").Sum(p => p.NetAmount)
         };
+
+
+        // GET /api/sellers/payouts/all
+        [HttpGet("payouts/all")]
+        public async Task<IActionResult> GetAllPayouts()
+        {
+            var payouts = await _db.SellerPayouts
+                .Include(p => p.Seller)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            var result = payouts.Select(p => new PayoutDto
+            {
+                Id = p.Id,
+                SellerId = p.SellerId,
+                ShopName = p.Seller?.ShopName ?? "",
+                OrderId = p.OrderId,
+                GrossAmount = p.GrossAmount,
+                CommissionAmount = p.CommissionAmount,
+                NetAmount = p.NetAmount,
+                Status = p.Status,
+                TransactionReference = p.TransactionReference,
+                CreatedAt = p.CreatedAt,
+                PaidAt = p.PaidAt
+            }).ToList();
+
+            return Ok(result);
+        }
     }
+
 
     // DTO pour marquer un payout comme payé
     public class MarkPayoutPaidDto
