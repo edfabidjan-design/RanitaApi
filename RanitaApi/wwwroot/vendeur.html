@@ -748,24 +748,65 @@
             }
 
         @media (max-width: 600px) {
-            .form-row, .form-grid {
-                grid-template-columns: 1fr;
+            body {
+                padding-top: 56px;
             }
 
-                .form-grid .full {
-                    grid-column: 1;
+            /* Header */
+            .site-header {
+                padding: 10px 14px;
+            }
+
+            /* Dashboard */
+            .dashboard {
+                padding: 16px 12px;
+            }
+
+            .dash-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .dash-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .dash-stat {
+                padding: 12px;
+            }
+
+                .dash-stat .value {
+                    font-size: 18px;
                 }
 
-            .hero-stats {
-                gap: 24px;
+            /* Onglets — scroll horizontal */
+            div[style*="border-bottom:2px solid #e5e7eb"] {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                flex-wrap: nowrap !important;
             }
 
-            .form-card {
-                padding: 20px 16px;
+                div[style*="border-bottom:2px solid #e5e7eb"] button {
+                    flex-shrink: 0;
+                    padding: 8px 12px !important;
+                    font-size: 12px !important;
+                }
+
+            /* Cartes commandes */
+            #my-orders-list > div {
+                padding: 12px !important;
             }
 
-            .modal {
-                padding: 20px 16px;
+            /* Boutons confirmer/indisponible */
+            div[style*="display:flex;gap:8px;margin-top:12px"] {
+                flex-direction: column !important;
+            }
+
+            /* Stats header */
+            .site-header nav {
+                gap: 6px;
             }
         }
     </style>
