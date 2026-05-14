@@ -112,6 +112,34 @@ namespace RanitaApi.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("RanitaApi.Models.ClientPushSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Auth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("P256dh")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClientPushSubscriptions");
+                });
+
             modelBuilder.Entity("RanitaApi.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -140,6 +168,9 @@ namespace RanitaApi.Migrations
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RefundMotif")
                         .HasColumnType("text");
 
                     b.Property<string>("Status")
@@ -298,6 +329,31 @@ namespace RanitaApi.Migrations
                     b.ToTable("ProductVariants");
                 });
 
+            modelBuilder.Entity("RanitaApi.Models.PushSubscriptionModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Auth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("P256dh")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PushSubscriptions");
+                });
+
             modelBuilder.Entity("RanitaApi.Models.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -336,6 +392,217 @@ namespace RanitaApi.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("RanitaApi.Models.Seller", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("CommissionRate")
+                        .HasPrecision(5, 4)
+                        .HasColumnType("numeric(5,4)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NationalIdNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentDetails")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShopDescription")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShopLogoUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShopName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("Sellers");
+                });
+
+            modelBuilder.Entity("RanitaApi.Models.SellerPayout", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("CommissionAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("NetAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SellerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TransactionReference")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("SellerPayouts");
+                });
+
+            modelBuilder.Entity("RanitaApi.Models.SellerProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApprovalStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Brand")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Images")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("OldPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SellerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sku")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Variants")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("SellerProducts");
+                });
+
+            modelBuilder.Entity("RanitaApi.Models.SellerPushSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Auth")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("P256dh")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SellerId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SellerPushSubscriptions");
                 });
 
             modelBuilder.Entity("RanitaApi.Models.User", b =>
@@ -437,6 +704,39 @@ namespace RanitaApi.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RanitaApi.Models.Seller", b =>
+                {
+                    b.HasOne("RanitaApi.Models.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("RanitaApi.Models.SellerPayout", b =>
+                {
+                    b.HasOne("RanitaApi.Models.Seller", "Seller")
+                        .WithMany("Payouts")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("RanitaApi.Models.SellerProduct", b =>
+                {
+                    b.HasOne("RanitaApi.Models.Seller", "Seller")
+                        .WithMany("SellerProducts")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
             modelBuilder.Entity("RanitaApi.Models.Category", b =>
                 {
                     b.Navigation("Children");
@@ -452,6 +752,13 @@ namespace RanitaApi.Migrations
             modelBuilder.Entity("RanitaApi.Models.Product", b =>
                 {
                     b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("RanitaApi.Models.Seller", b =>
+                {
+                    b.Navigation("Payouts");
+
+                    b.Navigation("SellerProducts");
                 });
 #pragma warning restore 612, 618
         }

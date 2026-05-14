@@ -163,4 +163,18 @@ namespace RanitaApi.DTOs
         public string? PaymentMethod { get; set; }
         public string? PaymentDetails { get; set; }
     }
+
+    public class SellerLoginDto
+    {
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+
+    public class SellerPushSubDto
+    {
+        public int SellerId { get; set; }
+        public string Endpoint { get; set; } = "";
+        public string P256dh { get; set; } = "";
+        public string Auth { get; set; } = "";
+    }
 }

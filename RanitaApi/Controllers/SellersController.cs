@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Generators;
 using RanitaApi.Data;
 using RanitaApi.DTOs;
 using RanitaApi.Models;
 using System.Text.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace RanitaApi.Controllers
 {
@@ -669,6 +672,67 @@ namespace RanitaApi.Controllers
                 SellerId = sellerProduct.SellerId,
                 ShopName = sellerProduct.Seller.ShopName
             });
+        }
+
+        // POST /api/sellers/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] SellerLoginDto dto)
+        {
+            // Vérifier les credentials client
+            var client = await _db.Clients
+                .FirstOrDefaultAsync(c => c.Email == dto.Email);
+
+            if (client == null)
+                return Unauthorized(new { message = "Email ou mot de passe incorrect" });
+
+            // Vérifier mot de passe
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(dto.Password);
+            var hash = sha.ComputeHash(bytes);
+            var hashedPassword = Convert.ToBase64String(hash);
+
+            if (client.PasswordHash != hashedPassword)
+                return Unauthorized(new { message = "Email ou mot de passe incorrect" });
+
+            // Vérifier que ce client a une boutique
+            var seller = await _db.Sellers
+                .FirstOrDefaultAsync(s => s.ClientId == client.Id);
+
+            if (seller == null)
+                return NotFound(new { message = "Aucune boutique trouvée pour ce compte" });
+
+            return Ok(new
+            {
+                clientId = client.Id,
+                sellerId = seller.Id,
+                shopName = seller.ShopName,
+                status = seller.Status,
+                name = client.FullName,
+                email = client.Email
+            });
+        }
+
+        // POST /api/sellers/push-subscribe
+        [HttpPost("push-subscribe")]
+        public async Task<IActionResult> PushSubscribe([FromBody] SellerPushSubDto dto)
+        {
+            // Supprimer l'ancien abonnement
+            var old = await _db.SellerPushSubscriptions
+                .Where(s => s.SellerId == dto.SellerId)
+                .ToListAsync();
+            _db.SellerPushSubscriptions.RemoveRange(old);
+
+            _db.SellerPushSubscriptions.Add(new SellerPushSubscription
+            {
+                SellerId = dto.SellerId,
+                Endpoint = dto.Endpoint,
+                P256dh = dto.P256dh,
+                Auth = dto.Auth,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "Push vendeur enregistré" });
         }
     }
 }

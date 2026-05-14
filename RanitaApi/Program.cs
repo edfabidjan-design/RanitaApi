@@ -543,4 +543,28 @@ catch (Exception ex) { Console.WriteLine("SellerProducts.Variants error: " + ex.
 
 
 
+
+// ── SellerPushSubscriptions table ─────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""SellerPushSubscriptions"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""SellerId"" INT NOT NULL REFERENCES ""Sellers""(""Id"") ON DELETE CASCADE,
+            ""Endpoint"" TEXT NOT NULL,
+            ""P256dh"" TEXT NOT NULL,
+            ""Auth"" TEXT NOT NULL,
+            ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+}
+catch (Exception ex) { Console.WriteLine("SellerPushSubscriptions error: " + ex.Message); }
+
+
+
+
+
+
 app.Run();
