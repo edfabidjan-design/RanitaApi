@@ -1319,11 +1319,7 @@
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
-        async function vendorConfirmUnavailable(orderId) {
-            const motif = prompt('Motif d\'indisponibilité (optionnel) :');
-            if (motif === null) return;
-            try {
-                const res = await fetch(`${API}/orders/${orderId}/vendor-confirm`, {
+ 
 
         async function vendorConfirmUnavailable(orderId) {
             const motif = prompt('Motif d\'indisponibilité (optionnel) :');
