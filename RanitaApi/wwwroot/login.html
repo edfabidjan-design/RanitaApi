@@ -30,7 +30,7 @@
 
         <div class="auth-links">
             <a href="forgot-password.html">Mot de passe oublié ?</a><br>
-            <a href="register.html">Créer un compte</a>
+            <a href="javascript:void(0)" onclick="const r=new URLSearchParams(window.location.search).get('redirect');window.location.href='register.html'+(r?'?redirect='+r:'');">Créer un compte</a>
         </div>
 
     </div>
