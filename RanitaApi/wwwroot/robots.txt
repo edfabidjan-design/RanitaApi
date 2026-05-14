@@ -1,7 +1,25 @@
 ﻿User-agent: *
 Allow: /
+Allow: /products.html
+Allow: /product-details.html
+Allow: /boutique.html
+Allow: /register.html
+Allow: /vendeur.html
+
+# Pages privées — pas d'indexation
 Disallow: /admin-
 Disallow: /checkout.html
 Disallow: /client-orders.html
+Disallow: /cart.html
+Disallow: /vendeur-login.html
+Disallow: /forgot-password.html
+Disallow: /reset-password.html
+Disallow: /thank-you.html
 
+# Googlebot images — autoriser toutes les images produits
+User-agent: Googlebot-Image
+Allow: /
+
+# Sitemap statique + dynamique
 Sitemap: https://www.ranita-shop.com/sitemap.xml
+Sitemap: https://www.ranita-shop.com/sitemap-dynamic.xml
