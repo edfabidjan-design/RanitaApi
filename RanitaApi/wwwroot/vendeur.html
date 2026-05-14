@@ -1014,6 +1014,9 @@
                 <button id="tab-payouts" onclick="switchTab('payouts')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
                     💰 Mes paiements
                 </button>
+                <button id="tab-reviews" onclick="switchTab('reviews')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
+                    ⭐ Avis clients
+                </button>
             </div>
             <div id="section-products">
                 <div class="section-header">
@@ -1033,6 +1036,10 @@
             <div id="section-payouts" style="display:none;">
                 <div class="section-header"><div class="section-title">Mes paiements</div></div>
                 <div id="my-payouts-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
+            </div>
+            <div id="section-reviews" style="display:none;">
+                <div class="section-header"><div class="section-title">⭐ Avis clients</div></div>
+                <div id="my-reviews-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
         </div>
     </div>
@@ -1531,8 +1538,68 @@ ${o.status === 'Indisponible vendeur' ? `
             } catch (e) { console.error('loadMyPayouts:', e); }
         }
 
+
+        async function loadMyReviews() {
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const products = await res.json();
+                const approved = products.filter(p => p.approvalStatus === 'Approved' && p.productId);
+                const el = document.getElementById('my-reviews-list');
+
+                if (!approved.length) {
+                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit publié.</div>';
+                    return;
+                }
+
+                let allReviews = [];
+                for (const p of approved) {
+                    try {
+                        const r = await fetch(`${API}/reviews/product/${p.productId}`);
+                        const reviews = await r.json();
+                        reviews.forEach(rev => rev._productName = p.name);
+                        allReviews = allReviews.concat(reviews);
+                    } catch (e) { }
+                }
+
+                if (!allReviews.length) {
+                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun avis pour le moment.</div>';
+                    return;
+                }
+
+                // Trier par date décroissante
+                allReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                const moyenne = (allReviews.reduce((s, r) => s + r.note, 0) / allReviews.length).toFixed(1);
+
+                el.innerHTML = `
+            <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
+                <div style="text-align:center;">
+                    <div style="font-size:36px;font-weight:800;color:#f59e0b;">${moyenne}</div>
+                    <div style="font-size:20px;color:#f59e0b;">${'★'.repeat(Math.round(moyenne))}${'☆'.repeat(5 - Math.round(moyenne))}</div>
+                    <div style="font-size:12px;color:#6b7280;">${allReviews.length} avis</div>
+                </div>
+            </div>
+            ${allReviews.map(r => `
+            <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;">${r.client || 'Client'}</div>
+                        <div style="font-size:11px;color:#6b7280;">sur : ${r._productName}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="color:#f59e0b;font-size:16px;">${'★'.repeat(r.note)}${'☆'.repeat(5 - r.note)}</span>
+                        <span style="font-size:11px;color:#9ca3af;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                </div>
+                ${r.commentaire ? `<p style="font-size:13px;color:#374151;margin:0;background:#f9fafb;padding:8px 12px;border-radius:8px;">${r.commentaire}</p>` : ''}
+            </div>`).join('')}
+        `;
+            } catch (e) { console.error('loadMyReviews:', e); }
+        }
+
+
         function switchTab(tab) {
-            ['products', 'orders', 'failed', 'payouts'].forEach(t => {
+            ['products', 'orders', 'failed', 'payouts', 'reviews'].forEach(t => {
                 document.getElementById(`section-${t}`).style.display = 'none';
                 const btn = document.getElementById(`tab-${t}`);
                 btn.style.color = '#6b7280'; btn.style.borderBottom = '3px solid transparent';
