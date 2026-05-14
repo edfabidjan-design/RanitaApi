@@ -26,8 +26,15 @@ namespace RanitaApi.Data
         public DbSet<SellerProduct> SellerProducts { get; set; }
         public DbSet<SellerPayout> SellerPayouts { get; set; }
         public DbSet<SellerPushSubscription> SellerPushSubscriptions { get; set; }
+        public DbSet<CommissionSetting> CommissionSettings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
+
+            modelBuilder.Entity<CommissionSetting>()
+    .Property(c => c.Rate)
+    .HasPrecision(5, 4);
 
 
             modelBuilder.Entity<Seller>(entity =>

@@ -567,4 +567,37 @@ catch (Exception ex) { Console.WriteLine("SellerPushSubscriptions error: " + ex.
 
 
 
+
+
+// ═══════════════════════════════════════════════════════════════════
+// FICHIER 2 : Program.cs
+// Ajoute ce bloc à la fin, avant app.Run() :
+// ═══════════════════════════════════════════════════════════════════
+
+// ── CommissionSettings table ───────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""CommissionSettings"" (
+            ""Id""          SERIAL PRIMARY KEY,
+            ""Key""         TEXT NOT NULL UNIQUE,
+            ""Label""       TEXT NOT NULL DEFAULT '',
+            ""Rate""        NUMERIC(5,4) NOT NULL DEFAULT 0.10,
+            ""UpdatedAt""   TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+    // Seed : taux global par défaut si pas encore en base
+    db.Database.ExecuteSqlRaw(@"
+        INSERT INTO ""CommissionSettings"" (""Key"", ""Label"", ""Rate"", ""UpdatedAt"")
+        VALUES ('global', 'Global', 0.10, NOW())
+        ON CONFLICT (""Key"") DO NOTHING;
+    ");
+}
+catch (Exception ex) { Console.WriteLine("CommissionSettings error: " + ex.Message); }
+
+
+
+
 app.Run();
