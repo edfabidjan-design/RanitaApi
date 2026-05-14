@@ -2,40 +2,67 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
 
 async function loadNavBadges() {
     try {
-        // ── Commandes ──
-        const resOrders = await fetch(API_BASE_NOTIF + "/orders");
-        const orders = await resOrders.json();
+        const currentPage = window.location.href;
 
-        // En attente + Confirmée par vendeur + Indisponible vendeur = nécessite action admin
-        const countOrders = orders.filter(o =>
-            o.status === "En attente" ||
-            o.status === "Confirmée par vendeur" ||
-            o.status === "Indisponible vendeur"
-        ).length;
+        // ── Commandes ──
+        let countOrders = 0;
+        try {
+            const resOrders = await fetch(API_BASE_NOTIF + "/orders");
+            const orders = await resOrders.json();
+            const total = orders.filter(o =>
+                o.status === "En attente" ||
+                o.status === "Confirmée par vendeur" ||
+                o.status === "Indisponible vendeur"
+            ).length;
+
+            if (currentPage.indexOf('admin-orders') !== -1) {
+                localStorage.setItem('badge-orders-seen', total);
+                countOrders = 0;
+            } else {
+                const lastSeen = parseInt(localStorage.getItem('badge-orders-seen') || '0');
+                countOrders = total > lastSeen ? total - lastSeen : 0;
+            }
+        } catch (e) { }
 
         // ── Avis en attente ──
         let countReviews = 0;
         try {
             const resReviews = await fetch(API_BASE_NOTIF + "/reviews");
             const reviews = await resReviews.json();
-            countReviews = reviews.filter(r => r.approuve === false).length;
+            const total = reviews.filter(r => r.approuve === false).length;
+
+            if (currentPage.indexOf('admin-reviews') !== -1) {
+                localStorage.setItem('badge-reviews-seen', total);
+                countReviews = 0;
+            } else {
+                const lastSeen = parseInt(localStorage.getItem('badge-reviews-seen') || '0');
+                countReviews = total > lastSeen ? total - lastSeen : 0;
+            }
         } catch (e) { }
 
         // ── Vendeurs en attente ──
         let countVendors = 0;
+        let countProducts = 0;
         try {
             const resVendors = await fetch(API_BASE_NOTIF + "/admin/sellers?status=Pending");
             const vendors = await resVendors.json();
             countVendors = vendors.length;
         } catch (e) { }
-
-        // ── Produits vendeurs en attente ──
-        let countProducts = 0;
         try {
             const resProducts = await fetch(API_BASE_NOTIF + "/admin/sellers/products?status=Pending");
             const products = await resProducts.json();
             countProducts = products.length;
         } catch (e) { }
+
+        const totalVendors = countVendors + countProducts;
+        let displayVendors = 0;
+        if (currentPage.indexOf('admin-sellers') !== -1) {
+            localStorage.setItem('badge-vendors-seen', totalVendors);
+            displayVendors = 0;
+        } else {
+            const lastSeen = parseInt(localStorage.getItem('badge-vendors-seen') || '0');
+            displayVendors = totalVendors > lastSeen ? totalVendors - lastSeen : 0;
+        }
 
         // ── Clients inscrits aujourd'hui ──
         let countClients = 0;
@@ -43,10 +70,18 @@ async function loadNavBadges() {
             const resClients = await fetch(API_BASE_NOTIF + "/clients");
             const clients = await resClients.json();
             const today = new Date().toDateString();
-            countClients = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
+            const todayClients = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
+
+            if (currentPage.indexOf('admin-clients') !== -1) {
+                localStorage.setItem('badge-clients-seen', todayClients);
+                countClients = 0;
+            } else {
+                const lastSeen = parseInt(localStorage.getItem('badge-clients-seen') || '0');
+                countClients = todayClients > lastSeen ? todayClients - lastSeen : 0;
+            }
         } catch (e) { }
 
-        // Ajouter style une seule fois
+        // ── Style badge ──
         if (!document.getElementById("nav-badge-style")) {
             const style = document.createElement("style");
             style.id = "nav-badge-style";
@@ -65,14 +100,14 @@ async function loadNavBadges() {
             document.head.appendChild(style);
         }
 
-        // Mettre à jour les badges nav
+        // ── Mettre à jour les badges nav ──
         document.querySelectorAll("header nav a").forEach(function (link) {
             var href = link.getAttribute("href") || "";
             var count = 0;
 
             if (href.indexOf("admin-orders") !== -1) count = countOrders;
             if (href.indexOf("admin-reviews") !== -1) count = countReviews;
-            if (href.indexOf("admin-sellers") !== -1) count = countVendors + countProducts;
+            if (href.indexOf("admin-sellers") !== -1) count = displayVendors;
             if (href.indexOf("admin-clients") !== -1) count = countClients;
 
             var existingBadge = link.querySelector(".nav-badge") ||
@@ -103,7 +138,7 @@ async function loadNavBadges() {
 }
 
 window.addEventListener("load", loadNavBadges);
-setInterval(loadNavBadges, 20000); // toutes les 20 secondes
+setInterval(loadNavBadges, 20000);
 
 // ── Push notifications admin ──
 async function registerPush() {
