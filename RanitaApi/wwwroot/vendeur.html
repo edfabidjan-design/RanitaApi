@@ -1682,16 +1682,32 @@ ${o.status === 'Indisponible vendeur' ? `
             setInterval(async () => {
                 if (!sellerId) return;
 
-                // Rafraîchir l'onglet actif
-                const activeTab = document.querySelector('[id^="tab-"]');
-                if (document.getElementById('section-orders').style.display !== 'none') {
-                    loadMyOrders();
-                }
-                if (document.getElementById('section-products').style.display !== 'none') {
-                    loadMyProducts();
-                }
-                if (document.getElementById('section-payouts')?.style.display !== 'none') {
-                    loadMyPayouts();
+                // Mettre à jour les stats du dashboard
+                try {
+                    const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
+                    if (res.ok) {
+                        const s = await res.json();
+                        document.getElementById('dash-total-products').textContent = s.totalProducts ?? '0';
+                        document.getElementById('dash-pending-products').textContent = s.pendingProducts ?? '0';
+                        document.getElementById('dash-earnings').textContent = formatPrice(s.totalEarnings);
+                        document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
+                    }
+                } catch (e) { }
+
+                // Rafraîchir l'onglet actuellement visible
+                const sections = {
+                    'section-orders': loadMyOrders,
+                    'section-products': loadMyProducts,
+                    'section-failed': loadFailedDeliveries,
+                    'section-payouts': loadMyPayouts
+                };
+
+                for (const [id, fn] of Object.entries(sections)) {
+                    const el = document.getElementById(id);
+                    if (el && el.style.display !== 'none') {
+                        fn();
+                        break;
+                    }
                 }
 
                 // Toujours mettre à jour les badges
