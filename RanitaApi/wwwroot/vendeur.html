@@ -803,7 +803,7 @@
                 }
 
             /* ONGLETS — scroll horizontal sans wrapping */
-            #page-dashboard .dashboard > div:nth-of-type(2) {
+            #tabs-bar {
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch;
                 flex-wrap: nowrap !important;
@@ -1001,7 +1001,7 @@
                 <canvas id="salesChart" height="120"></canvas>
             </div>
 
-            <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+            <div id="tabs-bar" style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;">
                 <button id="tab-products" onclick="switchTab('products')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">
                     📦 Mes produits <span id="badge-products" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
                 </button>
