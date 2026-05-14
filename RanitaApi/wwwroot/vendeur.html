@@ -1001,17 +1001,17 @@
                 <canvas id="salesChart" height="120"></canvas>
             </div>
 
-            <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;">
-                <button id="tab-products" onclick="switchTab('products')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">
+            <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+                <button id="tab-products" onclick="switchTab('products')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">
                     📦 Mes produits <span id="badge-products" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
                 </button>
-                <button id="tab-orders" onclick="switchTab('orders')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
+                <button id="tab-orders" onclick="switchTab('orders')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
                     🛒 Mes commandes <span id="badge-orders" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
                 </button>
-                <button id="tab-failed" onclick="switchTab('failed')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
+                <button id="tab-failed" onclick="switchTab('failed')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
                     ❌ Échecs livraison <span id="badge-failed" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
                 </button>
-                <button id="tab-payouts" onclick="switchTab('payouts')" style="padding:10px 20px;border:none;background:none;font-size:14px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
+                <button id="tab-payouts" onclick="switchTab('payouts')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
                     💰 Mes paiements
                 </button>
             </div>
