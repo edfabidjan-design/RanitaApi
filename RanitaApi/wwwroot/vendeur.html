@@ -1266,25 +1266,77 @@
                 const orders = await res.json();
                 const el = document.getElementById('my-orders-list');
                 if (!orders.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Aucune commande pour le moment.</div>'; return; }
-                const sc = { 'En attente': { bg: '#fef3c7', color: '#92400e' }, 'Confirmée': { bg: '#dbeafe', color: '#1e40af' }, 'En cours': { bg: '#e0e7ff', color: '#3730a3' }, 'Livrée': { bg: '#d1fae5', color: '#065f46' }, 'Annulée': { bg: '#fee2e2', color: '#991b1b' } };
+                const sc = {
+                    'En attente': { bg: '#fef3c7', color: '#92400e' },
+                    'Confirmée par vendeur': { bg: '#dbeafe', color: '#1e40af' },
+                    'Confirmée': { bg: '#dbeafe', color: '#1e40af' },
+                    'En cours': { bg: '#e0e7ff', color: '#3730a3' },
+                    'Livrée': { bg: '#d1fae5', color: '#065f46' },
+                    'Annulée': { bg: '#fee2e2', color: '#991b1b' }
+                };
                 el.innerHTML = orders.map(o => {
                     const s = sc[o.status] || { bg: '#f3f4f6', color: '#374151' };
                     return `<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                                <div><span style="font-weight:700;font-size:15px;">Commande #${o.id}</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                                <div style="display:flex;align-items:center;gap:10px;"><span style="background:${s.bg};color:${s.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span><span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span></div>
-                            </div>
-                            <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
-                            <div style="border-top:1px solid #f3f4f6;padding-top:10px;">${o.items.map(i => `
-                                <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
-                                    ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
-                                    <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${i.productName}</div>${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}</div>
-                                    <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
-                                    <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
-                                </div>`).join('')}</div>
-                        </div>`;
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                    <div><span style="font-weight:700;font-size:15px;">Commande #${o.id}</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span></div>
+                    <div style="display:flex;align-items:center;gap:10px;"><span style="background:${s.bg};color:${s.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span><span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span></div>
+                </div>
+                <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
+                <div style="border-top:1px solid #f3f4f6;padding-top:10px;">${o.items.map(i => `
+                    <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
+                        ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
+                        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${i.productName}</div>${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}</div>
+                        <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
+                        <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
+                    </div>`).join('')}
+                </div>
+                ${o.status === 'En attente' ? `
+                <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f3f4f6;">
+                    <button onclick="vendorConfirm(${o.id})"
+                        style="flex:1;padding:10px;background:#d1fae5;color:#065f46;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
+                        ✅ Confirmer disponibilité
+                    </button>
+                    <button onclick="vendorConfirmUnavailable(${o.id})"
+                        style="flex:1;padding:10px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
+                        ❌ Produit indisponible
+                    </button>
+                </div>` : ''}
+            </div>`;
                 }).join('');
             } catch (e) { }
+        }
+
+        async function vendorConfirm(orderId) {
+            if (!confirm('Confirmer la disponibilité de cette commande ?')) return;
+            try {
+                const res = await fetch(`${API}/orders/${orderId}/vendor-confirm`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ available: true, motif: null })
+                });
+                if (res.ok) { showToast('Commande confirmée ✓', 'success'); loadMyOrders(); }
+                else showToast('Erreur', 'error');
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        async function vendorConfirmUnavailable(orderId) {
+            const motif = prompt('Motif d\'indisponibilité (optionnel) :');
+            if (motif === null) return;
+            try {
+                const res = await fetch(`${API}/orders/${orderId}/vendor-confirm`, {
+
+        async function vendorConfirmUnavailable(orderId) {
+            const motif = prompt('Motif d\'indisponibilité (optionnel) :');
+            if (motif === null) return; // annulé
+            try {
+                const res = await fetch(`${API}/orders/${orderId}/vendor-confirm`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ available: false, motif: motif || 'Produit indisponible' })
+                });
+                if (res.ok) { showToast('Commande signalée indisponible', 'success'); loadMyOrders(); }
+                else showToast('Erreur', 'error');
+            } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
         async function loadFailedDeliveries() {

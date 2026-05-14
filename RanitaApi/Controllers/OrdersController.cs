@@ -566,6 +566,49 @@ namespace RanitaApi.Controllers
             await _context.SaveChangesAsync();
             return Ok("Remboursement rejeté.");
         }
+
+
+
+        // PUT /api/orders/{id}/vendor-confirm
+        [HttpPut("{id}/vendor-confirm")]
+        public async Task<IActionResult> VendorConfirm(int id, [FromBody] VendorConfirmDto dto)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+            if (order.Status != "En attente")
+                return BadRequest(new { message = "Seules les commandes en attente peuvent être confirmées" });
+
+            order.Status = dto.Available ? "Confirmée par vendeur" : "Annulée";
+            await _context.SaveChangesAsync();
+
+            // Push admin
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    var subs = await db.PushSubscriptions.ToListAsync();
+                    var pushClient = new WebPushClient();
+                    var vapid = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
+                    var payload = System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        title = dto.Available ? "✅ Vendeur a confirmé !" : "❌ Produit indisponible !",
+                        body = dto.Available
+                            ? $"Commande #{id} confirmée par le vendeur — prête à livrer."
+                            : $"Commande #{id} : produit indisponible. Motif : {dto.Motif ?? "Non précisé"}"
+                    });
+                    foreach (var s in subs)
+                    {
+                        try { await pushClient.SendNotificationAsync(new PushSubscription(s.Endpoint, s.P256dh, s.Auth), payload, vapid); }
+                        catch { }
+                    }
+                }
+                catch { }
+            });
+
+            return Ok(new { message = dto.Available ? "Commande confirmée" : "Commande annulée", status = order.Status });
+        }
     }
 
     public class CreateOrderDto
@@ -590,5 +633,12 @@ namespace RanitaApi.Controllers
     public class UpdateStatusDto
     {
         public string Status { get; set; } = "";
+    }
+
+
+    public class VendorConfirmDto
+    {
+        public bool Available { get; set; }
+        public string? Motif { get; set; }
     }
 }
