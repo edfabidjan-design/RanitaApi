@@ -1120,8 +1120,9 @@ ${p.approvalStatus === 'Pending' ? `
 
             ${vendor.status === 'Pending' ? `
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                <input type="text" id="ref-${vendor.sellerId}" placeholder="Référence transaction (ex: OM-XXXXXXX)" 
-                    style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
+<input type="text" id="ref-${vendor.sellerId}" 
+    value="${generateTransactionRef()}"
+    style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
                 <button onclick="payAllVendor(${vendor.sellerId}, '${vendor.shopName}')" 
                     style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">
                     ✓ Payer ${formatPrice(vendor.total)}
@@ -1135,6 +1136,13 @@ ${p.approvalStatus === 'Pending' ? `
             `}
         </div>
     `).join('');
+        }
+
+        function generateTransactionRef() {
+            const now = new Date();
+            const date = now.toISOString().slice(0, 10).replace(/-/g, '');
+            const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+            return `OM-${date}-${rand}`;
         }
 
 
