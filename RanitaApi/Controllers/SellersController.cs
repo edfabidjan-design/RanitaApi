@@ -481,6 +481,7 @@ namespace RanitaApi.Controllers
                 o.Total,
                 o.Status,
                 o.CreatedAt,
+                o.RefundMotif,
                 Items = o.Items.Where(i => sellerProductIds.Contains(i.ProductId)).Select(i => new
                 {
                     i.ProductId,

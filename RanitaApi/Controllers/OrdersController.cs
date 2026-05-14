@@ -578,10 +578,10 @@ namespace RanitaApi.Controllers
             if (order.Status != "En attente")
                 return BadRequest(new { message = "Seules les commandes en attente peuvent être confirmées" });
 
-            order.Status = dto.Available ? "Confirmée par vendeur" : "Annulée";
+            
 
 
-            order.Status = dto.Available ? "Confirmée par vendeur" : "Annulée";
+            order.Status = dto.Available ? "Confirmée par vendeur" : "Indisponible vendeur";
 
             // ✅ AJOUTER CETTE LIGNE
             if (!dto.Available && !string.IsNullOrEmpty(dto.Motif))
