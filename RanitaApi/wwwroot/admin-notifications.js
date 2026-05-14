@@ -1,87 +1,106 @@
 const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
 
+// Enregistrer beforeunload une seule fois au chargement
+(function setupBeforeUnload() {
+    const currentPage = window.location.href;
+
+    window.addEventListener('beforeunload', async () => {
+        // Quand on quitte une page, marquer les items comme vus
+
+        if (currentPage.indexOf('admin-orders') !== -1) {
+            try {
+                const res = await fetch(API_BASE_NOTIF + "/orders");
+                const orders = await res.json();
+                const total = orders.filter(o =>
+                    o.status === "En attente" ||
+                    o.status === "Confirmée par vendeur" ||
+                    o.status === "Indisponible vendeur"
+                ).length;
+                localStorage.setItem('badge-orders-seen', total);
+            } catch (e) { }
+        }
+
+        if (currentPage.indexOf('admin-reviews') !== -1) {
+            try {
+                const res = await fetch(API_BASE_NOTIF + "/reviews");
+                const reviews = await res.json();
+                const total = reviews.filter(r => r.approuve === false).length;
+                localStorage.setItem('badge-reviews-seen', total);
+            } catch (e) { }
+        }
+
+        if (currentPage.indexOf('admin-sellers') !== -1) {
+            try {
+                const r1 = await fetch(API_BASE_NOTIF + "/admin/sellers?status=Pending");
+                const v = await r1.json();
+                const r2 = await fetch(API_BASE_NOTIF + "/admin/sellers/products?status=Pending");
+                const p = await r2.json();
+                localStorage.setItem('badge-vendors-seen', v.length + p.length);
+            } catch (e) { }
+        }
+
+        if (currentPage.indexOf('admin-clients') !== -1) {
+            try {
+                const res = await fetch(API_BASE_NOTIF + "/clients");
+                const clients = await res.json();
+                const today = new Date().toDateString();
+                const total = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
+                localStorage.setItem('badge-clients-seen', total);
+            } catch (e) { }
+        }
+    });
+})();
+
 async function loadNavBadges() {
     try {
-        const currentPage = window.location.href;
-
         // ── Commandes ──
         let countOrders = 0;
         try {
-            const resOrders = await fetch(API_BASE_NOTIF + "/orders");
-            const orders = await resOrders.json();
+            const res = await fetch(API_BASE_NOTIF + "/orders");
+            const orders = await res.json();
             const total = orders.filter(o =>
                 o.status === "En attente" ||
                 o.status === "Confirmée par vendeur" ||
                 o.status === "Indisponible vendeur"
             ).length;
-
-            if (currentPage.indexOf('admin-orders') !== -1) {
-                localStorage.setItem('badge-orders-seen', total);
-                countOrders = 0;
-            } else {
-                const lastSeen = parseInt(localStorage.getItem('badge-orders-seen') || '0');
-                countOrders = total > lastSeen ? total - lastSeen : 0;
-            }
+            const lastSeen = parseInt(localStorage.getItem('badge-orders-seen') || '0');
+            countOrders = total > lastSeen ? total - lastSeen : 0;
         } catch (e) { }
 
-        // ── Avis en attente ──
+        // ── Avis ──
         let countReviews = 0;
         try {
-            const resReviews = await fetch(API_BASE_NOTIF + "/reviews");
-            const reviews = await resReviews.json();
+            const res = await fetch(API_BASE_NOTIF + "/reviews");
+            const reviews = await res.json();
             const total = reviews.filter(r => r.approuve === false).length;
-
-            if (currentPage.indexOf('admin-reviews') !== -1) {
-                localStorage.setItem('badge-reviews-seen', total);
-                countReviews = 0;
-            } else {
-                const lastSeen = parseInt(localStorage.getItem('badge-reviews-seen') || '0');
-                countReviews = total > lastSeen ? total - lastSeen : 0;
-            }
+            const lastSeen = parseInt(localStorage.getItem('badge-reviews-seen') || '0');
+            countReviews = total > lastSeen ? total - lastSeen : 0;
         } catch (e) { }
 
-        // ── Vendeurs en attente ──
-        let countVendors = 0;
-        let countProducts = 0;
-        try {
-            const resVendors = await fetch(API_BASE_NOTIF + "/admin/sellers?status=Pending");
-            const vendors = await resVendors.json();
-            countVendors = vendors.length;
-        } catch (e) { }
-        try {
-            const resProducts = await fetch(API_BASE_NOTIF + "/admin/sellers/products?status=Pending");
-            const products = await resProducts.json();
-            countProducts = products.length;
-        } catch (e) { }
-
-        const totalVendors = countVendors + countProducts;
+        // ── Vendeurs ──
         let displayVendors = 0;
-        if (currentPage.indexOf('admin-sellers') !== -1) {
-            localStorage.setItem('badge-vendors-seen', totalVendors);
-            displayVendors = 0;
-        } else {
+        try {
+            const r1 = await fetch(API_BASE_NOTIF + "/admin/sellers?status=Pending");
+            const vendors = await r1.json();
+            const r2 = await fetch(API_BASE_NOTIF + "/admin/sellers/products?status=Pending");
+            const products = await r2.json();
+            const total = vendors.length + products.length;
             const lastSeen = parseInt(localStorage.getItem('badge-vendors-seen') || '0');
-            displayVendors = totalVendors > lastSeen ? totalVendors - lastSeen : 0;
-        }
+            displayVendors = total > lastSeen ? total - lastSeen : 0;
+        } catch (e) { }
 
-        // ── Clients inscrits aujourd'hui ──
+        // ── Clients ──
         let countClients = 0;
         try {
-            const resClients = await fetch(API_BASE_NOTIF + "/clients");
-            const clients = await resClients.json();
+            const res = await fetch(API_BASE_NOTIF + "/clients");
+            const clients = await res.json();
             const today = new Date().toDateString();
-            const todayClients = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
-
-            if (currentPage.indexOf('admin-clients') !== -1) {
-                localStorage.setItem('badge-clients-seen', todayClients);
-                countClients = 0;
-            } else {
-                const lastSeen = parseInt(localStorage.getItem('badge-clients-seen') || '0');
-                countClients = todayClients > lastSeen ? todayClients - lastSeen : 0;
-            }
+            const total = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
+            const lastSeen = parseInt(localStorage.getItem('badge-clients-seen') || '0');
+            countClients = total > lastSeen ? total - lastSeen : 0;
         } catch (e) { }
 
-        // ── Style badge ──
+        // ── Style ──
         if (!document.getElementById("nav-badge-style")) {
             const style = document.createElement("style");
             style.id = "nav-badge-style";
@@ -91,8 +110,7 @@ async function loadNavBadges() {
                     position: absolute; top: -10px; right: -12px;
                     background: #ef4444; color: white;
                     font-size: 11px; font-weight: 900;
-                    min-width: 20px; height: 20px;
-                    border-radius: 50px;
+                    min-width: 20px; height: 20px; border-radius: 50px;
                     display: inline-flex; align-items: center; justify-content: center;
                     padding: 0 5px; z-index: 9999; pointer-events: none;
                 }
@@ -100,11 +118,10 @@ async function loadNavBadges() {
             document.head.appendChild(style);
         }
 
-        // ── Mettre à jour les badges nav ──
+        // ── Badges nav ──
         document.querySelectorAll("header nav a").forEach(function (link) {
             var href = link.getAttribute("href") || "";
             var count = 0;
-
             if (href.indexOf("admin-orders") !== -1) count = countOrders;
             if (href.indexOf("admin-reviews") !== -1) count = countReviews;
             if (href.indexOf("admin-sellers") !== -1) count = displayVendors;
@@ -112,8 +129,7 @@ async function loadNavBadges() {
 
             var existingBadge = link.querySelector(".nav-badge") ||
                 (link.parentElement.classList.contains("nav-badge-wrap")
-                    ? link.parentElement.querySelector(".nav-badge")
-                    : null);
+                    ? link.parentElement.querySelector(".nav-badge") : null);
 
             if (existingBadge) {
                 if (count === 0) existingBadge.remove();
@@ -147,15 +163,12 @@ async function registerPush() {
         const reg = await navigator.serviceWorker.register('/sw.js');
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') return;
-
         const existing = await reg.pushManager.getSubscription();
         if (existing) return;
-
         const sub = await reg.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: 'BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY'
         });
-
         await fetch('https://ranitaapi-production.up.railway.app/api/notifications/subscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -166,9 +179,7 @@ async function registerPush() {
             })
         });
         console.log('Push admin enregistré !');
-    } catch (e) {
-        console.error('Push error:', e);
-    }
+    } catch (e) { console.error('Push error:', e); }
 }
 
 window.addEventListener('load', registerPush);
