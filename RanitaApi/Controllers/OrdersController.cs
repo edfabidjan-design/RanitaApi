@@ -50,7 +50,6 @@ namespace RanitaApi.Controllers
                 Client = o.Client == null ? null : new { o.Client.Id, o.Client.FullName, o.Client.Email },
                 Items = o.Items.Select(i => new { i.Id, i.ProductId, i.ProductName, i.Price, i.Quantity, i.ImageUrl, i.VariantId, i.VariantName })
             });
-
             return Ok(result);
         }
 
@@ -61,9 +60,7 @@ namespace RanitaApi.Controllers
                 .Include(o => o.Items)
                 .Include(o => o.Client)
                 .FirstOrDefaultAsync(o => o.Id == id);
-
             if (o == null) return NotFound();
-
             return Ok(new
             {
                 o.Id,
@@ -97,12 +94,10 @@ namespace RanitaApi.Controllers
             };
 
             decimal total = 0;
-
             foreach (var item in dto.Items)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
                 if (product == null) continue;
-
                 var orderItem = new OrderItem
                 {
                     ProductId = product.Id,
@@ -113,25 +108,18 @@ namespace RanitaApi.Controllers
                     VariantId = item.VariantId,
                     VariantName = item.VariantName
                 };
-
                 total += product.Price * item.Quantity;
                 order.Items.Add(orderItem);
-
                 if (item.VariantId.HasValue)
                 {
                     var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
-                    if (variant != null)
-                        variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
+                    if (variant != null) variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
                 }
-                else
-                {
-                    product.Stock = Math.Max(0, product.Stock - item.Quantity);
-                }
+                else product.Stock = Math.Max(0, product.Stock - item.Quantity);
             }
 
             total += dto.ShippingFee;
             order.Total = total;
-
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
@@ -147,11 +135,11 @@ namespace RanitaApi.Controllers
             {
                 try
                 {
-                    // Email admin
+                    // ── Email admin ──
                     await _emailService.SendNewOrderNotificationAsync(
                         orderId, customerName, customerPhone, customerAddress, orderTotal);
 
-                    // Push notification ADMIN
+                    // ── Push admin ──
                     try
                     {
                         using var scope = _scopeFactory.CreateScope();
@@ -164,19 +152,15 @@ namespace RanitaApi.Controllers
                             title = "🛒 Nouvelle commande !",
                             body = $"{customerName} — {orderTotal.ToString("N0")} FCFA"
                         });
-
                         foreach (var s in subs)
                         {
-                            try { var sub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth); await pushClient.SendNotificationAsync(sub, payload, vapid); }
+                            try { await pushClient.SendNotificationAsync(new PushSubscription(s.Endpoint, s.P256dh, s.Auth), payload, vapid); }
                             catch { }
                         }
                     }
                     catch (Exception ex) { Console.WriteLine("PUSH ADMIN ERROR: " + ex.Message); }
 
-
-                    
-
-                    // ✅ Push notification CLIENT à la passation de commande
+                    // ── Push + Email client ──
                     if (clientId.HasValue)
                     {
                         try
@@ -184,8 +168,7 @@ namespace RanitaApi.Controllers
                             using var scopeClient = _scopeFactory.CreateScope();
                             var dbClient = scopeClient.ServiceProvider.GetRequiredService<AppDbContext>();
                             var clientSubs = await dbClient.ClientPushSubscriptions
-                                .Where(s => s.ClientId == clientId.Value)
-                                .ToListAsync();
+                                .Where(s => s.ClientId == clientId.Value).ToListAsync();
                             var pushClientNew = new WebPushClient();
                             var vapidNew = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
                             var payloadNew = System.Text.Json.JsonSerializer.Serialize(new
@@ -195,35 +178,46 @@ namespace RanitaApi.Controllers
                             });
                             foreach (var s in clientSubs)
                             {
-                                try
-                                {
-                                    var pushSub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                                    await pushClientNew.SendNotificationAsync(pushSub, payloadNew, vapidNew);
-                                }
+                                try { await pushClientNew.SendNotificationAsync(new PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadNew, vapidNew); }
                                 catch { }
                             }
                         }
                         catch (Exception ex) { Console.WriteLine("PUSH CLIENT NEW ORDER ERROR: " + ex.Message); }
+
+                        // Email confirmation client
+                        try
+                        {
+                            using var scope = _scopeFactory.CreateScope();
+                            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                            var client = await db.Clients.FindAsync(clientId.Value);
+                            if (client != null && !string.IsNullOrEmpty(client.Email))
+                                await _emailService.SendOrderConfirmationToClientAsync(
+                                    client.Email, client.FullName, orderId, orderTotal, orderItems);
+                        }
+                        catch (Exception ex) { Console.WriteLine("EMAIL CLIENT ERROR: " + ex.Message); }
                     }
 
-                    // Push notification VENDEURS concernés
+                    // ── Push + Email VENDEURS concernés ──
                     try
                     {
                         using var scopeVendor = _scopeFactory.CreateScope();
                         var dbVendor = scopeVendor.ServiceProvider.GetRequiredService<AppDbContext>();
 
+                        // Grouper par vendeur pour n'envoyer qu'un email par vendeur
+                        var notifiedSellerIds = new HashSet<int>();
+
                         foreach (var item in orderItems)
                         {
                             var sellerProduct = await dbVendor.SellerProducts
                                 .Include(sp => sp.Seller)
+                                    .ThenInclude(s => s.Client)
                                 .FirstOrDefaultAsync(sp => sp.ProductId == item.ProductId && sp.ApprovalStatus == "Approved");
 
                             if (sellerProduct?.Seller == null) continue;
 
+                            // ── Push vendeur ──
                             var vendorSubs = await dbVendor.SellerPushSubscriptions
-                                .Where(s => s.SellerId == sellerProduct.SellerId)
-                                .ToListAsync();
-
+                                .Where(s => s.SellerId == sellerProduct.SellerId).ToListAsync();
                             var pushVendor = new WebPushClient();
                             var vapidVendor = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
                             var payloadVendor = System.Text.Json.JsonSerializer.Serialize(new
@@ -231,36 +225,40 @@ namespace RanitaApi.Controllers
                                 title = "🛒 Nouvelle vente !",
                                 body = $"{item.ProductName} x{item.Quantity} — {(item.Price * item.Quantity).ToString("N0")} FCFA"
                             });
-
                             foreach (var s in vendorSubs)
                             {
-                                try
-                                {
-                                    var sub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                                    await pushVendor.SendNotificationAsync(sub, payloadVendor, vapidVendor);
-                                }
+                                try { await pushVendor.SendNotificationAsync(new PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadVendor, vapidVendor); }
                                 catch { }
+                            }
+
+                            // ── Email vendeur (1 seul par vendeur) ──
+                            if (!notifiedSellerIds.Contains(sellerProduct.SellerId))
+                            {
+                                notifiedSellerIds.Add(sellerProduct.SellerId);
+                                var sellerEmail = sellerProduct.Seller.Client?.Email;
+                                if (!string.IsNullOrEmpty(sellerEmail))
+                                {
+                                    // Récupérer tous les items de CE vendeur dans la commande
+                                    var allSellerProductIds = await dbVendor.SellerProducts
+                                        .Where(sp => sp.SellerId == sellerProduct.SellerId && sp.ApprovalStatus == "Approved" && sp.ProductId != null)
+                                        .Select(sp => sp.ProductId!.Value)
+                                        .ToListAsync();
+                                    var sellerItems = orderItems.Where(i => allSellerProductIds.Contains(i.ProductId)).ToList();
+                                    var grossTotal = sellerItems.Sum(i => i.Price * i.Quantity);
+                                    var sellerNet = Math.Round(grossTotal * (1 - sellerProduct.Seller.CommissionRate), 0);
+
+                                    try
+                                    {
+                                        await _emailService.SendNewOrderToSellerAsync(
+                                            sellerEmail, sellerProduct.Seller.ShopName,
+                                            orderId, sellerItems, sellerNet);
+                                    }
+                                    catch (Exception ex) { Console.WriteLine("EMAIL VENDEUR NEW ORDER ERROR: " + ex.Message); }
+                                }
                             }
                         }
                     }
                     catch (Exception ex) { Console.WriteLine("PUSH VENDOR ORDER ERROR: " + ex.Message); }
-
-
-                    // Email confirmation client
-                    if (clientId.HasValue)
-
-
-
-                        // Email confirmation client
-                        if (clientId.HasValue)
-                    {
-                        using var scope = _scopeFactory.CreateScope();
-                        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                        var client = await db.Clients.FindAsync(clientId.Value);
-                        if (client != null && !string.IsNullOrEmpty(client.Email))
-                            await _emailService.SendOrderConfirmationToClientAsync(
-                                client.Email, client.FullName, orderId, orderTotal, orderItems);
-                    }
                 }
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
             });
@@ -274,7 +272,6 @@ namespace RanitaApi.Controllers
             var order = await _context.Orders
                 .Include(o => o.Items)
                 .FirstOrDefaultAsync(o => o.Id == id);
-
             if (order == null) return NotFound();
 
             var ancienStatut = order.Status;
@@ -316,8 +313,7 @@ namespace RanitaApi.Controllers
 
             await _context.SaveChangesAsync();
 
-
-            // Échec livraison — remettre le stock
+            // Échec livraison — remettre le stock + annuler payout
             if (dto.Status == "Échec livraison" && ancienStatut != "Échec livraison")
             {
                 foreach (var item in order.Items)
@@ -333,16 +329,11 @@ namespace RanitaApi.Controllers
                         if (product != null) product.Stock += item.Quantity;
                     }
                 }
-
-                // Annuler le payout si créé
                 var payouts = await _context.SellerPayouts
-                    .Where(p => p.OrderId == order.Id && p.Status == "Pending")
-                    .ToListAsync();
+                    .Where(p => p.OrderId == order.Id && p.Status == "Pending").ToListAsync();
                 _context.SellerPayouts.RemoveRange(payouts);
-
                 await _context.SaveChangesAsync();
             }
-
 
             // Payout automatique quand commande Livrée
             if (dto.Status == "Livrée" && ancienStatut != "Livrée")
@@ -352,18 +343,13 @@ namespace RanitaApi.Controllers
                     var sellerProduct = await _context.SellerProducts
                         .Include(sp => sp.Seller)
                         .FirstOrDefaultAsync(sp => sp.ProductId == item.ProductId && sp.ApprovalStatus == "Approved");
-
                     if (sellerProduct?.Seller == null) continue;
-
-                    // Éviter les doublons
                     var alreadyExists = await _context.SellerPayouts
                         .AnyAsync(p => p.OrderId == order.Id && p.SellerId == sellerProduct.SellerId);
                     if (alreadyExists) continue;
-
                     var gross = item.Price * item.Quantity;
                     var commission = Math.Round(gross * sellerProduct.Seller.CommissionRate, 2);
                     var net = gross - commission;
-
                     _context.SellerPayouts.Add(new SellerPayout
                     {
                         SellerId = sellerProduct.SellerId,
@@ -378,7 +364,6 @@ namespace RanitaApi.Controllers
                 await _context.SaveChangesAsync();
             }
 
-
             var orderId = order.Id;
             var clientId = order.ClientId;
             var newStatus = dto.Status;
@@ -388,9 +373,9 @@ namespace RanitaApi.Controllers
             {
                 try
                 {
+                    // ── Email + Push CLIENT ──
                     if (clientId.HasValue)
                     {
-                        // Email client
                         using var scope = _scopeFactory.CreateScope();
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var client = await db.Clients.FindAsync(clientId.Value);
@@ -398,14 +383,12 @@ namespace RanitaApi.Controllers
                             await _emailService.SendOrderStatusUpdateAsync(
                                 client.Email, client.FullName, orderId, newStatus, orderItems);
 
-                        // Push notification CLIENT
                         try
                         {
                             using var scope2 = _scopeFactory.CreateScope();
                             var db2 = scope2.ServiceProvider.GetRequiredService<AppDbContext>();
                             var clientSubs = await db2.ClientPushSubscriptions
-                                .Where(s => s.ClientId == clientId.Value)
-                                .ToListAsync();
+                                .Where(s => s.ClientId == clientId.Value).ToListAsync();
                             var pushClient = new WebPushClient();
                             var vapid = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
                             var (notifTitle, notifBody) = newStatus switch
@@ -418,19 +401,10 @@ namespace RanitaApi.Controllers
                                 "Remboursé" => ("💸 Remboursement effectué", $"Votre remboursement pour la commande #{orderId} a été effectué."),
                                 _ => ("🛒 Commande mise à jour", $"Votre commande #{orderId} est maintenant : {newStatus}")
                             };
-                            var payload = System.Text.Json.JsonSerializer.Serialize(new
-                            {
-                                title = notifTitle,
-                                body = notifBody
-                            });
-
+                            var payload = System.Text.Json.JsonSerializer.Serialize(new { title = notifTitle, body = notifBody });
                             foreach (var s in clientSubs)
                             {
-                                try
-                                {
-                                    var pushSub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                                    await pushClient.SendNotificationAsync(pushSub, payload, vapid);
-                                }
+                                try { await pushClient.SendNotificationAsync(new PushSubscription(s.Endpoint, s.P256dh, s.Auth), payload, vapid); }
                                 catch { }
                             }
                         }
@@ -440,17 +414,17 @@ namespace RanitaApi.Controllers
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
             });
 
-            // Push vendeur quand commande livrée
+            // ── Push + Email VENDEUR quand commande livrée ──
             if (newStatus == "Livrée")
             {
                 try
                 {
                     using var scopeV = _scopeFactory.CreateScope();
                     var dbV = scopeV.ServiceProvider.GetRequiredService<AppDbContext>();
-
                     var sellerProductIds = orderItems.Select(i => i.ProductId).ToList();
                     var sellerProducts = await dbV.SellerProducts
                         .Include(sp => sp.Seller)
+                            .ThenInclude(s => s.Client)
                         .Where(sp => sellerProductIds.Contains(sp.ProductId ?? 0) && sp.ApprovalStatus == "Approved")
                         .ToListAsync();
 
@@ -460,10 +434,9 @@ namespace RanitaApi.Controllers
                         if (sp.Seller == null || notifiedSellers.Contains(sp.SellerId)) continue;
                         notifiedSellers.Add(sp.SellerId);
 
+                        // Push vendeur
                         var vendorSubs = await dbV.SellerPushSubscriptions
-                            .Where(s => s.SellerId == sp.SellerId)
-                            .ToListAsync();
-
+                            .Where(s => s.SellerId == sp.SellerId).ToListAsync();
                         var pushV = new WebPushClient();
                         var vapidV = new VapidDetails(VapidSubject, VapidPublic, VapidPrivate);
                         var payloadV = System.Text.Json.JsonSerializer.Serialize(new
@@ -471,15 +444,29 @@ namespace RanitaApi.Controllers
                             title = "💰 Paiement en cours !",
                             body = $"Commande #{orderId} livrée — votre paiement est en cours de traitement."
                         });
-
                         foreach (var s in vendorSubs)
                         {
+                            try { await pushV.SendNotificationAsync(new PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadV, vapidV); }
+                            catch { }
+                        }
+
+                        // ✅ Email vendeur — commande livrée
+                        var sellerEmail = sp.Seller.Client?.Email;
+                        if (!string.IsNullOrEmpty(sellerEmail))
+                        {
+                            var allSellerProductIds = await dbV.SellerProducts
+                                .Where(x => x.SellerId == sp.SellerId && x.ApprovalStatus == "Approved" && x.ProductId != null)
+                                .Select(x => x.ProductId!.Value).ToListAsync();
+                            var sellerItemsTotal = orderItems
+                                .Where(i => allSellerProductIds.Contains(i.ProductId))
+                                .Sum(i => i.Price * i.Quantity);
+                            var netAmount = Math.Round(sellerItemsTotal * (1 - sp.Seller.CommissionRate), 0);
                             try
                             {
-                                var sub = new PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                                await pushV.SendNotificationAsync(sub, payloadV, vapidV);
+                                await _emailService.SendOrderDeliveredToSellerAsync(
+                                    sellerEmail, sp.Seller.ShopName, orderId, netAmount);
                             }
-                            catch { }
+                            catch (Exception ex) { Console.WriteLine("EMAIL VENDEUR LIVREE ERROR: " + ex.Message); }
                         }
                     }
                 }
@@ -492,16 +479,10 @@ namespace RanitaApi.Controllers
         [HttpPost("{id}/cancel")]
         public async Task<IActionResult> Cancel(int id)
         {
-            var order = await _context.Orders
-                .Include(o => o.Items)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
+            var order = await _context.Orders.Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id);
             if (order == null) return NotFound();
-            if (order.Status != "En attente")
-                return BadRequest("Seules les commandes en attente peuvent être annulées.");
-
+            if (order.Status != "En attente") return BadRequest("Seules les commandes en attente peuvent être annulées.");
             order.Status = "Annulée";
-
             foreach (var item in order.Items)
             {
                 if (item.VariantId.HasValue)
@@ -515,7 +496,6 @@ namespace RanitaApi.Controllers
                     if (product != null) product.Stock += item.Quantity;
                 }
             }
-
             await _context.SaveChangesAsync();
             return Ok("Commande annulée");
         }
@@ -526,24 +506,18 @@ namespace RanitaApi.Controllers
             var order = await _context.Orders.FindAsync(id);
             if (order == null) return NotFound();
             if (order.Status != "Livrée") return BadRequest("Remboursement uniquement pour les commandes livrées.");
-
             order.Status = "Remboursement demandé";
             order.RefundMotif = dto.Motif;
             await _context.SaveChangesAsync();
-
             return Ok("Demande de remboursement envoyée.");
         }
 
         [HttpPost("{id}/refund-approve")]
         public async Task<IActionResult> RefundApprove(int id)
         {
-            var order = await _context.Orders
-                .Include(o => o.Items)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
+            var order = await _context.Orders.Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id);
             if (order == null) return NotFound();
             if (order.Status != "Remboursement demandé") return BadRequest("Statut invalide.");
-
             foreach (var item in order.Items)
             {
                 if (item.VariantId.HasValue)
@@ -557,7 +531,6 @@ namespace RanitaApi.Controllers
                     if (product != null) product.Stock += item.Quantity;
                 }
             }
-
             order.Status = "Remboursé";
             await _context.SaveChangesAsync();
             return Ok("Remboursement validé.");
@@ -569,7 +542,6 @@ namespace RanitaApi.Controllers
             var order = await _context.Orders.FindAsync(id);
             if (order == null) return NotFound();
             if (order.Status != "Remboursement demandé") return BadRequest("Statut invalide.");
-
             order.Status = "Remboursement rejeté";
             await _context.SaveChangesAsync();
             return Ok("Remboursement rejeté.");

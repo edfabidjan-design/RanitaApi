@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Generators;
 using RanitaApi.Data;
 using RanitaApi.DTOs;
 using RanitaApi.Models;
+using RanitaApi.Services;
 using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,23 +15,21 @@ namespace RanitaApi.Controllers
     public class SellersController : ControllerBase
     {
         private readonly AppDbContext _db;
+        private readonly EmailService _emailService;
 
-        public SellersController(AppDbContext db)
+        public SellersController(AppDbContext db, EmailService emailService)
         {
             _db = db;
+            _emailService = emailService;
         }
 
-        // ── INSCRIPTION VENDEUR ───────────────────────────────────────────
         // POST /api/sellers/register
-        // Le client doit être connecté — on passe son ClientId dans le body
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] SellerRegisterDto dto, [FromQuery] int clientId)
         {
             var client = await _db.Clients.FindAsync(clientId);
-            if (client == null)
-                return NotFound(new { message = "Client introuvable" });
+            if (client == null) return NotFound(new { message = "Client introuvable" });
 
-            // Un client ne peut avoir qu'une seule boutique
             var existing = await _db.Sellers.FirstOrDefaultAsync(s => s.ClientId == clientId);
             if (existing != null)
                 return BadRequest(new { message = "Vous avez déjà soumis une demande de boutique", status = existing.Status });
@@ -53,7 +51,6 @@ namespace RanitaApi.Controllers
             _db.Sellers.Add(seller);
             await _db.SaveChangesAsync();
 
-            // Notifier l'admin
             try
             {
                 var adminSubs = await _db.PushSubscriptions.ToListAsync();
@@ -66,14 +63,9 @@ namespace RanitaApi.Controllers
                     title = "🏪 Nouveau vendeur !",
                     body = $"\"{dto.ShopName}\" vient de s'inscrire sur Ranita Market."
                 });
-
                 foreach (var s in adminSubs)
                 {
-                    try
-                    {
-                        var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                        await pushAdmin.SendNotificationAsync(sub, payloadAdmin, vapidAdmin);
-                    }
+                    try { await pushAdmin.SendNotificationAsync(new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadAdmin, vapidAdmin); }
                     catch { }
                 }
             }
@@ -82,7 +74,6 @@ namespace RanitaApi.Controllers
             return Ok(new { message = "Demande envoyée, en attente de validation", sellerId = seller.Id });
         }
 
-        // ── STATUT VENDEUR (pour le client) ──────────────────────────────
         // GET /api/sellers/my?clientId=5
         [HttpGet("my")]
         public async Task<IActionResult> GetMySeller([FromQuery] int clientId)
@@ -92,15 +83,10 @@ namespace RanitaApi.Controllers
                 .Include(s => s.SellerProducts)
                 .Include(s => s.Payouts)
                 .FirstOrDefaultAsync(s => s.ClientId == clientId);
-
-            if (seller == null)
-                return NotFound(new { message = "Aucune boutique trouvée" });
-
-            var dto = MapToDto(seller);
-            return Ok(dto);
+            if (seller == null) return NotFound(new { message = "Aucune boutique trouvée" });
+            return Ok(MapToDto(seller));
         }
 
-        // ── PRODUITS DU VENDEUR ───────────────────────────────────────────
         // GET /api/sellers/{sellerId}/products
         [HttpGet("{sellerId}/products")]
         public async Task<IActionResult> GetMyProducts(int sellerId)
@@ -110,23 +96,16 @@ namespace RanitaApi.Controllers
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
-            var productIds = products
-                .Where(p => p.ProductId.HasValue)
-                .Select(p => p.ProductId.Value).ToList();
-
-            var mainProducts = await _db.Products
-                .Where(p => productIds.Contains(p.Id))
-                .ToDictionaryAsync(p => p.Id);
+            var productIds = products.Where(p => p.ProductId.HasValue).Select(p => p.ProductId.Value).ToList();
+            var mainProducts = await _db.Products.Where(p => productIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id);
 
             var result = products.Select(p => {
                 List<string> images;
                 try { images = JsonSerializer.Deserialize<List<string>>(p.Images) ?? new(); }
                 catch { images = new(); }
-
                 bool? isActive = null;
                 if (p.ProductId.HasValue && mainProducts.ContainsKey(p.ProductId.Value))
                     isActive = mainProducts[p.ProductId.Value].IsActive;
-
                 return new
                 {
                     p.Id,
@@ -148,7 +127,6 @@ namespace RanitaApi.Controllers
                     IsActive = isActive
                 };
             });
-
             return Ok(result);
         }
 
@@ -157,13 +135,9 @@ namespace RanitaApi.Controllers
         public async Task<IActionResult> SubmitProduct(int sellerId)
         {
             var seller = await _db.Sellers.FindAsync(sellerId);
-            if (seller == null)
-                return NotFound(new { message = "Boutique introuvable" });
+            if (seller == null) return NotFound(new { message = "Boutique introuvable" });
+            if (seller.Status != "Approved") return BadRequest(new { message = "Votre boutique doit être approuvée" });
 
-            if (seller.Status != "Approved")
-                return BadRequest(new { message = "Votre boutique doit être approuvée" });
-
-            // Lire depuis Request.Form directement
             var name = Request.Form["name"].ToString().Trim();
             var desc = Request.Form["description"].ToString().Trim();
             var shortDesc = Request.Form["shortDescription"].ToString().Trim();
@@ -172,31 +146,22 @@ namespace RanitaApi.Controllers
             var brand = Request.Form["brand"].ToString().Trim();
             var imagesJson = Request.Form["images"].ToString();
 
-            decimal.TryParse(Request.Form["price"], System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out decimal price);
-            decimal.TryParse(Request.Form["oldPrice"], System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out decimal oldPrice);
+            decimal.TryParse(Request.Form["price"], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal price);
+            decimal.TryParse(Request.Form["oldPrice"], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal oldPrice);
             int.TryParse(Request.Form["stock"], out int stock);
 
-            // Images existantes
             var imageUrls = new List<string>();
             if (!string.IsNullOrEmpty(imagesJson))
             {
-                try
-                {
-                    var existing = System.Text.Json.JsonSerializer.Deserialize<List<string>>(imagesJson);
-                    if (existing != null) imageUrls.AddRange(existing);
-                }
+                try { var ex = System.Text.Json.JsonSerializer.Deserialize<List<string>>(imagesJson); if (ex != null) imageUrls.AddRange(ex); }
                 catch { }
             }
 
-            // Upload vers Cloudinary (même logique que ProductsController)
             if (Request.Form.Files.Count > 0)
             {
                 var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
                 var cloudinary = new CloudinaryDotNet.Cloudinary(cloudinaryUrl);
                 cloudinary.Api.Secure = true;
-
                 foreach (var file in Request.Form.Files.Take(5 - imageUrls.Count))
                 {
                     if (file.Length > 0)
@@ -233,8 +198,6 @@ namespace RanitaApi.Controllers
             _db.SellerProducts.Add(product);
             await _db.SaveChangesAsync();
 
-
-            // Notifier l'admin
             try
             {
                 var adminSubs = await _db.PushSubscriptions.ToListAsync();
@@ -242,44 +205,35 @@ namespace RanitaApi.Controllers
                 var vapidPrivateKey = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
                 var pushAdmin = new WebPush.WebPushClient();
                 var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
-                var sellerName = seller.ShopName;
                 var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
                 {
                     title = "📦 Nouveau produit à valider !",
-                    body = $"\"{name}\" soumis par {sellerName} — en attente de validation."
+                    body = $"\"{name}\" soumis par {seller.ShopName} — en attente de validation."
                 });
-
                 foreach (var s in adminSubs)
                 {
-                    try
-                    {
-                        var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                        await pushAdmin.SendNotificationAsync(sub, payloadAdmin, vapidAdmin);
-                    }
+                    try { await pushAdmin.SendNotificationAsync(new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadAdmin, vapidAdmin); }
                     catch { }
                 }
             }
             catch { }
 
-
-            // Sauvegarder les variantes
             var variantsJson = Request.Form["variants"].ToString();
             if (!string.IsNullOrEmpty(variantsJson))
             {
                 try
                 {
-                    var variants = System.Text.Json.JsonSerializer.Deserialize<List<dynamic>>(variantsJson);
+                    var variants = System.Text.Json.JsonSerializer.Deserialize<List<System.Text.Json.JsonElement>>(variantsJson);
                     if (variants != null)
                     {
                         int totalStock = 0;
                         foreach (var v in variants)
                         {
-                            var stockStr = v.GetProperty("stock").ToString();
-                            if (int.TryParse(stockStr, out int vs))
+                            if (v.TryGetProperty("stock", out var sp) && int.TryParse(sp.ToString(), out int vs))
                                 totalStock += vs;
                         }
                         product.Stock = totalStock;
-                        product.Variants = variantsJson; // ← AJOUTER
+                        product.Variants = variantsJson;
                         await _db.SaveChangesAsync();
                     }
                 }
@@ -289,8 +243,6 @@ namespace RanitaApi.Controllers
             return Ok(new { message = "Produit soumis, en attente de validation", productId = product.Id });
         }
 
-
-        // ── PAYOUTS DU VENDEUR ────────────────────────────────────────────
         // GET /api/sellers/{sellerId}/payouts
         [HttpGet("{sellerId}/payouts")]
         public async Task<IActionResult> GetPayouts(int sellerId)
@@ -319,79 +271,77 @@ namespace RanitaApi.Controllers
             return Ok(result);
         }
 
-        // ── HELPERS ───────────────────────────────────────────────────────
-
-        private static SellerDto MapToDto(Seller s)
+        // ✅ PUT /api/sellers/payouts/{payoutId}/pay
+        // Marquer un payout comme payé → envoie email au vendeur
+        [HttpPut("payouts/{payoutId}/pay")]
+        public async Task<IActionResult> MarkPayoutPaid(int payoutId, [FromBody] MarkPayoutPaidDto dto)
         {
-            return new SellerDto
+            var payout = await _db.SellerPayouts
+                .Include(p => p.Seller)
+                    .ThenInclude(s => s.Client)
+                .FirstOrDefaultAsync(p => p.Id == payoutId);
+
+            if (payout == null) return NotFound(new { message = "Payout introuvable" });
+            if (payout.Status == "Paid") return BadRequest(new { message = "Déjà payé" });
+
+            payout.Status = "Paid";
+            payout.PaidAt = DateTime.UtcNow;
+            payout.TransactionReference = dto.TransactionReference;
+
+            await _db.SaveChangesAsync();
+
+            // ✅ Email vendeur — paiement reçu
+            var sellerEmail = payout.Seller?.Client?.Email;
+            if (!string.IsNullOrEmpty(sellerEmail))
             {
-                Id = s.Id,
-                ClientId = s.ClientId,
-                ClientName = s.Client?.FullName ?? "",
-                ClientEmail = s.Client?.Email ?? "",
-                ShopName = s.ShopName,
-                ShopDescription = s.ShopDescription,
-                PhoneNumber = s.PhoneNumber,
-                NationalIdNumber = s.NationalIdNumber,
-                ShopLogoUrl = s.ShopLogoUrl,
-                CommissionRate = s.CommissionRate,
-                PaymentMethod = s.PaymentMethod,
-                PaymentDetails = s.PaymentDetails,
-                Status = s.Status,
-                RejectionReason = s.RejectionReason,
-                CreatedAt = s.CreatedAt,
-                TotalProducts = s.SellerProducts.Count(p => p.ApprovalStatus == "Approved"),
-                PendingProducts = s.SellerProducts.Count(p => p.ApprovalStatus == "Pending"),
-                TotalEarnings = s.Payouts.Where(p => p.Status == "Paid").Sum(p => p.NetAmount),
-                PendingPayouts = s.Payouts.Where(p => p.Status == "Pending").Sum(p => p.NetAmount)
-            };
-        }
+                try
+                {
+                    await _emailService.SendPayoutToSellerAsync(
+                        sellerEmail,
+                        payout.Seller!.ShopName,
+                        payout.OrderId,
+                        payout.NetAmount,
+                        payout.Seller.PaymentMethod,
+                        payout.Seller.PaymentDetails
+                    );
+                }
+                catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
+            }
 
-        private static SellerProductDto MapProductToDto(SellerProduct p, string shopName)
-        {
-            List<string> images;
-            try { images = JsonSerializer.Deserialize<List<string>>(p.Images) ?? new(); }
-            catch { images = new(); }
-
-            return new SellerProductDto
+            // ✅ Push vendeur — paiement reçu
+            try
             {
-                Id = p.Id,
-                SellerId = p.SellerId,
-                ShopName = shopName,
-                ProductId = p.ProductId,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                OldPrice = p.OldPrice,
-                Stock = p.Stock,
-                Category = p.Category,
-                Sku = p.Sku,      // ← AJOUTER
-                Brand = p.Brand,    // ← AJOUTER
-                Images = images,
-                ApprovalStatus = p.ApprovalStatus,
-                RejectionReason = p.RejectionReason,
-                CreatedAt = p.CreatedAt
-            };
-        }
+                var vendorSubs = await _db.SellerPushSubscriptions
+                    .Where(s => s.SellerId == payout.SellerId).ToListAsync();
+                var pushV = new WebPush.WebPushClient();
+                var vapid = new WebPush.VapidDetails("mailto:contact@ranita-shop.com",
+                    "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY",
+                    "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs");
+                var payloadV = System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    title = "💸 Paiement reçu !",
+                    body = $"{payout.NetAmount.ToString("N0")} FCFA vient d'être envoyé sur votre compte."
+                });
+                foreach (var s in vendorSubs)
+                {
+                    try { await pushV.SendNotificationAsync(new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadV, vapid); }
+                    catch { }
+                }
+            }
+            catch (Exception ex) { Console.WriteLine("PUSH PAYOUT ERROR: " + ex.Message); }
 
+            return Ok(new { message = "Paiement enregistré ✓", payoutId, netAmount = payout.NetAmount });
+        }
 
         // DELETE /api/sellers/{sellerId}/products/{productId}
         [HttpDelete("{sellerId}/products/{productId}")]
         public async Task<IActionResult> DeleteProduct(int sellerId, int productId)
         {
-            var product = await _db.SellerProducts
-                .FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
-
-            if (product == null)
-                return NotFound(new { message = "Produit introuvable" });
-
-            // Ne peut supprimer que si pas encore approuvé
-            if (product.ApprovalStatus == "Approved")
-                return BadRequest(new { message = "Impossible de supprimer un produit déjà publié" });
-
+            var product = await _db.SellerProducts.FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
+            if (product == null) return NotFound(new { message = "Produit introuvable" });
+            if (product.ApprovalStatus == "Approved") return BadRequest(new { message = "Impossible de supprimer un produit déjà publié" });
             _db.SellerProducts.Remove(product);
             await _db.SaveChangesAsync();
-
             return Ok(new { message = "Produit supprimé" });
         }
 
@@ -399,15 +349,9 @@ namespace RanitaApi.Controllers
         [HttpPut("{sellerId}/products/{productId}")]
         public async Task<IActionResult> UpdateProduct(int sellerId, int productId)
         {
-            var product = await _db.SellerProducts
-                .FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
+            var product = await _db.SellerProducts.FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
+            if (product == null) return NotFound(new { message = "Produit introuvable" });
 
-            if (product == null)
-                return NotFound(new { message = "Produit introuvable" });
-
-            // On permet la modification même si Approuvé — repassera en Pending
-
-            // Lire depuis Request.Form
             var name = Request.Form["name"].ToString().Trim();
             var desc = Request.Form["description"].ToString().Trim();
             var shortDesc = Request.Form["shortDescription"].ToString().Trim();
@@ -416,31 +360,22 @@ namespace RanitaApi.Controllers
             var brand = Request.Form["brand"].ToString().Trim();
             var imagesJson = Request.Form["images"].ToString();
 
-            decimal.TryParse(Request.Form["price"], System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out decimal price);
-            decimal.TryParse(Request.Form["oldPrice"], System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out decimal oldPrice);
+            decimal.TryParse(Request.Form["price"], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal price);
+            decimal.TryParse(Request.Form["oldPrice"], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal oldPrice);
             int.TryParse(Request.Form["stock"], out int stock);
 
-            // Images existantes
             var imageUrls = new List<string>();
             if (!string.IsNullOrEmpty(imagesJson))
             {
-                try
-                {
-                    var existing = System.Text.Json.JsonSerializer.Deserialize<List<string>>(imagesJson);
-                    if (existing != null) imageUrls.AddRange(existing);
-                }
+                try { var ex = System.Text.Json.JsonSerializer.Deserialize<List<string>>(imagesJson); if (ex != null) imageUrls.AddRange(ex); }
                 catch { }
             }
 
-            // Nouvelles images Cloudinary
             if (Request.Form.Files.Count > 0)
             {
                 var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
                 var cloudinary = new CloudinaryDotNet.Cloudinary(cloudinaryUrl);
                 cloudinary.Api.Secure = true;
-
                 foreach (var file in Request.Form.Files.Take(5 - imageUrls.Count))
                 {
                     if (file.Length > 0)
@@ -456,21 +391,14 @@ namespace RanitaApi.Controllers
                 }
             }
 
-            // Mettre à jour
-            product.Name = name;
-            product.Description = desc;
-            product.ShortDescription = shortDesc;
-            product.Brand = brand;
-            product.Sku = sku;
-            product.Price = price;
-            product.OldPrice = oldPrice > 0 ? oldPrice : null;
-            product.Stock = stock;
+            product.Name = name; product.Description = desc; product.ShortDescription = shortDesc;
+            product.Brand = brand; product.Sku = sku; product.Price = price;
+            product.OldPrice = oldPrice > 0 ? oldPrice : null; product.Stock = stock;
             product.Category = category;
             product.Images = System.Text.Json.JsonSerializer.Serialize(imageUrls);
-            product.ApprovalStatus = "Pending"; // Repassé en attente après modification
+            product.ApprovalStatus = "Pending";
             product.UpdatedAt = DateTime.UtcNow;
 
-            // Variantes
             var variantsJson = Request.Form["variants"].ToString();
             if (!string.IsNullOrEmpty(variantsJson))
             {
@@ -482,12 +410,11 @@ namespace RanitaApi.Controllers
                         int totalStock = 0;
                         foreach (var v in variants)
                         {
-                            if (v.TryGetProperty("stock", out var stockProp) &&
-                                int.TryParse(stockProp.ToString(), out int vs))
+                            if (v.TryGetProperty("stock", out var sp) && int.TryParse(sp.ToString(), out int vs))
                                 totalStock += vs;
                         }
                         product.Stock = totalStock;
-                        product.Variants = variantsJson; // ← AJOUTER
+                        product.Variants = variantsJson;
                     }
                 }
                 catch { }
@@ -495,28 +422,22 @@ namespace RanitaApi.Controllers
 
             await _db.SaveChangesAsync();
 
-            // Notifier l'admin — produit modifié
             try
             {
                 var adminSubs = await _db.PushSubscriptions.ToListAsync();
                 var sellerInfo = await _db.Sellers.FindAsync(sellerId);
-                var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
-                var vapidPrivateKey = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
                 var pushAdmin = new WebPush.WebPushClient();
-                var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
+                var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com",
+                    "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY",
+                    "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs");
                 var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
                 {
                     title = "✏️ Produit modifié à re-valider !",
                     body = $"\"{product.Name}\" modifié par {sellerInfo?.ShopName ?? "un vendeur"} — en attente de validation."
                 });
-
                 foreach (var s in adminSubs)
                 {
-                    try
-                    {
-                        var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                        await pushAdmin.SendNotificationAsync(sub, payloadAdmin, vapidAdmin);
-                    }
+                    try { await pushAdmin.SendNotificationAsync(new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadAdmin, vapidAdmin); }
                     catch { }
                 }
             }
@@ -525,23 +446,17 @@ namespace RanitaApi.Controllers
             return Ok(new { message = "Produit mis à jour", productId = product.Id });
         }
 
-
         [HttpPut("{sellerId}/products/{productId}/toggle")]
         public async Task<IActionResult> ToggleProduct(int sellerId, int productId, [FromBody] JsonElement body)
         {
-            var sellerProduct = await _db.SellerProducts
-                .FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
-
+            var sellerProduct = await _db.SellerProducts.FirstOrDefaultAsync(p => p.Id == productId && p.SellerId == sellerId);
             if (sellerProduct == null) return NotFound();
             if (sellerProduct.ProductId == null) return BadRequest(new { message = "Produit pas encore publié" });
-
             var product = await _db.Products.FindAsync(sellerProduct.ProductId);
             if (product == null) return NotFound();
-
             bool isActive = body.GetProperty("isActive").GetBoolean();
             product.IsActive = isActive;
             await _db.SaveChangesAsync();
-
             return Ok(new { message = isActive ? "Produit activé" : "Produit désactivé", isActive });
         }
 
@@ -549,22 +464,14 @@ namespace RanitaApi.Controllers
         [HttpGet("{sellerId}/orders")]
         public async Task<IActionResult> GetMyOrders(int sellerId)
         {
-            // Trouver tous les ProductId du vendeur approuvés
             var sellerProductIds = await _db.SellerProducts
                 .Where(p => p.SellerId == sellerId && p.ApprovalStatus == "Approved" && p.ProductId != null)
-                .Select(p => p.ProductId.Value)
-                .ToListAsync();
-
-            if (!sellerProductIds.Any())
-                return Ok(new List<object>());
-
-            // Trouver les commandes contenant ces produits
+                .Select(p => p.ProductId.Value).ToListAsync();
+            if (!sellerProductIds.Any()) return Ok(new List<object>());
             var orders = await _db.Orders
                 .Include(o => o.Items)
                 .Where(o => o.Items.Any(i => sellerProductIds.Contains(i.ProductId)))
-                .OrderByDescending(o => o.CreatedAt)
-                .ToListAsync();
-
+                .OrderByDescending(o => o.CreatedAt).ToListAsync();
             var result = orders.Select(o => new
             {
                 o.Id,
@@ -574,25 +481,18 @@ namespace RanitaApi.Controllers
                 o.Total,
                 o.Status,
                 o.CreatedAt,
-                // Seulement les items du vendeur
-                Items = o.Items
-                    .Where(i => sellerProductIds.Contains(i.ProductId))
-                    .Select(i => new
-                    {
-                        i.ProductId,
-                        i.ProductName,
-                        i.Price,
-                        i.Quantity,
-                        i.ImageUrl,
-                        i.VariantName,
-                        Subtotal = i.Price * i.Quantity
-                    }),
-                // Montant vendeur sur cette commande
-                SellerTotal = o.Items
-                    .Where(i => sellerProductIds.Contains(i.ProductId))
-                    .Sum(i => i.Price * i.Quantity)
+                Items = o.Items.Where(i => sellerProductIds.Contains(i.ProductId)).Select(i => new
+                {
+                    i.ProductId,
+                    i.ProductName,
+                    i.Price,
+                    i.Quantity,
+                    i.ImageUrl,
+                    i.VariantName,
+                    Subtotal = i.Price * i.Quantity
+                }),
+                SellerTotal = o.Items.Where(i => sellerProductIds.Contains(i.ProductId)).Sum(i => i.Price * i.Quantity)
             });
-
             return Ok(result);
         }
 
@@ -602,38 +502,26 @@ namespace RanitaApi.Controllers
         {
             var seller = await _db.Sellers.FindAsync(sellerId);
             if (seller == null) return NotFound(new { message = "Boutique introuvable" });
-
             seller.ShopName = dto.ShopName?.Trim() ?? seller.ShopName;
             seller.ShopDescription = dto.ShopDescription?.Trim();
             seller.PhoneNumber = dto.PhoneNumber?.Trim() ?? seller.PhoneNumber;
             seller.PaymentMethod = dto.PaymentMethod ?? seller.PaymentMethod;
             seller.PaymentDetails = dto.PaymentDetails?.Trim() ?? seller.PaymentDetails;
             seller.UpdatedAt = DateTime.UtcNow;
-
             await _db.SaveChangesAsync();
             return Ok(new { message = "Profil mis à jour ✓" });
         }
-
-
 
         // GET /api/sellers/{sellerId}/public
         [HttpGet("{sellerId}/public")]
         public async Task<IActionResult> GetPublic(int sellerId)
         {
-            var seller = await _db.Sellers
-                .FirstOrDefaultAsync(s => s.Id == sellerId && s.Status == "Approved");
-
+            var seller = await _db.Sellers.FirstOrDefaultAsync(s => s.Id == sellerId && s.Status == "Approved");
             if (seller == null) return NotFound();
-
             var products = await _db.Products
-                .Include(p => p.Category)
-                .Include(p => p.Variants)
-                .Where(p => _db.SellerProducts.Any(sp =>
-                    sp.SellerId == sellerId &&
-                    sp.ProductId == p.Id &&
-                    sp.ApprovalStatus == "Approved") && p.IsActive)
+                .Include(p => p.Category).Include(p => p.Variants)
+                .Where(p => _db.SellerProducts.Any(sp => sp.SellerId == sellerId && sp.ProductId == p.Id && sp.ApprovalStatus == "Approved") && p.IsActive)
                 .ToListAsync();
-
             return Ok(new
             {
                 seller.Id,
@@ -649,9 +537,7 @@ namespace RanitaApi.Controllers
                     p.ImageUrl,
                     p.Images,
                     p.ShortDescription,
-                    Stock = p.Variants != null && p.Variants.Any()
-                        ? p.Variants.Sum(v => v.Stock)
-                        : p.Stock,
+                    Stock = p.Variants != null && p.Variants.Any() ? p.Variants.Sum(v => v.Stock) : p.Stock,
                     Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name }
                 })
             });
@@ -664,42 +550,26 @@ namespace RanitaApi.Controllers
             var sellerProduct = await _db.SellerProducts
                 .Include(sp => sp.Seller)
                 .FirstOrDefaultAsync(sp => sp.ProductId == productId && sp.ApprovalStatus == "Approved");
-
             if (sellerProduct?.Seller == null) return NotFound();
-
-            return Ok(new
-            {
-                SellerId = sellerProduct.SellerId,
-                ShopName = sellerProduct.Seller.ShopName
-            });
+            return Ok(new { SellerId = sellerProduct.SellerId, ShopName = sellerProduct.Seller.ShopName });
         }
 
         // POST /api/sellers/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] SellerLoginDto dto)
         {
-            // Vérifier les credentials client
-            var client = await _db.Clients
-                .FirstOrDefaultAsync(c => c.Email == dto.Email);
+            var client = await _db.Clients.FirstOrDefaultAsync(c => c.Email == dto.Email);
+            if (client == null) return Unauthorized(new { message = "Email ou mot de passe incorrect" });
 
-            if (client == null)
-                return Unauthorized(new { message = "Email ou mot de passe incorrect" });
-
-            // Vérifier mot de passe
             using var sha = SHA256.Create();
             var bytes = Encoding.UTF8.GetBytes(dto.Password);
             var hash = sha.ComputeHash(bytes);
             var hashedPassword = Convert.ToBase64String(hash);
-
             if (client.PasswordHash != hashedPassword)
                 return Unauthorized(new { message = "Email ou mot de passe incorrect" });
 
-            // Vérifier que ce client a une boutique
-            var seller = await _db.Sellers
-                .FirstOrDefaultAsync(s => s.ClientId == client.Id);
-
-            if (seller == null)
-                return NotFound(new { message = "Aucune boutique trouvée pour ce compte" });
+            var seller = await _db.Sellers.FirstOrDefaultAsync(s => s.ClientId == client.Id);
+            if (seller == null) return NotFound(new { message = "Aucune boutique trouvée pour ce compte" });
 
             return Ok(new
             {
@@ -716,12 +586,8 @@ namespace RanitaApi.Controllers
         [HttpPost("push-subscribe")]
         public async Task<IActionResult> PushSubscribe([FromBody] SellerPushSubDto dto)
         {
-            // Supprimer l'ancien abonnement
-            var old = await _db.SellerPushSubscriptions
-                .Where(s => s.SellerId == dto.SellerId)
-                .ToListAsync();
+            var old = await _db.SellerPushSubscriptions.Where(s => s.SellerId == dto.SellerId).ToListAsync();
             _db.SellerPushSubscriptions.RemoveRange(old);
-
             _db.SellerPushSubscriptions.Add(new SellerPushSubscription
             {
                 SellerId = dto.SellerId,
@@ -730,9 +596,38 @@ namespace RanitaApi.Controllers
                 Auth = dto.Auth,
                 CreatedAt = DateTime.UtcNow
             });
-
             await _db.SaveChangesAsync();
             return Ok(new { message = "Push vendeur enregistré" });
         }
+
+        // ── HELPERS ──
+        private static SellerDto MapToDto(Seller s) => new SellerDto
+        {
+            Id = s.Id,
+            ClientId = s.ClientId,
+            ClientName = s.Client?.FullName ?? "",
+            ClientEmail = s.Client?.Email ?? "",
+            ShopName = s.ShopName,
+            ShopDescription = s.ShopDescription,
+            PhoneNumber = s.PhoneNumber,
+            NationalIdNumber = s.NationalIdNumber,
+            ShopLogoUrl = s.ShopLogoUrl,
+            CommissionRate = s.CommissionRate,
+            PaymentMethod = s.PaymentMethod,
+            PaymentDetails = s.PaymentDetails,
+            Status = s.Status,
+            RejectionReason = s.RejectionReason,
+            CreatedAt = s.CreatedAt,
+            TotalProducts = s.SellerProducts.Count(p => p.ApprovalStatus == "Approved"),
+            PendingProducts = s.SellerProducts.Count(p => p.ApprovalStatus == "Pending"),
+            TotalEarnings = s.Payouts.Where(p => p.Status == "Paid").Sum(p => p.NetAmount),
+            PendingPayouts = s.Payouts.Where(p => p.Status == "Pending").Sum(p => p.NetAmount)
+        };
+    }
+
+    // DTO pour marquer un payout comme payé
+    public class MarkPayoutPaidDto
+    {
+        public string? TransactionReference { get; set; }
     }
 }

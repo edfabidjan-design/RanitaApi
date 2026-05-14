@@ -47,6 +47,127 @@ namespace RanitaApi.Services
     {FOOTER}
   </div>
 </div>"
+
+            };
+            await SendBrevoEmail(payload);
+        }
+
+
+
+        // ✅ Nouvelle commande → vendeur
+        public async Task SendNewOrderToSellerAsync(string sellerEmail, string shopName, int orderId, List<OrderItem> items, decimal sellerTotal)
+        {
+            var itemsHtml = string.Join("", items.Select(i => $@"
+                <tr>
+                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;'>{i.ProductName}{(string.IsNullOrEmpty(i.VariantName) ? "" : $" ({i.VariantName})")}</td>
+                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:center;'>{i.Quantity}</td>
+                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;color:#10b981;'>{(i.Price * i.Quantity).ToString("N0")} FCFA</td>
+                </tr>"));
+
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = sellerEmail } },
+                subject = $"🛒 Nouvelle vente #{orderId} - {shopName}",
+                htmlContent = $@"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
+    <h2 style='color:#059669;margin:0 0 8px'>🎉 Vous avez une nouvelle vente !</h2>
+    <p>Bonjour <strong>{shopName}</strong>,</p>
+    <p>Un client vient de passer une commande contenant vos produits sur <strong>Ranita Market</strong>.</p>
+    <div style='background:#f0fdf4;border-radius:8px;padding:16px;margin:16px 0;text-align:center;border:1px solid #d1fae5;'>
+        <div style='font-size:13px;color:#6b7280;'>Numéro de commande</div>
+        <div style='font-size:28px;font-weight:800;color:#111827;'>#{orderId}</div>
+        <div style='display:inline-block;margin-top:8px;background:#fef3c7;color:#92400e;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>En attente de livraison</div>
+    </div>
+    <table style='width:100%;border-collapse:collapse;font-size:14px;'>
+        <thead>
+            <tr style='background:#f9fafb;'>
+                <th style='padding:8px;text-align:left;color:#6b7280;font-weight:600;'>Produit</th>
+                <th style='padding:8px;text-align:center;color:#6b7280;font-weight:600;'>Qté</th>
+                <th style='padding:8px;text-align:right;color:#6b7280;font-weight:600;'>Montant</th>
+            </tr>
+        </thead>
+        <tbody>{itemsHtml}</tbody>
+    </table>
+    <div style='display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-top:16px;padding-top:12px;border-top:2px solid #f3f4f6;'>
+        <span>Votre part (après commission)</span>
+        <span style='color:#10b981;'>{sellerTotal.ToString("N0")} FCFA</span>
+    </div>
+    <a href='https://www.ranita-shop.com/vendeur.html'
+       style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
+      Voir mes commandes
+    </a>
+    {FOOTER}
+  </div>
+</div>"
+            };
+            await SendBrevoEmail(payload);
+        }
+
+        // ✅ Commande livrée → vendeur
+        public async Task SendOrderDeliveredToSellerAsync(string sellerEmail, string shopName, int orderId, decimal sellerTotal)
+        {
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = sellerEmail } },
+                subject = $"📦 Commande #{orderId} livrée - Paiement en cours",
+                htmlContent = $@"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
+    <h2 style='color:#059669;margin:0 0 8px'>📦 Commande livrée avec succès !</h2>
+    <p>Bonjour <strong>{shopName}</strong>,</p>
+    <p>La commande <strong>#{orderId}</strong> a été livrée au client. Votre paiement est en cours de traitement.</p>
+    <div style='background:#f0fdf4;border-radius:8px;padding:20px;margin:16px 0;text-align:center;border:1px solid #d1fae5;'>
+        <div style='font-size:13px;color:#6b7280;margin-bottom:4px;'>Montant à recevoir</div>
+        <div style='font-size:36px;font-weight:800;color:#10b981;'>{sellerTotal.ToString("N0")} FCFA</div>
+        <div style='display:inline-block;margin-top:8px;background:#dbeafe;color:#1e40af;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>Paiement en cours</div>
+    </div>
+    <p style='color:#6b7280;font-size:13px;'>Le paiement sera effectué sur votre moyen de paiement enregistré sous 24 à 48h.</p>
+    <a href='https://www.ranita-shop.com/vendeur.html'
+       style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
+      Mon tableau de bord
+    </a>
+    {FOOTER}
+  </div>
+</div>"
+            };
+            await SendBrevoEmail(payload);
+        }
+
+        // ✅ Paiement effectué → vendeur
+        public async Task SendPayoutToSellerAsync(string sellerEmail, string shopName, int orderId, decimal netAmount, string paymentMethod, string paymentDetails)
+        {
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = sellerEmail } },
+                subject = $"💰 Paiement reçu - {netAmount.ToString("N0")} FCFA",
+                htmlContent = $@"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
+    <h2 style='color:#059669;margin:0 0 8px'>💰 Votre paiement a été effectué !</h2>
+    <p>Bonjour <strong>{shopName}</strong>,</p>
+    <p>Nous avons effectué votre paiement pour la commande <strong>#{orderId}</strong>.</p>
+    <div style='background:#f0fdf4;border-radius:8px;padding:20px;margin:16px 0;text-align:center;border:1px solid #d1fae5;'>
+        <div style='font-size:13px;color:#6b7280;margin-bottom:4px;'>Montant reçu</div>
+        <div style='font-size:36px;font-weight:800;color:#10b981;'>{netAmount.ToString("N0")} FCFA</div>
+        <div style='display:inline-block;margin-top:8px;background:#d1fae5;color:#065f46;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>✅ Payé</div>
+    </div>
+    <table style='width:100%;font-size:14px;'>
+        <tr><td style='padding:6px 0;color:#6b7280;'>Commande</td><td><strong>#{orderId}</strong></td></tr>
+        <tr><td style='padding:6px 0;color:#6b7280;'>Moyen de paiement</td><td><strong>{paymentMethod?.Replace("_", " ")}</strong></td></tr>
+        <tr><td style='padding:6px 0;color:#6b7280;'>Numéro</td><td><strong>{paymentDetails}</strong></td></tr>
+        <tr><td style='padding:6px 0;color:#6b7280;'>Montant</td><td><strong style='color:#10b981;font-size:16px;'>{netAmount.ToString("N0")} FCFA</strong></td></tr>
+    </table>
+    <a href='https://www.ranita-shop.com/vendeur.html'
+       style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
+      Voir mes gains
+    </a>
+    {FOOTER}
+  </div>
+</div>"
             };
             await SendBrevoEmail(payload);
         }
