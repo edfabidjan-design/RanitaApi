@@ -752,14 +752,20 @@
                 padding-top: 56px;
             }
 
-            /* Header */
             .site-header {
-                padding: 10px 14px;
+                padding: 8px 12px;
             }
 
-            /* Dashboard */
+                .site-header nav {
+                    gap: 4px;
+                }
+
+                    .site-header nav a {
+                        font-size: 12px;
+                    }
+
             .dashboard {
-                padding: 16px 12px;
+                padding: 12px;
             }
 
             .dash-header {
@@ -768,45 +774,92 @@
                 gap: 8px;
             }
 
+                .dash-header > div:last-child {
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+
             .dash-stats {
                 grid-template-columns: 1fr 1fr;
-                gap: 10px;
+                gap: 8px;
+                margin-bottom: 16px;
             }
 
             .dash-stat {
-                padding: 12px;
+                padding: 10px 12px;
             }
 
                 .dash-stat .value {
-                    font-size: 18px;
+                    font-size: 16px;
                 }
 
-            /* Onglets — scroll horizontal */
-            div[style*="border-bottom:2px solid #e5e7eb"] {
-                overflow-x: auto;
+                .dash-stat .label {
+                    font-size: 10px;
+                }
+
+            /* ONGLETS — scroll horizontal sans wrapping */
+            #page-dashboard .dashboard > div:nth-of-type(2) {
+                overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch;
                 flex-wrap: nowrap !important;
+                gap: 0 !important;
+                padding-bottom: 0;
+                margin-bottom: 16px;
             }
 
-                div[style*="border-bottom:2px solid #e5e7eb"] button {
-                    flex-shrink: 0;
-                    padding: 8px 12px !important;
-                    font-size: 12px !important;
-                }
+            #tab-products, #tab-orders, #tab-failed, #tab-payouts {
+                flex-shrink: 0 !important;
+                padding: 8px 10px !important;
+                font-size: 11px !important;
+                white-space: nowrap;
+            }
 
             /* Cartes commandes */
             #my-orders-list > div {
-                padding: 12px !important;
+                padding: 10px !important;
             }
 
-            /* Boutons confirmer/indisponible */
-            div[style*="display:flex;gap:8px;margin-top:12px"] {
+                #my-orders-list > div > div:first-child {
+                    flex-direction: column !important;
+                    align-items: flex-start !important;
+                    gap: 4px !important;
+                }
+
+            /* Boutons confirmer/indisponible — empilés */
+            #my-orders-list .btn-group-confirm {
                 flex-direction: column !important;
             }
 
-            /* Stats header */
-            .site-header nav {
-                gap: 6px;
+            /* Paiements — grille 1 colonne sur mobile */
+            #my-payouts-list [style*="grid-template-columns:1fr 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Produits */
+            .my-product {
+                gap: 8px;
+            }
+
+            .my-product-info {
+                min-width: 0;
+            }
+
+            /* Modals full width */
+            .modal {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+                .form-grid .full {
+                    grid-column: 1 !important;
+                }
+
+            .form-row {
+                grid-template-columns: 1fr !important;
             }
         }
     </style>
