@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Commissions — Ranita Admin</title>
     <link rel="stylesheet" href="admin-style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
         :root {
             --green: #10b981;
@@ -19,10 +20,36 @@
             --gray-900: #111827;
         }
 
-        .stats-bar {
+        /* ── Stats période ── */
+        .period-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .period-btn {
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--gray-200);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            background: white;
+            color: var(--gray-700);
+            transition: all 0.2s;
+        }
+
+            .period-btn.active {
+                background: var(--gray-900);
+                color: white;
+                border-color: var(--gray-900);
+            }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
             margin-bottom: 24px;
         }
 
@@ -31,8 +58,12 @@
             border: 1px solid var(--gray-200);
             border-radius: 12px;
             padding: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
+
+            .stat-card.highlight {
+                border-left: 4px solid var(--green);
+            }
 
             .stat-card .lbl {
                 font-size: 11px;
@@ -43,7 +74,7 @@
             }
 
             .stat-card .val {
-                font-size: 22px;
+                font-size: 20px;
                 font-weight: 800;
             }
 
@@ -55,13 +86,48 @@
                     color: var(--orange);
                 }
 
+                .stat-card .val.blue {
+                    color: #3b82f6;
+                }
+
+            .stat-card .sub {
+                font-size: 12px;
+                color: var(--gray-500);
+                margin-top: 4px;
+            }
+
+        /* ── Graphique ── */
+        .chart-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chart-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        /* ── Section taux ── */
         .comm-card {
             background: white;
             border: 1px solid var(--gray-200);
             border-radius: 14px;
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .comm-card-title {
@@ -179,6 +245,7 @@
                 color: var(--green);
             }
 
+        /* ── Table catégories ── */
         .cat-table {
             width: 100%;
             border-collapse: collapse;
@@ -292,6 +359,17 @@
             gap: 12px;
         }
 
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 28px 0 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .comm-toast {
             position: fixed;
             bottom: 24px;
@@ -330,12 +408,15 @@
             .simulation {
                 flex-direction: column;
             }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ── HEADER ADMIN ── -->
     <div class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav>
@@ -352,22 +433,70 @@
         <button onclick="logout()">Déconnexion</button>
     </div>
 
-    <!-- ── CONTENU ── -->
     <div class="admin-container">
 
         <div class="page-title-row">
             <h1 style="margin:0;">⚙️ Gestion des commissions</h1>
-            <button class="btn-save-comm" id="btnSave" onclick="saveCommissions()">💾 Enregistrer</button>
+            <button class="btn-save-comm" id="btnSave" onclick="saveCommissions()">💾 Enregistrer les taux</button>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-bar">
-            <div class="stat-card"><div class="lbl">Taux global actuel</div><div class="val green" id="stat-global">—</div></div>
-            <div class="stat-card"><div class="lbl">Catégories avec override</div><div class="val orange" id="stat-overrides">—</div></div>
-            <div class="stat-card"><div class="lbl">Commission perçue (total)</div><div class="val green" id="stat-total-commission">—</div></div>
+        <!-- ── SECTION ANALYTIQUE ── -->
+        <div class="section-title">📊 Analyse des commissions</div>
+
+        <!-- Filtres période -->
+        <div class="period-bar">
+            <button class="period-btn active" onclick="setPeriod('today', this)">Aujourd'hui</button>
+            <button class="period-btn" onclick="setPeriod('week', this)">Cette semaine</button>
+            <button class="period-btn" onclick="setPeriod('month', this)">Ce mois</button>
+            <button class="period-btn" onclick="setPeriod('year', this)">Cette année</button>
+            <button class="period-btn" onclick="setPeriod('all', this)">Total</button>
         </div>
 
-        <!-- Taux global -->
+        <!-- Stats de la période -->
+        <div class="stats-grid">
+            <div class="stat-card highlight">
+                <div class="lbl">Commission perçue</div>
+                <div class="val green" id="stat-commission">—</div>
+                <div class="sub" id="stat-commission-sub"></div>
+            </div>
+            <div class="stat-card">
+                <div class="lbl">Ventes brutes</div>
+                <div class="val" id="stat-gross">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="lbl">Reversé aux vendeurs</div>
+                <div class="val blue" id="stat-net">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="lbl">Nb transactions</div>
+                <div class="val orange" id="stat-count">—</div>
+            </div>
+        </div>
+
+        <!-- Graphique -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title" id="chart-title">📈 Commissions — Aujourd'hui</div>
+                <div style="display:flex;gap:8px;">
+                    <button class="period-btn active" id="chart-7j" onclick="setChartView(7, this)">7j</button>
+                    <button class="period-btn" id="chart-30j" onclick="setChartView(30, this)">30j</button>
+                    <button class="period-btn" id="chart-12m" onclick="setChartView(12, this)">12 mois</button>
+                </div>
+            </div>
+            <canvas id="commChart" height="110"></canvas>
+        </div>
+
+        <!-- Détail par vendeur -->
+        <div class="chart-card">
+            <div class="chart-title" style="margin-bottom:16px;">🏪 Commission par vendeur <span style="font-size:12px;color:var(--gray-500);font-weight:400;" id="vendor-period-label"></span></div>
+            <div id="vendor-breakdown">
+                <div style="text-align:center;padding:20px;color:var(--gray-500);">Chargement...</div>
+            </div>
+        </div>
+
+        <!-- ── SECTION TAUX ── -->
+        <div class="section-title">⚙️ Configuration des taux</div>
+
         <div class="comm-card">
             <div class="comm-card-title">🌍 Taux de commission global</div>
             <div class="global-rate-block">
@@ -395,14 +524,13 @@
             </div>
         </div>
 
-        <!-- Overrides par catégorie -->
         <div class="comm-card">
             <div class="comm-card-title">
                 📁 Override par catégorie
                 <span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:8px;">(vide = utilise le taux global)</span>
             </div>
             <div id="catTableWrap">
-                <div style="text-align:center;padding:30px;color:var(--gray-500);">Chargement des catégories...</div>
+                <div style="text-align:center;padding:30px;color:var(--gray-500);">Chargement...</div>
             </div>
         </div>
 
@@ -413,50 +541,219 @@
     <script>
         const API = 'https://ranitaapi-production.up.railway.app/api';
         let commissionData = null;
+        let allPayouts = [];
+        let chartInstance = null;
+        let currentPeriod = 'today';
+        let currentChartDays = 7;
+
+        const fmt = v => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(v || 0);
+        const fmtShort = v => v >= 1000000 ? (v / 1000000).toFixed(1) + 'M' : v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v;
 
         window.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('adminToken');
             if (!token) { location.href = 'admin-login.html'; return; }
-            await loadCommissions();
-            await loadStats();
+            await Promise.all([loadPayouts(), loadCommissions()]);
         });
 
-        function logout() {
-            localStorage.removeItem('adminToken');
-            location.href = 'admin-login.html';
+        function logout() { localStorage.removeItem('adminToken'); location.href = 'admin-login.html'; }
+
+        // ── CHARGER TOUS LES PAYOUTS ─────────────────────────────────────────
+        async function loadPayouts() {
+            try {
+                const res = await fetch(`${API}/sellers/payouts/all`);
+                if (!res.ok) return;
+                allPayouts = await res.json();
+                setPeriod('today', document.querySelector('.period-btn.active'));
+                setChartView(7, document.getElementById('chart-7j'));
+            } catch (e) { console.error(e); }
         }
 
+        // ── FILTRER PAR PÉRIODE ──────────────────────────────────────────────
+        function filterByPeriod(period) {
+            const now = new Date();
+            return allPayouts.filter(p => {
+                const d = new Date(p.createdAt);
+                if (period === 'today') {
+                    return d.toDateString() === now.toDateString();
+                } else if (period === 'week') {
+                    const startOfWeek = new Date(now);
+                    startOfWeek.setDate(now.getDate() - now.getDay());
+                    startOfWeek.setHours(0, 0, 0, 0);
+                    return d >= startOfWeek;
+                } else if (period === 'month') {
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                } else if (period === 'year') {
+                    return d.getFullYear() === now.getFullYear();
+                }
+                return true; // 'all'
+            });
+        }
+
+        function setPeriod(period, btn) {
+            currentPeriod = period;
+            document.querySelectorAll('.period-bar .period-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const filtered = filterByPeriod(period);
+            const commission = filtered.reduce((s, p) => s + (p.commissionAmount || 0), 0);
+            const gross = filtered.reduce((s, p) => s + (p.grossAmount || 0), 0);
+            const net = filtered.reduce((s, p) => s + (p.netAmount || 0), 0);
+
+            document.getElementById('stat-commission').textContent = fmt(commission);
+            document.getElementById('stat-gross').textContent = fmt(gross);
+            document.getElementById('stat-net').textContent = fmt(net);
+            document.getElementById('stat-count').textContent = filtered.length;
+
+            const labels = { today: "aujourd'hui", week: 'cette semaine', month: 'ce mois', year: 'cette année', all: 'au total' };
+            document.getElementById('stat-commission-sub').textContent = `${filtered.length} transaction(s) ${labels[period]}`;
+            document.getElementById('vendor-period-label').textContent = `— ${labels[period]}`;
+
+            renderVendorBreakdown(filtered);
+        }
+
+        // ── DÉTAIL PAR VENDEUR ───────────────────────────────────────────────
+        function renderVendorBreakdown(payouts) {
+            const el = document.getElementById('vendor-breakdown');
+            if (!payouts.length) {
+                el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray-500);font-size:14px;">Aucune transaction sur cette période.</div>';
+                return;
+            }
+            // Regrouper par vendeur
+            const vendors = {};
+            payouts.forEach(p => {
+                const key = p.shopName || `Vendeur #${p.sellerId}`;
+                if (!vendors[key]) vendors[key] = { gross: 0, commission: 0, net: 0, count: 0 };
+                vendors[key].gross += p.grossAmount || 0;
+                vendors[key].commission += p.commissionAmount || 0;
+                vendors[key].net += p.netAmount || 0;
+                vendors[key].count++;
+            });
+
+            const sorted = Object.entries(vendors).sort((a, b) => b[1].commission - a[1].commission);
+            const maxComm = sorted[0]?.[1].commission || 1;
+
+            el.innerHTML = sorted.map(([name, data]) => {
+                const pct = Math.round(data.commission / maxComm * 100);
+                const initial = name.charAt(0).toUpperCase();
+                return `
+                    <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--gray-100);">
+                        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">${initial}</div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:14px;font-weight:700;margin-bottom:4px;">${name}</div>
+                            <div style="background:var(--gray-100);border-radius:6px;height:6px;overflow:hidden;">
+                                <div style="background:var(--green);height:100%;width:${pct}%;border-radius:6px;transition:width 0.5s;"></div>
+                            </div>
+                        </div>
+                        <div style="text-align:right;flex-shrink:0;">
+                            <div style="font-size:14px;font-weight:800;color:var(--green);">${fmt(data.commission)}</div>
+                            <div style="font-size:11px;color:var(--gray-500);">${data.count} vente(s) · brut ${fmt(data.gross)}</div>
+                        </div>
+                    </div>`;
+            }).join('') + `
+                <div style="display:flex;justify-content:space-between;padding:14px 0 0;font-size:13px;color:var(--gray-500);font-weight:700;">
+                    <span>TOTAL</span>
+                    <span style="color:var(--green);font-size:15px;">${fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0))}</span>
+                </div>`;
+        }
+
+        // ── GRAPHIQUE ────────────────────────────────────────────────────────
+        function setChartView(mode, btn) {
+            currentChartDays = mode;
+            document.querySelectorAll('#chart-7j,#chart-30j,#chart-12m').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderChart(mode);
+        }
+
+        function renderChart(mode) {
+            const labels = [];
+            const data = [];
+            const now = new Date();
+
+            if (mode === 12) {
+                // 12 derniers mois
+                document.getElementById('chart-title').textContent = '📈 Commissions — 12 derniers mois';
+                for (let i = 11; i >= 0; i--) {
+                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    const label = d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+                    const total = allPayouts
+                        .filter(p => {
+                            const pd = new Date(p.createdAt);
+                            return pd.getMonth() === d.getMonth() && pd.getFullYear() === d.getFullYear();
+                        })
+                        .reduce((s, p) => s + (p.commissionAmount || 0), 0);
+                    labels.push(label);
+                    data.push(total);
+                }
+            } else {
+                // N derniers jours
+                const label = mode === 7 ? '7 derniers jours' : '30 derniers jours';
+                document.getElementById('chart-title').textContent = `📈 Commissions — ${label}`;
+                for (let i = mode - 1; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const key = d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+                    const total = allPayouts
+                        .filter(p => new Date(p.createdAt).toDateString() === d.toDateString())
+                        .reduce((s, p) => s + (p.commissionAmount || 0), 0);
+                    labels.push(key);
+                    data.push(total);
+                }
+            }
+
+            const ctx = document.getElementById('commChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Commission (FCFA)',
+                        data,
+                        backgroundColor: 'rgba(16,185,129,0.15)',
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        hoverBackgroundColor: 'rgba(16,185,129,0.3)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(ctx.parsed.y)
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: v => fmtShort(v) + ' F', font: { size: 11 } },
+                            grid: { color: '#f3f4f6' }
+                        },
+                        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // ── TAUX COMMISSIONS ─────────────────────────────────────────────────
         async function loadCommissions() {
             try {
                 const res = await fetch(`${API}/settings/commission`);
                 commissionData = await res.json();
                 const globalPct = Math.round(commissionData.globalRate * 100 * 10) / 10;
                 document.getElementById('globalRate').value = globalPct;
-                document.getElementById('stat-global').textContent = globalPct + '%';
-                const overrideCount = commissionData.categories.filter(c => c.hasOverride).length;
-                document.getElementById('stat-overrides').textContent = overrideCount;
                 renderCategoryTable(commissionData.categories);
                 updateSimulation();
-            } catch (e) {
-                showToast('Erreur de chargement', 'error');
-            }
-        }
-
-        async function loadStats() {
-            try {
-                const res = await fetch(`${API}/sellers/payouts/all`).catch(() => null);
-                if (!res || !res.ok) return;
-                const payouts = await res.json();
-                const total = payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0);
-                document.getElementById('stat-total-commission').textContent =
-                    new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(total);
-            } catch (e) { }
+            } catch (e) { showToast('Erreur chargement taux', 'error'); }
         }
 
         function renderCategoryTable(categories) {
             if (!categories.length) {
                 document.getElementById('catTableWrap').innerHTML =
-                    '<p style="color:var(--gray-500);font-size:14px;padding:10px;">Aucune sous-catégorie trouvée.</p>';
+                    '<p style="color:var(--gray-500);font-size:14px;padding:10px;">Aucune sous-catégorie.</p>';
                 return;
             }
             const rows = categories.map(c => {
@@ -513,7 +810,6 @@
                     if (effEl) { effEl.textContent = `→ ${globalPct}% (global)`; effEl.className = 'effective-rate'; }
                 }
             });
-            document.getElementById('stat-global').textContent = globalPct + '%';
         }
 
         function updateSimulation() {
@@ -521,10 +817,10 @@
             const amount = parseFloat(document.getElementById('simAmount').value) || 0;
             const commission = Math.round(amount * globalPct / 100);
             const net = amount - commission;
-            const fmt = v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F';
-            document.getElementById('sim-gross').textContent = fmt(amount);
-            document.getElementById('sim-commission').textContent = fmt(commission);
-            document.getElementById('sim-net').textContent = fmt(net);
+            const f = v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F';
+            document.getElementById('sim-gross').textContent = f(amount);
+            document.getElementById('sim-commission').textContent = f(commission);
+            document.getElementById('sim-net').textContent = f(net);
         }
 
         async function saveCommissions() {
@@ -532,8 +828,8 @@
             btn.disabled = true; btn.textContent = 'Enregistrement...';
             const globalPct = parseFloat(document.getElementById('globalRate').value);
             if (isNaN(globalPct) || globalPct < 0 || globalPct > 100) {
-                showToast('Taux global invalide (0–100%)', 'error');
-                btn.disabled = false; btn.textContent = '💾 Enregistrer'; return;
+                showToast('Taux global invalide', 'error');
+                btn.disabled = false; btn.textContent = '💾 Enregistrer les taux'; return;
             }
             const overrides = [];
             document.querySelectorAll('.override-input').forEach(input => {
@@ -549,22 +845,15 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ globalRate: globalPct / 100, categoryOverrides: overrides })
                 });
-                if (res.ok) {
-                    showToast('Commissions enregistrées ✓', 'success');
-                    document.getElementById('stat-global').textContent = globalPct + '%';
-                    document.getElementById('stat-overrides').textContent = overrides.filter(o => o.rate !== null).length;
-                } else {
-                    const data = await res.json();
-                    showToast(data.message || 'Erreur', 'error');
-                }
+                if (res.ok) { showToast('Taux enregistrés ✓', 'success'); }
+                else { const d = await res.json(); showToast(d.message || 'Erreur', 'error'); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
-            btn.disabled = false; btn.textContent = '💾 Enregistrer';
+            btn.disabled = false; btn.textContent = '💾 Enregistrer les taux';
         }
 
         function showToast(msg, type = '') {
             const t = document.getElementById('commToast');
-            t.textContent = msg;
-            t.className = 'comm-toast show ' + type;
+            t.textContent = msg; t.className = 'comm-toast show ' + type;
             setTimeout(() => { t.className = 'comm-toast'; }, 3500);
         }
     </script>
