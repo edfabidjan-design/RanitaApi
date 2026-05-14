@@ -1441,22 +1441,43 @@ ${o.status === 'Indisponible vendeur' ? `
                 const pending = products.filter(p => p.approvalStatus === 'Pending').length;
                 const badgeP = document.getElementById('badge-products');
                 const last = parseInt(localStorage.getItem(`badge-products-${sellerId}`) || '0');
-                badgeP.style.display = pending > last ? 'inline' : 'none';
-                if (pending > last) badgeP.textContent = pending - last;
+
+                if (document.getElementById('section-products').style.display !== 'none') {
+                    localStorage.setItem(`badge-products-${sellerId}`, pending);
+                    badgeP.style.display = 'none';
+                } else {
+                    badgeP.style.display = pending > last ? 'inline' : 'none';
+                    if (pending > last) badgeP.textContent = pending - last;
+                }
             } catch (e) { }
+
             try {
                 const res = await fetch(`${API}/sellers/${sellerId}/orders`);
                 const orders = await res.json();
+
+                // Badge commandes En attente
                 const newO = orders.filter(o => o.status === 'En attente').length;
                 const lastO = parseInt(localStorage.getItem(`badge-orders-${sellerId}`) || '0');
                 const badgeO = document.getElementById('badge-orders');
-                badgeO.style.display = newO > lastO ? 'inline' : 'none';
-                if (newO > lastO) badgeO.textContent = newO - lastO;
+                if (document.getElementById('section-orders').style.display !== 'none') {
+                    localStorage.setItem(`badge-orders-${sellerId}`, newO);
+                    badgeO.style.display = 'none';
+                } else {
+                    badgeO.style.display = newO > lastO ? 'inline' : 'none';
+                    if (newO > lastO) badgeO.textContent = newO - lastO;
+                }
+
+                // Badge échecs livraison
                 const failed = orders.filter(o => o.status === 'Échec livraison').length;
                 const lastF = parseInt(localStorage.getItem(`badge-failed-${sellerId}`) || '0');
                 const badgeF = document.getElementById('badge-failed');
-                badgeF.style.display = failed > lastF ? 'inline' : 'none';
-                if (failed > lastF) badgeF.textContent = failed - lastF;
+                if (document.getElementById('section-failed').style.display !== 'none') {
+                    localStorage.setItem(`badge-failed-${sellerId}`, failed);
+                    badgeF.style.display = 'none';
+                } else {
+                    badgeF.style.display = failed > lastF ? 'inline' : 'none';
+                    if (failed > lastF) badgeF.textContent = failed - lastF;
+                }
             } catch (e) { }
         }
 
