@@ -1449,7 +1449,12 @@
             document.getElementById('p-variants-list').innerHTML = `
                     <table class="variant-table">
                         <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
-                        <tbody>${labels.map((label, i) => `<tr><td>${label}</td><td><input type="number" id="variant_stock_${i}" value="0" min="0"></td></tr>`).join('')}</tbody>
+                        <tbody>${labels.map((label, i) => `<tr><td>${label}</td><td><input type="number" id="variant_stock_${i}" value="" placeholder="0" min="0" 
+    style="color:#9ca3af;"
+    onfocus="if(this.value===''){this.style.color='#111827'}" 
+    oninput="this.style.color='#111827'"
+    onblur="if(this.value===''){this.style.color='#9ca3af'}"
+></td></tr>`).join('')}</tbody>
                     </table>`;
         }
 
@@ -1509,7 +1514,7 @@
             if (window._variantLabels) {
                 for (let i = 0; i < window._variantLabels.length; i++) {
                     const si = document.getElementById(`variant_stock_${i}`);
-                    if (!si || si.value === '' || parseInt(si.value) < 0) { showToast('Renseignez le stock de toutes les variantes', 'error'); return; }
+                    if (!si || si.value === '' || isNaN(parseInt(si.value)) || parseInt(si.value) < 0) { showToast('Renseignez le stock de toutes les variantes', 'error'); return; }
                 }
             }
             btn.disabled = true; btn.textContent = 'Envoi en cours...';
