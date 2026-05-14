@@ -830,7 +830,7 @@
             <div class="icon">🔐</div>
             <h2>Connexion requise</h2>
             <p>Vous devez être connecté pour créer une boutique.</p>
-            <a href="/login.html?redirect=vendeur.html" style="display:inline-block;background:#10b981;color:white;padding:12px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;">Se connecter</a>
+            <a href="/vendeur-login.html" style="display:inline-block;background:#10b981;color:white;padding:12px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;">Se connecter</a>
         </div>
     </div>
 
@@ -1064,7 +1064,9 @@
 
         // ── INIT ──────────────────────────────────────────────────────────────
         window.addEventListener('DOMContentLoaded', () => {
-            const client = JSON.parse(localStorage.getItem('client')) || null;
+            const client = JSON.parse(localStorage.getItem('seller')) || null;
+            if (client) clientId = client.clientId;
+            
             const authNav = document.getElementById('authNav');
             if (client) {
                 clientId = client.id;

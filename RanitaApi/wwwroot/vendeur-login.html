@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Vendeur - Ranita Market</title>
+    <link rel="stylesheet" href="auth.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+</head>
+<body>
+
+    <div class="auth-card">
+        <div class="auth-logo" onclick="location.href='index.html'">
+            🛒 Ranita Market
+        </div>
+
+        <h2>Espace Vendeur</h2>
+        <p style="text-align:center;color:#6b7280;font-size:13px;margin-bottom:20px;">
+            Connectez-vous pour accéder à votre boutique
+        </p>
+
+        <div id="errorMsg" style="display:none;background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;"></div>
+
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Mot de passe" required>
+            <button type="submit" id="btn-login">Se connecter →</button>
+        </form>
+
+        <div class="auth-links" style="margin-top:20px;">
+            <a href="vendeur.html">← Retour à l'accueil vendeur</a><br>
+            <a href="forgot-password.html" style="margin-top:8px;display:inline-block;">Mot de passe oublié ?</a>
+        </div>
+
+        <div style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;">
+            <p style="font-size:13px;color:#6b7280;">Pas encore vendeur ?</p>
+            <a href="vendeur.html" style="display:inline-block;margin-top:8px;background:#f0fdf4;color:#059669;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">
+                Créer ma boutique →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const API = 'https://ranitaapi-production.up.railway.app/api';
+
+        // Si déjà connecté comme vendeur, rediriger
+        const seller = JSON.parse(localStorage.getItem('seller')) || null;
+        if (seller) window.location.href = 'vendeur.html';
+
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        async function registerSellerPush(sellerId) {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+            try {
+                const reg = await navigator.serviceWorker.register('/sw-client.js');
+
+                if (Notification.permission === 'default') {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') return;
+                }
+                if (Notification.permission !== 'granted') return;
+
+                // Forcer re-enregistrement
+                const existing = await reg.pushManager.getSubscription();
+                if (existing) await existing.unsubscribe();
+
+                const sub = await reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: 'BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY'
+                });
+
+                await fetch(`${API}/sellers/push-subscribe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sellerId: sellerId,
+                        endpoint: sub.endpoint,
+                        p256dh: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('p256dh')))),
+                        auth: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth'))))
+                    })
+                });
+                console.log('Push vendeur enregistré !');
+            } catch(e) {
+                console.error('Push vendeur error:', e);
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            btn.disabled = true;
+            btn.textContent = 'Connexion...';
+            document.getElementById('errorMsg').style.display = 'none';
+
+            try {
+                const res = await fetch(`${API}/sellers/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('email').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showError(data.message || 'Erreur de connexion');
+                    btn.disabled = false;
+                    btn.textContent = 'Se connecter →';
+                    return;
+                }
+
+                // Sauvegarder session vendeur
+                localStorage.setItem('seller', JSON.stringify(data));
+
+                // Enregistrer push vendeur
+                await registerSellerPush(data.sellerId);
+
+                // Rediriger vers dashboard
+                window.location.href = 'vendeur.html';
+
+            } catch(e) {
+                showError('Erreur réseau — réessayez');
+                btn.disabled = false;
+                btn.textContent = 'Se connecter →';
+            }
+        });
+    </script>
+</body>
+</html>
