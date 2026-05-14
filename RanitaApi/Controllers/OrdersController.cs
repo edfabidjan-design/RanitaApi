@@ -220,8 +220,8 @@ namespace RanitaApi.Controllers
 
                             if (sellerProduct?.Seller == null) continue;
 
-                            var vendorSubs = await dbVendor.ClientPushSubscriptions
-                                .Where(s => s.ClientId == sellerProduct.Seller.ClientId)
+                            var vendorSubs = await dbVendor.SellerPushSubscriptions
+                                .Where(s => s.SellerId == sellerProduct.SellerId)
                                 .ToListAsync();
 
                             var pushVendor = new WebPushClient();
@@ -460,8 +460,8 @@ namespace RanitaApi.Controllers
                         if (sp.Seller == null || notifiedSellers.Contains(sp.SellerId)) continue;
                         notifiedSellers.Add(sp.SellerId);
 
-                        var vendorSubs = await dbV.ClientPushSubscriptions
-                            .Where(s => s.ClientId == sp.Seller.ClientId)
+                        var vendorSubs = await dbV.SellerPushSubscriptions
+                            .Where(s => s.SellerId == sp.SellerId)
                             .ToListAsync();
 
                         var pushV = new WebPushClient();
