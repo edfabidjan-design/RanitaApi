@@ -1119,6 +1119,7 @@
                     loadMyProducts();
                     loadCategories();
                     loadBadges();
+                    startAutoRefresh();
 
                 } else {
                     // Suspendu
@@ -1672,6 +1673,33 @@ ${o.status === 'Indisponible vendeur' ? `
         document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
         function formatPrice(p) { return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0); }
         function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3500); }
+
+
+
+
+        // ── POLLING AUTOMATIQUE ────────────────────────────────────
+        function startAutoRefresh() {
+            setInterval(async () => {
+                if (!sellerId) return;
+
+                // Rafraîchir l'onglet actif
+                const activeTab = document.querySelector('[id^="tab-"]');
+                if (document.getElementById('section-orders').style.display !== 'none') {
+                    loadMyOrders();
+                }
+                if (document.getElementById('section-products').style.display !== 'none') {
+                    loadMyProducts();
+                }
+                if (document.getElementById('section-payouts')?.style.display !== 'none') {
+                    loadMyPayouts();
+                }
+
+                // Toujours mettre à jour les badges
+                loadBadges();
+
+            }, 20000); // toutes les 30 secondes
+        }
+
     </script>
 </body>
 </html>
