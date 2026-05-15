@@ -96,8 +96,14 @@
             margin-bottom: 20px;
             background: white;
             border-radius: 12px 12px 0 0;
-            overflow: hidden;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
+
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
 
         .tab {
             padding: 14px 22px;
