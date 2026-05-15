@@ -499,6 +499,8 @@
             transition: all .25s;
             position: relative;
             box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
         }
 
             .p-card:hover {
@@ -508,20 +510,22 @@
             }
 
         .p-img {
-            height: 180px;
+            height: 160px;
             position: relative;
             overflow: hidden;
             background: var(--lk3);
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
             .p-img img {
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                object-fit: contain;
                 transition: transform .3s;
+                padding: 6px;
             }
 
         .p-card:hover .p-img img {
@@ -529,7 +533,7 @@
         }
 
         .p-img-placeholder {
-            font-size: 52px;
+            font-size: 48px;
         }
 
         .bdg {
@@ -589,7 +593,11 @@
             }
 
         .p-info {
-            padding: 13px;
+            padding: 10px 12px 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
         }
 
         .p-cat {
@@ -598,21 +606,23 @@
             color: var(--green-10b);
             letter-spacing: .5px;
             text-transform: uppercase;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .p-name {
             font-size: 13px;
             font-weight: 600;
             color: var(--lk-text);
-            margin-bottom: 3px;
-            white-space: nowrap;
+            margin-bottom: 2px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
+            line-height: 1.35;
         }
 
         .p-stock {
-            font-size: 11px;
+            font-size: 10px;
             margin-bottom: 6px;
         }
 
@@ -631,37 +641,45 @@
         .p-row {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex-wrap: nowrap;
+            margin-top: auto;
         }
 
         .p-price {
             font-family: 'Syne',sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--green-10b);
+            white-space: nowrap;
         }
 
         .p-old {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--lk-text3);
             text-decoration: line-through;
+            white-space: nowrap;
+            flex-shrink: 1;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .p-pct {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: var(--red);
         }
 
         .add-btn {
             margin-left: auto;
+            flex-shrink: 0;
             background: linear-gradient(135deg,var(--green-10b),var(--green-059));
             color: #fff;
             border: none;
             border-radius: var(--r-sm);
-            padding: 6px 12px;
+            padding: 6px 10px;
             font-family: 'Syne',sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             transition: all .2s;
@@ -670,13 +688,11 @@
 
             .add-btn:hover {
                 opacity: .9;
-                transform: scale(1.04);
             }
 
             .add-btn:disabled {
                 background: #d1d5db;
                 cursor: not-allowed;
-                transform: none;
             }
 
         /* ── SKELETON LOADER ── */
@@ -702,7 +718,7 @@
         }
 
         .skel-img {
-            height: 180px;
+            height: 160px;
             border-radius: 0;
         }
 
@@ -1352,10 +1368,10 @@
             </div>
             <div class="products-grid" id="flash-grid">
                 <!-- Skeletons pendant le chargement -->
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
             </div>
         </div>
     </div>
@@ -1399,10 +1415,10 @@
                 <a href="products.html" class="see-all">Voir tout →</a>
             </div>
             <div class="products-grid" id="bestsellers-grid">
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
-                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
+                <div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
             </div>
         </div>
     </section>
@@ -1592,7 +1608,7 @@
         // ── Skeletons
         function skeleton(n = 4) {
             return Array(n).fill(`<div class="p-card p-card-skeleton">
-          <div class="p-img"><div class="skeleton skel-img" style="width:100%;height:180px"></div></div>
+          <div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div>
           <div class="skeleton skel-line lg"></div>
           <div class="skeleton skel-line sm"></div>
           <div class="skeleton skel-btn"></div>
