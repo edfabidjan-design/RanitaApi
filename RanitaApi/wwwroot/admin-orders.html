@@ -186,6 +186,27 @@
             background: #fee2e2;
             color: #991b1b;
         }
+
+        @media (max-width: 600px) {
+            .stats-bar {
+                flex-wrap: wrap;
+            }
+
+            .stat-card {
+                min-width: calc(25% - 6px);
+                padding: 8px 4px;
+            }
+
+                .stat-card .stat-num {
+                    font-size: 14px;
+                }
+
+                .stat-card .stat-label {
+                    font-size: 9px;
+                }
+        }
+
+
     </style>
     <script src="admin-auth.js"></script>
 </head>
@@ -280,7 +301,7 @@
                     <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${orders.filter(o => o.status === "Annulée").length}</div><div class="stat-label">Annulées</div></div>
                     <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${orders.filter(o => o.status === "Remboursé").length}</div><div class="stat-label">Remboursés</div></div>
                     <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${orders.filter(o => o.status === "Remboursement demandé").length}</div><div class="stat-label">Remb. demandés</div></div>
-                    <div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num">${Number(stats.ca).toLocaleString()} FCFA</div><div class="stat-label">Chiffre d'affaires</div></div>`;
+                    <div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num" style="font-size:13px;">${Number(stats.ca).toLocaleString()} F</div><div class="stat-label">CA</div></div>`;
             window._adminOrders = orders;
             document.getElementById("ordersTable").innerHTML = orders.map(o => `
                     <tr>
