@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
     <script src="admin-notifications.js" defer></script>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
     <script src="admin-auth.js"></script>
 </head>
 <body>
@@ -24,23 +22,13 @@
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Produit</th>
-                        <th>Client</th>
-                        <th>Note</th>
-                        <th>Commentaire</th>
-                        <th>Date</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
+                    <tr><th>ID</th><th>Produit</th><th>Client</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Statut</th><th>Actions</th></tr>
                 </thead>
                 <tbody id="reviewsTable"></tbody>
             </table>
         </div>
     </div>
 
-  
     <script>
         checkPageAccess('reviews');
         buildAdminNav('reviews');
@@ -59,9 +47,7 @@
                         <td style="color:#f59e0b;font-size:16px;">${"★".repeat(r.note)}${"☆".repeat(5 - r.note)}</td>
                         <td>${r.commentaire || "—"}</td>
                         <td>${new Date(r.createdAt).toLocaleDateString('fr-FR')}</td>
-                        <td>${r.approuve
-                    ? '<span style="color:#10b981;font-weight:700;">✅ Approuvé</span>'
-                    : '<span style="color:#f59e0b;font-weight:700;">⏳ En attente</span>'}</td>
+                        <td>${r.approuve ? '<span style="color:#10b981;font-weight:700;">✅ Approuvé</span>' : '<span style="color:#f59e0b;font-weight:700;">⏳ En attente</span>'}</td>
                         <td style="display:flex;gap:8px;">
                             ${!r.approuve ? `<button onclick="approve(${r.id})" style="background:#10b981;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">✅ Approuver</button>` : ''}
                             <button onclick="deleteReview(${r.id})" style="background:#ef4444;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">🗑️ Supprimer</button>
@@ -69,16 +55,8 @@
                     </tr>`).join('');
         }
 
-        async function approve(id) {
-            await fetch(`${API_BASE}/reviews/${id}/approve`, { method: "PATCH" });
-            loadReviews();
-        }
-
-        async function deleteReview(id) {
-            if (!confirm("Supprimer cet avis ?")) return;
-            await fetch(`${API_BASE}/reviews/${id}`, { method: "DELETE" });
-            loadReviews();
-        }
+        async function approve(id) { await fetch(`${API_BASE}/reviews/${id}/approve`, { method: "PATCH" }); loadReviews(); }
+        async function deleteReview(id) { if (!confirm("Supprimer cet avis ?")) return; await fetch(`${API_BASE}/reviews/${id}`, { method: "DELETE" }); loadReviews(); }
 
         loadReviews();
     </script>

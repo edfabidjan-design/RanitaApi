@@ -8,6 +8,7 @@
     <script src="admin-notifications.js" defer></script>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
+    <script src="admin-auth.js"></script>
     <style>
         .client-avatar {
             width: 36px;
@@ -31,7 +32,7 @@
 
         .stats-bar {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             margin-bottom: 24px;
             flex-wrap: wrap;
         }
@@ -39,14 +40,14 @@
         .stat-card {
             background: white;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 14px 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             flex: 1;
-            min-width: 120px;
+            min-width: 100px;
         }
 
             .stat-card .stat-num {
-                font-size: 24px;
+                font-size: 22px;
                 font-weight: 800;
                 color: #111827;
             }
@@ -158,10 +159,8 @@
             color: #991b1b;
         }
     </style>
-    <script src="admin-auth.js"></script>
 </head>
 <body>
-
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav id="adminNav"></nav>
@@ -171,23 +170,10 @@
     <div class="admin-container">
         <h1>👥 Gestion des clients</h1>
         <div class="stats-bar" id="statsBar"></div>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="🔍 Rechercher un client..." oninput="filterClients()">
-        </div>
+        <div class="search-bar"><input type="text" id="searchInput" placeholder="🔍 Rechercher un client..." oninput="filterClients()"></div>
         <div class="table-wrap">
             <table border="1" cellpadding="8">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Client</th>
-                        <th>Email</th>
-                        <th>Téléphone</th>
-                        <th>Commandes</th>
-                        <th>Total dépensé</th>
-                        <th>Inscrit le</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>#</th><th>Client</th><th>Email</th><th>Téléphone</th><th>Commandes</th><th>Total dépensé</th><th>Inscrit le</th><th>Actions</th></tr></thead>
                 <tbody id="clientsTable"></tbody>
             </table>
         </div>
@@ -197,7 +183,6 @@
         <div class="modal" id="modalContent"></div>
     </div>
 
- 
     <script>
         checkPageAccess('clients');
         buildAdminNav('clients');
@@ -214,30 +199,16 @@
             ]);
             allClients = await clientsRes.json();
             allOrders = await ordersRes.json();
-
             document.getElementById("statsBar").innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-num">${allClients.length}</div>
-                        <div class="stat-label">Total clients</div>
-                    </div>
-                    <div class="stat-card" style="border-top:3px solid #10b981;">
-                        <div class="stat-num">${allClients.filter(c => allOrders.some(o => o.clientId === c.id)).length}</div>
-                        <div class="stat-label">Clients actifs</div>
-                    </div>
-                    <div class="stat-card" style="border-top:3px solid #3b82f6;">
-                        <div class="stat-num">${allClients.filter(c => !allOrders.some(o => o.clientId === c.id)).length}</div>
-                        <div class="stat-label">Jamais commandé</div>
-                    </div>`;
-
+                    <div class="stat-card"><div class="stat-num">${allClients.length}</div><div class="stat-label">Total clients</div></div>
+                    <div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${allClients.filter(c => allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Clients actifs</div></div>
+                    <div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${allClients.filter(c => !allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Jamais commandé</div></div>`;
             renderClients(allClients);
         }
 
         function renderClients(clients) {
             const tbody = document.getElementById("clientsTable");
-            if (!clients.length) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`;
-                return;
-            }
+            if (!clients.length) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`; return; }
             tbody.innerHTML = clients.map(c => {
                 const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulée");
                 const totalDepense = orders.reduce((s, o) => s + o.total, 0);
@@ -245,8 +216,7 @@
                 return `<tr>
                         <td><strong>#${c.id}</strong></td>
                         <td><div class="client-info"><div class="client-avatar">${initiale}</div><span>${c.fullName}</span></div></td>
-                        <td>${c.email}</td>
-                        <td>${c.phone || "—"}</td>
+                        <td>${c.email}</td><td>${c.phone || "—"}</td>
                         <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
                         <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
                         <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
@@ -257,41 +227,24 @@
 
         function filterClients() {
             const search = document.getElementById("searchInput").value.toLowerCase();
-            renderClients(allClients.filter(c =>
-                (c.fullName || "").toLowerCase().includes(search) ||
-                (c.email || "").toLowerCase().includes(search) ||
-                (c.phone || "").toLowerCase().includes(search)
-            ));
+            renderClients(allClients.filter(c => (c.fullName || "").toLowerCase().includes(search) || (c.email || "").toLowerCase().includes(search) || (c.phone || "").toLowerCase().includes(search)));
         }
 
         function showClientDetails(clientId) {
-            const c = allClients.find(c => c.id === clientId);
-            if (!c) return;
+            const c = allClients.find(c => c.id === clientId); if (!c) return;
             const orders = allOrders.filter(o => o.clientId === clientId);
             const totalDepense = orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0);
-            const getBadge = s => ({ "En attente": "badge-attente", "Validée": "badge-validee", "Livrée": "badge-livree", "Annulée": "badge-annulee" }[s] || "");
+            const getBadge = s => ({ 'En attente': 'badge-attente', 'Validée': 'badge-validee', 'Livrée': 'badge-livree', 'Annulée': 'badge-annulee' }[s] || '');
             document.getElementById("modalContent").innerHTML = `
                     <h3>👤 ${c.fullName}</h3>
-                    <div class="modal-info">
-                        <strong>Email :</strong> ${c.email}<br>
-                        <strong>Téléphone :</strong> ${c.phone || "—"}<br>
-                        <strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br>
-                        <strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA
-                    </div>
-                    <div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#374151;">📦 Commandes (${orders.length})</div>
-                    ${!orders.length ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` :
-                    orders.map(o => `<div class="order-row">
-                            <span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
-                            <span><span class="status-badge ${getBadge(o.status)}">${o.status}</span> &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong></span>
-                        </div>`).join('')}
+                    <div class="modal-info"><strong>Email :</strong> ${c.email}<br><strong>Téléphone :</strong> ${c.phone || "—"}<br><strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br><strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA</div>
+                    <div style="margin:16px 0 8px;font-size:13px;font-weight:700;">📦 Commandes (${orders.length})</div>
+                    ${!orders.length ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` : orders.map(o => `<div class="order-row"><span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span><span><span class="status-badge ${getBadge(o.status)}">${o.status}</span> &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong></span></div>`).join('')}
                     <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>`;
             document.getElementById("modalOverlay").classList.add("open");
         }
 
-        function closeModal(e) {
-            if (e.target === document.getElementById("modalOverlay"))
-                document.getElementById("modalOverlay").classList.remove("open");
-        }
+        function closeModal(e) { if (e.target === document.getElementById("modalOverlay")) document.getElementById("modalOverlay").classList.remove("open"); }
 
         loadData();
     </script>
