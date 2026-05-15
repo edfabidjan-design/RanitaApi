@@ -8,7 +8,13 @@
     <script src="admin-notifications.js" defer></script>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
+
+    <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <!-- Leaflet CSS + JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
     <style>
         :root {
             --green: #10b981;
@@ -30,10 +36,10 @@
             background: #f1f5f9;
         }
 
-        /* ── KPI CARDS ── */
+        /* ── KPI ── */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(190px,1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -42,7 +48,7 @@
             background: white;
             border-radius: 14px;
             padding: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
             border: 1px solid var(--gray-200);
             position: relative;
             overflow: hidden;
@@ -78,22 +84,21 @@
             }
 
         .kpi-icon {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 22px;
+            margin-bottom: 8px;
         }
 
         .kpi-label {
             font-size: 11px;
             color: var(--gray-500);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
+            letter-spacing: .5px;
+            margin-bottom: 4px;
         }
 
         .kpi-value {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            color: var(--gray-900);
         }
 
         .kpi-sub {
@@ -101,25 +106,6 @@
             color: var(--gray-500);
             margin-top: 4px;
         }
-
-        .kpi-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-top: 6px;
-        }
-
-            .kpi-badge.up {
-                background: #d1fae5;
-                color: #065f46;
-            }
-
-            .kpi-badge.warn {
-                background: #fef3c7;
-                color: #92400e;
-            }
 
         /* ── ALERTES ── */
         .alerts-bar {
@@ -139,11 +125,11 @@
             font-weight: 700;
             cursor: pointer;
             text-decoration: none;
-            transition: opacity 0.2s;
+            transition: opacity .2s;
         }
 
             .alert-chip:hover {
-                opacity: 0.85;
+                opacity: .85;
             }
 
             .alert-chip.red {
@@ -179,7 +165,7 @@
                 background: #3b82f6;
             }
 
-        /* ── GRID LAYOUT ── */
+        /* ── PANELS ── */
         .dash-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -191,22 +177,17 @@
                 grid-template-columns: 1fr 1fr 1fr;
             }
 
-            .dash-grid.full {
-                grid-template-columns: 1fr;
-            }
-
-        @media (max-width: 900px) {
+        @media(max-width:900px) {
             .dash-grid, .dash-grid.three {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* ── PANEL ── */
         .panel {
             background: white;
             border-radius: 14px;
             padding: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
             border: 1px solid var(--gray-200);
         }
 
@@ -224,11 +205,6 @@
             font-weight: 700;
         }
 
-        .period-btns {
-            display: flex;
-            gap: 4px;
-        }
-
         .pbtn {
             padding: 4px 10px;
             border-radius: 16px;
@@ -238,7 +214,7 @@
             cursor: pointer;
             background: white;
             color: var(--gray-700);
-            transition: all 0.2s;
+            transition: all .2s;
         }
 
             .pbtn.active {
@@ -247,63 +223,17 @@
                 border-color: var(--gray-900);
             }
 
-        /* ── CARTE CI ── */
-        .map-container {
-            position: relative;
+        /* ── CARTE LEAFLET ── */
+        #ciMap {
             width: 100%;
-        }
-
-            .map-container svg {
-                width: 100%;
-                height: auto;
-            }
-
-        .region {
-            fill: #e5e7eb;
-            stroke: white;
-            stroke-width: 1.5;
-            transition: fill 0.3s;
-            cursor: pointer;
-        }
-
-            .region:hover {
-                stroke: var(--gray-900);
-                stroke-width: 2;
-            }
-
-            .region.has-sales {
-                fill: #bbf7d0;
-            }
-
-            .region.medium {
-                fill: #6ee7b7;
-            }
-
-            .region.high {
-                fill: #10b981;
-            }
-
-            .region.very-high {
-                fill: #059669;
-            }
-
-        .map-tooltip {
-            position: absolute;
-            background: var(--gray-900);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            pointer-events: none;
-            display: none;
-            z-index: 100;
-            white-space: nowrap;
+            height: 340px;
+            border-radius: 10px;
+            z-index: 1;
         }
 
         .map-legend {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
             margin-top: 12px;
             font-size: 11px;
@@ -389,7 +319,7 @@
             white-space: nowrap;
         }
 
-        /* ── COMMANDES RÉCENTES ── */
+        /* ── COMMANDES ── */
         .order-row {
             display: flex;
             align-items: center;
@@ -447,33 +377,11 @@
             color: var(--green);
         }
 
-        /* ── DONUT ── */
         .donut-wrap {
-            position: relative;
             max-width: 200px;
             margin: 0 auto;
         }
 
-        /* ── SECTION TITLE ── */
-        .section-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--gray-500);
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        /* ── PÉRIODE VENTES ── */
-        .period-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
-        }
-
-        /* ── EMPTY STATE ── */
         .empty {
             text-align: center;
             padding: 30px;
@@ -481,7 +389,6 @@
             font-size: 13px;
         }
 
-        /* ── SCROLL NAV ── */
         .admin-header nav {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -509,57 +416,24 @@
 
     <div class="admin-container">
 
-        <!-- ── ALERTES ── -->
         <div class="alerts-bar" id="alertsBar"></div>
 
-        <!-- ── KPIs ── -->
+        <!-- KPIs -->
         <div class="kpi-grid">
-            <div class="kpi-card green">
-                <div class="kpi-icon">💰</div>
-                <div class="kpi-label">CA du jour</div>
-                <div class="kpi-value" id="kpi-today">—</div>
-                <div class="kpi-sub" id="kpi-today-count"></div>
-            </div>
-            <div class="kpi-card blue">
-                <div class="kpi-icon">📅</div>
-                <div class="kpi-label">CA ce mois</div>
-                <div class="kpi-value" id="kpi-month">—</div>
-                <div class="kpi-sub" id="kpi-month-count"></div>
-            </div>
-            <div class="kpi-card purple">
-                <div class="kpi-icon">🏆</div>
-                <div class="kpi-label">CA total</div>
-                <div class="kpi-value" id="kpi-total">—</div>
-                <div class="kpi-sub" id="kpi-total-count"></div>
-            </div>
-            <div class="kpi-card orange">
-                <div class="kpi-icon">⏳</div>
-                <div class="kpi-label">Commandes en attente</div>
-                <div class="kpi-value" id="kpi-pending">—</div>
-                <div class="kpi-sub">À traiter</div>
-            </div>
-            <div class="kpi-card green">
-                <div class="kpi-icon">👥</div>
-                <div class="kpi-label">Clients total</div>
-                <div class="kpi-value" id="kpi-clients">—</div>
-                <div class="kpi-sub" id="kpi-clients-new"></div>
-            </div>
-            <div class="kpi-card red">
-                <div class="kpi-icon">💸</div>
-                <div class="kpi-label">Commission Ranita</div>
-                <div class="kpi-value" id="kpi-commission">—</div>
-                <div class="kpi-sub">Total perçu</div>
-            </div>
+            <div class="kpi-card green"><div class="kpi-icon">💰</div><div class="kpi-label">CA du jour</div><div class="kpi-value" id="kpi-today">—</div><div class="kpi-sub" id="kpi-today-count"></div></div>
+            <div class="kpi-card blue"><div class="kpi-icon">📅</div><div class="kpi-label">CA ce mois</div><div class="kpi-value" id="kpi-month">—</div><div class="kpi-sub" id="kpi-month-count"></div></div>
+            <div class="kpi-card purple"><div class="kpi-icon">🏆</div><div class="kpi-label">CA total</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub" id="kpi-total-count"></div></div>
+            <div class="kpi-card orange"><div class="kpi-icon">⏳</div><div class="kpi-label">Commandes en attente</div><div class="kpi-value" id="kpi-pending">—</div><div class="kpi-sub">À traiter</div></div>
+            <div class="kpi-card green"><div class="kpi-icon">👥</div><div class="kpi-label">Clients total</div><div class="kpi-value" id="kpi-clients">—</div><div class="kpi-sub" id="kpi-clients-new"></div></div>
+            <div class="kpi-card red"><div class="kpi-icon">💸</div><div class="kpi-label">Commission Ranita</div><div class="kpi-value" id="kpi-commission">—</div><div class="kpi-sub">Total perçu</div></div>
         </div>
 
-        <!-- ── GRAPHIQUE VENTES + CARTE ── -->
+        <!-- Graphique + Carte -->
         <div class="dash-grid" style="margin-bottom:20px;">
-
-            <!-- Graphique ventes -->
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title">📈 Évolution des ventes</div>
-                    <div class="period-btns">
+                    <div style="display:flex;gap:4px;">
                         <button class="pbtn active" onclick="setChartPeriod(7,this)">7j</button>
                         <button class="pbtn" onclick="setChartPeriod(30,this)">30j</button>
                         <button class="pbtn" onclick="setChartPeriod(12,this)">12m</button>
@@ -568,178 +442,39 @@
                 <canvas id="salesChart" height="160"></canvas>
             </div>
 
-            <!-- Carte Côte d'Ivoire -->
             <div class="panel">
                 <div class="panel-header">
-                    <div class="panel-title">🗺️ Ventes par région</div>
+                    <div class="panel-title">🗺️ Ventes par ville</div>
                     <div style="font-size:11px;color:var(--gray-500);">Côte d'Ivoire</div>
                 </div>
-                <div class="map-container" id="mapContainer">
-                    <!-- SVG Côte d'Ivoire simplifié avec régions principales -->
-                    <svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg" id="ciMap">
-
-                        <!-- Région Abidjan -->
-                        <path class="region" id="reg-abidjan" data-region="Abidjan"
-                              d="M 270 290 L 290 285 L 305 295 L 310 315 L 295 325 L 275 320 L 265 305 Z" />
-
-                        <!-- Région Lagunes (autour Abidjan) -->
-                        <path class="region" id="reg-lagunes" data-region="Lagunes"
-                              d="M 235 260 L 270 250 L 300 260 L 315 280 L 305 295 L 290 285 L 270 290 L 255 285 L 240 275 Z" />
-
-                        <!-- Région Sud-Comoé -->
-                        <path class="region" id="reg-sud-comoe" data-region="Sud-Comoé"
-                              d="M 305 295 L 330 285 L 350 295 L 355 315 L 340 330 L 315 325 L 310 315 Z" />
-
-                        <!-- Région Agnéby-Tiassa -->
-                        <path class="region" id="reg-agnebi" data-region="Agnéby-Tiassa"
-                              d="M 215 250 L 235 260 L 255 285 L 240 300 L 220 305 L 200 290 L 195 265 Z" />
-
-                        <!-- Région Gbôklé -->
-                        <path class="region" id="reg-gbokle" data-region="Gbôklé"
-                              d="M 120 280 L 155 270 L 175 280 L 180 300 L 165 315 L 135 318 L 115 305 Z" />
-
-                        <!-- Région San-Pédro -->
-                        <path class="region" id="reg-san-pedro" data-region="San-Pédro"
-                              d="M 155 300 L 175 280 L 200 290 L 210 310 L 195 325 L 170 330 L 150 318 Z" />
-
-                        <!-- Région Bas-Sassandra -->
-                        <path class="region" id="reg-bas-sassandra" data-region="Bas-Sassandra"
-                              d="M 85 255 L 120 245 L 140 255 L 155 270 L 120 280 L 95 275 L 80 262 Z" />
-
-                        <!-- Région Sassandra-Marahoué -->
-                        <path class="region" id="reg-sassandra" data-region="Sassandra-Marahoué"
-                              d="M 130 195 L 170 185 L 200 195 L 215 220 L 210 250 L 195 265 L 170 265 L 145 255 L 125 235 L 120 210 Z" />
-
-                        <!-- Région Gôh -->
-                        <path class="region" id="reg-goh" data-region="Gôh"
-                              d="M 170 235 L 200 225 L 220 235 L 225 255 L 215 265 L 195 265 L 175 255 Z" />
-
-                        <!-- Région Lôh-Djiboua -->
-                        <path class="region" id="reg-loh-djiboua" data-region="Lôh-Djiboua"
-                              d="M 195 265 L 215 265 L 235 260 L 235 280 L 220 295 L 200 290 L 190 278 Z" />
-
-                        <!-- Région Marahoué -->
-                        <path class="region" id="reg-marahoue" data-region="Marahoué"
-                              d="M 160 160 L 200 150 L 225 165 L 230 185 L 215 200 L 190 205 L 165 195 L 150 178 Z" />
-
-                        <!-- Région Bélier -->
-                        <path class="region" id="reg-belier" data-region="Bélier"
-                              d="M 215 200 L 250 190 L 275 205 L 278 225 L 265 240 L 240 248 L 215 240 L 208 220 Z" />
-
-                        <!-- Région Moronou -->
-                        <path class="region" id="reg-moronou" data-region="Moronou"
-                              d="M 255 230 L 280 220 L 305 230 L 310 250 L 295 265 L 270 268 L 250 255 L 248 238 Z" />
-
-                        <!-- Région Indénié-Djuablin -->
-                        <path class="region" id="reg-indenié" data-region="Indénié-Djuablin"
-                              d="M 295 210 L 330 200 L 355 215 L 358 238 L 340 250 L 312 248 L 298 233 Z" />
-
-                        <!-- Région Iffou -->
-                        <path class="region" id="reg-iffou" data-region="Iffou"
-                              d="M 265 175 L 300 165 L 328 178 L 330 200 L 305 210 L 278 205 L 260 190 Z" />
-
-                        <!-- Région Hambol -->
-                        <path class="region" id="reg-hambol" data-region="Hambol"
-                              d="M 230 140 L 268 130 L 295 145 L 300 165 L 278 175 L 248 178 L 228 162 Z" />
-
-                        <!-- Région Gbêkê (Bouaké) -->
-                        <path class="region" id="reg-gbeke" data-region="Gbêkê (Bouaké)"
-                              d="M 185 125 L 228 115 L 250 128 L 255 148 L 235 162 L 205 165 L 183 148 L 178 132 Z" />
-
-                        <!-- Région Bafing -->
-                        <path class="region" id="reg-bafing" data-region="Bafing"
-                              d="M 90 115 L 130 105 L 158 120 L 160 140 L 140 155 L 108 155 L 85 140 L 82 122 Z" />
-
-                        <!-- Région Béré -->
-                        <path class="region" id="reg-bere" data-region="Béré"
-                              d="M 140 90 L 178 82 L 205 95 L 208 115 L 185 128 L 155 130 L 133 115 L 130 97 Z" />
-
-                        <!-- Région Kabadougou -->
-                        <path class="region" id="reg-kabadougou" data-region="Kabadougou"
-                              d="M 70 75 L 110 65 L 135 80 L 138 100 L 115 112 L 85 112 L 65 97 L 63 80 Z" />
-
-                        <!-- Région Folon -->
-                        <path class="region" id="reg-folon" data-region="Folon"
-                              d="M 55 48 L 95 38 L 115 52 L 115 72 L 90 80 L 60 78 L 45 62 Z" />
-
-                        <!-- Région Bagoué -->
-                        <path class="region" id="reg-bagoue" data-region="Bagoué"
-                              d="M 110 48 L 148 38 L 175 52 L 178 72 L 155 85 L 122 85 L 105 70 L 105 52 Z" />
-
-                        <!-- Région Tchologo -->
-                        <path class="region" id="reg-tchologo" data-region="Tchologo"
-                              d="M 170 45 L 215 35 L 240 50 L 242 70 L 218 82 L 185 82 L 165 68 L 163 50 Z" />
-
-                        <!-- Région Poro (Korhogo) -->
-                        <path class="region" id="reg-poro" data-region="Poro (Korhogo)"
-                              d="M 148 72 L 185 62 L 215 75 L 218 95 L 195 108 L 158 108 L 138 92 L 138 75 Z" />
-
-                        <!-- Région Woroba -->
-                        <path class="region" id="reg-woroba" data-region="Woroba"
-                              d="M 60 130 L 98 120 L 122 135 L 125 158 L 100 170 L 68 168 L 50 150 L 48 135 Z" />
-
-                        <!-- Région Tonkpi -->
-                        <path class="region" id="reg-tonkpi" data-region="Tonkpi"
-                              d="M 48 180 L 90 170 L 118 185 L 120 210 L 95 222 L 62 220 L 43 200 Z" />
-
-                        <!-- Région Guémon -->
-                        <path class="region" id="reg-guemon" data-region="Guémon"
-                              d="M 85 218 L 125 208 L 148 222 L 150 245 L 128 258 L 95 255 L 78 238 Z" />
-
-                        <!-- Noms des villes principales -->
-                        <text x="283" y="308" font-size="7" font-weight="bold" fill="#111827" text-anchor="middle">Abidjan</text>
-                        <text x="197" y="140" font-size="6" fill="#374151" text-anchor="middle">Bouaké</text>
-                        <text x="180" y="78" font-size="6" fill="#374151" text-anchor="middle">Korhogo</text>
-                        <text x="170" y="225" font-size="6" fill="#374151" text-anchor="middle">Daloa</text>
-                        <text x="143" y="298" font-size="6" fill="#374151" text-anchor="middle">San-Pédro</text>
-                        <text x="248" y="198" font-size="6" fill="#374151" text-anchor="middle">Yamoussoukro</text>
-
-                        <!-- Océan Atlantique -->
-                        <text x="200" y="355" font-size="9" fill="#93c5fd" text-anchor="middle" font-style="italic">Océan Atlantique</text>
-
-                        <!-- Ligne côte -->
-                        <path d="M 48 335 Q 150 345 210 340 Q 280 335 355 320" stroke="#93c5fd" stroke-width="2" fill="none" stroke-dasharray="4,3" />
-
-                    </svg>
-                    <div class="map-tooltip" id="mapTooltip"></div>
-                </div>
+                <div id="ciMap"></div>
                 <div class="map-legend">
-                    <div class="legend-item"><div class="legend-dot" style="background:#e5e7eb;"></div> Aucune vente</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#bbf7d0;"></div> 1-5</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#6ee7b7;"></div> 6-20</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div> 21-50</div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#059669;"></div> 50+</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#bbf7d0;"></div>1-5</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#6ee7b7;"></div>6-20</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div>21-50</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#065f46;"></div>50+</div>
                 </div>
             </div>
         </div>
 
-        <!-- ── STATUTS + TOPS ── -->
+        <!-- Statuts + Top produits + Top vendeurs -->
         <div class="dash-grid three" style="margin-bottom:20px;">
-
-            <!-- Répartition statuts -->
             <div class="panel">
                 <div class="panel-title" style="margin-bottom:16px;">📊 Statuts commandes</div>
-                <div class="donut-wrap">
-                    <canvas id="statusChart" height="180"></canvas>
-                </div>
+                <div class="donut-wrap"><canvas id="statusChart" height="180"></canvas></div>
                 <div id="statusLegend" style="margin-top:12px;"></div>
             </div>
-
-            <!-- Top produits -->
             <div class="panel">
                 <div class="panel-title" style="margin-bottom:16px;">🏆 Top produits</div>
                 <div id="topProducts"><div class="empty">Chargement...</div></div>
             </div>
-
-            <!-- Top vendeurs -->
             <div class="panel">
                 <div class="panel-title" style="margin-bottom:16px;">🏪 Top vendeurs</div>
                 <div id="topSellers"><div class="empty">Chargement...</div></div>
             </div>
-
         </div>
 
-        <!-- ── COMMANDES RÉCENTES ── -->
+        <!-- Commandes récentes -->
         <div class="panel" style="margin-bottom:20px;">
             <div class="panel-header">
                 <div class="panel-title">🧾 Dernières commandes</div>
@@ -748,7 +483,7 @@
             <div id="recentOrders"><div class="empty">Chargement...</div></div>
         </div>
 
-        <!-- ── TOP CLIENTS ── -->
+        <!-- Top clients -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">👥 Top clients</div>
@@ -763,20 +498,129 @@
         const API = 'https://ranitaapi-production.up.railway.app/api';
         const token = localStorage.getItem('adminToken');
         if (!token) window.location.href = 'admin-login.html';
-
         function logout() { localStorage.removeItem('adminToken'); window.location.href = 'admin-login.html'; }
 
         const fmt = v => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(v || 0);
-        const fmtShort = v => v >= 1000000 ? (v / 1000000).toFixed(1) + 'M F' : v >= 1000 ? (v / 1000).toFixed(0) + 'k F' : v + ' F';
 
-        let allOrders = [], allPayouts = [], salesChartInstance = null, statusChartInstance = null;
+        let allOrders = [], salesChartInstance = null, statusChartInstance = null, leafletMap = null;
+
+        // ── VILLES CI avec coordonnées GPS ───────────────────────────────────
+        const CI_CITIES = {
+            'abidjan': { lat: 5.3600, lng: -4.0083, label: 'Abidjan' },
+            'abobo': { lat: 5.4108, lng: -4.0128, label: 'Abobo' },
+            'yopougon': { lat: 5.3364, lng: -4.0797, label: 'Yopougon' },
+            'cocody': { lat: 5.3726, lng: -3.9731, label: 'Cocody' },
+            'marcory': { lat: 5.3036, lng: -3.9928, label: 'Marcory' },
+            'koumassi': { lat: 5.3100, lng: -3.9625, label: 'Koumassi' },
+            'adjamé': { lat: 5.3697, lng: -4.0194, label: 'Adjamé' },
+            'treichville': { lat: 5.2944, lng: -4.0075, label: 'Treichville' },
+            'plateau': { lat: 5.3197, lng: -4.0197, label: 'Plateau' },
+            'port-bouët': { lat: 5.2564, lng: -3.9367, label: 'Port-Bouët' },
+            'bouaké': { lat: 7.6833, lng: -5.0333, label: 'Bouaké' },
+            'korhogo': { lat: 9.4580, lng: -5.6294, label: 'Korhogo' },
+            'daloa': { lat: 6.8772, lng: -6.4502, label: 'Daloa' },
+            'san-pédro': { lat: 4.7456, lng: -6.6369, label: 'San-Pédro' },
+            'san pedro': { lat: 4.7456, lng: -6.6369, label: 'San-Pédro' },
+            'yamoussoukro': { lat: 6.8276, lng: -5.2893, label: 'Yamoussoukro' },
+            'man': { lat: 7.4120, lng: -7.5540, label: 'Man' },
+            'gagnoa': { lat: 6.1319, lng: -5.9503, label: 'Gagnoa' },
+            'divo': { lat: 5.8383, lng: -5.3575, label: 'Divo' },
+            'abengourou': { lat: 6.7297, lng: -3.4964, label: 'Abengourou' },
+            'bondoukou': { lat: 8.0333, lng: -2.8000, label: 'Bondoukou' },
+            'odienné': { lat: 9.5094, lng: -7.5644, label: 'Odienné' },
+            'séguéla': { lat: 7.9556, lng: -6.6722, label: 'Séguéla' },
+            'guiglo': { lat: 6.5333, lng: -7.4833, label: 'Guiglo' },
+            'soubré': { lat: 5.7833, lng: -6.5833, label: 'Soubré' },
+            'dimbokro': { lat: 6.6500, lng: -4.7000, label: 'Dimbokro' },
+            'agboville': { lat: 5.9269, lng: -4.2161, label: 'Agboville' },
+            'adzopé': { lat: 6.1000, lng: -3.8667, label: 'Adzopé' },
+            'bingerville': { lat: 5.3583, lng: -3.8833, label: 'Bingerville' },
+            'grand-bassam': { lat: 5.2000, lng: -3.7333, label: 'Grand-Bassam' },
+            'ferkessédougou': { lat: 9.5936, lng: -5.1936, label: 'Ferkessédougou' },
+            'touba': { lat: 8.2833, lng: -7.6833, label: 'Touba' },
+        };
 
         // ── INIT ─────────────────────────────────────────────────────────────
         window.addEventListener('DOMContentLoaded', async () => {
+            initMap();
             await Promise.all([loadOrders(), loadPayouts(), loadClients(), loadAlerts()]);
         });
 
-        // ── DONNÉES ──────────────────────────────────────────────────────────
+        // ── CARTE LEAFLET ─────────────────────────────────────────────────────
+        function initMap() {
+            leafletMap = L.map('ciMap', {
+                center: [7.5399, -5.5471],
+                zoom: 6,
+                zoomControl: true,
+                attributionControl: false
+            });
+
+            // Tuile OpenStreetMap style clair
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap © CartoDB',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(leafletMap);
+
+            // Frontières CI (GeoJSON simplifié)
+            fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+                .then(r => r.json())
+                .then(data => {
+                    const ci = data.features.find(f => f.properties.ISO_A3 === 'CIV');
+                    if (ci) {
+                        L.geoJSON(ci, {
+                            style: {
+                                color: '#10b981',
+                                weight: 2,
+                                fillColor: '#f0fdf4',
+                                fillOpacity: 0.3
+                            }
+                        }).addTo(leafletMap);
+                    }
+                }).catch(() => { });
+        }
+
+        function updateMapMarkers(cityData) {
+            if (!leafletMap) return;
+
+            // Supprimer anciens marqueurs
+            leafletMap.eachLayer(layer => {
+                if (layer instanceof L.CircleMarker || layer instanceof L.Marker) {
+                    leafletMap.removeLayer(layer);
+                }
+            });
+
+            Object.entries(cityData).forEach(([city, data]) => {
+                const info = CI_CITIES[city];
+                if (!info) return;
+
+                const count = data.count;
+                const radius = Math.min(6 + count * 2, 30);
+                const color = count >= 50 ? '#065f46' : count >= 21 ? '#10b981' : count >= 6 ? '#6ee7b7' : '#bbf7d0';
+
+                const circle = L.circleMarker([info.lat, info.lng], {
+                    radius,
+                    fillColor: color,
+                    color: 'white',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.85
+                }).addTo(leafletMap);
+
+                circle.bindPopup(`
+                        <div style="text-align:center;padding:4px;">
+                            <strong style="font-size:14px;">${info.label}</strong><br>
+                            <span style="color:#10b981;font-size:13px;font-weight:700;">${count} commande(s)</span><br>
+                            <span style="font-size:12px;color:#6b7280;">${fmt(data.total)}</span>
+                        </div>
+                    `, { closeButton: false });
+
+                circle.on('mouseover', function () { this.openPopup(); });
+                circle.on('mouseout', function () { this.closePopup(); });
+            });
+        }
+
+        // ── CHARGER DONNÉES ───────────────────────────────────────────────────
         async function loadOrders() {
             try {
                 const res = await fetch(`${API}/orders`, { headers: { 'Authorization': `Bearer ${token}` } });
@@ -787,17 +631,17 @@
                 renderStatusChart();
                 renderTopProducts();
                 renderRecentOrders();
-                renderCIMap();
-            } catch (e) { console.error('loadOrders:', e); }
+                renderMapFromOrders();
+            } catch (e) { console.error(e); }
         }
 
         async function loadPayouts() {
             try {
                 const res = await fetch(`${API}/sellers/payouts/all`);
                 if (!res.ok) return;
-                allPayouts = await res.json();
-                const total = allPayouts.reduce((s, p) => s + (p.commissionAmount || 0), 0);
-                document.getElementById('kpi-commission').textContent = fmtShort(total);
+                const payouts = await res.json();
+                document.getElementById('kpi-commission').textContent = fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0));
+                renderTopSellers(payouts);
             } catch (e) { }
         }
 
@@ -808,95 +652,55 @@
                 const clients = await res.json();
                 document.getElementById('kpi-clients').textContent = clients.length;
                 const now = new Date();
-                const newThisMonth = clients.filter(c => {
-                    const d = new Date(c.createdAt);
-                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-                }).length;
-                document.getElementById('kpi-clients-new').textContent = `+${newThisMonth} ce mois`;
+                const newM = clients.filter(c => { const d = new Date(c.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
+                document.getElementById('kpi-clients-new').textContent = `+${newM} ce mois`;
                 renderTopClients(clients);
             } catch (e) { }
         }
 
         async function loadAlerts() {
+            const alertsBar = document.getElementById('alertsBar');
+            let html = '';
+            const pending = allOrders.filter(o => o.status === 'En attente').length;
+            if (pending > 0) html += `<a href="admin-orders.html" class="alert-chip red"><div class="dot"></div>${pending} commande(s) en attente</a>`;
             try {
-                const [prodRes, sellerRes] = await Promise.all([
-                    fetch(`${API}/admin/seller-products/pending`, { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-                    fetch(`${API}/sellers/pending`, { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null)
-                ]);
-
-                const alertsBar = document.getElementById('alertsBar');
-                let html = '';
-
-                const pending = allOrders.filter(o => o.status === 'En attente').length;
-                if (pending > 0) html += `<a href="admin-orders.html" class="alert-chip red"><div class="dot"></div>${pending} commande(s) en attente</a>`;
-
-                if (prodRes?.ok) {
-                    const prods = await prodRes.json();
-                    if (prods.length > 0) html += `<a href="admin-sellers.html" class="alert-chip orange"><div class="dot"></div>${prods.length} produit(s) à valider</a>`;
-                }
-
-                if (sellerRes?.ok) {
-                    const sellers = await sellerRes.json();
-                    const pendingSellers = sellers.filter(s => s.status === 'Pending').length;
-                    if (pendingSellers > 0) html += `<a href="admin-sellers.html" class="alert-chip blue"><div class="dot"></div>${pendingSellers} vendeur(s) en attente</a>`;
-                }
-
-                alertsBar.innerHTML = html || '<div style="font-size:13px;color:var(--gray-500);">✅ Aucune alerte en cours</div>';
+                const res = await fetch(`${API}/admin/seller-products/pending`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) { const p = await res.json(); if (p.length > 0) html += `<a href="admin-sellers.html" class="alert-chip orange"><div class="dot"></div>${p.length} produit(s) à valider</a>`; }
             } catch (e) { }
+            alertsBar.innerHTML = html || '<div style="font-size:13px;color:var(--gray-500);">✅ Aucune alerte en cours</div>';
         }
 
         // ── KPIs ──────────────────────────────────────────────────────────────
         function computeKPIs() {
             const now = new Date();
             const today = allOrders.filter(o => new Date(o.createdAt).toDateString() === now.toDateString() && o.status !== 'Annulée');
-            const month = allOrders.filter(o => {
-                const d = new Date(o.createdAt);
-                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && o.status !== 'Annulée';
-            });
+            const month = allOrders.filter(o => { const d = new Date(o.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && o.status !== 'Annulée'; });
             const all = allOrders.filter(o => o.status !== 'Annulée');
-            const pending = allOrders.filter(o => o.status === 'En attente');
-
-            document.getElementById('kpi-today').textContent = fmtShort(today.reduce((s, o) => s + o.total, 0));
+            document.getElementById('kpi-today').textContent = fmt(today.reduce((s, o) => s + o.total, 0));
             document.getElementById('kpi-today-count').textContent = `${today.length} commande(s)`;
-            document.getElementById('kpi-month').textContent = fmtShort(month.reduce((s, o) => s + o.total, 0));
+            document.getElementById('kpi-month').textContent = fmt(month.reduce((s, o) => s + o.total, 0));
             document.getElementById('kpi-month-count').textContent = `${month.length} commande(s)`;
-            document.getElementById('kpi-total').textContent = fmtShort(all.reduce((s, o) => s + o.total, 0));
+            document.getElementById('kpi-total').textContent = fmt(all.reduce((s, o) => s + o.total, 0));
             document.getElementById('kpi-total-count').textContent = `${all.length} commandes`;
-            document.getElementById('kpi-pending').textContent = pending.length;
+            document.getElementById('kpi-pending').textContent = allOrders.filter(o => o.status === 'En attente').length;
         }
 
-        // ── GRAPHIQUE VENTES ─────────────────────────────────────────────────
+        // ── GRAPHIQUE ────────────────────────────────────────────────────────
         function setChartPeriod(mode, btn) {
             document.querySelectorAll('.pbtn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderSalesChart(mode);
         }
-
         function renderSalesChart(mode) {
             const labels = [], data = [], now = new Date();
             if (mode === 12) {
-                for (let i = 11; i >= 0; i--) {
-                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                    labels.push(d.toLocaleDateString('fr-FR', { month: 'short' }));
-                    data.push(allOrders.filter(o => {
-                        const od = new Date(o.createdAt);
-                        return od.getMonth() === d.getMonth() && od.getFullYear() === d.getFullYear() && o.status !== 'Annulée';
-                    }).reduce((s, o) => s + o.total, 0));
-                }
+                for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); labels.push(d.toLocaleDateString('fr-FR', { month: 'short' })); data.push(allOrders.filter(o => { const od = new Date(o.createdAt); return od.getMonth() === d.getMonth() && od.getFullYear() === d.getFullYear() && o.status !== 'Annulée'; }).reduce((s, o) => s + o.total, 0)); }
             } else {
-                for (let i = mode - 1; i >= 0; i--) {
-                    const d = new Date(); d.setDate(d.getDate() - i);
-                    labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }));
-                    data.push(allOrders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && o.status !== 'Annulée').reduce((s, o) => s + o.total, 0));
-                }
+                for (let i = mode - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })); data.push(allOrders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && o.status !== 'Annulée').reduce((s, o) => s + o.total, 0)); }
             }
             const ctx = document.getElementById('salesChart').getContext('2d');
             if (salesChartInstance) salesChartInstance.destroy();
-            salesChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'CA', data, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', borderWidth: 2.5, pointBackgroundColor: '#10b981', pointRadius: 3, tension: 0.4, fill: true }] },
-                options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => fmtShort(v), font: { size: 10 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } }
-            });
+            salesChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'CA', data, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', borderWidth: 2.5, pointBackgroundColor: '#10b981', pointRadius: 3, tension: 0.4, fill: true }] }, options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F', font: { size: 10 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } } });
         }
 
         // ── DONUT STATUTS ────────────────────────────────────────────────────
@@ -904,173 +708,71 @@
             const statuts = {};
             allOrders.forEach(o => { statuts[o.status] = (statuts[o.status] || 0) + 1; });
             const colors = { 'En attente': '#f59e0b', 'Confirmée': '#3b82f6', 'En cours': '#8b5cf6', 'Livrée': '#10b981', 'Annulée': '#ef4444', 'Confirmée par vendeur': '#06b6d4' };
-            const labels = Object.keys(statuts);
-            const values = labels.map(l => statuts[l]);
-            const bgColors = labels.map(l => colors[l] || '#e5e7eb');
-
+            const labels = Object.keys(statuts), values = labels.map(l => statuts[l]), bgColors = labels.map(l => colors[l] || '#e5e7eb');
             const ctx = document.getElementById('statusChart').getContext('2d');
             if (statusChartInstance) statusChartInstance.destroy();
-            statusChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels, datasets: [{ data: values, backgroundColor: bgColors, borderWidth: 2, borderColor: 'white' }] },
-                options: { responsive: true, plugins: { legend: { display: false } }, cutout: '65%' }
-            });
-
-            document.getElementById('statusLegend').innerHTML = labels.map((l, i) =>
-                `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:12px;">
-                        <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:${bgColors[i]};"></div><span>${l}</span></div>
-                        <strong>${values[i]}</strong>
-                    </div>`
-            ).join('');
+            statusChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels, datasets: [{ data: values, backgroundColor: bgColors, borderWidth: 2, borderColor: 'white' }] }, options: { responsive: true, plugins: { legend: { display: false } }, cutout: '65%' } });
+            document.getElementById('statusLegend').innerHTML = labels.map((l, i) => `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:12px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:${bgColors[i]};"></div><span>${l}</span></div><strong>${values[i]}</strong></div>`).join('');
         }
 
         // ── TOP PRODUITS ──────────────────────────────────────────────────────
         function renderTopProducts() {
             const products = {};
-            allOrders.filter(o => o.status !== 'Annulée').forEach(o => {
-                (o.items || []).forEach(i => {
-                    if (!products[i.productName]) products[i.productName] = { qty: 0, total: 0 };
-                    products[i.productName].qty += i.quantity;
-                    products[i.productName].total += i.price * i.quantity;
-                });
-            });
+            allOrders.filter(o => o.status !== 'Annulée').forEach(o => (o.items || []).forEach(i => { if (!products[i.productName]) products[i.productName] = { qty: 0, total: 0 }; products[i.productName].qty += i.quantity; products[i.productName].total += i.price * i.quantity; }));
             const sorted = Object.entries(products).sort((a, b) => b[1].qty - a[1].qty).slice(0, 5);
             const el = document.getElementById('topProducts');
             if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; }
-            el.innerHTML = sorted.map(([name, data], i) => `
-                    <div class="top-item">
-                        <div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div>
-                        <div class="top-info"><div class="top-name">${name}</div><div class="top-sub">${data.qty} vendu(s)</div></div>
-                        <div class="top-val">${fmtShort(data.total)}</div>
-                    </div>`).join('');
+            el.innerHTML = sorted.map(([name, data], i) => `<div class="top-item"><div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div><div class="top-info"><div class="top-name">${name}</div><div class="top-sub">${data.qty} vendu(s)</div></div><div class="top-val">${fmt(data.total)}</div></div>`).join('');
         }
 
         // ── TOP VENDEURS ──────────────────────────────────────────────────────
-        async function renderTopSellers() {
-            try {
-                const res = await fetch(`${API}/sellers/payouts/all`);
-                if (!res.ok) return;
-                const payouts = await res.json();
-                const sellers = {};
-                payouts.forEach(p => {
-                    const k = p.shopName || `Vendeur #${p.sellerId}`;
-                    if (!sellers[k]) sellers[k] = { gross: 0, count: 0 };
-                    sellers[k].gross += p.grossAmount || 0;
-                    sellers[k].count++;
-                });
-                const sorted = Object.entries(sellers).sort((a, b) => b[1].gross - a[1].gross).slice(0, 5);
-                const el = document.getElementById('topSellers');
-                if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; }
-                el.innerHTML = sorted.map(([name, data], i) => `
-                        <div class="top-item">
-                            <div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div>
-                            <div class="top-info"><div class="top-name">${name}</div><div class="top-sub">${data.count} commande(s)</div></div>
-                            <div class="top-val">${fmtShort(data.gross)}</div>
-                        </div>`).join('');
-            } catch (e) { }
+        function renderTopSellers(payouts) {
+            const sellers = {};
+            payouts.forEach(p => { const k = p.shopName || `#${p.sellerId}`; if (!sellers[k]) sellers[k] = { gross: 0, count: 0 }; sellers[k].gross += p.grossAmount || 0; sellers[k].count++; });
+            const sorted = Object.entries(sellers).sort((a, b) => b[1].gross - a[1].gross).slice(0, 5);
+            const el = document.getElementById('topSellers');
+            if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; }
+            el.innerHTML = sorted.map(([name, data], i) => `<div class="top-item"><div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div><div class="top-info"><div class="top-name">${name}</div><div class="top-sub">${data.count} commande(s)</div></div><div class="top-val">${fmt(data.gross)}</div></div>`).join('');
         }
 
         // ── TOP CLIENTS ───────────────────────────────────────────────────────
         function renderTopClients(clients) {
             const clientOrders = {};
-            allOrders.filter(o => o.status !== 'Annulée' && o.clientId).forEach(o => {
-                if (!clientOrders[o.clientId]) clientOrders[o.clientId] = { name: o.customerName, total: 0, count: 0 };
-                clientOrders[o.clientId].total += o.total;
-                clientOrders[o.clientId].count++;
-            });
+            allOrders.filter(o => o.status !== 'Annulée' && o.clientId).forEach(o => { if (!clientOrders[o.clientId]) clientOrders[o.clientId] = { name: o.customerName, total: 0, count: 0 }; clientOrders[o.clientId].total += o.total; clientOrders[o.clientId].count++; });
             const sorted = Object.entries(clientOrders).sort((a, b) => b[1].total - a[1].total).slice(0, 5);
             const el = document.getElementById('topClients');
             if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; }
-            el.innerHTML = sorted.map(([id, data], i) => `
-                    <div class="top-item">
-                        <div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div>
-                        <div class="top-info"><div class="top-name">${data.name || 'Client #' + id}</div><div class="top-sub">${data.count} commande(s)</div></div>
-                        <div class="top-val">${fmtShort(data.total)}</div>
-                    </div>`).join('');
+            el.innerHTML = sorted.map(([id, data], i) => `<div class="top-item"><div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div><div class="top-info"><div class="top-name">${data.name || 'Client #' + id}</div><div class="top-sub">${data.count} commande(s)</div></div><div class="top-val">${fmt(data.total)}</div></div>`).join('');
         }
 
         // ── COMMANDES RÉCENTES ────────────────────────────────────────────────
         function renderRecentOrders() {
             const recent = [...allOrders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 8);
-            const statusClass = { 'En attente': 'status-pending', 'Confirmée': 'status-confirmed', 'Livrée': 'status-delivered', 'Annulée': 'status-cancelled', 'En cours': 'status-confirmed' };
+            const sc = { 'En attente': 'status-pending', 'Confirmée': 'status-confirmed', 'Livrée': 'status-delivered', 'Annulée': 'status-cancelled', 'En cours': 'status-confirmed' };
             const el = document.getElementById('recentOrders');
             if (!recent.length) { el.innerHTML = '<div class="empty">Aucune commande</div>'; return; }
-            el.innerHTML = recent.map(o => `
-                    <div class="order-row">
-                        <div>
-                            <div class="order-id">#${o.id} — ${o.customerName}</div>
-                            <div class="order-customer">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span class="order-status ${statusClass[o.status] || 'status-pending'}">${o.status}</span>
-                            <span class="order-amount">${fmt(o.total)}</span>
-                        </div>
-                    </div>`).join('');
+            el.innerHTML = recent.map(o => `<div class="order-row"><div><div class="order-id">#${o.id} — ${o.customerName}</div><div class="order-customer">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div></div><div style="display:flex;align-items:center;gap:10px;"><span class="order-status ${sc[o.status] || 'status-pending'}">${o.status}</span><span class="order-amount">${fmt(o.total)}</span></div></div>`).join('');
         }
 
-        // ── CARTE CÔTE D'IVOIRE ───────────────────────────────────────────────
-        function renderCIMap() {
-            // Extraire les villes/régions des adresses de livraison
-            const regionSales = {};
-            const regionMapping = {
-                'abidjan': 'reg-abidjan', 'abobo': 'reg-abidjan', 'yopougon': 'reg-abidjan',
-                'cocody': 'reg-abidjan', 'marcory': 'reg-abidjan', 'koumassi': 'reg-abidjan',
-                'adjamé': 'reg-abidjan', 'plateau': 'reg-abidjan', 'treichville': 'reg-abidjan',
-                'bouaké': 'reg-gbeke', 'korhogo': 'reg-poro', 'daloa': 'reg-sassandra',
-                'san-pédro': 'reg-san-pedro', 'san pedro': 'reg-san-pedro',
-                'yamoussoukro': 'reg-belier', 'man': 'reg-tonkpi', 'gagnoa': 'reg-goh',
-                'divo': 'reg-loh-djiboua', 'abengourou': 'reg-indenié',
-                'bondoukou': 'reg-hambol', 'odienné': 'reg-kabadougou',
-                'ferkessédougou': 'reg-tchologo', 'dimbokro': 'reg-iffou',
-                'touba': 'reg-bafing', 'séguéla': 'reg-woroba',
-                'guiglo': 'reg-guemon', 'soubré': 'reg-gbokle',
-            };
-
+        // ── CARTE — extraire villes des adresses ──────────────────────────────
+        function renderMapFromOrders() {
+            const cityData = {};
             allOrders.filter(o => o.status !== 'Annulée').forEach(o => {
                 const addr = (o.customerAddress || '').toLowerCase();
-                for (const [city, regId] of Object.entries(regionMapping)) {
-                    if (addr.includes(city)) {
-                        regionSales[regId] = (regionSales[regId] || 0) + 1;
+                for (const [key, info] of Object.entries(CI_CITIES)) {
+                    if (addr.includes(key)) {
+                        if (!cityData[key]) cityData[key] = { count: 0, total: 0, label: info.label };
+                        cityData[key].count++;
+                        cityData[key].total += o.total;
                         break;
                     }
                 }
             });
-
-            // Colorer les régions
-            Object.entries(regionSales).forEach(([regId, count]) => {
-                const el = document.getElementById(regId);
-                if (!el) return;
-                if (count >= 50) el.classList.add('very-high');
-                else if (count >= 21) el.classList.add('high');
-                else if (count >= 6) el.classList.add('medium');
-                else if (count >= 1) el.classList.add('has-sales');
-            });
-
-            // Tooltip au survol
-            const tooltip = document.getElementById('mapTooltip');
-            const mapContainer = document.getElementById('mapContainer');
-            document.querySelectorAll('.region').forEach(el => {
-                el.addEventListener('mousemove', e => {
-                    const region = el.dataset.region;
-                    const regId = el.id;
-                    const count = regionSales[regId] || 0;
-                    const rect = mapContainer.getBoundingClientRect();
-                    tooltip.style.display = 'block';
-                    tooltip.style.left = (e.clientX - rect.left + 10) + 'px';
-                    tooltip.style.top = (e.clientY - rect.top - 30) + 'px';
-                    tooltip.innerHTML = `<strong>${region}</strong><br>${count} commande(s)`;
-                });
-                el.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
-            });
-
-            renderTopSellers();
+            updateMapMarkers(cityData);
         }
 
-        // ── AUTO-REFRESH 60s ──────────────────────────────────────────────────
-        setInterval(async () => {
-            await loadOrders();
-            await loadAlerts();
-        }, 60000);
+        // ── AUTO-REFRESH ──────────────────────────────────────────────────────
+        setInterval(async () => { await loadOrders(); await loadAlerts(); }, 60000);
     </script>
 </body>
 </html>
