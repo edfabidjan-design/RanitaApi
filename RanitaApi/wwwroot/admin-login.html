@@ -5,54 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Admin - Ranita</title>
     <link rel="stylesheet" href="auth.css">
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
+    <style>
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
 
+        .error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 8px;
+            display: none;
+        }
 
+        .btn-login {
+            position: relative;
+        }
+
+            .btn-login.loading::after {
+                content: '';
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 16px;
+                height: 16px;
+                border: 2px solid white;
+                border-top-color: transparent;
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+            }
+
+        @keyframes spin {
+            to {
+                transform: translateY(-50%) rotate(360deg);
+            }
+        }
+    </style>
 </head>
 <body>
 
     <div class="auth-card">
-
         <div class="auth-logo" onclick="location.href='index.html'">
             🛒 Ranita Market
         </div>
 
         <h2>Connexion Admin</h2>
 
-        <input id="username" placeholder="Username">
-        <input id="password" type="password" placeholder="Password">
+        <input id="username" placeholder="Nom d'utilisateur" autocomplete="username">
+        <input id="password" type="password" placeholder="Mot de passe" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') login()">
 
-        <button onclick="login()">Connexion</button>
+        <div class="error-msg" id="errorMsg"></div>
 
+        <button class="btn-login" id="btnLogin" onclick="login()">Connexion</button>
     </div>
 
     <script>
         const API = "https://ranitaapi-production.up.railway.app/api";
 
-        async function login() {
-            const res = await fetch(`${API}/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: username.value,
-                    password: password.value
-                })
-            });
+        // Si déjà connecté → rediriger
+        if (localStorage.getItem('adminToken')) {
+            window.location.href = 'admin-dashboard.html';
+        }
 
-            if (!res.ok) {
-                const err = await res.text();
-                alert(err);
+        async function login() {
+            const btn = document.getElementById('btnLogin');
+            const errorMsg = document.getElementById('errorMsg');
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                showError('Remplissez tous les champs');
                 return;
             }
 
-            const data = await res.json();
+            btn.classList.add('loading');
+            btn.disabled = true;
+            errorMsg.style.display = 'none';
 
-            localStorage.setItem("adminToken", data.token);
-            window.location.href = "admin-dashboard.html";
+            try {
+                const res = await fetch(`${API}/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!res.ok) {
+                    const err = await res.text();
+                    showError(err || 'Identifiants incorrects');
+                    return;
+                }
+
+                const data = await res.json();
+
+                // Stocker token + infos rôle
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminRole', data.role || 'Analyste');
+                localStorage.setItem('adminName', data.username || username);
+                localStorage.setItem('adminEmail', data.email || '');
+
+                window.location.href = 'admin-dashboard.html';
+
+            } catch (e) {
+                showError('Erreur réseau. Réessayez.');
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            document.getElementById('btnLogin').classList.remove('loading');
+            document.getElementById('btnLogin').disabled = false;
         }
     </script>
-
 </body>
 </html>

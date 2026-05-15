@@ -6,11 +6,8 @@
     <title>Ranita Admin - Produits</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-notifications.js" defer></script>
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
-
     <style>
         .form-section {
             background: white;
@@ -36,12 +33,10 @@
         }
 
             .form-grid .full {
-                grid-column: 1 / -1;
+                grid-column: 1/-1;
             }
 
-            .form-grid input,
-            .form-grid select,
-            .form-grid textarea {
+            .form-grid input, .form-grid select, .form-grid textarea {
                 width: 100%;
                 padding: 10px 14px;
                 border: 1px solid #d1d5db;
@@ -113,20 +108,10 @@
     </style>
 </head>
 <body>
-
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
-        <nav>
-            <a href="admin-dashboard.html">Dashboard</a>
-            <a href="admin-products.html" class="active">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
-            <a href="admin-attributes.html">Attributs</a>
-            <a href="admin-orders.html">Commandes</a>
-            <a href="admin-clients.html">Clients</a>
-            <a href="admin-reviews.html">⭐ Avis</a>
-            <a href="/admin-sellers.html">Vendeurs <span id="badge-vendors"></span></a>
-        </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <nav id="adminNav"></nav>
+        <button onclick="adminLogout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
@@ -134,123 +119,57 @@
 
         <form id="productForm">
             <input type="hidden" id="productId">
-
-            <!-- Infos de base -->
             <div class="form-section">
                 <h3>📦 Informations de base</h3>
                 <div class="form-grid">
-                    <div>
-                        <label>Nom du produit *</label>
-                        <input type="text" id="productName" placeholder="Ex: Chemise Homme Slim" required>
-                    </div>
-                    <div>
-                        <label>SKU (Code unique) — généré automatiquement</label>
-                        <input type="text" id="productSku" placeholder="Ex: RAN-CHM-001" required readonly
-                               style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;">
-                    </div>
-                    <div>
-                        <label>Marque</label>
-                        <input type="text" id="productBrand" placeholder="Ex: Nike, Samsung...">
-                    </div>
-                    <div>
-                        <label>Catégorie *</label>
-                        <select id="categoryId" required onchange="loadAttributeFields()"></select>
-                    </div>
-                    <div>
-                        <label>Statut</label>
-                        <div class="toggle-switch">
-                            <input type="checkbox" id="productIsActive" checked>
-                            <span>Produit actif (visible sur le site)</span>
-                        </div>
-                    </div>
-                    <div class="full">
-                        <label>Description courte *</label>
-                        <input type="text" id="productShortDescription" placeholder="1-2 phrases résumant le produit">
-                    </div>
-                    <div class="full">
-                        <label>Description longue</label>
-                        <textarea id="productDescription" placeholder="Description détaillée du produit..."></textarea>
-                    </div>
+                    <div><label>Nom du produit *</label><input type="text" id="productName" placeholder="Ex: Chemise Homme Slim" required></div>
+                    <div><label>SKU — généré automatiquement</label><input type="text" id="productSku" placeholder="Ex: RAN-CHM-001" required readonly style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;"></div>
+                    <div><label>Marque</label><input type="text" id="productBrand" placeholder="Ex: Nike, Samsung..."></div>
+                    <div><label>Catégorie *</label><select id="categoryId" required onchange="loadAttributeFields()"></select></div>
+                    <div><label>Statut</label><div class="toggle-switch"><input type="checkbox" id="productIsActive" checked><span>Produit actif (visible sur le site)</span></div></div>
+                    <div class="full"><label>Description courte *</label><input type="text" id="productShortDescription" placeholder="1-2 phrases résumant le produit"></div>
+                    <div class="full"><label>Description longue</label><textarea id="productDescription" placeholder="Description détaillée..."></textarea></div>
                 </div>
             </div>
-
-
-            <!-- Prix & Stock -->
             <div class="form-section">
                 <h3>💰 Prix & Stock</h3>
                 <div class="form-grid">
-                    <div>
-                        <label>Prix de vente * (FCFA)</label>
-                        <input type="number" id="productPrice" placeholder="Ex: 15000" required>
-                    </div>
-                    <div>
-                        <label>Prix barré (FCFA)</label>
-                        <input type="number" id="productOldPrice" placeholder="Ex: 20000">
-                    </div>
-                    <div>
-                        <label>Stock global * (si pas de variantes)</label>
-                        <input type="number" id="productStock" placeholder="Ex: 50">
-                    </div>
+                    <div><label>Prix de vente * (FCFA)</label><input type="number" id="productPrice" placeholder="Ex: 15000" required></div>
+                    <div><label>Prix barré (FCFA)</label><input type="number" id="productOldPrice" placeholder="Ex: 20000"></div>
+                    <div><label>Stock global</label><input type="number" id="productStock" placeholder="Ex: 50"></div>
                 </div>
             </div>
-
-
-
-            <!-- Images -->
             <div class="form-section">
-                <h3>🖼️ Images (max 5 — la 1ère est l'image principale)</h3>
+                <h3>🖼️ Images (max 5)</h3>
                 <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
-
-                    <!-- Bouton ajout -->
                     <div>
-                        <label style="display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:#374151;">
-                            Ajouter une image
-                        </label>
-                        <input type="file" id="imageFile" accept="image/*" onchange="previewNewImage(this)"
-                               style="padding:8px;border:1px dashed #d1d5db;border-radius:10px;background:#f9fafb;width:200px;">
+                        <label style="display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:#374151;">Ajouter une image</label>
+                        <input type="file" id="imageFile" accept="image/*" onchange="previewNewImage(this)" style="padding:8px;border:1px dashed #d1d5db;border-radius:10px;background:#f9fafb;width:200px;">
                     </div>
-
-                    <!-- Galerie aperçu -->
                     <div style="flex:1;">
-                        <label style="display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:#374151;">
-                            Galerie
-                        </label>
+                        <label style="display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:#374151;">Galerie</label>
                         <div id="imageGallery" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
                     </div>
                 </div>
             </div>
-
-            <!-- SEO -->
             <div class="form-section">
                 <h3>🔍 SEO</h3>
                 <div class="form-grid">
-                    <div>
-                        <label>Slug URL</label>
-                        <input type="text" id="productSlug" placeholder="ex: chemise-homme-slim-bleu">
-                    </div>
-                    <div>
-                        <label>Meta description</label>
-                        <input type="text" id="productMetaDescription" placeholder="Description pour Google (160 caractères max)">
-                    </div>
+                    <div><label>Slug URL</label><input type="text" id="productSlug" placeholder="ex: chemise-homme-slim-bleu"></div>
+                    <div><label>Meta description</label><input type="text" id="productMetaDescription" placeholder="Description pour Google (160 caractères max)"></div>
                 </div>
             </div>
-
-            <!-- Attributs dynamiques -->
             <div class="form-section" id="attributesSection" style="display:none;">
                 <h3>🏷️ Attributs</h3>
                 <div class="form-grid" id="attributeFields"></div>
             </div>
-
-            <!-- Variantes — après attributs -->
             <div class="form-section" id="variantsSection" style="display:none;">
                 <h3>🔀 Variantes & Stock</h3>
-                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">Sélectionnez vos attributs ci-dessus puis cliquez sur "Générer les variantes"</p>
+                <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">Sélectionnez vos attributs puis cliquez sur "Générer"</p>
                 <button type="button" onclick="generateVariants()" style="background:#3b82f6;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;margin-bottom:16px;">🔀 Générer les variantes</button>
                 <div id="variantsList"></div>
             </div>
-
             <div class="form-actions">
-
                 <button type="submit" class="btn-save">✅ Enregistrer</button>
                 <button type="button" id="resetBtn" class="btn-reset">🔄 Réinitialiser</button>
             </div>
@@ -258,314 +177,165 @@
 
         <hr>
 
-        <!-- Table produits -->
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Prix</th>
-                        <th>Ancien Prix</th>
-                        <th>Stock</th>
-                        <th>Catégorie</th>
-                        <th>Statut</th>
-                        <th>Image</th>
-                        <th>Actions</th>
-                    </tr>
+                    <tr><th>ID</th><th>Nom</th><th>Prix</th><th>Ancien Prix</th><th>Stock</th><th>Catégorie</th><th>Statut</th><th>Image</th><th>Actions</th></tr>
                 </thead>
                 <tbody id="productsTable"></tbody>
             </table>
         </div>
     </div>
 
+    <script src="admin-auth.js"></script>
     <script>
+        checkPageAccess('products');
+        buildAdminNav('products');
+        applyReadOnlyMode();
 
-
-        let productImages = []; // URLs existantes
-        let newImageFiles = []; // Nouveaux fichiers à uploader
-
-
-        async function duplicateProduct(id) {
-            const res = await fetch(`${API_BASE}/products/${id}`);
-            const p = await res.json();
-
-            const formData = new FormData();
-            formData.append("Name", p.name + " (Copie)");
-            formData.append("Brand", p.brand || "");
-            formData.append("ShortDescription", p.shortDescription || "");
-            formData.append("Description", p.description || "");
-            formData.append("Price", p.price);
-            formData.append("OldPrice", p.oldPrice || "");
-            formData.append("Stock", p.stock || "0");
-            formData.append("IsActive", "false");
-            formData.append("Slug", (p.slug || "") + "-copie-" + Date.now());
-            formData.append("MetaDescription", p.metaDescription || "");
-            formData.append("CategoryId", p.categoryId || "");
-            formData.append("Attributes", p.attributes || "{}");
-            formData.append("Sku", "RAN-CPY-" + Math.floor(1000 + Math.random() * 9000));
-            formData.append("Images", p.images || "[]");
-            if (p.imageUrl) formData.append("ImageUrl", p.imageUrl);
-
-            const dupRes = await fetch(`${API_BASE}/products`, { method: "POST", body: formData });
-            if (!dupRes.ok) { alert("Erreur duplication"); return; }
-
-            loadProducts();
-            const toast = document.createElement("div");
-            toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#f59e0b;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
-            toast.textContent = "📋 Produit dupliqué !";
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
+        let productImages = [], newImageFiles = [];
+        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+        const { token } = getAdminInfo();
 
         function previewNewImage(input) {
             if (!input.files || !input.files[0]) return;
-
-            if (productImages.length + newImageFiles.length >= 5) {
-                alert("Maximum 5 images autorisées !");
-                input.value = "";
-                return;
-            }
-
-            const file = input.files[0];
-            newImageFiles.push(file);
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                renderGallery();
-            };
-            reader.readAsDataURL(file);
+            if (productImages.length + newImageFiles.length >= 5) { alert("Maximum 5 images !"); input.value = ""; return; }
+            newImageFiles.push(input.files[0]);
+            renderGallery();
             input.value = "";
         }
 
         function renderGallery() {
             const gallery = document.getElementById("imageGallery");
             gallery.innerHTML = "";
-
-            // Images existantes
             productImages.forEach((url, index) => {
-                gallery.innerHTML += `
-            <div style="position:relative;width:90px;">
-                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
-                ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
-                <button type="button" onclick="removeExistingImage(${index})"
-                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
-                ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
-            </div>
-        `;
+                gallery.innerHTML += `<div style="position:relative;width:90px;">
+                        <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                        ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                        <button type="button" onclick="removeExistingImage(${index})" style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
+                        ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
+                    </div>`;
             });
-
-            // Nouveaux fichiers
             newImageFiles.forEach((file, index) => {
                 const url = URL.createObjectURL(file);
                 const isMain = productImages.length === 0 && index === 0;
-                gallery.innerHTML += `
-            <div style="position:relative;width:90px;">
-                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
-                ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
-                <button type="button" onclick="removeNewImage(${index})"
-                        style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
-            </div>
-        `;
+                gallery.innerHTML += `<div style="position:relative;width:90px;">
+                        <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                        ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                        <button type="button" onclick="removeNewImage(${index})" style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
+                    </div>`;
             });
-
-            // Placeholder si vide
-            if (productImages.length === 0 && newImageFiles.length === 0) {
-                gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajoutée</p>`;
-            }
+            if (!productImages.length && !newImageFiles.length) gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajoutée</p>`;
         }
 
-        function removeExistingImage(index) {
-            productImages.splice(index, 1);
-            renderGallery();
-        }
-
-        function removeNewImage(index) {
-            newImageFiles.splice(index, 1);
-            renderGallery();
-        }
-
-        function setMainImage(index) {
-            const img = productImages.splice(index, 1)[0];
-            productImages.unshift(img);
-            renderGallery();
-        }
-
+        function removeExistingImage(i) { productImages.splice(i, 1); renderGallery(); }
+        function removeNewImage(i) { newImageFiles.splice(i, 1); renderGallery(); }
+        function setMainImage(i) { productImages.unshift(productImages.splice(i, 1)[0]); renderGallery(); }
 
         function generateVariants() {
             const attrFields = document.querySelectorAll("[id^='attr_']");
             const selectedAttrs = {};
-
-            attrFields.forEach(el => {
-                const key = el.id.replace("attr_", "");
-                if (el.value) {
-                    selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
-                }
-            });
-
+            attrFields.forEach(el => { const key = el.id.replace("attr_", ""); if (el.value) selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v); });
             const keys = Object.keys(selectedAttrs);
-            if (keys.length === 0) {
-                alert("Sélectionnez d'abord des attributs !");
-                return;
-            }
-
-            // Générer toutes les combinaisons
-            const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
+            if (!keys.length) { alert("Sélectionnez d'abord des attributs !"); return; }
+            const combinations = keys.map(k => selectedAttrs[k]).reduce((acc, curr) => acc.flatMap(a => curr.map(b => [...a, b])), [[]]);
             const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
-
-            const variantsList = document.getElementById("variantsList");
-            variantsList.innerHTML = `
-        <table style="width:100%;border-collapse:collapse;">
-            <thead>
-                <tr style="background:#f9fafb;">
-                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th>
-                    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th>
-                   
-                </tr>
-            </thead>
-            <tbody>
-                ${labels.map((label, i) => `
-                    <tr>
-                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td>
-                        <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
-                            <input type="number" id="variant_stock_${i}" placeholder="0" min="0"
-                                   style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
-                        </td>
-
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-
-            // Stocker les labels pour le submit
+            document.getElementById("variantsList").innerHTML = `
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead><tr style="background:#f9fafb;"><th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th><th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th></tr></thead>
+                        <tbody>${labels.map((label, i) => `<tr><td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td><td style="padding:10px;border-bottom:1px solid #f3f4f6;"><input type="number" id="variant_stock_${i}" placeholder="0" min="0" style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;"></td></tr>`).join('')}</tbody>
+                    </table>`;
             window._variantLabels = labels;
             document.getElementById("variantsSection").style.display = "block";
             document.getElementById("productStock").value = "0";
         }
 
-        function getCombinations(arrays) {
-            return arrays.reduce((acc, curr) =>
-                acc.flatMap(a => curr.map(b => [...a, b])), [[]]
-            );
-        }
-
-
-        const token = localStorage.getItem("adminToken");
-        if (!token) window.location.href = "admin-login.html";
-
-        function logout() {
-            localStorage.removeItem("adminToken");
-            window.location.href = "admin-login.html";
-        }
-
-        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-
         async function loadCategories() {
             const res = await fetch(`${API_BASE}/categories`);
             const parents = await res.json();
             const select = document.getElementById("categoryId");
-
             select.innerHTML = `<option value="">-- Choisir une catégorie --</option>`;
             parents.forEach(parent => {
                 if (parent.children && parent.children.length > 0) {
                     select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
-                    parent.children.forEach(child => {
-                        select.innerHTML += `<option value="${child.id}">${child.name}</option>`;
-                    });
+                    parent.children.forEach(child => { select.innerHTML += `<option value="${child.id}">${child.name}</option>`; });
                     select.innerHTML += `</optgroup>`;
-                } else {
-                    select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
-                }
+                } else { select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`; }
             });
         }
 
         async function loadAttributeFields() {
             const catId = document.getElementById("categoryId").value;
             const section = document.getElementById("attributesSection");
-            const fields = document.getElementById("attributeFields");
-
             if (!catId) { section.style.display = "none"; return; }
-
             const res = await fetch(`${API_BASE}/category-attributes/${catId}`);
             const attrs = await res.json();
-
-            if (attrs.length === 0) { section.style.display = "none"; return; }
-
+            if (!attrs.length) { section.style.display = "none"; return; }
             section.style.display = "block";
-            fields.innerHTML = attrs.map(a => `
-        <div class="attr-field full">
-            <label>${a.attributeName}</label>
-            ${a.attributeType === 'select'
+            document.getElementById("attributeFields").innerHTML = attrs.map(a => `
+                    <div class="attr-field full">
+                        <label>${a.attributeName}</label>
+                        ${a.attributeType === 'select'
                     ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-                    ${a.attributeOptions.split(',').map(o => `
-                        <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;">
-                            <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}"
-                                   onchange="updateAttrHidden('${a.attributeName}')">
-                            <span>${o.trim()}</span>
-                        </label>
-                    `).join('')}
-                    <input type="hidden" id="attr_${a.attributeName}" value="">
-                   </div>`
-                    : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}"
-                          id="attr_${a.attributeName}"
-                          placeholder="${a.attributeName}">`
-                }
-        </div>
-    `).join('');
-
-            const hasSelectAttr = attrs.some(a => a.attributeType === 'select');
-            document.getElementById("variantsSection").style.display = hasSelectAttr ? "block" : "none";
+                                ${a.attributeOptions.split(',').map(o => `<label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;"><input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')"><span>${o.trim()}</span></label>`).join('')}
+                                <input type="hidden" id="attr_${a.attributeName}" value=""></div>`
+                    : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}" id="attr_${a.attributeName}" placeholder="${a.attributeName}">`}
+                    </div>`).join('');
+            document.getElementById("variantsSection").style.display = attrs.some(a => a.attributeType === 'select') ? "block" : "none";
             document.getElementById("variantsList").innerHTML = "";
             window._variantLabels = null;
-
         }
 
         function updateAttrHidden(attrName) {
-            const checkboxes = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
-            const values = Array.from(checkboxes).map(cb => cb.value);
-            document.getElementById(`attr_${attrName}`).value = values.join(',');
+            const checked = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
+            document.getElementById(`attr_${attrName}`).value = Array.from(checked).map(cb => cb.value).join(',');
         }
 
         async function loadProducts() {
             const res = await fetch(`${API_BASE}/products`);
             const products = await res.json();
-            const tbody = document.getElementById("productsTable");
-
-            tbody.innerHTML = products.map(p => `
-                <tr>
-                    <td>${p.id}</td>
-                    <td>${p.name}</td>
-                    <td>${Number(p.price).toLocaleString()} FCFA</td>
-                    <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
-                    <td>${p.stock}</td>
-                    <td>${p.category?.name || "—"}</td>
-                    <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
-                    <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
-                    <td>
-<div style="display:flex;flex-direction:column;gap:6px;">
-    <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">✏️ Modifier</button>
-    <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">📋 Dupliquer</button>
-    <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">🗑️ Supprimer</button>
-</div>
-
-                    </td>
-                </tr>
-            `).join('');
+            document.getElementById("productsTable").innerHTML = products.map(p => `
+                    <tr>
+                        <td>${p.id}</td><td>${p.name}</td>
+                        <td>${Number(p.price).toLocaleString()} FCFA</td>
+                        <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
+                        <td>${p.stock}</td><td>${p.category?.name || "—"}</td>
+                        <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
+                        <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
+                        <td>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">✏️ Modifier</button>
+                                <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">📋 Dupliquer</button>
+                                <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">🗑️ Supprimer</button>
+                            </div>
+                        </td>
+                    </tr>`).join('');
         }
 
-        let allProducts = [];
+        async function duplicateProduct(id) {
+            const res = await fetch(`${API_BASE}/products/${id}`);
+            const p = await res.json();
+            const formData = new FormData();
+            formData.append("Name", p.name + " (Copie)"); formData.append("Brand", p.brand || "");
+            formData.append("ShortDescription", p.shortDescription || ""); formData.append("Description", p.description || "");
+            formData.append("Price", p.price); formData.append("OldPrice", p.oldPrice || "");
+            formData.append("Stock", p.stock || "0"); formData.append("IsActive", "false");
+            formData.append("Slug", (p.slug || "") + "-copie-" + Date.now()); formData.append("MetaDescription", p.metaDescription || "");
+            formData.append("CategoryId", p.categoryId || ""); formData.append("Attributes", p.attributes || "{}");
+            formData.append("Sku", "RAN-CPY-" + Math.floor(1000 + Math.random() * 9000));
+            formData.append("Images", p.images || "[]");
+            if (p.imageUrl) formData.append("ImageUrl", p.imageUrl);
+            const dupRes = await fetch(`${API_BASE}/products`, { method: "POST", body: formData });
+            if (!dupRes.ok) { alert("Erreur duplication"); return; }
+            loadProducts();
+            showToast("📋 Produit dupliqué !");
+        }
 
         async function editProduct(id) {
             const res = await fetch(`${API_BASE}/products/${id}`);
             const p = await res.json();
-
-            // Remplir catégorie D'ABORD
             document.getElementById("categoryId").value = p.categoryId || "";
             await loadAttributeFields();
-
-            // Remplir les champs APRÈS loadAttributeFields
             document.getElementById("productId").value = p.id;
             document.getElementById("productName").value = p.name || "";
             document.getElementById("productBrand").value = p.brand || "";
@@ -578,67 +348,18 @@
             document.getElementById("productSlug").value = p.slug || "";
             document.getElementById("productMetaDescription").value = p.metaDescription || "";
             document.getElementById("productSku").value = p.sku || "";
-
-            // Attributs
             if (p.attributes && p.attributes !== "{}") {
                 try {
                     const attrs = JSON.parse(p.attributes);
                     Object.keys(attrs).forEach(key => {
                         const hidden = document.getElementById(`attr_${key}`);
-                        if (hidden) {
-                            hidden.value = attrs[key];
-                            attrs[key].split(',').forEach(val => {
-                                const cb = document.querySelector(`input[name="attr_${key}"][value="${val.trim()}"]`);
-                                if (cb) cb.checked = true;
-                            });
-                        }
+                        if (hidden) { hidden.value = attrs[key]; attrs[key].split(',').forEach(val => { const cb = document.querySelector(`input[name="attr_${key}"][value="${val.trim()}"]`); if (cb) cb.checked = true; }); }
                     });
                 } catch (e) { }
             }
-
-            // Images
-            productImages = [];
-            newImageFiles = [];
-            try { productImages = JSON.parse(p.images || "[]"); }
-            catch (e) { productImages = p.imageUrl ? [p.imageUrl] : []; }
+            productImages = []; newImageFiles = [];
+            try { productImages = JSON.parse(p.images || "[]"); } catch (e) { productImages = p.imageUrl ? [p.imageUrl] : []; }
             renderGallery();
-
-            // Variantes
-            if (p.variants && p.variants.length > 0) {
-                const attrFields = document.querySelectorAll("[id^='attr_']");
-                const selectedAttrs = {};
-                attrFields.forEach(el => {
-                    const key = el.id.replace("attr_", "");
-                    if (el.value) selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v);
-                });
-                const keys = Object.keys(selectedAttrs);
-                if (keys.length > 0) {
-                    const combinations = getCombinations(keys.map(k => selectedAttrs[k]));
-                    const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
-                    window._variantLabels = labels;
-
-                    document.getElementById("variantsList").innerHTML = `
-                <table style="width:100%;border-collapse:collapse;">
-<thead><tr style="background:#f9fafb;">
-    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th>
-    <th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th>
-</tr></thead>
-<tbody>
-    ${labels.map((label, i) => `
-        <tr>
-            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td>
-            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
-                <input type="number" id="variant_stock_${i}" 
-                       value="${p.variants[i]?.stock || 0}" min="0"
-                       style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;">
-            </td>
-        </tr>`).join('')}
-</tbody>
-                </table>`;
-                    document.getElementById("variantsSection").style.display = "block";
-                }
-            }
-
             window.scrollTo(0, 0);
         }
 
@@ -650,15 +371,9 @@
 
         document.getElementById("productForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-
-            // Collecter les attributs
             const attrFields = document.querySelectorAll("[id^='attr_']");
             const attributes = {};
-            attrFields.forEach(el => {
-                const key = el.id.replace("attr_", "");
-                if (el.value) attributes[key] = el.value;
-            });
-
+            attrFields.forEach(el => { const key = el.id.replace("attr_", ""); if (el.value) attributes[key] = el.value; });
             const formData = new FormData();
             formData.append("Name", document.getElementById("productName").value);
             formData.append("Brand", document.getElementById("productBrand").value);
@@ -666,117 +381,65 @@
             formData.append("Description", document.getElementById("productDescription").value);
             formData.append("Price", document.getElementById("productPrice").value);
             formData.append("OldPrice", document.getElementById("productOldPrice").value || "");
-            const stockVal = document.getElementById("productStock").value;
-            formData.append("Stock", stockVal || "0");
+            formData.append("Stock", document.getElementById("productStock").value || "0");
             formData.append("IsActive", document.getElementById("productIsActive").checked ? "true" : "false");
-            const slugVal = document.getElementById("productSlug").value ||
-                document.getElementById("productName").value.toLowerCase()
-                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                    .replace(/[^a-z0-9\s-]/g, "")
-                    .replace(/\s+/g, "-");
+            const slugVal = document.getElementById("productSlug").value || document.getElementById("productName").value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
             formData.append("Slug", slugVal);
-            formData.append("MetaDescription", document.getElementById("productMetaDescription").value || document.getElementById("productShortDescription").value.substring(0, 160) || "");
+            formData.append("MetaDescription", document.getElementById("productMetaDescription").value || "");
             formData.append("CategoryId", document.getElementById("categoryId").value);
             formData.append("Attributes", JSON.stringify(attributes));
             formData.append("Sku", document.getElementById("productSku").value);
-
-            // Images existantes
             formData.append("Images", JSON.stringify(productImages));
-
-            // Nouvelles images
-            newImageFiles.forEach((file) => {
-                formData.append("imageFiles", file);
-            });
-
-            // Image principale = première
-            if (productImages.length > 0) {
-                formData.append("ImageUrl", productImages[0]);
-            }
-
-            // Variantes
+            newImageFiles.forEach(file => formData.append("imageFiles", file));
+            if (productImages.length > 0) formData.append("ImageUrl", productImages[0]);
             if (window._variantLabels) {
-                const variants = window._variantLabels.map((label, i) => ({
-                    combination: label,
-                    stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0),
-                   
-                }));
-                formData.append("Variants", JSON.stringify(variants));
+                formData.append("Variants", JSON.stringify(window._variantLabels.map((label, i) => ({ combination: label, stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0) }))));
             }
-
             const id = document.getElementById("productId").value;
-            const url = id ? `${API_BASE}/products/${id}` : `${API_BASE}/products`;
-            const method = id ? "PUT" : "POST";
-
-            const res = await fetch(url, { method, body: formData });
-
-            if (!res.ok) {
-                alert("Erreur : " + await res.text());
-                return;
-            }
-
-            resetForm();
-            loadProducts();
-
-            const toast = document.createElement("div");
-            toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#10b981;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
-            toast.textContent = "✅ Produit enregistré avec succès !";
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            const res = await fetch(id ? `${API_BASE}/products/${id}` : `${API_BASE}/products`, { method: id ? "PUT" : "POST", body: formData });
+            if (!res.ok) { alert("Erreur : " + await res.text()); return; }
+            resetForm(); loadProducts(); showToast("✅ Produit enregistré avec succès !");
         });
 
         document.getElementById("categoryId").addEventListener("change", function () {
             if (!document.getElementById("productId").value) {
                 const catText = this.options[this.selectedIndex]?.text || "PRD";
-                const prefix = catText
-                    .substring(0, 3)
-                    .toUpperCase()
-                    .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "");
-                const random = Math.floor(1000 + Math.random() * 9000);
-                document.getElementById("productSku").value = `RAN-${prefix}-${random}`;
+                const prefix = catText.substring(0, 3).toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                document.getElementById("productSku").value = `RAN-${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
             }
         });
 
         document.getElementById("productShortDescription").addEventListener("input", function () {
             const meta = document.getElementById("productMetaDescription");
-            // Auto-remplir seulement si vide
-            if (!meta.value) {
-                meta.value = this.value.substring(0, 160);
-            }
+            if (!meta.value) meta.value = this.value.substring(0, 160);
+        });
+
+        document.getElementById("productName").addEventListener("input", function () {
+            document.getElementById("productSlug").value = this.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
         });
 
         function resetForm() {
             document.getElementById("productForm").reset();
             document.getElementById("productId").value = "";
-           
             document.getElementById("attributesSection").style.display = "none";
             document.getElementById("attributeFields").innerHTML = "";
             document.getElementById("productSku").value = "";
-            productImages = [];
-            newImageFiles = [];
-            renderGallery();
-
+            productImages = []; newImageFiles = []; renderGallery();
             document.getElementById("variantsSection").style.display = "none";
             document.getElementById("variantsList").innerHTML = "";
             window._variantLabels = null;
-
         }
 
         document.getElementById("resetBtn").addEventListener("click", resetForm);
 
-        // Auto-générer le slug depuis le nom
-        document.getElementById("productName").addEventListener("input", function () {
-            const slug = this.value
-                .toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9\s-]/g, "")
-                .replace(/\s+/g, "-");
-            document.getElementById("productSlug").value = slug;
-        });
+        function showToast(msg) {
+            const t = document.createElement("div");
+            t.style.cssText = "position:fixed;bottom:30px;right:30px;background:#10b981;color:white;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(0,0,0,0.2);z-index:9999;";
+            t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
+        }
 
         loadCategories();
         loadProducts();
     </script>
-
 </body>
 </html>

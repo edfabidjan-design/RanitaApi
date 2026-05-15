@@ -8,18 +8,13 @@
     <script src="admin-notifications.js" defer></script>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
-    <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-    <!-- Leaflet CSS + JS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-
     <style>
         :root {
             --green: #10b981;
             --green-dark: #059669;
-            --green-light: #ecfdf5;
             --red: #ef4444;
             --orange: #f59e0b;
             --blue: #3b82f6;
@@ -36,10 +31,9 @@
             background: #f1f5f9;
         }
 
-        /* ── KPI ── */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px,1fr));
+            grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -107,7 +101,6 @@
             margin-top: 4px;
         }
 
-        /* ── ALERTES ── */
         .alerts-bar {
             display: flex;
             gap: 10px;
@@ -165,7 +158,6 @@
                 background: #3b82f6;
             }
 
-        /* ── PANELS ── */
         .dash-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -223,7 +215,6 @@
                 border-color: var(--gray-900);
             }
 
-        /* ── CARTE LEAFLET ── */
         #ciMap {
             width: 100%;
             height: 340px;
@@ -252,7 +243,6 @@
             border-radius: 3px;
         }
 
-        /* ── TOP LISTS ── */
         .top-item {
             display: flex;
             align-items: center;
@@ -319,7 +309,6 @@
             white-space: nowrap;
         }
 
-        /* ── COMMANDES ── */
         .order-row {
             display: flex;
             align-items: center;
@@ -397,28 +386,14 @@
     </style>
 </head>
 <body>
-
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
-        <nav>
-            <a href="admin-dashboard.html" class="active">Dashboard</a>
-            <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
-            <a href="admin-attributes.html">Attributs</a>
-            <a href="admin-clients.html">Clients</a>
-            <a href="admin-reviews.html">⭐ Avis</a>
-            <a href="admin-orders.html">Commandes</a>
-            <a href="admin-sellers.html">Vendeurs <span id="badge-vendors"></span></a>
-            <a href="admin-commissions.html">⚙️ Commissions</a>
-        </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <nav id="adminNav"></nav>
+        <button onclick="adminLogout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
-
         <div class="alerts-bar" id="alertsBar"></div>
-
-        <!-- KPIs -->
         <div class="kpi-grid">
             <div class="kpi-card green"><div class="kpi-icon">💰</div><div class="kpi-label">CA du jour</div><div class="kpi-value" id="kpi-today">—</div><div class="kpi-sub" id="kpi-today-count"></div></div>
             <div class="kpi-card blue"><div class="kpi-icon">📅</div><div class="kpi-label">CA ce mois</div><div class="kpi-value" id="kpi-month">—</div><div class="kpi-sub" id="kpi-month-count"></div></div>
@@ -427,8 +402,6 @@
             <div class="kpi-card green"><div class="kpi-icon">👥</div><div class="kpi-label">Clients total</div><div class="kpi-value" id="kpi-clients">—</div><div class="kpi-sub" id="kpi-clients-new"></div></div>
             <div class="kpi-card red"><div class="kpi-icon">💸</div><div class="kpi-label">Commission Ranita</div><div class="kpi-value" id="kpi-commission">—</div><div class="kpi-sub">Total perçu</div></div>
         </div>
-
-        <!-- Graphique + Carte -->
         <div class="dash-grid" style="margin-bottom:20px;">
             <div class="panel">
                 <div class="panel-header">
@@ -441,12 +414,8 @@
                 </div>
                 <canvas id="salesChart" height="160"></canvas>
             </div>
-
             <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">🗺️ Ventes par ville</div>
-                    <div style="font-size:11px;color:var(--gray-500);">Côte d'Ivoire</div>
-                </div>
+                <div class="panel-header"><div class="panel-title">🗺️ Ventes par ville</div><div style="font-size:11px;color:var(--gray-500);">Côte d'Ivoire</div></div>
                 <div id="ciMap"></div>
                 <div class="map-legend">
                     <div class="legend-item"><div class="legend-dot" style="background:#bbf7d0;"></div>1-5</div>
@@ -456,177 +425,87 @@
                 </div>
             </div>
         </div>
-
-        <!-- Statuts + Top produits + Top vendeurs -->
         <div class="dash-grid three" style="margin-bottom:20px;">
-            <div class="panel">
-                <div class="panel-title" style="margin-bottom:16px;">📊 Statuts commandes</div>
-                <div class="donut-wrap"><canvas id="statusChart" height="180"></canvas></div>
-                <div id="statusLegend" style="margin-top:12px;"></div>
-            </div>
-            <div class="panel">
-                <div class="panel-title" style="margin-bottom:16px;">🏆 Top produits</div>
-                <div id="topProducts"><div class="empty">Chargement...</div></div>
-            </div>
-            <div class="panel">
-                <div class="panel-title" style="margin-bottom:16px;">🏪 Top vendeurs</div>
-                <div id="topSellers"><div class="empty">Chargement...</div></div>
-            </div>
+            <div class="panel"><div class="panel-title" style="margin-bottom:16px;">📊 Statuts commandes</div><div class="donut-wrap"><canvas id="statusChart" height="180"></canvas></div><div id="statusLegend" style="margin-top:12px;"></div></div>
+            <div class="panel"><div class="panel-title" style="margin-bottom:16px;">🏆 Top produits</div><div id="topProducts"><div class="empty">Chargement...</div></div></div>
+            <div class="panel"><div class="panel-title" style="margin-bottom:16px;">🏪 Top vendeurs</div><div id="topSellers"><div class="empty">Chargement...</div></div></div>
         </div>
-
-        <!-- Commandes récentes -->
         <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-header">
-                <div class="panel-title">🧾 Dernières commandes</div>
-                <a href="admin-orders.html" style="font-size:12px;color:var(--green);font-weight:700;text-decoration:none;">Voir tout →</a>
-            </div>
+            <div class="panel-header"><div class="panel-title">🧾 Dernières commandes</div><a href="admin-orders.html" style="font-size:12px;color:var(--green);font-weight:700;text-decoration:none;">Voir tout →</a></div>
             <div id="recentOrders"><div class="empty">Chargement...</div></div>
         </div>
-
-        <!-- Top clients -->
         <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">👥 Top clients</div>
-                <a href="admin-clients.html" style="font-size:12px;color:var(--green);font-weight:700;text-decoration:none;">Voir tout →</a>
-            </div>
+            <div class="panel-header"><div class="panel-title">👥 Top clients</div><a href="admin-clients.html" style="font-size:12px;color:var(--green);font-weight:700;text-decoration:none;">Voir tout →</a></div>
             <div id="topClients"><div class="empty">Chargement...</div></div>
         </div>
-
     </div>
 
+    <script src="admin-auth.js"></script>
     <script>
+        checkPageAccess('dashboard');
+        buildAdminNav('dashboard');
+
         const API = 'https://ranitaapi-production.up.railway.app/api';
-        const token = localStorage.getItem('adminToken');
-        if (!token) window.location.href = 'admin-login.html';
-        function logout() { localStorage.removeItem('adminToken'); window.location.href = 'admin-login.html'; }
-
+        const { token } = getAdminInfo();
         const fmt = v => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(v || 0);
-
         let allOrders = [], salesChartInstance = null, statusChartInstance = null, leafletMap = null;
 
-        // ── VILLES CI avec coordonnées GPS ───────────────────────────────────
         const CI_CITIES = {
-            'abidjan': { lat: 5.3600, lng: -4.0083, label: 'Abidjan' },
-            'abobo': { lat: 5.4108, lng: -4.0128, label: 'Abobo' },
-            'yopougon': { lat: 5.3364, lng: -4.0797, label: 'Yopougon' },
-            'cocody': { lat: 5.3726, lng: -3.9731, label: 'Cocody' },
-            'marcory': { lat: 5.3036, lng: -3.9928, label: 'Marcory' },
-            'koumassi': { lat: 5.3100, lng: -3.9625, label: 'Koumassi' },
-            'adjamé': { lat: 5.3697, lng: -4.0194, label: 'Adjamé' },
-            'treichville': { lat: 5.2944, lng: -4.0075, label: 'Treichville' },
-            'plateau': { lat: 5.3197, lng: -4.0197, label: 'Plateau' },
-            'port-bouët': { lat: 5.2564, lng: -3.9367, label: 'Port-Bouët' },
-            'bouaké': { lat: 7.6833, lng: -5.0333, label: 'Bouaké' },
-            'korhogo': { lat: 9.4580, lng: -5.6294, label: 'Korhogo' },
-            'daloa': { lat: 6.8772, lng: -6.4502, label: 'Daloa' },
-            'san-pédro': { lat: 4.7456, lng: -6.6369, label: 'San-Pédro' },
-            'san pedro': { lat: 4.7456, lng: -6.6369, label: 'San-Pédro' },
-            'yamoussoukro': { lat: 6.8276, lng: -5.2893, label: 'Yamoussoukro' },
-            'man': { lat: 7.4120, lng: -7.5540, label: 'Man' },
-            'gagnoa': { lat: 6.1319, lng: -5.9503, label: 'Gagnoa' },
-            'divo': { lat: 5.8383, lng: -5.3575, label: 'Divo' },
-            'abengourou': { lat: 6.7297, lng: -3.4964, label: 'Abengourou' },
-            'bondoukou': { lat: 8.0333, lng: -2.8000, label: 'Bondoukou' },
-            'odienné': { lat: 9.5094, lng: -7.5644, label: 'Odienné' },
-            'séguéla': { lat: 7.9556, lng: -6.6722, label: 'Séguéla' },
-            'guiglo': { lat: 6.5333, lng: -7.4833, label: 'Guiglo' },
-            'soubré': { lat: 5.7833, lng: -6.5833, label: 'Soubré' },
-            'dimbokro': { lat: 6.6500, lng: -4.7000, label: 'Dimbokro' },
-            'agboville': { lat: 5.9269, lng: -4.2161, label: 'Agboville' },
-            'adzopé': { lat: 6.1000, lng: -3.8667, label: 'Adzopé' },
-            'bingerville': { lat: 5.3583, lng: -3.8833, label: 'Bingerville' },
-            'grand-bassam': { lat: 5.2000, lng: -3.7333, label: 'Grand-Bassam' },
-            'ferkessédougou': { lat: 9.5936, lng: -5.1936, label: 'Ferkessédougou' },
-            'touba': { lat: 8.2833, lng: -7.6833, label: 'Touba' },
+            'abidjan': { lat: 5.3600, lng: -4.0083, label: 'Abidjan' }, 'abobo': { lat: 5.4108, lng: -4.0128, label: 'Abobo' },
+            'yopougon': { lat: 5.3364, lng: -4.0797, label: 'Yopougon' }, 'cocody': { lat: 5.3726, lng: -3.9731, label: 'Cocody' },
+            'marcory': { lat: 5.3036, lng: -3.9928, label: 'Marcory' }, 'koumassi': { lat: 5.3100, lng: -3.9625, label: 'Koumassi' },
+            'adjamé': { lat: 5.3697, lng: -4.0194, label: 'Adjamé' }, 'treichville': { lat: 5.2944, lng: -4.0075, label: 'Treichville' },
+            'plateau': { lat: 5.3197, lng: -4.0197, label: 'Plateau' }, 'port-bouët': { lat: 5.2564, lng: -3.9367, label: 'Port-Bouët' },
+            'bouaké': { lat: 7.6833, lng: -5.0333, label: 'Bouaké' }, 'korhogo': { lat: 9.4580, lng: -5.6294, label: 'Korhogo' },
+            'daloa': { lat: 6.8772, lng: -6.4502, label: 'Daloa' }, 'san-pédro': { lat: 4.7456, lng: -6.6369, label: 'San-Pédro' },
+            'san pedro': { lat: 4.7456, lng: -6.6369, label: 'San-Pédro' }, 'yamoussoukro': { lat: 6.8276, lng: -5.2893, label: 'Yamoussoukro' },
+            'man': { lat: 7.4120, lng: -7.5540, label: 'Man' }, 'gagnoa': { lat: 6.1319, lng: -5.9503, label: 'Gagnoa' },
+            'divo': { lat: 5.8383, lng: -5.3575, label: 'Divo' }, 'abengourou': { lat: 6.7297, lng: -3.4964, label: 'Abengourou' },
+            'bondoukou': { lat: 8.0333, lng: -2.8000, label: 'Bondoukou' }, 'odienné': { lat: 9.5094, lng: -7.5644, label: 'Odienné' },
+            'séguéla': { lat: 7.9556, lng: -6.6722, label: 'Séguéla' }, 'guiglo': { lat: 6.5333, lng: -7.4833, label: 'Guiglo' },
+            'soubré': { lat: 5.7833, lng: -6.5833, label: 'Soubré' }, 'dimbokro': { lat: 6.6500, lng: -4.7000, label: 'Dimbokro' },
+            'agboville': { lat: 5.9269, lng: -4.2161, label: 'Agboville' }, 'adzopé': { lat: 6.1000, lng: -3.8667, label: 'Adzopé' },
+            'bingerville': { lat: 5.3583, lng: -3.8833, label: 'Bingerville' }, 'grand-bassam': { lat: 5.2000, lng: -3.7333, label: 'Grand-Bassam' },
+            'ferkessédougou': { lat: 9.5936, lng: -5.1936, label: 'Ferkessédougou' }, 'touba': { lat: 8.2833, lng: -7.6833, label: 'Touba' },
         };
 
-        // ── INIT ─────────────────────────────────────────────────────────────
         window.addEventListener('DOMContentLoaded', async () => {
             initMap();
             await Promise.all([loadOrders(), loadPayouts(), loadClients(), loadAlerts()]);
         });
 
-        // ── CARTE LEAFLET ─────────────────────────────────────────────────────
         function initMap() {
-            leafletMap = L.map('ciMap', {
-                center: [7.5399, -5.5471],
-                zoom: 7,                    // ← zoom sur CI
-                zoomControl: true,
-                attributionControl: false,
-                minZoom: 6,                 // ← empêche de dézoomer
-                maxZoom: 12,
-                maxBounds: [              // ← bloque la carte sur la CI
-                    [4.0, -8.6],          // coin sud-ouest CI
-                    [10.8, -2.5]          // coin nord-est CI
-                ],
-                maxBoundsViscosity: 1.0
-            });
-
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                subdomains: 'abcd',
-                maxZoom: 19
-            }).addTo(leafletMap);
+            leafletMap = L.map('ciMap', { center: [7.5399, -5.5471], zoom: 7, zoomControl: true, attributionControl: false, minZoom: 6, maxZoom: 12, maxBounds: [[4.0, -8.6], [10.8, -2.5]], maxBoundsViscosity: 1.0 });
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(leafletMap);
         }
 
         function updateMapMarkers(cityData) {
             if (!leafletMap) return;
-
-            // Supprimer anciens marqueurs
-            leafletMap.eachLayer(layer => {
-                if (layer instanceof L.CircleMarker || layer instanceof L.Marker) {
-                    leafletMap.removeLayer(layer);
-                }
-            });
-
+            leafletMap.eachLayer(layer => { if (layer instanceof L.CircleMarker || layer instanceof L.Marker) leafletMap.removeLayer(layer); });
             Object.entries(cityData).forEach(([city, data]) => {
-                const info = CI_CITIES[city];
-                if (!info) return;
-
-                const count = data.count;
-                const radius = Math.min(6 + count * 2, 30);
+                const info = CI_CITIES[city]; if (!info) return;
+                const count = data.count, radius = Math.min(6 + count * 2, 30);
                 const color = count >= 50 ? '#065f46' : count >= 21 ? '#10b981' : count >= 6 ? '#6ee7b7' : '#bbf7d0';
-
-                const circle = L.circleMarker([info.lat, info.lng], {
-                    radius,
-                    fillColor: color,
-                    color: 'white',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.85
-                }).addTo(leafletMap);
-
-                circle.bindPopup(`
-                        <div style="text-align:center;padding:4px;">
-                            <strong style="font-size:14px;">${info.label}</strong><br>
-                            <span style="color:#10b981;font-size:13px;font-weight:700;">${count} commande(s)</span><br>
-                            <span style="font-size:12px;color:#6b7280;">${fmt(data.total)}</span>
-                        </div>
-                    `, { closeButton: false });
-
-                circle.on('mouseover', function () { this.openPopup(); });
-                circle.on('mouseout', function () { this.closePopup(); });
+                const circle = L.circleMarker([info.lat, info.lng], { radius, fillColor: color, color: 'white', weight: 2, opacity: 1, fillOpacity: 0.85 }).addTo(leafletMap);
+                circle.bindPopup(`<div style="text-align:center;padding:4px;"><strong style="font-size:14px;">${info.label}</strong><br><span style="color:#10b981;font-size:13px;font-weight:700;">${count} commande(s)</span><br><span style="font-size:12px;color:#6b7280;">${fmt(data.total)}</span></div>`, { closeButton: false });
+                circle.on('mouseover', function () { this.openPopup(); }); circle.on('mouseout', function () { this.closePopup(); });
             });
         }
 
-        // ── CHARGER DONNÉES ───────────────────────────────────────────────────
+        const validStatuses = o => !['Annulée', 'Échec livraison', 'Remboursé'].includes(o.status);
+
         async function loadOrders() {
             try {
                 const res = await fetch(`${API}/orders`, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!res.ok) return;
                 allOrders = await res.json();
-                computeKPIs();
-                renderSalesChart(7);
-                renderStatusChart();
-                renderTopProducts();
-                renderRecentOrders();
-                renderMapFromOrders();
+                computeKPIs(); renderSalesChart(7); renderStatusChart(); renderTopProducts(); renderRecentOrders(); renderMapFromOrders();
             } catch (e) { console.error(e); }
         }
 
         async function loadPayouts() {
             try {
-                const res = await fetch(`${API}/sellers/payouts/all`);
-                if (!res.ok) return;
+                const res = await fetch(`${API}/sellers/payouts/all`); if (!res.ok) return;
                 const payouts = await res.json();
                 document.getElementById('kpi-commission').textContent = fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0));
                 renderTopSellers(payouts);
@@ -635,8 +514,7 @@
 
         async function loadClients() {
             try {
-                const res = await fetch(`${API}/clients`, { headers: { 'Authorization': `Bearer ${token}` } });
-                if (!res.ok) return;
+                const res = await fetch(`${API}/clients`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return;
                 const clients = await res.json();
                 document.getElementById('kpi-clients').textContent = clients.length;
                 const now = new Date();
@@ -647,8 +525,7 @@
         }
 
         async function loadAlerts() {
-            const alertsBar = document.getElementById('alertsBar');
-            let html = '';
+            const alertsBar = document.getElementById('alertsBar'); let html = '';
             const pending = allOrders.filter(o => o.status === 'En attente').length;
             if (pending > 0) html += `<a href="admin-orders.html" class="alert-chip red"><div class="dot"></div>${pending} commande(s) en attente</a>`;
             try {
@@ -658,31 +535,11 @@
             alertsBar.innerHTML = html || '<div style="font-size:13px;color:var(--gray-500);">✅ Aucune alerte en cours</div>';
         }
 
-        // ── KPIs ──────────────────────────────────────────────────────────────
         function computeKPIs() {
             const now = new Date();
-
-            const today = allOrders.filter(o =>
-                new Date(o.createdAt).toDateString() === now.toDateString() &&
-                o.status !== 'Annulée' &&
-                o.status !== 'Échec livraison' &&
-                o.status !== 'Remboursé'
-            );
-            const month = allOrders.filter(o => {
-                const d = new Date(o.createdAt);
-                return d.getMonth() === now.getMonth() &&
-                    d.getFullYear() === now.getFullYear() &&
-                    o.status !== 'Annulée' &&
-                    o.status !== 'Échec livraison' &&
-                    o.status !== 'Remboursé';
-            });
-
-
-            const all = allOrders.filter(o =>
-                o.status !== 'Annulée' &&
-                o.status !== 'Échec livraison' &&
-                o.status !== 'Remboursé'
-            );
+            const today = allOrders.filter(o => new Date(o.createdAt).toDateString() === now.toDateString() && validStatuses(o));
+            const month = allOrders.filter(o => { const d = new Date(o.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && validStatuses(o); });
+            const all = allOrders.filter(validStatuses);
             document.getElementById('kpi-today').textContent = fmt(today.reduce((s, o) => s + o.total, 0));
             document.getElementById('kpi-today-count').textContent = `${today.length} commande(s)`;
             document.getElementById('kpi-month').textContent = fmt(month.reduce((s, o) => s + o.total, 0));
@@ -692,29 +549,18 @@
             document.getElementById('kpi-pending').textContent = allOrders.filter(o => o.status === 'En attente').length;
         }
 
-        // ── GRAPHIQUE ────────────────────────────────────────────────────────
-        function setChartPeriod(mode, btn) {
-            document.querySelectorAll('.pbtn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderSalesChart(mode);
-        }
+        function setChartPeriod(mode, btn) { document.querySelectorAll('.pbtn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderSalesChart(mode); }
         function renderSalesChart(mode) {
             const labels = [], data = [], now = new Date();
-            if (mode === 12) {
-                for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); labels.push(d.toLocaleDateString('fr-FR', { month: 'short' })); data.push(allOrders.filter(o => { const od = new Date(o.createdAt); return od.getMonth() === d.getMonth() && od.getFullYear() === d.getFullYear() && o.status !== 'Annulée' && o.status !== 'Échec livraison' && o.status !== 'Remboursé'; }).reduce((s, o) => s + o.total, 0)); }
-            } else {
-                for (let i = mode - 1; i >= 0; i--) {
-                    const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })); data.push(allOrders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && o.status !== 'Annulée' && o.status !== 'Échec livraison' && o.status !== 'Remboursé').reduce((s, o) => s + o.total, 0)); }
-            }
+            if (mode === 12) { for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); labels.push(d.toLocaleDateString('fr-FR', { month: 'short' })); data.push(allOrders.filter(o => { const od = new Date(o.createdAt); return od.getMonth() === d.getMonth() && od.getFullYear() === d.getFullYear() && validStatuses(o); }).reduce((s, o) => s + o.total, 0)); } }
+            else { for (let i = mode - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })); data.push(allOrders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && validStatuses(o)).reduce((s, o) => s + o.total, 0)); } }
             const ctx = document.getElementById('salesChart').getContext('2d');
             if (salesChartInstance) salesChartInstance.destroy();
             salesChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'CA', data, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', borderWidth: 2.5, pointBackgroundColor: '#10b981', pointRadius: 3, tension: 0.4, fill: true }] }, options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F', font: { size: 10 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } } });
         }
 
-        // ── DONUT STATUTS ────────────────────────────────────────────────────
         function renderStatusChart() {
-            const statuts = {};
-            allOrders.forEach(o => { statuts[o.status] = (statuts[o.status] || 0) + 1; });
+            const statuts = {}; allOrders.forEach(o => { statuts[o.status] = (statuts[o.status] || 0) + 1; });
             const colors = { 'En attente': '#f59e0b', 'Confirmée': '#3b82f6', 'En cours': '#8b5cf6', 'Livrée': '#10b981', 'Annulée': '#ef4444', 'Confirmée par vendeur': '#06b6d4' };
             const labels = Object.keys(statuts), values = labels.map(l => statuts[l]), bgColors = labels.map(l => colors[l] || '#e5e7eb');
             const ctx = document.getElementById('statusChart').getContext('2d');
@@ -723,37 +569,30 @@
             document.getElementById('statusLegend').innerHTML = labels.map((l, i) => `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:12px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:${bgColors[i]};"></div><span>${l}</span></div><strong>${values[i]}</strong></div>`).join('');
         }
 
-        // ── TOP PRODUITS ──────────────────────────────────────────────────────
         function renderTopProducts() {
-            const products = {};
-            allOrders.filter(o => o.status !== 'Annulée').forEach(o => (o.items || []).forEach(i => { if (!products[i.productName]) products[i.productName] = { qty: 0, total: 0 }; products[i.productName].qty += i.quantity; products[i.productName].total += i.price * i.quantity; }));
+            const products = {}; allOrders.filter(o => validStatuses(o)).forEach(o => (o.items || []).forEach(i => { if (!products[i.productName]) products[i.productName] = { qty: 0, total: 0 }; products[i.productName].qty += i.quantity; products[i.productName].total += i.price * i.quantity; }));
             const sorted = Object.entries(products).sort((a, b) => b[1].qty - a[1].qty).slice(0, 5);
             const el = document.getElementById('topProducts');
             if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; }
             el.innerHTML = sorted.map(([name, data], i) => `<div class="top-item"><div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div><div class="top-info"><div class="top-name">${name}</div><div class="top-sub">${data.qty} vendu(s)</div></div><div class="top-val">${fmt(data.total)}</div></div>`).join('');
         }
 
-        // ── TOP VENDEURS ──────────────────────────────────────────────────────
         function renderTopSellers(payouts) {
-            const sellers = {};
-            payouts.forEach(p => { const k = p.shopName || `#${p.sellerId}`; if (!sellers[k]) sellers[k] = { gross: 0, count: 0 }; sellers[k].gross += p.grossAmount || 0; sellers[k].count++; });
+            const sellers = {}; payouts.forEach(p => { const k = p.shopName || `#${p.sellerId}`; if (!sellers[k]) sellers[k] = { gross: 0, count: 0 }; sellers[k].gross += p.grossAmount || 0; sellers[k].count++; });
             const sorted = Object.entries(sellers).sort((a, b) => b[1].gross - a[1].gross).slice(0, 5);
             const el = document.getElementById('topSellers');
             if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; }
             el.innerHTML = sorted.map(([name, data], i) => `<div class="top-item"><div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div><div class="top-info"><div class="top-name">${name}</div><div class="top-sub">${data.count} commande(s)</div></div><div class="top-val">${fmt(data.gross)}</div></div>`).join('');
         }
 
-        // ── TOP CLIENTS ───────────────────────────────────────────────────────
         function renderTopClients(clients) {
-            const clientOrders = {};
-            allOrders.filter(o => o.status !== 'Annulée' && o.clientId).forEach(o => { if (!clientOrders[o.clientId]) clientOrders[o.clientId] = { name: o.customerName, total: 0, count: 0 }; clientOrders[o.clientId].total += o.total; clientOrders[o.clientId].count++; });
+            const clientOrders = {}; allOrders.filter(o => validStatuses(o) && o.clientId).forEach(o => { if (!clientOrders[o.clientId]) clientOrders[o.clientId] = { name: o.customerName, total: 0, count: 0 }; clientOrders[o.clientId].total += o.total; clientOrders[o.clientId].count++; });
             const sorted = Object.entries(clientOrders).sort((a, b) => b[1].total - a[1].total).slice(0, 5);
             const el = document.getElementById('topClients');
             if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; }
             el.innerHTML = sorted.map(([id, data], i) => `<div class="top-item"><div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div><div class="top-info"><div class="top-name">${data.name || 'Client #' + id}</div><div class="top-sub">${data.count} commande(s)</div></div><div class="top-val">${fmt(data.total)}</div></div>`).join('');
         }
 
-        // ── COMMANDES RÉCENTES ────────────────────────────────────────────────
         function renderRecentOrders() {
             const recent = [...allOrders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 8);
             const sc = { 'En attente': 'status-pending', 'Confirmée': 'status-confirmed', 'Livrée': 'status-delivered', 'Annulée': 'status-cancelled', 'En cours': 'status-confirmed' };
@@ -762,24 +601,15 @@
             el.innerHTML = recent.map(o => `<div class="order-row"><div><div class="order-id">#${o.id} — ${o.customerName}</div><div class="order-customer">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div></div><div style="display:flex;align-items:center;gap:10px;"><span class="order-status ${sc[o.status] || 'status-pending'}">${o.status}</span><span class="order-amount">${fmt(o.total)}</span></div></div>`).join('');
         }
 
-        // ── CARTE — extraire villes des adresses ──────────────────────────────
         function renderMapFromOrders() {
             const cityData = {};
-            allOrders.filter(o => o.status !== 'Annulée').forEach(o => {
+            allOrders.filter(validStatuses).forEach(o => {
                 const addr = (o.customerAddress || '').toLowerCase();
-                for (const [key, info] of Object.entries(CI_CITIES)) {
-                    if (addr.includes(key)) {
-                        if (!cityData[key]) cityData[key] = { count: 0, total: 0, label: info.label };
-                        cityData[key].count++;
-                        cityData[key].total += o.total;
-                        break;
-                    }
-                }
+                for (const [key, info] of Object.entries(CI_CITIES)) { if (addr.includes(key)) { if (!cityData[key]) cityData[key] = { count: 0, total: 0, label: info.label }; cityData[key].count++; cityData[key].total += o.total; break; } }
             });
             updateMapMarkers(cityData);
         }
 
-        // ── AUTO-REFRESH ──────────────────────────────────────────────────────
         setInterval(async () => { await loadOrders(); await loadAlerts(); }, 60000);
     </script>
 </body>

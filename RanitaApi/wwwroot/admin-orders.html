@@ -182,29 +182,13 @@
             background: #fee2e2;
             color: #991b1b;
         }
-
-        select.status-refunded, .status-select.status-refunded {
-            background-color: #fee2e2 !important;
-            color: #991b1b !important;
-            border-color: #ef4444 !important;
-        }
     </style>
 </head>
 <body>
-
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
-        <nav>
-            <a href="admin-dashboard.html">Dashboard</a>
-            <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
-            <a href="admin-attributes.html">Attributs</a>
-            <a href="admin-clients.html">Clients</a>
-            <a href="admin-reviews.html">⭐ Avis</a>
-            <a href="admin-orders.html" class="active">Commandes</a>
-            <a href="/admin-sellers.html">Vendeurs <span id="badge-vendors"></span></a>
-        </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <nav id="adminNav"></nav>
+        <button onclick="adminLogout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
@@ -234,44 +218,27 @@
         <div class="modal" id="modalContent"></div>
     </div>
 
+    <script src="admin-auth.js"></script>
     <script>
-        const token = localStorage.getItem("adminToken");
-        if (!token) window.location.href = "admin-login.html";
-
-        function logout() {
-            localStorage.removeItem("adminToken");
-            window.location.href = "admin-login.html";
-        }
+        checkPageAccess('orders');
+        buildAdminNav('orders');
+        applyReadOnlyMode();
 
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-
-        function getStatusClass(status) {
-            switch (status) {
-                case "En attente": return "status-pending";
-                case "Confirmée par vendeur": return "background:#e0e7ff;color:#3730a3;border-color:#6366f1;";
-                case "Validée": return "status-validated";
-                case "Livrée": return "status-delivered";
-                case "Annulée": return "status-cancelled";
-                case "Échec livraison": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
-                case "Remboursement demandé": return "status-refund";
-                case "Remboursé": return "status-refunded";
-                case "Remboursement rejeté": return "status-cancelled";
-                default: return "";
-            }
-        }
+        const { token } = getAdminInfo();
 
         function getStatusStyle(status) {
-            switch (status) {
-                case "En attente": return "background:#fef3c7;color:#92400e;border-color:#f59e0b;";
-                case "Confirmée par vendeur": return "background:#e0e7ff;color:#3730a3;border-color:#6366f1;";
-                case "Indisponible vendeur": return "background:#fef3c7;color:#92400e;border-color:#f59e0b;";
-                case "Validée": return "background:#dbeafe;color:#1e40af;border-color:#3b82f6;";
-                case "Livrée": return "background:#d1fae5;color:#065f46;border-color:#10b981;";
-                case "Annulée": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
-                case "Remboursé": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
-                case "Remboursement rejeté": return "background:#fee2e2;color:#991b1b;border-color:#ef4444;";
-                default: return "";
-            }
+            const styles = {
+                "En attente": "background:#fef3c7;color:#92400e;border-color:#f59e0b;",
+                "Confirmée par vendeur": "background:#e0e7ff;color:#3730a3;border-color:#6366f1;",
+                "Indisponible vendeur": "background:#fef3c7;color:#92400e;border-color:#f59e0b;",
+                "Validée": "background:#dbeafe;color:#1e40af;border-color:#3b82f6;",
+                "Livrée": "background:#d1fae5;color:#065f46;border-color:#10b981;",
+                "Annulée": "background:#fee2e2;color:#991b1b;border-color:#ef4444;",
+                "Remboursé": "background:#fee2e2;color:#991b1b;border-color:#ef4444;",
+                "Remboursement rejeté": "background:#fee2e2;color:#991b1b;border-color:#ef4444;",
+            };
+            return styles[status] || "";
         }
 
         async function approveRefund(id) {
@@ -291,17 +258,15 @@
         }
 
         async function loadOrders() {
-            const res = await fetch(`${API_BASE}/orders`);
+            const res = await fetch(`${API_BASE}/orders`, { headers: { 'Authorization': `Bearer ${token}` } });
             const orders = await res.json();
-
             const stats = {
                 total: orders.length,
                 attente: orders.filter(o => o.status === "En attente").length,
                 validee: orders.filter(o => o.status === "Validée").length,
                 livree: orders.filter(o => o.status === "Livrée").length,
-                ca: orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0)
+                ca: orders.filter(o => !["Annulée", "Échec livraison", "Remboursé"].includes(o.status)).reduce((s, o) => s + o.total, 0)
             };
-
             document.getElementById("statsBar").innerHTML = `
                     <div class="stat-card"><div class="stat-num">${stats.total}</div><div class="stat-label">Total commandes</div></div>
                     <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${stats.attente}</div><div class="stat-label">En attente</div></div>
@@ -310,55 +275,45 @@
                     <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${orders.filter(o => o.status === "Annulée").length}</div><div class="stat-label">Annulées</div></div>
                     <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${orders.filter(o => o.status === "Remboursé").length}</div><div class="stat-label">Remboursés</div></div>
                     <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${orders.filter(o => o.status === "Remboursement demandé").length}</div><div class="stat-label">Remb. demandés</div></div>
-                    <div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num">${Number(stats.ca).toLocaleString()} FCFA</div><div class="stat-label">Chiffre d'affaires</div></div>
-                `;
-
+                    <div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num">${Number(stats.ca).toLocaleString()} FCFA</div><div class="stat-label">Chiffre d'affaires</div></div>`;
             window._adminOrders = orders;
-
-            const tbody = document.getElementById("ordersTable");
-            tbody.innerHTML = orders.map((o) => `
-        <tr>
-            <td><strong>#${o.id}</strong></td>
-            <td>${o.customerName}</td>
-            <td>${o.customerPhone}</td>
-            <td style="max-width:150px;font-size:12px;">${o.customerAddress}</td>
-            <td>${o.paymentMethod}</td>
-            <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
-            <td>
-                ${o.status === "Remboursement demandé" ? `
-                    <div style="display:flex;flex-direction:column;gap:6px;">
-                        <span class="status-badge status-refund">💰 Remboursement demandé</span>
-                        <button onclick="approveRefund(${o.id})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ Valider</button>
-                        <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
-                    </div>
-                ` : `
-<select class="status-select" style="${getStatusStyle(o.status)}" onchange="updateStatus(${o.id}, this.value, this)">
-    <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-    <option ${o.status === "Confirmée par vendeur" ? "selected" : ""}>Confirmée par vendeur</option>
-    <option ${o.status === "Indisponible vendeur" ? "selected" : ""}>Indisponible vendeur</option>
-    <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-    <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-    <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-    <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
-    <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
-    <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
-</select>
-${o.status === "Confirmée par vendeur" ? `<div style="margin-top:4px;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;">✅ Prêt à livrer !</div>` : ''}
-${(o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMotif ? `<div style="margin-top:4px;background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:600;">${o.refundMotif}</div>` : ''}
-
-                `}
-            </td>
-            <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
-            <td><button onclick="showDetails(${o.id})">👁 Voir</button></td>
-        </tr>
-`).join('');
+            document.getElementById("ordersTable").innerHTML = orders.map(o => `
+                    <tr>
+                        <td><strong>#${o.id}</strong></td>
+                        <td>${o.customerName}</td>
+                        <td>${o.customerPhone}</td>
+                        <td style="max-width:150px;font-size:12px;">${o.customerAddress}</td>
+                        <td>${o.paymentMethod}</td>
+                        <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
+                        <td>
+                            ${o.status === "Remboursement demandé" ? `
+                                <div style="display:flex;flex-direction:column;gap:6px;">
+                                    <span class="status-badge status-refund">💰 Remboursement demandé</span>
+                                    <button onclick="approveRefund(${o.id})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ Valider</button>
+                                    <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
+                                </div>` : `
+                                <select class="status-select" style="${getStatusStyle(o.status)}" onchange="updateStatus(${o.id}, this.value, this)">
+                                    <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+                                    <option ${o.status === "Confirmée par vendeur" ? "selected" : ""}>Confirmée par vendeur</option>
+                                    <option ${o.status === "Indisponible vendeur" ? "selected" : ""}>Indisponible vendeur</option>
+                                    <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+                                    <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+                                    <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+                                    <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
+                                    <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
+                                    <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
+                                </select>
+                                ${o.status === "Confirmée par vendeur" ? `<div style="margin-top:4px;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;">✅ Prêt à livrer !</div>` : ''}
+                                ${(o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMotif ? `<div style="margin-top:4px;background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:600;">${o.refundMotif}</div>` : ''}`}
+                        </td>
+                        <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
+                        <td><button onclick="showDetails(${o.id})">👁 Voir</button></td>
+                    </tr>`).join('');
         }
 
         async function updateStatus(id, status, selectEl) {
             const res = await fetch(`${API_BASE}/orders/${id}/status`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status })
+                method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status })
             });
             if (!res.ok) { alert("Erreur changement statut"); return; }
             selectEl.style.cssText = getStatusStyle(status);
@@ -368,20 +323,7 @@ ${(o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMo
         function showDetails(orderId) {
             const o = window._adminOrders.find(o => o.id === orderId);
             if (!o) return;
-
-            const itemsHtml = o.items.map(i => `
-                    <div class="modal-item">
-                        <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}">
-                        <div class="modal-item-info">
-                            <div class="modal-item-name">${i.productName}</div>
-                            <div class="modal-item-qty">Quantité : ${i.quantity}${i.variantName ? ` • ${i.variantName}` : ''}</div>
-                        </div>
-                        <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
-                    </div>
-                `).join('');
-
             const subtotal = o.items.reduce((s, i) => s + i.price * i.quantity, 0);
-
             document.getElementById("modalContent").innerHTML = `
                     <h3>Commande #${o.id}</h3>
                     <div class="order-info">
@@ -391,25 +333,21 @@ ${(o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMo
                         <strong>Paiement :</strong> ${o.paymentMethod}<br>
                         <strong>Date :</strong> ${new Date(o.createdAt).toLocaleString('fr-FR')}
                     </div>
-                    ${o.refundMotif ? `
-                        <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:12px;margin-bottom:12px;">
-                            <strong style="color:#92400e;">💰 Motif remboursement :</strong>
-                            <p style="margin-top:4px;font-size:13px;color:#374151;">${o.refundMotif}</p>
-                        </div>
-                    ` : ''}
-                    ${itemsHtml}
+                    ${o.refundMotif ? `<div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:12px;margin-bottom:12px;"><strong style="color:#92400e;">💰 Motif :</strong><p style="margin-top:4px;font-size:13px;color:#374151;">${o.refundMotif}</p></div>` : ''}
+                    ${o.items.map(i => `<div class="modal-item">
+                        <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}">
+                        <div class="modal-item-info"><div class="modal-item-name">${i.productName}</div><div class="modal-item-qty">x${i.quantity}${i.variantName ? ` · ${i.variantName}` : ''}</div></div>
+                        <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
+                    </div>`).join('')}
                     <div class="modal-total"><span>Sous-total</span><span>${Number(subtotal).toLocaleString()} FCFA</span></div>
                     <div class="modal-total"><span>Total payé</span><span style="color:#10b981;">${Number(o.total).toLocaleString()} FCFA</span></div>
-                    <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>
-                `;
-
+                    <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>`;
             document.getElementById("modalOverlay").classList.add("open");
         }
 
         function closeModal(e) {
-            if (e.target === document.getElementById("modalOverlay")) {
+            if (e.target === document.getElementById("modalOverlay"))
                 document.getElementById("modalOverlay").classList.remove("open");
-            }
         }
 
         loadOrders();

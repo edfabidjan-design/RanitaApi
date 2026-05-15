@@ -4,21 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendeurs — Ranita Admin</title>
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
-
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: Arial,sans-serif;
             background: #f4f6f8;
             color: #1f2937;
             overflow-x: hidden;
         }
 
-        /* ── HEADER ADMIN ── */
         .admin-header {
             position: sticky;
             top: 0;
@@ -46,6 +42,9 @@
             flex-wrap: wrap;
             gap: 6px 12px;
             align-items: center;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
 
             .admin-header nav a {
@@ -95,14 +94,12 @@
             vertical-align: middle;
         }
 
-        /* ── CONTAINER ── */
         .admin-container {
             padding: 24px 30px;
             max-width: 1300px;
             margin: 0 auto;
         }
 
-        /* ── PAGE TITLE ── */
         .page-title {
             display: flex;
             align-items: center;
@@ -157,12 +154,10 @@
             background: #ef4444;
         }
 
-        /* ── TABS ── */
         .tabs {
             display: flex;
             border-bottom: 2px solid #e5e7eb;
             margin-bottom: 20px;
-            gap: 0;
             background: white;
             border-radius: 12px 12px 0 0;
             overflow: hidden;
@@ -206,7 +201,6 @@
                 display: none;
             }
 
-        /* ── FILTRES ── */
         .filters {
             display: flex;
             gap: 8px;
@@ -237,7 +231,6 @@
                 border-color: #111827;
             }
 
-        /* ── SECTIONS ── */
         .section {
             display: none;
         }
@@ -246,7 +239,6 @@
                 display: block;
             }
 
-        /* ── CARDS VENDEURS ── */
         .seller-card {
             background: white;
             border: 1px solid #e5e7eb;
@@ -268,7 +260,7 @@
             width: 48px;
             height: 48px;
             border-radius: 10px;
-            background: linear-gradient(135deg, #111827, #374151);
+            background: linear-gradient(135deg,#111827,#374151);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -298,7 +290,6 @@
             flex-wrap: wrap;
         }
 
-        /* STATUS BADGES */
         .status-badge {
             padding: 3px 10px;
             border-radius: 20px;
@@ -336,7 +327,6 @@
             flex-wrap: wrap;
         }
 
-        /* BOUTONS */
         .btn {
             padding: 7px 14px;
             border-radius: 8px;
@@ -378,7 +368,6 @@
                 color: white;
             }
 
-        /* ── PRODUITS ── */
         .product-card {
             background: white;
             border: 1px solid #e5e7eb;
@@ -441,38 +430,6 @@
             white-space: nowrap;
         }
 
-        /* ── PAYOUTS ── */
-        .payout-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .payout-amounts {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            min-width: 140px;
-        }
-
-        .payout-net {
-            font-size: 17px;
-            font-weight: 800;
-            color: #059669;
-        }
-
-        .payout-detail {
-            font-size: 11px;
-            color: #9ca3af;
-        }
-
-        /* ── EMPTY ── */
         .empty {
             text-align: center;
             padding: 50px 20px;
@@ -488,7 +445,6 @@
                 font-size: 14px;
             }
 
-        /* ── LOADING ── */
         .loading {
             text-align: center;
             padding: 30px;
@@ -496,7 +452,6 @@
             font-size: 14px;
         }
 
-        /* ── MODAL ── */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -528,8 +483,7 @@
                 color: #111827;
             }
 
-            .modal textarea,
-            .modal input {
+            .modal textarea, .modal input {
                 width: 100%;
                 padding: 10px 13px;
                 border: 1px solid #d1d5db;
@@ -542,8 +496,7 @@
                 outline: none;
             }
 
-                .modal textarea:focus,
-                .modal input:focus {
+                .modal textarea:focus, .modal input:focus {
                     border-color: #111827;
                 }
 
@@ -613,7 +566,6 @@
                 background: #dc2626;
             }
 
-        /* ── TOAST ── */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -644,49 +596,9 @@
                 background: #ef4444;
             }
 
-        @media (max-width: 768px) {
-            .admin-header {
-                padding: 10px 14px;
-                gap: 8px;
-            }
-
-                .admin-header nav {
-                    gap: 4px 10px;
-                    font-size: 12px;
-                }
-
-                    .admin-header nav a {
-                        font-size: 12px;
-                    }
-
+        @media(max-width:768px) {
             .admin-container {
                 padding: 12px;
-            }
-
-            .page-title {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .stats-pills {
-                width: 100%;
-            }
-
-            .stat-pill {
-                font-size: 12px;
-                padding: 5px 10px;
-            }
-
-            .tabs {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                border-radius: 10px 10px 0 0;
-            }
-
-            .tab {
-                padding: 10px 14px;
-                font-size: 13px;
-                flex-shrink: 0;
             }
 
             .seller-card {
@@ -695,53 +607,13 @@
                 gap: 10px;
             }
 
-            .seller-info {
-                width: calc(100% - 64px);
-            }
-
-            .seller-meta {
-                flex-direction: column;
-                gap: 4px;
-            }
-
             .seller-actions {
                 width: 100%;
-                justify-content: flex-start;
             }
 
             .product-card {
                 flex-wrap: wrap;
                 gap: 10px;
-            }
-
-            .product-info {
-                width: calc(100% - 72px);
-            }
-
-            .product-meta {
-                flex-direction: column;
-                gap: 3px;
-            }
-
-            .product-price {
-                width: 100%;
-            }
-            /* Payouts responsive */
-            #payouts-list > div {
-                padding: 14px !important;
-            }
-
-            #payouts-list input[type="text"] {
-                width: 100% !important;
-                min-width: unset !important;
-            }
-
-            #payouts-list button {
-                width: 100% !important;
-            }
-
-            #payouts-list > div > div:last-child {
-                flex-direction: column !important;
             }
 
             .modal {
@@ -752,28 +624,13 @@
     </style>
 </head>
 <body>
-
-    <!-- ── HEADER ADMIN (même que le reste) ── -->
     <div class="admin-header">
-        <div class="logo" onclick="location.href='admin-dashboard.html'">🛍️ Ranita Admin</div>
-        <nav>
-            <a href="admin-dashboard.html">Dashboard</a>
-            <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
-            <a href="admin-attributes.html">Attributs</a>
-            <a href="admin-clients.html">Clients</a>
-            <a href="admin-reviews.html">⭐ Avis <span class="nav-badge" id="nav-avis">0</span></a>
-            <a href="admin-orders.html">Commandes <span class="nav-badge" id="nav-orders">0</span></a>
-            <a href="admin-sellers.html" class="active">Vendeurs <span class="nav-badge" id="nav-sellers">0</span></a>
-            <a href="admin-commissions.html">⚙️ Commissions</a>
-        </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
+        <nav id="adminNav"></nav>
+        <button onclick="adminLogout()">Déconnexion</button>
     </div>
 
-    <!-- ── CONTENU ── -->
     <div class="admin-container">
-
-        <!-- Titre + stats -->
         <div class="page-title">
             <h1>📦 Gestion Vendeurs</h1>
             <div class="stats-pills">
@@ -782,177 +639,56 @@
                 <div class="stat-pill"><span class="dot dot-red"></span><span id="stat-products">0</span> produits à valider</div>
             </div>
         </div>
-
-        <!-- Tabs -->
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('sellers', this)">
-                Demandes vendeurs
-                <span class="tab-badge hidden" id="badge-sellers">0</span>
-            </div>
-            <div class="tab" onclick="switchTab('products', this)">
-                Produits à valider
-                <span class="tab-badge hidden" id="badge-products">0</span>
-            </div>
-            <div class="tab" onclick="switchTab('payouts', this)">
-                Paiements vendeurs
-                <span class="tab-badge hidden" id="badge-payouts">0</span>
-            </div>
+            <div class="tab active" onclick="switchTab('sellers',this)">Demandes vendeurs <span class="tab-badge hidden" id="badge-sellers">0</span></div>
+            <div class="tab" onclick="switchTab('products',this)">Produits à valider <span class="tab-badge hidden" id="badge-products">0</span></div>
+            <div class="tab" onclick="switchTab('payouts',this)">Paiements vendeurs <span class="tab-badge hidden" id="badge-payouts">0</span></div>
         </div>
-
-        <!-- ── SECTION VENDEURS ── -->
         <div class="section active" id="section-sellers">
             <div class="filters">
-                <button class="filter-btn active" onclick="filterSellers('all', this)">Tous</button>
-                <button class="filter-btn" onclick="filterSellers('Pending', this)">En attente</button>
-                <button class="filter-btn" onclick="filterSellers('Approved', this)">Approuvés</button>
-                <button class="filter-btn" onclick="filterSellers('Rejected', this)">Refusés</button>
-                <button class="filter-btn" onclick="filterSellers('Suspended', this)">Suspendus</button>
+                <button class="filter-btn active" onclick="filterSellers('all',this)">Tous</button>
+                <button class="filter-btn" onclick="filterSellers('Pending',this)">En attente</button>
+                <button class="filter-btn" onclick="filterSellers('Approved',this)">Approuvés</button>
+                <button class="filter-btn" onclick="filterSellers('Rejected',this)">Refusés</button>
+                <button class="filter-btn" onclick="filterSellers('Suspended',this)">Suspendus</button>
             </div>
             <div id="sellers-list"><div class="loading">Chargement...</div></div>
         </div>
-
-        <!-- ── SECTION PRODUITS ── -->
         <div class="section" id="section-products">
             <div class="filters">
-                <button class="filter-btn active" onclick="filterProducts('Pending', this)">En attente</button>
-                <button class="filter-btn" onclick="filterProducts('Approved', this)">Approuvés</button>
-                <button class="filter-btn" onclick="filterProducts('Rejected', this)">Refusés</button>
+                <button class="filter-btn active" onclick="filterProducts('Pending',this)">En attente</button>
+                <button class="filter-btn" onclick="filterProducts('Approved',this)">Approuvés</button>
+                <button class="filter-btn" onclick="filterProducts('Rejected',this)">Refusés</button>
             </div>
             <div id="products-list"><div class="loading">Chargement...</div></div>
         </div>
-
-        <!-- ── SECTION PAYOUTS ── -->
         <div class="section" id="section-payouts">
             <div class="filters">
-                <button class="filter-btn active" onclick="filterPayouts('Pending', this)">À payer</button>
-                <button class="filter-btn" onclick="filterPayouts('Paid', this)">Payés</button>
+                <button class="filter-btn active" onclick="filterPayouts('Pending',this)">À payer</button>
+                <button class="filter-btn" onclick="filterPayouts('Paid',this)">Payés</button>
             </div>
             <div id="payouts-list"><div class="loading">Chargement...</div></div>
         </div>
-
     </div>
 
-    <!-- MODAL APPROUVER -->
-    <div class="modal-overlay" id="modal-approve">
-        <div class="modal">
-            <h3>✅ Approuver cette boutique</h3>
-            <div class="commission-row">
-                <label>Commission Ranita (%)</label>
-                <input type="number" id="approve-commission" value="10" min="0" max="50">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal-cancel" onclick="closeModal('modal-approve')">Annuler</button>
-                <button class="btn-modal-approve" onclick="confirmApprove()">Approuver</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL REFUSER VENDEUR -->
-    <div class="modal-overlay" id="modal-reject">
-        <div class="modal">
-            <h3>❌ Refuser cette boutique</h3>
-            <textarea id="reject-reason" rows="3" placeholder="Motif du refus (obligatoire)..."></textarea>
-            <div class="modal-actions">
-                <button class="btn-modal-cancel" onclick="closeModal('modal-reject')">Annuler</button>
-                <button class="btn-modal-reject" onclick="confirmReject()">Confirmer le refus</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL REFUSER PRODUIT -->
-    <div class="modal-overlay" id="modal-reject-product">
-        <div class="modal">
-            <h3>❌ Refuser ce produit</h3>
-            <textarea id="reject-product-reason" rows="3" placeholder="Motif du refus..."></textarea>
-            <div class="modal-actions">
-                <button class="btn-modal-cancel" onclick="closeModal('modal-reject-product')">Annuler</button>
-                <button class="btn-modal-reject" onclick="confirmRejectProduct()">Confirmer</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL PAYER -->
-    <div class="modal-overlay" id="modal-paid">
-        <div class="modal">
-            <h3>💸 Marquer comme payé</h3>
-            <input type="text" id="transaction-ref" placeholder="Référence transaction (ex: OM-2026-XXXX)">
-            <div class="modal-actions">
-                <button class="btn-modal-cancel" onclick="closeModal('modal-paid')">Annuler</button>
-                <button class="btn-modal-approve" onclick="confirmPaid()">Confirmer le paiement</button>
-            </div>
-        </div>
-    </div>
-
+    <div class="modal-overlay" id="modal-approve"><div class="modal"><h3>✅ Approuver cette boutique</h3><div class="commission-row"><label>Commission Ranita (%)</label><input type="number" id="approve-commission" value="10" min="0" max="50"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-approve')">Annuler</button><button class="btn-modal-approve" onclick="confirmApprove()">Approuver</button></div></div></div>
+    <div class="modal-overlay" id="modal-reject"><div class="modal"><h3>❌ Refuser cette boutique</h3><textarea id="reject-reason" rows="3" placeholder="Motif du refus (obligatoire)..."></textarea><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-reject')">Annuler</button><button class="btn-modal-reject" onclick="confirmReject()">Confirmer le refus</button></div></div></div>
+    <div class="modal-overlay" id="modal-reject-product"><div class="modal"><h3>❌ Refuser ce produit</h3><textarea id="reject-product-reason" rows="3" placeholder="Motif du refus..."></textarea><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-reject-product')">Annuler</button><button class="btn-modal-reject" onclick="confirmRejectProduct()">Confirmer</button></div></div></div>
+    <div class="modal-overlay" id="modal-product-detail"><div class="modal" style="max-width:700px;max-height:85vh;overflow-y:auto;"><h3>📦 Détail du produit</h3><div id="product-detail-content"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-product-detail')">Fermer</button></div></div></div>
     <div class="toast" id="toast"></div>
 
+    <script src="admin-auth.js"></script>
     <script>
+        checkPageAccess('sellers');
+        buildAdminNav('sellers');
+
         const API = 'https://ranitaapi-production.up.railway.app/api';
-        let allSellers = [], allProducts = [], allPayouts = [];
-        let currentSellerId = null, currentProductId = null, currentPayoutId = null;
+        let allSellers = [], allProducts = [], allPayouts = [], currentSellerId = null, currentProductId = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadAll();
-            loadNavBadges();
-        });
+        window.addEventListener('DOMContentLoaded', () => { loadAll(); });
 
-        async function loadAll() {
-            await Promise.all([loadSellers(), loadProducts(), loadPayouts()]);
-        }
+        async function loadAll() { await Promise.all([loadSellers(), loadProducts(), loadPayouts()]); }
 
-        function viewProduct(id) {
-            const p = allProducts.find(x => x.id === id);
-            if (!p) return;
-
-            const imgs = Array.isArray(p.images) ? p.images : [];
-
-            document.getElementById('product-detail-content').innerHTML = `
-        <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
-            ${imgs.map(img => `<img src="${img}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">`).join('')}
-            ${!imgs.length ? '<div style="width:100px;height:100px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>' : ''}
-        </div>
-        <table style="width:100%;border-collapse:collapse;font-size:14px;">
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;width:140px;">Boutique</td><td style="padding:8px 0;font-weight:600;">${p.shopName}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Nom</td><td style="padding:8px 0;font-weight:600;">${p.name}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">SKU</td><td style="padding:8px 0;">${p.sku || '—'}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Marque</td><td style="padding:8px 0;">${p.brand || '—'}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Catégorie</td><td style="padding:8px 0;">${p.category || '—'}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix</td><td style="padding:8px 0;font-weight:700;color:#059669;">${formatPrice(p.price)}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix barré</td><td style="padding:8px 0;">${p.oldPrice ? formatPrice(p.oldPrice) : '—'}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Stock</td><td style="padding:8px 0;">${p.stock}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description courte</td><td style="padding:8px 0;">${p.shortDescription || '—'}</td></tr>
-            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description</td><td style="padding:8px 0;max-width:300px;">${p.description || '—'}</td></tr>
-            <tr><td style="padding:8px 0;color:#6b7280;">Soumis le</td><td style="padding:8px 0;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</td></tr>
-        </table>
-    `;
-            openModal('modal-product-detail');
-        }
-
-
-        // ── NAV BADGES (comme les autres pages admin) ─────────────────────────
-        async function loadNavBadges() {
-            try {
-                const [orders, reviews, sellers] = await Promise.all([
-                    fetch(`${API}/orders`).then(r => r.json()),
-                    fetch(`${API}/reviews`).then(r => r.json()),
-                    fetch(`${API}/admin/sellers?status=Pending`).then(r => r.json()),
-                ]);
-                const pending = Array.isArray(orders) ? orders.filter(o => o.status === 'En attente').length : 0;
-                const unrev = Array.isArray(reviews) ? reviews.filter(r => !r.approuve).length : 0;
-                const sp = Array.isArray(sellers) ? sellers.length : 0;
-                setBadge('nav-orders', pending);
-                setBadge('nav-avis', unrev);
-                setBadge('nav-sellers', sp);
-            } catch (e) { }
-        }
-
-        function setBadge(id, count) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.textContent = count;
-            el.style.display = count > 0 ? 'inline' : 'none';
-        }
-
-        // ── TABS ─────────────────────────────────────────────────────────────
         function switchTab(tab, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -960,27 +696,20 @@
             document.getElementById('section-' + tab).classList.add('active');
         }
 
-        // ── VENDEURS ──────────────────────────────────────────────────────────
         async function loadSellers() {
             try {
-                const res = await fetch(`${API}/admin/sellers`);
-                allSellers = await res.json();
+                const res = await fetch(`${API}/admin/sellers`); allSellers = await res.json();
                 const pending = allSellers.filter(s => s.status === 'Pending').length;
                 const approved = allSellers.filter(s => s.status === 'Approved').length;
                 document.getElementById('stat-pending').textContent = pending;
                 document.getElementById('stat-approved').textContent = approved;
-                const b = document.getElementById('badge-sellers');
-                b.textContent = pending;
-                b.classList.toggle('hidden', pending === 0);
+                const b = document.getElementById('badge-sellers'); b.textContent = pending; b.classList.toggle('hidden', pending === 0);
                 renderSellers(allSellers);
-            } catch (e) {
-                document.getElementById('sellers-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
-            }
+            } catch (e) { document.getElementById('sellers-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>'; }
         }
 
         function filterSellers(status, btn) {
-            document.querySelectorAll('#section-sellers .filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            document.querySelectorAll('#section-sellers .filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
             renderSellers(status === 'all' ? allSellers : allSellers.filter(s => s.status === status));
         }
 
@@ -988,66 +717,39 @@
             const el = document.getElementById('sellers-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">🏪</div><p>Aucun vendeur trouvé</p></div>'; return; }
             el.innerHTML = list.map(s => `
-                <div class="seller-card">
-                    <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
-                    <div class="seller-info">
-                        <div class="seller-name">${s.shopName}</div>
-<div class="seller-meta">
-        <span>👤 ${s.clientName}</span>
-        <span>📧 ${s.clientEmail}</span>
-        <span>📞 ${s.phoneNumber}</span>
-        <span>🪪 CNI: ${s.nationalIdNumber}</span>
-        <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
-        ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
-        <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
-</div>
-${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
-                    </div>
-                    <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
-                    <div class="seller-actions">
-                        ${s.status === 'Pending' ? `
-                            <button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button>
-                            <button class="btn btn-reject"  onclick="openReject(${s.id})">✗ Refuser</button>
-                        ` : ''}
-                        ${s.status === 'Approved' ? `
-                            <button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>
-                        ` : ''}
-                        ${s.status === 'Suspended' ? `
-                            <button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>
-                        ` : ''}
-                    </div>
-                </div>`).join('');
+                    <div class="seller-card">
+                        <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
+                        <div class="seller-info">
+                            <div class="seller-name">${s.shopName}</div>
+                            <div class="seller-meta">
+                                <span>👤 ${s.clientName}</span><span>📧 ${s.clientEmail}</span>
+                                <span>📞 ${s.phoneNumber}</span><span>🪪 CNI: ${s.nationalIdNumber}</span>
+                                <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
+                                ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
+                                <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                            ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
+                        </div>
+                        <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
+                        <div class="seller-actions">
+                            ${s.status === 'Pending' ? `<button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button><button class="btn btn-reject" onclick="openReject(${s.id})">✗ Refuser</button>` : ''}
+                            ${s.status === 'Approved' ? `<button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>` : ''}
+                            ${s.status === 'Suspended' ? `<button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>` : ''}
+                        </div>
+                    </div>`).join('');
         }
 
-        function statusLabel(s) {
-            return { Pending: 'En attente', Approved: 'Approuvé', Rejected: 'Refusé', Suspended: 'Suspendu' }[s] || s;
-        }
-
+        function statusLabel(s) { return { Pending: 'En attente', Approved: 'Approuvé', Rejected: 'Refusé', Suspended: 'Suspendu' }[s] || s; }
         function openApprove(id) { currentSellerId = id; document.getElementById('approve-commission').value = 10; openModal('modal-approve'); }
         function openReject(id) { currentSellerId = id; document.getElementById('reject-reason').value = ''; openModal('modal-reject'); }
-
-        async function confirmApprove() {
-            const commission = parseFloat(document.getElementById('approve-commission').value) / 100;
-            await reviewSeller(currentSellerId, true, null, commission);
-            closeModal('modal-approve');
-        }
-
-        async function confirmReject() {
-            const reason = document.getElementById('reject-reason').value.trim();
-            if (!reason) { showToast('Le motif est obligatoire', 'error'); return; }
-            await reviewSeller(currentSellerId, false, reason, null);
-            closeModal('modal-reject');
-        }
+        async function confirmApprove() { const commission = parseFloat(document.getElementById('approve-commission').value) / 100; await reviewSeller(currentSellerId, true, null, commission); closeModal('modal-approve'); }
+        async function confirmReject() { const reason = document.getElementById('reject-reason').value.trim(); if (!reason) { showToast('Le motif est obligatoire', 'error'); return; } await reviewSeller(currentSellerId, false, reason, null); closeModal('modal-reject'); }
 
         async function reviewSeller(id, approved, reason, commission) {
             try {
-                const body = { approved };
-                if (reason) body.rejectionReason = reason;
-                if (commission !== null) body.commissionRate = commission;
-                const res = await fetch(`${API}/admin/sellers/${id}/review`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-                });
-                if (res.ok) { showToast(approved ? 'Boutique approuvée ✓' : 'Boutique refusée', approved ? 'success' : ''); loadSellers(); loadNavBadges(); }
+                const body = { approved }; if (reason) body.rejectionReason = reason; if (commission !== null) body.commissionRate = commission;
+                const res = await fetch(`${API}/admin/sellers/${id}/review`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                if (res.ok) { showToast(approved ? 'Boutique approuvée ✓' : 'Boutique refusée', approved ? 'success' : ''); loadSellers(); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
@@ -1058,25 +760,18 @@ ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;p
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
-        // ── PRODUITS ──────────────────────────────────────────────────────────
         async function loadProducts() {
             try {
-                const res = await fetch(`${API}/admin/sellers/products`);
-                allProducts = await res.json();
+                const res = await fetch(`${API}/admin/sellers/products`); allProducts = await res.json();
                 const pending = allProducts.filter(p => p.approvalStatus === 'Pending').length;
                 document.getElementById('stat-products').textContent = pending;
-                const b = document.getElementById('badge-products');
-                b.textContent = pending;
-                b.classList.toggle('hidden', pending === 0);
+                const b = document.getElementById('badge-products'); b.textContent = pending; b.classList.toggle('hidden', pending === 0);
                 renderProducts(allProducts.filter(p => p.approvalStatus === 'Pending'));
-            } catch (e) {
-                document.getElementById('products-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
-            }
+            } catch (e) { document.getElementById('products-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>'; }
         }
 
         function filterProducts(status, btn) {
-            document.querySelectorAll('#section-products .filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            document.querySelectorAll('#section-products .filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
             renderProducts(allProducts.filter(p => p.approvalStatus === status));
         }
 
@@ -1084,233 +779,114 @@ ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;p
             const el = document.getElementById('products-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">📦</div><p>Aucun produit trouvé</p></div>'; return; }
             el.innerHTML = list.map(p => `
-                <div class="product-card">
-                    <div class="product-img">
-                        ${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">${p.name}</div>
-                        <div class="product-meta">
-                            <span>🏪 ${p.shopName}</span>
-                            <span>📦 Stock: ${p.stock}</span>
-                            <span>🏷️ ${p.category || 'Sans catégorie'}</span>
-                            <span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                    <div class="product-card">
+                        <div class="product-img">${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+                        <div class="product-info">
+                            <div class="product-name">${p.name}</div>
+                            <div class="product-meta"><span>🏪 ${p.shopName}</span><span>📦 Stock: ${p.stock}</span><span>🏷️ ${p.category || 'Sans catégorie'}</span><span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
                         </div>
-                    </div>
-                    <div class="product-price">${formatPrice(p.price)}</div>
-                    <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
-                    <div class="seller-actions">
-<button class="btn btn-detail" onclick="viewProduct(${p.id})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;">👁 Détails</button>
-${p.approvalStatus === 'Pending' ? `
-        <button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button>
-        <button class="btn btn-reject"  onclick="openRejectProduct(${p.id})">✗ Refuser</button>
-` : ''}
-                    </div>
-                </div>`).join('');
+                        <div class="product-price">${formatPrice(p.price)}</div>
+                        <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
+                        <div class="seller-actions">
+                            <button class="btn" onclick="viewProduct(${p.id})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;">👁 Détails</button>
+                            ${p.approvalStatus === 'Pending' ? `<button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button><button class="btn btn-reject" onclick="openRejectProduct(${p.id})">✗ Refuser</button>` : ''}
+                        </div>
+                    </div>`).join('');
+        }
+
+        function viewProduct(id) {
+            const p = allProducts.find(x => x.id === id); if (!p) return;
+            const imgs = Array.isArray(p.images) ? p.images : [];
+            document.getElementById('product-detail-content').innerHTML = `
+                    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">${imgs.map(img => `<img src="${img}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">`).join('')}${!imgs.length ? '<div style="width:100px;height:100px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>' : ''}</div>
+                    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;width:140px;">Boutique</td><td style="padding:8px 0;font-weight:600;">${p.shopName}</td></tr>
+                        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Nom</td><td style="padding:8px 0;font-weight:600;">${p.name}</td></tr>
+                        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">SKU</td><td style="padding:8px 0;">${p.sku || '—'}</td></tr>
+                        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Catégorie</td><td style="padding:8px 0;">${p.category || '—'}</td></tr>
+                        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix</td><td style="padding:8px 0;font-weight:700;color:#059669;">${formatPrice(p.price)}</td></tr>
+                        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Stock</td><td style="padding:8px 0;">${p.stock}</td></tr>
+                        <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description</td><td style="padding:8px 0;">${p.shortDescription || '—'}</td></tr>
+                        <tr><td style="padding:8px 0;color:#6b7280;">Soumis le</td><td style="padding:8px 0;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</td></tr>
+                    </table>`;
+            openModal('modal-product-detail');
         }
 
         async function approveProduct(id) {
             try {
-                const res = await fetch(`${API}/admin/sellers/products/${id}/review`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approved: true })
-                });
+                const res = await fetch(`${API}/admin/sellers/products/${id}/review`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approved: true }) });
                 if (res.ok) { showToast('Produit publié sur le site ✓', 'success'); loadProducts(); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
         function openRejectProduct(id) { currentProductId = id; document.getElementById('reject-product-reason').value = ''; openModal('modal-reject-product'); }
-
         async function confirmRejectProduct() {
             try {
-                const res = await fetch(`${API}/admin/sellers/products/${currentProductId}/review`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ approved: false, rejectionReason: document.getElementById('reject-product-reason').value.trim() })
-                });
+                const res = await fetch(`${API}/admin/sellers/products/${currentProductId}/review`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approved: false, rejectionReason: document.getElementById('reject-product-reason').value.trim() }) });
                 if (res.ok) { showToast('Produit refusé', ''); closeModal('modal-reject-product'); loadProducts(); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
-        // ── PAYOUTS ───────────────────────────────────────────────────────────
         async function loadPayouts() {
             try {
-                const res = await fetch(`${API}/admin/sellers/payouts`);
-                allPayouts = await res.json();
+                const res = await fetch(`${API}/admin/sellers/payouts`); allPayouts = await res.json();
                 const pending = allPayouts.filter(p => p.status === 'Pending').length;
-                const b = document.getElementById('badge-payouts');
-                b.textContent = pending;
-                b.classList.toggle('hidden', pending === 0);
+                const b = document.getElementById('badge-payouts'); b.textContent = pending; b.classList.toggle('hidden', pending === 0);
                 renderPayouts(allPayouts.filter(p => p.status === 'Pending'));
             } catch (e) { }
         }
 
         function filterPayouts(status, btn) {
-            document.querySelectorAll('#section-payouts .filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            document.querySelectorAll('#section-payouts .filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
             renderPayouts(allPayouts.filter(p => p.status === status));
         }
 
         function renderPayouts(payouts) {
             const el = document.getElementById('payouts-list');
-
-            if (!payouts.length) {
-                el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement.</p></div>';
-                return;
-            }
-
-            // Regrouper par vendeur
+            if (!payouts.length) { el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement.</p></div>'; return; }
             const byVendor = {};
-            payouts.forEach(p => {
-                if (!byVendor[p.sellerId]) {
-                    byVendor[p.sellerId] = {
-                        sellerId: p.sellerId,
-                        shopName: p.shopName,
-                        payouts: [],
-                        total: 0,
-                        status: p.status
-                    };
-                }
-                byVendor[p.sellerId].payouts.push(p);
-                byVendor[p.sellerId].total += p.netAmount;
-            });
-
+            payouts.forEach(p => { if (!byVendor[p.sellerId]) byVendor[p.sellerId] = { sellerId: p.sellerId, shopName: p.shopName, payouts: [], total: 0, status: p.status }; byVendor[p.sellerId].payouts.push(p); byVendor[p.sellerId].total += p.netAmount; });
             el.innerHTML = Object.values(byVendor).map(vendor => `
-        <div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <div style="width:44px;height:44px;background:#10b981;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${vendor.shopName[0]}</div>
-                    <div>
-                        <div style="font-weight:800;font-size:16px;">${vendor.shopName}</div>
-                        <div style="font-size:12px;color:#6b7280;">${vendor.payouts.length} commande(s)</div>
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    <div style="font-size:20px;font-weight:800;color:#10b981;">${formatPrice(vendor.total)}</div>
-                    <div style="font-size:12px;color:#6b7280;">Net après commission</div>
-                </div>
-            </div>
-
-            <div style="border-top:1px solid #f3f4f6;padding-top:12px;margin-bottom:14px;">
-                ${vendor.payouts.map(p => `
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;font-size:13px;">
-                    <div>
-                        <span style="font-weight:600;">Commande #${p.orderId}</span>
-                        <span style="color:#6b7280;margin-left:8px;">📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-weight:700;color:#10b981;">${formatPrice(p.netAmount)}</div>
-                        <div style="font-size:11px;color:#9ca3af;">Brut: ${formatPrice(p.grossAmount)} · Commission: ${formatPrice(p.commissionAmount)}</div>
-                    </div>
-                </div>`).join('')}
-            </div>
-
-            ${vendor.status === 'Pending' ? `
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-<input type="text" id="ref-${vendor.sellerId}" 
-    value="${generateTransactionRef()}"
-    style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
-                <button onclick="payAllVendor(${vendor.sellerId}, '${vendor.shopName}')" 
-                    style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">
-                    ✓ Payer ${formatPrice(vendor.total)}
-                </button>
-            </div>
-            ` : `
-            <div style="font-size:13px;color:#6b7280;">
-                ✅ Payé le ${new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR')}
-                ${vendor.payouts[0].transactionReference ? `· Réf: ${vendor.payouts[0].transactionReference}` : ''}
-            </div>
-            `}
-        </div>
-    `).join('');
+                    <div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div style="width:44px;height:44px;background:#10b981;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${vendor.shopName[0]}</div>
+                                <div><div style="font-weight:800;font-size:16px;">${vendor.shopName}</div><div style="font-size:12px;color:#6b7280;">${vendor.payouts.length} commande(s)</div></div>
+                            </div>
+                            <div style="text-align:right;"><div style="font-size:20px;font-weight:800;color:#10b981;">${formatPrice(vendor.total)}</div><div style="font-size:12px;color:#6b7280;">Net après commission</div></div>
+                        </div>
+                        <div style="border-top:1px solid #f3f4f6;padding-top:12px;margin-bottom:14px;">
+                            ${vendor.payouts.map(p => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;font-size:13px;">
+                                <div><span style="font-weight:600;">Commande #${p.orderId}</span><span style="color:#6b7280;margin-left:8px;">📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
+                                <div style="text-align:right;"><div style="font-weight:700;color:#10b981;">${formatPrice(p.netAmount)}</div><div style="font-size:11px;color:#9ca3af;">Brut: ${formatPrice(p.grossAmount)} · Commission: ${formatPrice(p.commissionAmount)}</div></div>
+                            </div>`).join('')}
+                        </div>
+                        ${vendor.status === 'Pending' ? `
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                            <input type="text" id="ref-${vendor.sellerId}" value="${generateTransactionRef()}" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
+                            <button onclick="payAllVendor(${vendor.sellerId},'${vendor.shopName}')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ${formatPrice(vendor.total)}</button>
+                        </div>`: `<div style="font-size:13px;color:#6b7280;">✅ Payé le ${new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR')}${vendor.payouts[0].transactionReference ? ` · Réf: ${vendor.payouts[0].transactionReference}` : ''}</div>`}
+                    </div>`).join('');
         }
 
-        function generateTransactionRef() {
-            const now = new Date();
-            const date = now.toISOString().slice(0, 10).replace(/-/g, '');
-            const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
-            return `OM-${date}-${rand}`;
-        }
-
+        function generateTransactionRef() { const now = new Date(); const date = now.toISOString().slice(0, 10).replace(/-/g, ''); const rand = Math.random().toString(36).substring(2, 7).toUpperCase(); return `OM-${date}-${rand}`; }
 
         async function payAllVendor(sellerId, shopName) {
             const ref = document.getElementById(`ref-${sellerId}`).value.trim();
             if (!ref) { showToast('Entrez une référence de transaction', 'error'); return; }
-
             if (!confirm(`Confirmer le paiement de tous les payouts de ${shopName} ?`)) return;
-
-            // Trouver tous les payouts pending de ce vendeur
             const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending');
-
             let success = 0;
-            for (const p of pending) {
-                try {
-                    const res = await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ transactionReference: ref, notes: `Paiement groupé - ${shopName}` })
-                    });
-                    if (res.ok) success++;
-                } catch (e) { }
-            }
-
-            if (success > 0) {
-                showToast(`${success} paiement(s) marqués comme payés ✓`, 'success');
-                loadPayouts();
-            } else {
-                showToast('Erreur lors du paiement', 'error');
-            }
+            for (const p of pending) { try { const res = await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transactionReference: ref, notes: `Paiement groupé - ${shopName}` }) }); if (res.ok) success++; } catch (e) { } }
+            if (success > 0) { showToast(`${success} paiement(s) marqués comme payés ✓`, 'success'); loadPayouts(); }
+            else showToast('Erreur lors du paiement', 'error');
         }
 
-
-        function openPaid(id) { currentPayoutId = id; document.getElementById('transaction-ref').value = ''; openModal('modal-paid'); }
-
-        async function confirmPaid() {
-            const ref = document.getElementById('transaction-ref').value.trim();
-            if (!ref) { showToast('La référence est obligatoire', 'error'); return; }
-            try {
-                const res = await fetch(`${API}/admin/sellers/payouts/${currentPayoutId}/paid`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transactionReference: ref })
-                });
-                if (res.ok) { showToast('Paiement confirmé ✓', 'success'); closeModal('modal-paid'); loadPayouts(); }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
-        }
-
-        // ── UTILS ─────────────────────────────────────────────────────────────
         function openModal(id) { document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-        document.querySelectorAll('.modal-overlay').forEach(m => {
-            m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-        });
-
-        function formatPrice(p) {
-            return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0);
-        }
-
-        function showToast(msg, type = '') {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast show ' + type;
-            setTimeout(() => { t.className = 'toast'; }, 3000);
-        }
-
-        function logout() {
-            localStorage.removeItem('adminUser');
-            window.location.href = 'admin-login.html';
-        }
+        document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
+        function formatPrice(p) { return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0); }
+        function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3000); }
     </script>
-
-
-    <!-- MODAL DÉTAIL PRODUIT -->
-    <div class="modal-overlay" id="modal-product-detail">
-        <div class="modal" style="max-width:700px;max-height:85vh;overflow-y:auto;">
-            <h3>📦 Détail du produit</h3>
-            <div id="product-detail-content"></div>
-            <div class="modal-actions">
-                <button class="btn-modal-cancel" onclick="closeModal('modal-product-detail')">Fermer</button>
-            </div>
-        </div>
-    </div>
-
-
 </body>
 </html>

@@ -600,4 +600,31 @@ catch (Exception ex) { Console.WriteLine("CommissionSettings error: " + ex.Messa
 
 
 
+
+// ═══════════════════════════════════════════════════════════════
+// AJOUTER dans Program.cs avant app.Run()
+// ═══════════════════════════════════════════════════════════════
+
+// ── Users — ajouter colonnes Role, Email, IsActive, CreatedAt ──
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Email"" TEXT NOT NULL DEFAULT '';");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Role"" TEXT NOT NULL DEFAULT 'SuperAdmin';");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE;");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW();");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""CreatedBy"" TEXT NULL;");
+
+    // Mettre à jour l'admin existant en SuperAdmin
+    db.Database.ExecuteSqlRaw(@"UPDATE ""Users"" SET ""Role"" = 'SuperAdmin' WHERE ""Role"" = '' OR ""Role"" IS NULL;");
+
+    Console.WriteLine("Users migration OK");
+}
+catch (Exception ex) { Console.WriteLine("Users migration error: " + ex.Message); }
+
+
+
+
+
 app.Run();

@@ -6,11 +6,8 @@
     <title>Ranita Admin - Clients</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-notifications.js" defer></script>
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
-
     <style>
         .client-avatar {
             width: 36px;
@@ -110,10 +107,6 @@
             line-height: 2;
         }
 
-            .modal-info strong {
-                color: #111827;
-            }
-
         .order-row {
             display: flex;
             justify-content: space-between;
@@ -170,28 +163,16 @@
 
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
-        <nav>
-            <a href="admin-dashboard.html">Dashboard</a>
-            <a href="admin-products.html">Produits</a>
-            <a href="admin-categories.html">Catégories</a>
-            <a href="admin-attributes.html">Attributs</a>
-            <a href="admin-orders.html">Commandes</a>
-            <a href="admin-reviews.html">⭐ Avis</a>
-            <a href="admin-clients.html" class="active">Clients</a>
-            <a href="/admin-sellers.html">Vendeurs <span id="badge-vendors"></span></a>
-        </nav>
-        <button onclick="logout()">Déconnexion</button>
+        <nav id="adminNav"></nav>
+        <button onclick="adminLogout()">Déconnexion</button>
     </header>
 
     <div class="admin-container">
         <h1>👥 Gestion des clients</h1>
-
         <div class="stats-bar" id="statsBar"></div>
-
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="🔍 Rechercher un client..." oninput="filterClients()">
         </div>
-
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead>
@@ -211,157 +192,104 @@
         </div>
     </div>
 
-    <!-- MODAL -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" id="modalContent"></div>
     </div>
 
+    <script src="admin-auth.js"></script>
     <script>
-        const token = localStorage.getItem("adminToken");
-        if (!token) window.location.href = "admin-login.html";
-
-        function logout() {
-            localStorage.removeItem("adminToken");
-            window.location.href = "admin-login.html";
-        }
+        checkPageAccess('clients');
+        buildAdminNav('clients');
+        applyReadOnlyMode();
 
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-        let allClients = [];
-        let allOrders = [];
+        const { token } = getAdminInfo();
+        let allClients = [], allOrders = [];
 
         async function loadData() {
             const [clientsRes, ordersRes] = await Promise.all([
-                fetch(`${API_BASE}/clients`),
-                fetch(`${API_BASE}/orders`)
+                fetch(`${API_BASE}/clients`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch(`${API_BASE}/orders`, { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
-
             allClients = await clientsRes.json();
             allOrders = await ordersRes.json();
 
-            // Stats
             document.getElementById("statsBar").innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-num">${allClients.length}</div>
-                    <div class="stat-label">Total clients</div>
-                </div>
-                <div class="stat-card" style="border-top:3px solid #10b981;">
-                    <div class="stat-num">${allClients.filter(c => {
-                        const orders = allOrders.filter(o => o.clientId === c.id);
-                        return orders.length > 0;
-                    }).length}</div>
-                    <div class="stat-label">Clients actifs</div>
-                </div>
-                <div class="stat-card" style="border-top:3px solid #3b82f6;">
-                    <div class="stat-num">${allClients.filter(c => {
-                        const orders = allOrders.filter(o => o.clientId === c.id);
-                        return orders.length === 0;
-                    }).length}</div>
-                    <div class="stat-label">Jamais commandé</div>
-                </div>
-            `;
+                    <div class="stat-card">
+                        <div class="stat-num">${allClients.length}</div>
+                        <div class="stat-label">Total clients</div>
+                    </div>
+                    <div class="stat-card" style="border-top:3px solid #10b981;">
+                        <div class="stat-num">${allClients.filter(c => allOrders.some(o => o.clientId === c.id)).length}</div>
+                        <div class="stat-label">Clients actifs</div>
+                    </div>
+                    <div class="stat-card" style="border-top:3px solid #3b82f6;">
+                        <div class="stat-num">${allClients.filter(c => !allOrders.some(o => o.clientId === c.id)).length}</div>
+                        <div class="stat-label">Jamais commandé</div>
+                    </div>`;
 
             renderClients(allClients);
         }
 
         function renderClients(clients) {
             const tbody = document.getElementById("clientsTable");
-
-            if (clients.length === 0) {
+            if (!clients.length) {
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`;
                 return;
             }
-
             tbody.innerHTML = clients.map(c => {
                 const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulée");
                 const totalDepense = orders.reduce((s, o) => s + o.total, 0);
                 const initiale = (c.fullName || c.email || "?")[0].toUpperCase();
-
-                return `
-                    <tr>
+                return `<tr>
                         <td><strong>#${c.id}</strong></td>
-                        <td>
-                            <div class="client-info">
-                                <div class="client-avatar">${initiale}</div>
-                                <span>${c.fullName}</span>
-                            </div>
-                        </td>
+                        <td><div class="client-info"><div class="client-avatar">${initiale}</div><span>${c.fullName}</span></div></td>
                         <td>${c.email}</td>
                         <td>${c.phone || "—"}</td>
                         <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
                         <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
                         <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
-                        <td>
-                            <button onclick="showClientDetails(${c.id})">👁 Voir</button>
-                        </td>
-                    </tr>
-                `;
+                        <td><button onclick="showClientDetails(${c.id})">👁 Voir</button></td>
+                    </tr>`;
             }).join('');
         }
 
         function filterClients() {
             const search = document.getElementById("searchInput").value.toLowerCase();
-            const filtered = allClients.filter(c =>
+            renderClients(allClients.filter(c =>
                 (c.fullName || "").toLowerCase().includes(search) ||
                 (c.email || "").toLowerCase().includes(search) ||
                 (c.phone || "").toLowerCase().includes(search)
-            );
-            renderClients(filtered);
+            ));
         }
 
         function showClientDetails(clientId) {
             const c = allClients.find(c => c.id === clientId);
             if (!c) return;
-
             const orders = allOrders.filter(o => o.clientId === clientId);
             const totalDepense = orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0);
-
-            function getBadge(status) {
-                switch(status) {
-                    case "En attente": return "badge-attente";
-                    case "Validée": return "badge-validee";
-                    case "Livrée": return "badge-livree";
-                    case "Annulée": return "badge-annulee";
-                    default: return "";
-                }
-            }
-
+            const getBadge = s => ({ "En attente": "badge-attente", "Validée": "badge-validee", "Livrée": "badge-livree", "Annulée": "badge-annulee" }[s] || "");
             document.getElementById("modalContent").innerHTML = `
-                <h3>👤 ${c.fullName}</h3>
-                <div class="modal-info">
-                    <strong>Email :</strong> ${c.email}<br>
-                    <strong>Téléphone :</strong> ${c.phone || "—"}<br>
-                    <strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br>
-                    <strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA
-                </div>
-
-                <div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#374151;">
-                    📦 Commandes (${orders.length})
-                </div>
-
-                ${orders.length === 0 ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` :
-                    orders.map(o => `
-                        <div class="order-row">
+                    <h3>👤 ${c.fullName}</h3>
+                    <div class="modal-info">
+                        <strong>Email :</strong> ${c.email}<br>
+                        <strong>Téléphone :</strong> ${c.phone || "—"}<br>
+                        <strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br>
+                        <strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA
+                    </div>
+                    <div style="margin:16px 0 8px;font-size:13px;font-weight:700;color:#374151;">📦 Commandes (${orders.length})</div>
+                    ${!orders.length ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` :
+                    orders.map(o => `<div class="order-row">
                             <span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span>
-                            <span>
-                                <span class="status-badge ${getBadge(o.status)}">${o.status}</span>
-                                &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong>
-                            </span>
-                        </div>
-                    `).join('')
-                }
-
-                <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">
-                    Fermer
-                </button>
-            `;
-
+                            <span><span class="status-badge ${getBadge(o.status)}">${o.status}</span> &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong></span>
+                        </div>`).join('')}
+                    <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>`;
             document.getElementById("modalOverlay").classList.add("open");
         }
 
         function closeModal(e) {
-            if (e.target === document.getElementById("modalOverlay")) {
+            if (e.target === document.getElementById("modalOverlay"))
                 document.getElementById("modalOverlay").classList.remove("open");
-            }
         }
 
         loadData();
