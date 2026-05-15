@@ -96,21 +96,26 @@ function buildAdminNav(currentPage) {
         logo.after(badge);
     }
 
-    // Menu mobile — remplir les liens
-    const mobileNav = document.getElementById('mobileNav');
-    if (mobileNav) {
+    // Menu mobile — remplir les liens après chargement DOM
+    const fillMobileNav = () => {
+        const mobileNav = document.getElementById('mobileNav');
+        if (!mobileNav) return;
         const linksDiv = mobileNav.querySelector('#mobileNavLinks');
-        if (linksDiv) {
-            linksDiv.innerHTML = pages.filter(p => ALL_PAGES[p]).map(p => {
-                const pg = ALL_PAGES[p];
-                const isActive = p === currentPage;
-                return `<a href="${pg.href}" style="color:${isActive ? '#22c55e' : 'rgba(255,255,255,0.9)'};text-decoration:none;font-weight:600;font-size:16px;padding:16px;border-radius:10px;display:block;border-bottom:1px solid rgba(255,255,255,0.08);background:${isActive ? 'rgba(34,197,94,0.12)' : 'transparent'};">${pg.label}</a>`;
-            }).join('');
-        }
+        if (!linksDiv) return;
+        linksDiv.innerHTML = pages.filter(p => ALL_PAGES[p]).map(p => {
+            const pg = ALL_PAGES[p];
+            const isActive = p === currentPage;
+            return `<a href="${pg.href}" style="color:${isActive ? '#22c55e' : 'rgba(255,255,255,0.9)'};text-decoration:none;font-weight:600;font-size:16px;padding:16px;border-radius:10px;display:block;border-bottom:1px solid rgba(255,255,255,0.08);background:${isActive ? 'rgba(34,197,94,0.12)' : 'transparent'};">${pg.label}</a>`;
+        }).join('');
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fillMobileNav);
+    } else {
+        fillMobileNav();
     }
 }
 
-// Toggle menu mobile — appelé par le bouton hamburger dans le HTML
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileNav');
     const btn = document.getElementById('hamburgerBtn');
@@ -119,17 +124,11 @@ function toggleMobileMenu() {
     if (isOpen) {
         menu.style.display = 'none';
         document.body.style.overflow = '';
-        if (btn) btn.innerHTML = `
-            <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;"></span>
-            <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;"></span>
-            <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;"></span>`;
+        if (btn) btn.innerHTML = `<span style="display:block;width:22px;height:2px;background:white;border-radius:2px;"></span><span style="display:block;width:22px;height:2px;background:white;border-radius:2px;"></span><span style="display:block;width:22px;height:2px;background:white;border-radius:2px;"></span>`;
     } else {
         menu.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        if (btn) btn.innerHTML = `
-            <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;transform:rotate(45deg) translate(5px,5px);transition:all 0.3s;"></span>
-            <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;opacity:0;transition:all 0.3s;"></span>
-            <span style="display:block;width:22px;height:2px;background:white;border-radius:2px;transform:rotate(-45deg) translate(5px,-5px);transition:all 0.3s;"></span>`;
+        if (btn) btn.innerHTML = `<span style="display:block;width:22px;height:2px;background:white;border-radius:2px;transform:rotate(45deg) translate(5px,5px);"></span><span style="display:block;width:22px;height:2px;background:white;border-radius:2px;opacity:0;"></span><span style="display:block;width:22px;height:2px;background:white;border-radius:2px;transform:rotate(-45deg) translate(5px,-5px);"></span>`;
     }
 }
 
