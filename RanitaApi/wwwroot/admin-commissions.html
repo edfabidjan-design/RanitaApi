@@ -6,6 +6,7 @@
     <title>Commissions — Ranita Admin</title>
     <link rel="stylesheet" href="admin-style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="admin-auth.js"></script>
     <style>
         :root {
             --green: #10b981;
@@ -23,12 +24,12 @@
         .period-bar {
             display: flex;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
 
         .period-btn {
-            padding: 7px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
             border: 1px solid var(--gray-200);
             font-size: 13px;
@@ -47,16 +48,16 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-            gap: 14px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(2,1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background: white;
             border: 1px solid var(--gray-200);
             border-radius: 12px;
-            padding: 18px;
+            padding: 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
@@ -69,12 +70,13 @@
                 color: var(--gray-500);
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
             }
 
             .stat-card .val {
-                font-size: 20px;
+                font-size: 17px;
                 font-weight: 800;
+                word-break: break-all;
             }
 
                 .stat-card .val.green {
@@ -90,17 +92,17 @@
                 }
 
             .stat-card .sub {
-                font-size: 12px;
+                font-size: 11px;
                 color: var(--gray-500);
-                margin-top: 4px;
+                margin-top: 3px;
             }
 
         .chart-card {
             background: white;
             border: 1px solid var(--gray-200);
-            border-radius: 14px;
-            padding: 24px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
@@ -108,37 +110,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .chart-title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
         }
 
         .comm-card {
             background: white;
             border: 1px solid var(--gray-200);
-            border-radius: 14px;
-            padding: 24px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .comm-card-title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
             border-bottom: 2px solid var(--gray-100);
         }
 
         .global-rate-block {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
             flex-wrap: wrap;
         }
 
@@ -150,7 +152,6 @@
             border: 2px solid var(--gray-200);
             border-radius: 12px;
             padding: 10px 16px;
-            transition: border-color 0.2s;
         }
 
             .rate-input-wrap:focus-within {
@@ -158,10 +159,10 @@
             }
 
             .rate-input-wrap input {
-                width: 70px;
+                width: 60px;
                 border: none;
                 background: transparent;
-                font-size: 24px;
+                font-size: 22px;
                 font-weight: 800;
                 color: var(--green);
                 outline: none;
@@ -170,7 +171,7 @@
             }
 
             .rate-input-wrap span {
-                font-size: 24px;
+                font-size: 22px;
                 font-weight: 800;
                 color: var(--green);
             }
@@ -184,11 +185,11 @@
         .simulation {
             background: var(--gray-50);
             border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-top: 18px;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 14px;
             display: flex;
-            gap: 24px;
+            gap: 16px;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -196,24 +197,25 @@
         .sim-input {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
+            gap: 6px;
+            font-size: 13px;
             color: var(--gray-700);
+            flex-wrap: wrap;
         }
 
             .sim-input input {
-                width: 120px;
-                padding: 8px 12px;
+                width: 100px;
+                padding: 7px 10px;
                 border: 1px solid var(--gray-200);
                 border-radius: 8px;
-                font-size: 14px;
+                font-size: 13px;
                 font-weight: 600;
                 outline: none;
             }
 
         .sim-results {
             display: flex;
-            gap: 24px;
+            gap: 16px;
             flex-wrap: wrap;
         }
 
@@ -222,12 +224,12 @@
         }
 
             .sim-result .val {
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: 800;
             }
 
             .sim-result .lbl {
-                font-size: 11px;
+                font-size: 10px;
                 color: var(--gray-500);
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
@@ -242,9 +244,49 @@
                 color: var(--green);
             }
 
+        .page-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin: 20px 0 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .btn-save-comm {
+            background: linear-gradient(135deg,#059669,#047857) !important;
+            color: white !important;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+            .btn-save-comm:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        /* Cat table responsive */
+        .cat-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .cat-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 400px;
         }
 
             .cat-table th {
@@ -252,17 +294,16 @@
                 font-size: 11px;
                 font-weight: 700;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
                 color: var(--gray-500);
-                padding: 10px 14px;
+                padding: 10px 12px;
                 text-align: left;
                 border-bottom: 1px solid var(--gray-200);
             }
 
             .cat-table td {
-                padding: 12px 14px;
+                padding: 10px 12px;
                 border-bottom: 1px solid var(--gray-100);
-                font-size: 14px;
+                font-size: 13px;
                 vertical-align: middle;
                 background: white;
             }
@@ -278,19 +319,18 @@
         .override-cell {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .override-input {
-            width: 70px;
-            padding: 6px 10px;
+            width: 65px;
+            padding: 5px 8px;
             border: 1px solid var(--gray-200);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             text-align: center;
             outline: none;
-            transition: border-color 0.2s;
         }
 
             .override-input:focus {
@@ -308,11 +348,9 @@
             border: none;
             color: var(--gray-500);
             cursor: pointer;
-            font-size: 14px;
-            padding: 4px 8px;
+            font-size: 13px;
+            padding: 3px 6px;
             border-radius: 6px;
-            transition: color 0.2s;
-            line-height: 1;
         }
 
             .btn-clear:hover {
@@ -321,7 +359,7 @@
             }
 
         .effective-rate {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray-500);
         }
 
@@ -329,42 +367,6 @@
                 color: var(--green-dark);
                 font-weight: 700;
             }
-
-        .btn-save-comm {
-            background: linear-gradient(135deg,#059669,#047857) !important;
-            color: white !important;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-            .btn-save-comm:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-            }
-
-        .page-title-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            font-weight: 800;
-            margin: 28px 0 16px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--gray-100);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
 
         .comm-toast {
             position: fixed;
@@ -396,6 +398,14 @@
             }
 
         @media(max-width:600px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-card .val {
+                font-size: 14px;
+            }
+
             .global-rate-block {
                 flex-direction: column;
                 align-items: flex-start;
@@ -403,14 +413,27 @@
 
             .simulation {
                 flex-direction: column;
+                gap: 12px;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
+            .sim-results {
+                gap: 12px;
+            }
+
+            .period-bar {
+                gap: 6px;
+            }
+
+            .period-btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+
+            .page-title-row h1 {
+                font-size: 18px;
             }
         }
     </style>
-    <script src="admin-auth.js"></script>
 </head>
 <body>
     <div class="admin-header">
@@ -421,72 +444,85 @@
 
     <div class="admin-container">
         <div class="page-title-row">
-            <h1 style="margin:0;">⚙️ Gestion des commissions</h1>
-            <button class="btn-save-comm" id="btnSave" onclick="saveCommissions()">💾 Enregistrer les taux</button>
+            <h1 style="margin:0;">⚙️ Commissions</h1>
+            <button class="btn-save-comm" id="btnSave" onclick="saveCommissions()">💾 Enregistrer</button>
         </div>
 
         <div class="section-title">📊 Analyse des commissions</div>
         <div class="period-bar">
             <button class="period-btn active" onclick="setPeriod('today',this)">Aujourd'hui</button>
-            <button class="period-btn" onclick="setPeriod('week',this)">Cette semaine</button>
-            <button class="period-btn" onclick="setPeriod('month',this)">Ce mois</button>
-            <button class="period-btn" onclick="setPeriod('year',this)">Cette année</button>
+            <button class="period-btn" onclick="setPeriod('week',this)">Semaine</button>
+            <button class="period-btn" onclick="setPeriod('month',this)">Mois</button>
+            <button class="period-btn" onclick="setPeriod('year',this)">Année</button>
             <button class="period-btn" onclick="setPeriod('all',this)">Total</button>
         </div>
+
         <div class="stats-grid">
             <div class="stat-card highlight"><div class="lbl">Commission perçue</div><div class="val green" id="stat-commission">—</div><div class="sub" id="stat-commission-sub"></div></div>
             <div class="stat-card"><div class="lbl">Ventes brutes</div><div class="val" id="stat-gross">—</div></div>
-            <div class="stat-card"><div class="lbl">Reversé aux vendeurs</div><div class="val blue" id="stat-net">—</div></div>
-            <div class="stat-card"><div class="lbl">Nb transactions</div><div class="val orange" id="stat-count">—</div></div>
+            <div class="stat-card"><div class="lbl">Reversé vendeurs</div><div class="val blue" id="stat-net">—</div></div>
+            <div class="stat-card"><div class="lbl">Transactions</div><div class="val orange" id="stat-count">—</div></div>
         </div>
+
         <div class="chart-card">
             <div class="chart-header">
-                <div class="chart-title" id="chart-title">📈 Commissions — Aujourd'hui</div>
-                <div style="display:flex;gap:8px;">
+                <div class="chart-title" id="chart-title">📈 Commissions</div>
+                <div style="display:flex;gap:6px;">
                     <button class="period-btn active" id="chart-7j" onclick="setChartView(7,this)">7j</button>
                     <button class="period-btn" id="chart-30j" onclick="setChartView(30,this)">30j</button>
-                    <button class="period-btn" id="chart-12m" onclick="setChartView(12,this)">12 mois</button>
+                    <button class="period-btn" id="chart-12m" onclick="setChartView(12,this)">12m</button>
                 </div>
             </div>
-            <canvas id="commChart" height="110"></canvas>
+            <canvas id="commChart" height="120"></canvas>
         </div>
+
         <div class="chart-card">
-            <div class="chart-title" style="margin-bottom:16px;">🏪 Commission par vendeur <span style="font-size:12px;color:var(--gray-500);font-weight:400;" id="vendor-period-label"></span></div>
+            <div class="chart-title" style="margin-bottom:14px;">🏪 Par vendeur <span style="font-size:12px;color:var(--gray-500);font-weight:400;" id="vendor-period-label"></span></div>
             <div id="vendor-breakdown"><div style="text-align:center;padding:20px;color:var(--gray-500);">Chargement...</div></div>
         </div>
 
         <div class="section-title">⚙️ Configuration des taux</div>
+
         <div class="comm-card">
-            <div class="comm-card-title">🌍 Taux de commission global</div>
+            <div class="comm-card-title">🌍 Taux global</div>
             <div class="global-rate-block">
-                <div class="rate-input-wrap"><input type="number" id="globalRate" min="0" max="100" step="0.5" value="10" oninput="updateSimulation();updateEffectiveRates()"><span>%</span></div>
-                <div class="rate-desc">Ce taux s'applique à <strong>toutes les catégories</strong><br>sauf celles avec un override défini ci-dessous.</div>
+                <div class="rate-input-wrap">
+                    <input type="number" id="globalRate" min="0" max="100" step="0.5" value="10" oninput="updateSimulation();updateEffectiveRates()">
+                    <span>%</span>
+                </div>
+                <div class="rate-desc">S'applique à <strong>toutes les catégories</strong><br>sauf celles avec un override ci-dessous.</div>
             </div>
             <div class="simulation">
-                <div class="sim-input"><span>Pour une vente de</span><input type="number" id="simAmount" value="15000" min="0" oninput="updateSimulation()"><span>FCFA</span></div>
+                <div class="sim-input">
+                    <span>Pour une vente de</span>
+                    <input type="number" id="simAmount" value="15000" min="0" oninput="updateSimulation()">
+                    <span>FCFA</span>
+                </div>
                 <div class="sim-results">
-                    <div class="sim-result"><div class="val" id="sim-gross">15 000</div><div class="lbl">Brut vendeur</div></div>
-                    <div class="sim-result red"><div class="val" id="sim-commission">—</div><div class="lbl">Commission Ranita</div></div>
+                    <div class="sim-result"><div class="val" id="sim-gross">15 000</div><div class="lbl">Brut</div></div>
+                    <div class="sim-result red"><div class="val" id="sim-commission">—</div><div class="lbl">Commission</div></div>
                     <div class="sim-result green"><div class="val" id="sim-net">—</div><div class="lbl">Net vendeur</div></div>
                 </div>
             </div>
         </div>
+
         <div class="comm-card">
-            <div class="comm-card-title">📁 Override par catégorie <span style="font-size:12px;color:var(--gray-500);font-weight:400;margin-left:8px;">(vide = utilise le taux global)</span></div>
-            <div id="catTableWrap"><div style="text-align:center;padding:30px;color:var(--gray-500);">Chargement...</div></div>
+            <div class="comm-card-title">📁 Override par catégorie <span style="font-size:11px;color:var(--gray-500);font-weight:400;">(vide = taux global)</span></div>
+            <div class="cat-table-wrap">
+                <div id="catTableWrap"><div style="text-align:center;padding:30px;color:var(--gray-500);">Chargement...</div></div>
+            </div>
         </div>
     </div>
 
     <div class="comm-toast" id="commToast"></div>
 
-  
     <script>
         checkPageAccess('commissions');
         buildAdminNav('commissions');
         applyReadOnlyMode();
 
         const API = 'https://ranitaapi-production.up.railway.app/api';
-        let commissionData = null, allPayouts = [], chartInstance = null, currentPeriod = 'today';
+        let commissionData = null, allPayouts = [], chartInstance = null;
         const fmt = v => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(v || 0);
         const fmtShort = v => v >= 1000000 ? (v / 1000000).toFixed(1) + 'M' : v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v;
 
@@ -495,7 +531,8 @@
         async function loadPayouts() {
             try {
                 const res = await fetch(`${API}/sellers/payouts/all`); if (!res.ok) return; allPayouts = await res.json();
-                setPeriod('today', document.querySelector('.period-bar .period-btn.active')); setChartView(7, document.getElementById('chart-7j'));
+                setPeriod('today', document.querySelector('.period-bar .period-btn.active'));
+                setChartView(7, document.getElementById('chart-7j'));
             } catch (e) { console.error(e); }
         }
 
@@ -512,7 +549,6 @@
         }
 
         function setPeriod(period, btn) {
-            currentPeriod = period;
             document.querySelectorAll('.period-bar .period-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
             const filtered = filterByPeriod(period);
@@ -528,59 +564,59 @@
 
         function renderVendorBreakdown(payouts) {
             const el = document.getElementById('vendor-breakdown');
-            if (!payouts.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray-500);font-size:14px;">Aucune transaction sur cette période.</div>'; return; }
+            if (!payouts.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray-500);font-size:14px;">Aucune transaction.</div>'; return; }
             const vendors = {};
             payouts.forEach(p => { const key = p.shopName || `Vendeur #${p.sellerId}`; if (!vendors[key]) vendors[key] = { gross: 0, commission: 0, net: 0, count: 0 }; vendors[key].gross += p.grossAmount || 0; vendors[key].commission += p.commissionAmount || 0; vendors[key].net += p.netAmount || 0; vendors[key].count++; });
             const sorted = Object.entries(vendors).sort((a, b) => b[1].commission - a[1].commission);
             const maxComm = sorted[0]?.[1].commission || 1;
             el.innerHTML = sorted.map(([name, data]) => {
-                const pct = Math.round(data.commission / maxComm * 100); const initial = name.charAt(0).toUpperCase(); return `
-                    <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--gray-100);">
-                        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">${initial}</div>
-                        <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:700;margin-bottom:4px;">${name}</div><div style="background:var(--gray-100);border-radius:6px;height:6px;overflow:hidden;"><div style="background:var(--green);height:100%;width:${pct}%;border-radius:6px;transition:width 0.5s;"></div></div></div>
-                        <div style="text-align:right;flex-shrink:0;"><div style="font-size:14px;font-weight:800;color:var(--green);">${fmt(data.commission)}</div><div style="font-size:11px;color:var(--gray-500);">${data.count} vente(s) · brut ${fmt(data.gross)}</div></div>
+                const pct = Math.round(data.commission / maxComm * 100);
+                return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">${name.charAt(0)}</div>
+                        <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div><div style="background:var(--gray-100);border-radius:6px;height:5px;overflow:hidden;"><div style="background:var(--green);height:100%;width:${pct}%;border-radius:6px;"></div></div></div>
+                        <div style="text-align:right;flex-shrink:0;"><div style="font-size:13px;font-weight:800;color:var(--green);">${fmt(data.commission)}</div><div style="font-size:10px;color:var(--gray-500);">${data.count} vente(s)</div></div>
                     </div>`;
-            }).join('') + `<div style="display:flex;justify-content:space-between;padding:14px 0 0;font-size:13px;color:var(--gray-500);font-weight:700;"><span>TOTAL</span><span style="color:var(--green);font-size:15px;">${fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0))}</span></div>`;
+            }).join('') + `<div style="display:flex;justify-content:space-between;padding:12px 0 0;font-size:13px;color:var(--gray-500);font-weight:700;"><span>TOTAL</span><span style="color:var(--green);">${fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0))}</span></div>`;
         }
 
         function setChartView(mode, btn) {
-            document.querySelectorAll('#chart-7j,#chart-30j,#chart-12m').forEach(b => b.classList.remove('active')); if (btn) btn.classList.add('active'); renderChart(mode);
+            document.querySelectorAll('#chart-7j,#chart-30j,#chart-12m').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderChart(mode);
         }
 
         function renderChart(mode) {
             const labels = [], data = [], now = new Date();
             if (mode === 12) {
-                document.getElementById('chart-title').textContent = '📈 Commissions — 12 derniers mois';
+                document.getElementById('chart-title').textContent = '📈 12 derniers mois';
                 for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); labels.push(d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' })); data.push(allPayouts.filter(p => { const pd = new Date(p.createdAt); return pd.getMonth() === d.getMonth() && pd.getFullYear() === d.getFullYear(); }).reduce((s, p) => s + (p.commissionAmount || 0), 0)); }
-            }
-            else {
-                const label = mode === 7 ? '7 derniers jours' : '30 derniers jours'; document.getElementById('chart-title').textContent = `📈 Commissions — ${label}`;
+            } else {
+                document.getElementById('chart-title').textContent = `📈 ${mode === 7 ? '7' : '30'} derniers jours`;
                 for (let i = mode - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })); data.push(allPayouts.filter(p => new Date(p.createdAt).toDateString() === d.toDateString()).reduce((s, p) => s + (p.commissionAmount || 0), 0)); }
             }
             const ctx = document.getElementById('commChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Commission (FCFA)', data, backgroundColor: 'rgba(16,185,129,0.15)', borderColor: '#10b981', borderWidth: 2, borderRadius: 6, hoverBackgroundColor: 'rgba(16,185,129,0.3)' }] }, options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(ctx.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => fmtShort(v) + ' F', font: { size: 11 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 11 } }, grid: { display: false } } } } });
+            chartInstance = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Commission', data, backgroundColor: 'rgba(16,185,129,0.15)', borderColor: '#10b981', borderWidth: 2, borderRadius: 6, hoverBackgroundColor: 'rgba(16,185,129,0.3)' }] }, options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => fmtShort(v) + ' F', font: { size: 10 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } } });
         }
 
         async function loadCommissions() {
             try {
                 const res = await fetch(`${API}/settings/commission`); commissionData = await res.json();
-                const globalPct = Math.round(commissionData.globalRate * 100 * 10) / 10;
-                document.getElementById('globalRate').value = globalPct;
+                document.getElementById('globalRate').value = Math.round(commissionData.globalRate * 100 * 10) / 10;
                 renderCategoryTable(commissionData.categories); updateSimulation();
             } catch (e) { showToast('Erreur chargement taux', 'error'); }
         }
 
         function renderCategoryTable(categories) {
-            if (!categories.length) { document.getElementById('catTableWrap').innerHTML = '<p style="color:var(--gray-500);font-size:14px;padding:10px;">Aucune sous-catégorie.</p>'; return; }
+            if (!categories.length) { document.getElementById('catTableWrap').innerHTML = '<p style="color:var(--gray-500);font-size:14px;">Aucune sous-catégorie.</p>'; return; }
             const rows = categories.map(c => {
-                const overridePct = c.hasOverride ? Math.round(c.rate * 100 * 10) / 10 : ''; return `<tr>
-                    <td><strong>${c.categoryName}</strong></td>
-                    <td><div class="override-cell"><input type="number" class="override-input ${c.hasOverride ? 'has-value' : ''}" id="cat_${c.categoryId}" data-cat-id="${c.categoryId}" data-cat-name="${c.categoryName}" value="${overridePct}" min="0" max="100" step="0.5" placeholder="—" oninput="onOverrideChange(this)"><button class="btn-clear" onclick="clearOverride(${c.categoryId})">✕</button><span>%</span></div></td>
-                    <td><span class="effective-rate ${c.hasOverride ? 'override' : ''}" id="eff_${c.categoryId}">${c.hasOverride ? `✓ ${Math.round(c.rate * 100 * 10) / 10}% (override)` : `→ ${Math.round(commissionData.globalRate * 100 * 10) / 10}% (global)`}</span></td>
-                </tr>`;
+                const overridePct = c.hasOverride ? Math.round(c.rate * 100 * 10) / 10 : '';
+                return `<tr><td><strong>${c.categoryName}</strong></td>
+                        <td><div class="override-cell"><input type="number" class="override-input ${c.hasOverride ? 'has-value' : ''}" id="cat_${c.categoryId}" data-cat-id="${c.categoryId}" data-cat-name="${c.categoryName}" value="${overridePct}" min="0" max="100" step="0.5" placeholder="—" oninput="onOverrideChange(this)"><button class="btn-clear" onclick="clearOverride(${c.categoryId})">✕</button><span>%</span></div></td>
+                        <td><span class="effective-rate ${c.hasOverride ? 'override' : ''}" id="eff_${c.categoryId}">${c.hasOverride ? `✓ ${Math.round(c.rate * 100 * 10) / 10}% (override)` : `→ ${Math.round(commissionData.globalRate * 100 * 10) / 10}% (global)`}</span></td>
+                    </tr>`;
             }).join('');
-            document.getElementById('catTableWrap').innerHTML = `<table class="cat-table"><thead><tr><th>Catégorie</th><th>Taux override</th><th>Taux effectif</th></tr></thead><tbody>${rows}</tbody></table>`;
+            document.getElementById('catTableWrap').innerHTML = `<table class="cat-table"><thead><tr><th>Catégorie</th><th>Override</th><th>Effectif</th></tr></thead><tbody>${rows}</tbody></table>`;
         }
 
         function onOverrideChange(input) { const hasVal = input.value !== ''; input.classList.toggle('has-value', hasVal); const globalPct = parseFloat(document.getElementById('globalRate').value) || 10; const effEl = document.getElementById(`eff_${input.dataset.catId}`); if (effEl) { effEl.textContent = hasVal ? `✓ ${input.value}% (override)` : `→ ${globalPct}% (global)`; effEl.className = 'effective-rate' + (hasVal ? ' override' : ''); } }
@@ -589,15 +625,15 @@
         function updateSimulation() { const globalPct = parseFloat(document.getElementById('globalRate').value) || 10; const amount = parseFloat(document.getElementById('simAmount').value) || 0; const commission = Math.round(amount * globalPct / 100); const net = amount - commission; const f = v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F'; document.getElementById('sim-gross').textContent = f(amount); document.getElementById('sim-commission').textContent = f(commission); document.getElementById('sim-net').textContent = f(net); }
 
         async function saveCommissions() {
-            const btn = document.getElementById('btnSave'); btn.disabled = true; btn.textContent = 'Enregistrement...';
+            const btn = document.getElementById('btnSave'); btn.disabled = true; btn.textContent = '...';
             const globalPct = parseFloat(document.getElementById('globalRate').value);
-            if (isNaN(globalPct) || globalPct < 0 || globalPct > 100) { showToast('Taux global invalide', 'error'); btn.disabled = false; btn.textContent = '💾 Enregistrer les taux'; return; }
+            if (isNaN(globalPct) || globalPct < 0 || globalPct > 100) { showToast('Taux invalide', 'error'); btn.disabled = false; btn.textContent = '💾 Enregistrer'; return; }
             const overrides = []; document.querySelectorAll('.override-input').forEach(input => { overrides.push({ categoryId: parseInt(input.dataset.catId), categoryName: input.dataset.catName, rate: input.value === '' ? null : parseFloat(input.value) / 100 }); });
             try {
                 const res = await fetch(`${API}/settings/commission`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ globalRate: globalPct / 100, categoryOverrides: overrides }) });
                 if (res.ok) { showToast('Taux enregistrés ✓', 'success'); } else { const d = await res.json(); showToast(d.message || 'Erreur', 'error'); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
-            btn.disabled = false; btn.textContent = '💾 Enregistrer les taux';
+            btn.disabled = false; btn.textContent = '💾 Enregistrer';
         }
 
         function showToast(msg, type = '') { const t = document.getElementById('commToast'); t.textContent = msg; t.className = 'comm-toast show ' + type; setTimeout(() => { t.className = 'comm-toast'; }, 3500); }
