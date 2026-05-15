@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace RanitaApi.Controllers
 {
@@ -18,7 +16,7 @@ namespace RanitaApi.Controllers
             _db = db;
         }
 
-        // ── GET /api/admins — liste tous les admins ───────────────────────────
+        // ── GET /api/admins ───────────────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -38,33 +36,26 @@ namespace RanitaApi.Controllers
             return Ok(admins);
         }
 
-        // ── POST /api/admins — créer un admin ────────────────────────────────
+        // ── POST /api/admins ──────────────────────────────────────────
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAdminDto dto)
         {
             if (string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
                 return BadRequest(new { message = "Username et mot de passe obligatoires" });
 
-            // Vérifier que le username n'existe pas déjà
             var exists = await _db.Users.AnyAsync(u => u.Username == dto.Username);
             if (exists)
                 return BadRequest(new { message = "Ce username existe déjà" });
 
-            // Valider le rôle
-            var validRoles = new[]
-            {
-                "SuperAdmin", "GestionnaireCommandes", "GestionnaireVendeurs",
-                "GestionnaireProduits", "GestionnairePaiements", "GestionnaireClients",
-                "ModerateurAvis", "GestionnaireLivraisons", "GestionnaireParametres", "Analyste"
-            };
-            if (!validRoles.Contains(dto.Role))
+            // Valider le rôle — accepte prédéfini OU JSON
+            if (!IsValidRole(dto.Role))
                 return BadRequest(new { message = "Rôle invalide" });
 
             var admin = new User
             {
                 Username = dto.Username.Trim(),
                 Email = dto.Email?.Trim() ?? "",
-                Password = dto.Password, // En prod utiliser un hash
+                Password = dto.Password,
                 Role = dto.Role,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
@@ -74,37 +65,25 @@ namespace RanitaApi.Controllers
             _db.Users.Add(admin);
             await _db.SaveChangesAsync();
 
-            return Ok(new
-            {
-                message = "Admin créé ✓",
-                id = admin.Id,
-                username = admin.Username,
-                role = admin.Role
-            });
+            return Ok(new { message = "Admin créé ✓", id = admin.Id, username = admin.Username, role = admin.Role });
         }
 
-        // ── PUT /api/admins/{id}/role — modifier le rôle ─────────────────────
+        // ── PUT /api/admins/{id}/role ─────────────────────────────────
         [HttpPut("{id}/role")]
         public async Task<IActionResult> UpdateRole(int id, [FromBody] UpdateRoleDto dto)
         {
             var admin = await _db.Users.FindAsync(id);
             if (admin == null) return NotFound(new { message = "Admin introuvable" });
 
-            var validRoles = new[]
-            {
-                "SuperAdmin", "GestionnaireCommandes", "GestionnaireVendeurs",
-                "GestionnaireProduits", "GestionnairePaiements", "GestionnaireClients",
-                "ModerateurAvis", "GestionnaireLivraisons", "GestionnaireParametres", "Analyste"
-            };
-            if (!validRoles.Contains(dto.Role))
+            if (!IsValidRole(dto.Role))
                 return BadRequest(new { message = "Rôle invalide" });
 
             admin.Role = dto.Role;
             await _db.SaveChangesAsync();
-            return Ok(new { message = "Rôle mis à jour ✓", role = admin.Role });
+            return Ok(new { message = "Permissions mises à jour ✓", role = admin.Role });
         }
 
-        // ── PUT /api/admins/{id}/toggle — activer/suspendre ──────────────────
+        // ── PUT /api/admins/{id}/toggle ───────────────────────────────
         [HttpPut("{id}/toggle")]
         public async Task<IActionResult> Toggle(int id)
         {
@@ -113,14 +92,10 @@ namespace RanitaApi.Controllers
 
             admin.IsActive = !admin.IsActive;
             await _db.SaveChangesAsync();
-            return Ok(new
-            {
-                message = admin.IsActive ? "Admin activé ✓" : "Admin suspendu ✓",
-                isActive = admin.IsActive
-            });
+            return Ok(new { message = admin.IsActive ? "Admin activé ✓" : "Admin suspendu ✓", isActive = admin.IsActive });
         }
 
-        // ── PUT /api/admins/{id}/password — changer le mot de passe ──────────
+        // ── PUT /api/admins/{id}/password ─────────────────────────────
         [HttpPut("{id}/password")]
         public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDto dto)
         {
@@ -134,14 +109,13 @@ namespace RanitaApi.Controllers
             return Ok(new { message = "Mot de passe mis à jour ✓" });
         }
 
-        // ── DELETE /api/admins/{id} — supprimer ──────────────────────────────
+        // ── DELETE /api/admins/{id} ───────────────────────────────────
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var admin = await _db.Users.FindAsync(id);
             if (admin == null) return NotFound(new { message = "Admin introuvable" });
 
-            // Empêcher la suppression du dernier SuperAdmin
             if (admin.Role == "SuperAdmin")
             {
                 var superAdminCount = await _db.Users.CountAsync(u => u.Role == "SuperAdmin" && u.IsActive);
@@ -153,9 +127,34 @@ namespace RanitaApi.Controllers
             await _db.SaveChangesAsync();
             return Ok(new { message = "Admin supprimé ✓" });
         }
+
+        // ── VALIDATION RÔLE ───────────────────────────────────────────
+        // Accepte : rôle prédéfini OU JSON valide avec "pages"
+        private static bool IsValidRole(string? role)
+        {
+            if (string.IsNullOrEmpty(role)) return false;
+
+            // Rôles prédéfinis acceptés
+            var presets = new[] { "SuperAdmin", "Analyste" };
+            if (presets.Contains(role)) return true;
+
+            // JSON de permissions custom
+            if (role.TrimStart().StartsWith("{"))
+            {
+                try
+                {
+                    var doc = System.Text.Json.JsonDocument.Parse(role);
+                    // Doit contenir au moins "pages"
+                    return doc.RootElement.TryGetProperty("pages", out _);
+                }
+                catch { return false; }
+            }
+
+            return false;
+        }
     }
 
-    // ── DTOs ─────────────────────────────────────────────────────────────────
+    // ── DTOs ─────────────────────────────────────────────────────────
     public class CreateAdminDto
     {
         public string Username { get; set; } = "";
