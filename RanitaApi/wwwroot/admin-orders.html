@@ -147,30 +147,34 @@
 
         .stats-bar {
             display: flex;
-            gap: 16px;
+            gap: 8px;
             margin-bottom: 24px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto;
         }
 
         .stat-card {
             background: white;
-            border-radius: 12px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 10px 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             flex: 1;
-            min-width: 120px;
+            min-width: 70px;
+            text-align: center;
         }
 
             .stat-card .stat-num {
-                font-size: 24px;
+                font-size: 18px;
                 font-weight: 800;
                 color: #111827;
+                white-space: nowrap;
             }
 
             .stat-card .stat-label {
-                font-size: 12px;
+                font-size: 10px;
                 color: #6b7280;
                 margin-top: 2px;
+                white-space: nowrap;
             }
 
         .status-refund {
