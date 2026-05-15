@@ -550,34 +550,22 @@
         function initMap() {
             leafletMap = L.map('ciMap', {
                 center: [7.5399, -5.5471],
-                zoom: 6,
+                zoom: 7,                    // ← zoom sur CI
                 zoomControl: true,
-                attributionControl: false
+                attributionControl: false,
+                minZoom: 6,                 // ← empêche de dézoomer
+                maxZoom: 12,
+                maxBounds: [              // ← bloque la carte sur la CI
+                    [4.0, -8.6],          // coin sud-ouest CI
+                    [10.8, -2.5]          // coin nord-est CI
+                ],
+                maxBoundsViscosity: 1.0
             });
 
-            // Tuile OpenStreetMap style clair
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap © CartoDB',
                 subdomains: 'abcd',
                 maxZoom: 19
             }).addTo(leafletMap);
-
-            // Frontières CI (GeoJSON simplifié)
-            fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-                .then(r => r.json())
-                .then(data => {
-                    const ci = data.features.find(f => f.properties.ISO_A3 === 'CIV');
-                    if (ci) {
-                        L.geoJSON(ci, {
-                            style: {
-                                color: '#10b981',
-                                weight: 2,
-                                fillColor: '#f0fdf4',
-                                fillOpacity: 0.3
-                            }
-                        }).addTo(leafletMap);
-                    }
-                }).catch(() => { });
         }
 
         function updateMapMarkers(cityData) {
