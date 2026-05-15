@@ -6,6 +6,11 @@
     box-sizing: border-box;
 }
 
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -344,10 +349,19 @@ tr:hover {
         display: flex;
     }
 
+    .admin-header > button {
+        display: none;
+    }
+    /* ← AJOUTER CETTE LIGNE */
+
     .admin-header {
         padding: 0 16px;
         justify-content: space-between;
     }
+
+
+
+
 
         /* Logo + badge rôle à gauche, hamburger + déconnexion à droite */
         .admin-header > button {

@@ -6,6 +6,7 @@
     <title>Vendeurs — Ranita Admin</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
+    <link rel="stylesheet" href="admin-style.css">
     <style>
         body {
             margin: 0;
@@ -15,73 +16,8 @@
             overflow-x: hidden;
         }
 
-        .admin-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #111827;
-            color: white;
-            padding: 15px 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            flex-wrap: wrap;
-            gap: 12px;
-        }
 
-        .logo {
-            font-size: 20px;
-            font-weight: 800;
-            cursor: pointer;
-            white-space: nowrap;
-        }
 
-        .admin-header nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 12px;
-            align-items: center;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-            .admin-header nav a {
-                position: relative;
-                color: white;
-                text-decoration: none;
-                font-weight: 600;
-                font-size: 14px;
-                white-space: nowrap;
-                padding: 4px 0;
-            }
-
-                .admin-header nav a.active::after {
-                    content: "";
-                    position: absolute;
-                    bottom: -4px;
-                    left: 0;
-                    width: 100%;
-                    height: 3px;
-                    background: #22c55e;
-                    border-radius: 2px;
-                }
-
-                .admin-header nav a:hover {
-                    color: #22c55e;
-                }
-
-        .admin-header button {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-        }
 
         .nav-badge {
             background: #ef4444;
