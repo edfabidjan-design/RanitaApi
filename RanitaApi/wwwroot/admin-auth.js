@@ -1,8 +1,7 @@
 ﻿// ══════════════════════════════════════════════════════════════
-// admin-auth.js — Permissions personnalisées par admin
+// admin-auth.js — Permissions personnalisées par admin Ranita
 // ══════════════════════════════════════════════════════════════
 
-// Rôles prédéfinis (pour compatibilité + SuperAdmin)
 const PRESET_ROLES = {
     SuperAdmin: {
         label: '👑 Super Admin', color: '#7c3aed',
@@ -19,46 +18,34 @@ const PRESET_ROLES = {
     }
 };
 
-// Toutes les pages disponibles
 const ALL_PAGES = {
-    dashboard: { label: '📊 Dashboard', href: 'admin-dashboard.html' },
-    products: { label: '📦 Produits', href: 'admin-products.html' },
-    categories: { label: '📁 Catégories', href: 'admin-categories.html' },
-    attributes: { label: '🏷️ Attributs', href: 'admin-attributes.html' },
-    orders: { label: '🧾 Commandes', href: 'admin-orders.html' },
-    clients: { label: '👥 Clients', href: 'admin-clients.html' },
+    dashboard: { label: 'Dashboard', href: 'admin-dashboard.html' },
+    products: { label: 'Produits', href: 'admin-products.html' },
+    categories: { label: 'Catégories', href: 'admin-categories.html' },
+    attributes: { label: 'Attributs', href: 'admin-attributes.html' },
+    orders: { label: 'Commandes', href: 'admin-orders.html' },
+    clients: { label: 'Clients', href: 'admin-clients.html' },
     reviews: { label: '⭐ Avis', href: 'admin-reviews.html' },
-    sellers: { label: '🏪 Vendeurs', href: 'admin-sellers.html' },
+    sellers: { label: 'Vendeurs', href: 'admin-sellers.html' },
     commissions: { label: '⚙️ Commissions', href: 'admin-commissions.html' },
     users: { label: '👑 Admins', href: 'admin-users.html' },
 };
 
-// Toutes les actions disponibles
-const ALL_ACTIONS = {
-    canEditOrders: { label: '✏️ Modifier statuts commandes' },
-    canPayVendors: { label: '💸 Payer les vendeurs' },
-    canDeleteProducts: { label: '🗑️ Supprimer des produits' },
-    canManageAdmins: { label: '👑 Gérer les admins' },
-    canEditCommissions: { label: '⚙️ Modifier les commissions' },
-    readOnly: { label: '👁️ Mode lecture seule uniquement' },
-};
-
 // ── PARSER LES PERMISSIONS ────────────────────────────────────
-// Role peut être:
-// 1. "SuperAdmin" → preset
-// 2. "Analyste" → preset
-// 3. JSON string → permissions custom
 function parsePermissions(roleStr) {
     if (!roleStr) return PRESET_ROLES['Analyste'];
 
-    // Essayer de parser en JSON (permissions custom)
-    if (roleStr.startsWith('{')) {
+    // JSON custom
+    if (roleStr.trim().startsWith('{')) {
         try {
             const custom = JSON.parse(roleStr);
+            // S'assurer que dashboard est toujours dans les pages
+            const pages = custom.pages || ['dashboard'];
+            if (!pages.includes('dashboard')) pages.unshift('dashboard');
             return {
-                label: custom.label || '🔧 Custom',
-                color: custom.color || '#6b7280',
-                pages: custom.pages || ['dashboard'],
+                label: custom.label || '🔧 Personnalisé',
+                color: custom.color || '#0891b2',
+                pages,
                 canEditOrders: custom.canEditOrders || false,
                 canPayVendors: custom.canPayVendors || false,
                 canDeleteProducts: custom.canDeleteProducts || false,
@@ -95,12 +82,18 @@ function can(action) {
 }
 
 function hasPageAccess(page) {
+    // Dashboard toujours accessible si connecté
+    if (page === 'dashboard') return true;
     return getPermissions().pages.includes(page);
 }
 
 function checkPageAccess(currentPage) {
     const { token } = getAdminInfo();
     if (!token) { window.location.href = 'admin-login.html'; return false; }
+
+    // Dashboard toujours accessible
+    if (currentPage === 'dashboard') return true;
+
     if (!hasPageAccess(currentPage)) {
         alert('Accès refusé. Vous n\'avez pas les permissions nécessaires.');
         window.location.href = 'admin-dashboard.html';
@@ -115,7 +108,12 @@ function buildAdminNav(currentPage) {
         document.getElementById('adminNav');
     if (!navEl) return;
 
-    navEl.innerHTML = perms.pages
+    // S'assurer que dashboard est toujours en premier
+    const pages = perms.pages.includes('dashboard')
+        ? perms.pages
+        : ['dashboard', ...perms.pages];
+
+    navEl.innerHTML = pages
         .filter(p => ALL_PAGES[p])
         .map(p => {
             const page = ALL_PAGES[p];

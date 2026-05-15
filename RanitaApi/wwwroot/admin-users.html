@@ -90,7 +90,6 @@
                     border-color: var(--green);
                 }
 
-        /* ── CHECKBOXES PERMISSIONS ── */
         .perms-section {
             background: var(--gray-100);
             border-radius: 12px;
@@ -103,9 +102,6 @@
             font-weight: 800;
             color: var(--gray-700);
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .perms-grid {
@@ -131,6 +127,18 @@
                 background: #f0fdf4;
             }
 
+            .perm-check.checked {
+                border-color: var(--green);
+                background: #f0fdf4;
+            }
+
+            .perm-check.forced {
+                border-color: #059669;
+                background: #d1fae5;
+                cursor: not-allowed;
+                opacity: 0.8;
+            }
+
             .perm-check input[type="checkbox"] {
                 width: 16px;
                 height: 16px;
@@ -145,12 +153,11 @@
                 color: var(--gray-700);
             }
 
-            .perm-check.checked {
-                border-color: var(--green);
-                background: #f0fdf4;
+            .perm-check.forced label {
+                cursor: not-allowed;
+                color: #065f46;
             }
 
-        /* SuperAdmin toggle */
         .superadmin-toggle {
             display: flex;
             align-items: center;
@@ -215,7 +222,6 @@
                 background: #059669;
             }
 
-        /* Table */
         .admins-table {
             width: 100%;
             border-collapse: collapse;
@@ -374,13 +380,6 @@
             background: #f0fdf4 !important;
         }
 
-        /* Permissions affichées dans le tableau */
-        .perms-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-
         .perm-tag {
             padding: 2px 8px;
             border-radius: 10px;
@@ -388,6 +387,8 @@
             font-weight: 700;
             background: #dbeafe;
             color: #1e40af;
+            display: inline-block;
+            margin: 2px;
         }
 
             .perm-tag.superadmin {
@@ -447,7 +448,7 @@
         </div>
     </div>
 
-    <!-- ── MODAL CRÉER/MODIFIER ── -->
+    <!-- MODAL CRÉER/MODIFIER -->
     <div class="modal-overlay" id="modalAdmin">
         <div class="modal">
             <h3 id="modalTitle">Créer un administrateur</h3>
@@ -466,7 +467,7 @@
                 <input type="password" id="adminPassword" placeholder="Min. 6 caractères">
             </div>
 
-            <!-- Toggle Super Admin -->
+            <!-- Super Admin toggle -->
             <div class="superadmin-toggle" onclick="toggleSuperAdmin()">
                 <input type="checkbox" id="isSuperAdmin" onchange="toggleSuperAdmin()">
                 <div>
@@ -475,13 +476,13 @@
                 </div>
             </div>
 
-            <!-- Pages autorisées -->
-            <div id="customPerms" style="display:block;">
+            <!-- Permissions custom -->
+            <div id="customPerms">
                 <div class="perms-section">
                     <div class="perms-title">📄 Pages accessibles</div>
                     <div class="perms-grid" id="pagesGrid"></div>
+                    <div style="font-size:11px;color:#6b7280;margin-top:8px;">* Dashboard toujours inclus</div>
                 </div>
-
                 <div class="perms-section">
                     <div class="perms-title">⚡ Actions autorisées</div>
                     <div id="actionsGrid"></div>
@@ -495,7 +496,7 @@
         </div>
     </div>
 
-    <!-- ── MODAL MOT DE PASSE ── -->
+    <!-- MODAL MDP -->
     <div class="modal-overlay" id="modalPassword">
         <div class="modal" style="max-width:380px;">
             <h3>🔑 Changer le mot de passe</h3>
@@ -520,7 +521,6 @@
         const API = 'https://ranitaapi-production.up.railway.app/api';
         const { token, name } = getAdminInfo();
 
-        // Pages et actions disponibles
         const PAGES_LIST = {
             dashboard: '📊 Dashboard',
             products: '📦 Produits',
@@ -546,11 +546,13 @@
         // ── CONSTRUIRE LES CHECKBOXES ──────────────────────────────────
         function buildCheckboxes() {
             const pagesGrid = document.getElementById('pagesGrid');
-            pagesGrid.innerHTML = Object.entries(PAGES_LIST).map(([key, label]) => `
-                    <div class="perm-check" id="page-wrap-${key}" onclick="toggleCheck('page_${key}')">
-                        <input type="checkbox" id="page_${key}" value="${key}" onclick="event.stopPropagation()">
-                        <label for="page_${key}">${label}</label>
-                    </div>`).join('');
+            pagesGrid.innerHTML = Object.entries(PAGES_LIST).map(([key, label]) => {
+                const isForced = key === 'dashboard';
+                return `<div class="perm-check ${isForced ? 'forced checked' : ''}" id="page-wrap-${key}" ${!isForced ? `onclick="toggleCheck('page_${key}')"` : ''}>
+                        <input type="checkbox" id="page_${key}" value="${key}" ${isForced ? 'checked disabled' : ''} onclick="event.stopPropagation()">
+                        <label for="page_${key}">${label}${isForced ? ' 🔒' : ''}</label>
+                    </div>`;
+            }).join('');
 
             const actionsGrid = document.getElementById('actionsGrid');
             actionsGrid.innerHTML = Object.entries(ACTIONS_LIST).map(([key, label]) => `
@@ -562,19 +564,18 @@
 
         function toggleCheck(id) {
             const cb = document.getElementById(id);
+            if (cb.disabled) return;
             cb.checked = !cb.checked;
-            const wrap = cb.closest('.perm-check');
-            wrap.classList.toggle('checked', cb.checked);
+            cb.closest('.perm-check').classList.toggle('checked', cb.checked);
         }
 
         function toggleSuperAdmin() {
             const isSA = document.getElementById('isSuperAdmin').checked;
             document.getElementById('customPerms').style.display = isSA ? 'none' : 'block';
             if (isSA) {
-                // Tout cocher
                 Object.keys(PAGES_LIST).forEach(k => {
                     const cb = document.getElementById(`page_${k}`);
-                    if (cb) { cb.checked = true; cb.closest('.perm-check').classList.add('checked'); }
+                    if (cb && !cb.disabled) { cb.checked = true; cb.closest('.perm-check').classList.add('checked'); }
                 });
                 Object.keys(ACTIONS_LIST).forEach(k => {
                     const cb = document.getElementById(`action_${k}`);
@@ -583,56 +584,47 @@
             }
         }
 
-        // ── RÉCUPÉRER LES PERMISSIONS COCHÉES ──────────────────────────
+        // ── RÉCUPÉRER LES PERMISSIONS ─────────────────────────────────
         function getSelectedPermissions() {
             const isSA = document.getElementById('isSuperAdmin').checked;
             if (isSA) return 'SuperAdmin';
 
-            const pages = Object.keys(PAGES_LIST).filter(k => document.getElementById(`page_${k}`)?.checked);
+            // Dashboard toujours inclus
+            const pages = ['dashboard', ...Object.keys(PAGES_LIST).filter(k => k !== 'dashboard' && document.getElementById(`page_${k}`)?.checked)];
             const actions = {};
             Object.keys(ACTIONS_LIST).forEach(k => {
                 actions[k] = document.getElementById(`action_${k}`)?.checked || false;
             });
 
-            // Générer un label automatique
-            const label = pages.length >= 8 ? '🔧 Admin Complet' :
-                pages.includes('orders') && pages.length <= 3 ? '🧾 Gest. Commandes' :
-                    '🔧 Personnalisé';
+            const pageCount = pages.length;
+            const label = pageCount >= 9 ? '🔧 Admin Complet' :
+                pages.includes('orders') && pageCount <= 2 ? '🧾 Gest. Commandes' :
+                    pages.includes('sellers') && pageCount <= 2 ? '🏪 Gest. Vendeurs' :
+                        '🔧 Personnalisé';
 
-            return JSON.stringify({
-                label,
-                color: '#0891b2',
-                pages,
-                ...actions
-            });
+            return JSON.stringify({ label, color: '#0891b2', pages, ...actions });
         }
 
-        // ── AFFICHER LES PERMISSIONS DANS LE TABLEAU ───────────────────
+        // ── AFFICHER LES PERMISSIONS ──────────────────────────────────
         function renderPermsBadge(roleStr) {
             if (!roleStr) return '<span class="perm-tag">—</span>';
-
-            if (roleStr === 'SuperAdmin') {
-                return '<span class="perm-tag superadmin">👑 Super Admin</span>';
-            }
-
+            if (roleStr === 'SuperAdmin') return '<span class="perm-tag superadmin">👑 Super Admin</span>';
             if (roleStr.startsWith('{')) {
                 try {
                     const p = JSON.parse(roleStr);
-                    const label = p.label || 'Personnalisé';
                     const color = p.color || '#0891b2';
-                    const pages = (p.pages || []).length;
-                    return `<span class="role-badge" style="background:${color}22;color:${color};border:1px solid ${color}44;">${label}</span>
-                                <div style="font-size:11px;color:#6b7280;margin-top:4px;">${pages} page(s)</div>`;
+                    return `<span class="role-badge" style="background:${color}22;color:${color};border:1px solid ${color}44;">${p.label || 'Personnalisé'}</span>
+                                <div style="font-size:11px;color:#6b7280;margin-top:4px;">${(p.pages || []).length} page(s) autorisée(s)</div>`;
                 } catch (e) { return '<span class="perm-tag">—</span>'; }
             }
-
             return `<span class="perm-tag">${roleStr}</span>`;
         }
 
-        // ── PRÉREMPLIR LES CHECKBOXES DEPUIS UN ROLE ──────────────────
+        // ── PRÉREMPLIR LES CHECKBOXES ─────────────────────────────────
         function fillPermissions(roleStr) {
-            // Reset tout
+            // Reset (sauf dashboard)
             Object.keys(PAGES_LIST).forEach(k => {
+                if (k === 'dashboard') return;
                 const cb = document.getElementById(`page_${k}`);
                 if (cb) { cb.checked = false; cb.closest('.perm-check').classList.remove('checked'); }
             });
@@ -655,6 +647,7 @@
                 try {
                     const p = JSON.parse(roleStr);
                     (p.pages || []).forEach(k => {
+                        if (k === 'dashboard') return;
                         const cb = document.getElementById(`page_${k}`);
                         if (cb) { cb.checked = true; cb.closest('.perm-check').classList.add('checked'); }
                     });
@@ -688,6 +681,7 @@
 
                 tbody.innerHTML = admins.map(a => {
                     const isMe = a.username === name;
+                    const roleEscaped = (a.role || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     return `<tr ${isMe ? 'class="current-user-row"' : ''}>
                             <td><strong>#${a.id}</strong>${isMe ? ' <span style="font-size:11px;color:#10b981;font-weight:700;">(vous)</span>' : ''}</td>
                             <td><div style="font-weight:700;">${a.username}</div>${a.createdBy ? `<div style="font-size:11px;color:#6b7280;">par: ${a.createdBy}</div>` : ''}</td>
@@ -698,7 +692,7 @@
                             <td>
                                 <div class="action-btns">
                                     ${!isMe ? `
-                                    <button class="btn-action btn-edit" onclick="openEditModal(${a.id},'${a.username}','${a.email || ''}',${JSON.stringify(a.role).replace(/"/g, "&quot;")})">✏️ Modifier</button>
+                                    <button class="btn-action btn-edit" onclick='openEditModal(${a.id},"${a.username}","${a.email || ''}",${JSON.stringify(a.role)})'>✏️ Modifier</button>
                                     <button class="btn-action ${a.isActive ? 'btn-toggle-suspend' : 'btn-toggle-activate'}" onclick="toggleAdmin(${a.id})">${a.isActive ? '⏸️ Suspendre' : '▶️ Activer'}</button>
                                     <button class="btn-action btn-pwd" onclick="openPasswordModal(${a.id})">🔑 MDP</button>
                                     <button class="btn-action btn-delete" onclick="deleteAdmin(${a.id},'${a.username}')">🗑️</button>
@@ -710,7 +704,7 @@
             } catch (e) { console.error(e); }
         }
 
-        // ── MODALS ────────────────────────────────────────────────────
+        // ── MODALS ─────────────────────────────────────────────────────
         function openCreateModal() {
             document.getElementById('editAdminId').value = '';
             document.getElementById('adminUsername').value = '';
@@ -730,7 +724,7 @@
             document.getElementById('modalTitle').textContent = `Modifier — ${username}`;
             document.getElementById('btnSaveAdmin').textContent = 'Enregistrer';
             document.getElementById('passwordGroup').style.display = 'none';
-            fillPermissions(role);
+            fillPermissions(typeof role === 'string' ? role : JSON.stringify(role));
             document.getElementById('modalAdmin').classList.add('open');
         }
 
@@ -744,7 +738,6 @@
             const role = getSelectedPermissions();
 
             if (id) {
-                // Modifier permissions
                 const res = await fetch(`${API}/admins/${id}/role`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -753,7 +746,6 @@
                 if (res.ok) { showToast('Permissions mises à jour ✓', 'success'); closeModal(); loadAdmins(); }
                 else { const d = await res.json(); showToast(d.message || 'Erreur', 'error'); }
             } else {
-                // Créer
                 if (!username || !password) { showToast('Username et mot de passe obligatoires', 'error'); return; }
                 const res = await fetch(`${API}/admins`, {
                     method: 'POST',
