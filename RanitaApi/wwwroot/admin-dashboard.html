@@ -661,9 +661,28 @@
         // ── KPIs ──────────────────────────────────────────────────────────────
         function computeKPIs() {
             const now = new Date();
-            const today = allOrders.filter(o => new Date(o.createdAt).toDateString() === now.toDateString() && o.status !== 'Annulée');
-            const month = allOrders.filter(o => { const d = new Date(o.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && o.status !== 'Annulée'; });
-            const all = allOrders.filter(o => o.status !== 'Annulée');
+
+            const today = allOrders.filter(o =>
+                new Date(o.createdAt).toDateString() === now.toDateString() &&
+                o.status !== 'Annulée' &&
+                o.status !== 'Échec livraison' &&
+                o.status !== 'Remboursé'
+            );
+            const month = allOrders.filter(o => {
+                const d = new Date(o.createdAt);
+                return d.getMonth() === now.getMonth() &&
+                    d.getFullYear() === now.getFullYear() &&
+                    o.status !== 'Annulée' &&
+                    o.status !== 'Échec livraison' &&
+                    o.status !== 'Remboursé';
+            });
+
+;
+            const all = allOrders.filter(o =>
+                o.status !== 'Annulée' &&
+                o.status !== 'Échec livraison' &&
+                o.status !== 'Remboursé'
+            );
             document.getElementById('kpi-today').textContent = fmt(today.reduce((s, o) => s + o.total, 0));
             document.getElementById('kpi-today-count').textContent = `${today.length} commande(s)`;
             document.getElementById('kpi-month').textContent = fmt(month.reduce((s, o) => s + o.total, 0));
@@ -682,9 +701,10 @@
         function renderSalesChart(mode) {
             const labels = [], data = [], now = new Date();
             if (mode === 12) {
-                for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); labels.push(d.toLocaleDateString('fr-FR', { month: 'short' })); data.push(allOrders.filter(o => { const od = new Date(o.createdAt); return od.getMonth() === d.getMonth() && od.getFullYear() === d.getFullYear() && o.status !== 'Annulée'; }).reduce((s, o) => s + o.total, 0)); }
+                for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); labels.push(d.toLocaleDateString('fr-FR', { month: 'short' })); data.push(allOrders.filter(o => { const od = new Date(o.createdAt); return od.getMonth() === d.getMonth() && od.getFullYear() === d.getFullYear() && o.status !== 'Annulée' && o.status !== 'Échec livraison' && o.status !== 'Remboursé'; }).reduce((s, o) => s + o.total, 0)); }
             } else {
-                for (let i = mode - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })); data.push(allOrders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && o.status !== 'Annulée').reduce((s, o) => s + o.total, 0)); }
+                for (let i = mode - 1; i >= 0; i--) {
+                    const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })); data.push(allOrders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && o.status !== 'Annulée' && o.status !== 'Échec livraison' && o.status !== 'Remboursé').reduce((s, o) => s + o.total, 0)); }
             }
             const ctx = document.getElementById('salesChart').getContext('2d');
             if (salesChartInstance) salesChartInstance.destroy();
