@@ -14,7 +14,8 @@
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav id="adminNav"></nav>
-        <button onclick="adminLogout()">Déconnexion</button>
+        <button class="btn-logout" onclick="adminLogout()">Déconnexion</button>
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     </header>
 
     <div class="admin-container">
@@ -51,22 +52,22 @@
                 const card = document.createElement("div");
                 card.style.cssText = "background:white;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 4px 15px rgba(0,0,0,0.07);";
                 card.innerHTML = `
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${parent.children?.length ? '12px' : '0'};flex-wrap:wrap;gap:8px;">
-                            <strong style="font-size:16px;">📁 ${parent.name}</strong>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                <button onclick="editCategory(${parent.id},'${parent.name}','')" style="background:#f0fdf4;color:#059669;border:1px solid #10b981;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">✏️</button>
-                                <button onclick="deleteCategory(${parent.id})" style="background:#fff0f0;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">🗑️</button>
-                                <button onclick="addChild(${parent.id})" style="background:#eff6ff;color:#3b82f6;border:1px solid #3b82f6;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">➕ Sous-cat</button>
-                            </div>
-                        </div>
-                        ${parent.children?.map(child => `
-                            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f9fafb;border-radius:10px;margin-top:8px;flex-wrap:wrap;gap:8px;">
-                                <span style="color:#374151;">　└── ${child.name}</span>
-                                <div style="display:flex;gap:8px;">
-                                    <button onclick="editCategory(${child.id},'${child.name}',${child.parentId})" style="background:#f0fdf4;color:#059669;border:1px solid #10b981;padding:4px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">✏️</button>
-                                    <button onclick="deleteCategory(${child.id})" style="background:#fff0f0;color:#ef4444;border:1px solid #ef4444;padding:4px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">🗑️</button>
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${parent.children?.length ? '12px' : '0'};flex-wrap:wrap;gap:8px;">
+                                    <strong style="font-size:16px;">📁 ${parent.name}</strong>
+                                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                        <button onclick="editCategory(${parent.id},'${parent.name}','')" style="background:#f0fdf4;color:#059669;border:1px solid #10b981;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">✏️</button>
+                                        <button onclick="deleteCategory(${parent.id})" style="background:#fff0f0;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">🗑️</button>
+                                        <button onclick="addChild(${parent.id})" style="background:#eff6ff;color:#3b82f6;border:1px solid #3b82f6;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600;">➕ Sous-cat</button>
+                                    </div>
                                 </div>
-                            </div>`).join("") || ""}`;
+                                ${parent.children?.map(child => `
+                                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f9fafb;border-radius:10px;margin-top:8px;flex-wrap:wrap;gap:8px;">
+                                        <span style="color:#374151;">　└── ${child.name}</span>
+                                        <div style="display:flex;gap:8px;">
+                                            <button onclick="editCategory(${child.id},'${child.name}',${child.parentId})" style="background:#f0fdf4;color:#059669;border:1px solid #10b981;padding:4px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">✏️</button>
+                                            <button onclick="deleteCategory(${child.id})" style="background:#fff0f0;color:#ef4444;border:1px solid #ef4444;padding:4px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">🗑️</button>
+                                        </div>
+                                    </div>`).join("") || ""}`;
                 tree.appendChild(card);
             });
         }
@@ -90,5 +91,6 @@
         document.getElementById("resetBtn").addEventListener("click", resetForm);
         loadCategories();
     </script>
+    <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
 </body>
 </html>

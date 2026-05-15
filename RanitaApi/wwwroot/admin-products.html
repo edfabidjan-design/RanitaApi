@@ -112,7 +112,8 @@
     <header class="admin-header">
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav id="adminNav"></nav>
-        <button onclick="adminLogout()">Déconnexion</button>
+        <button class="btn-logout" onclick="adminLogout()">Déconnexion</button>
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     </header>
 
     <div class="admin-container">
@@ -188,7 +189,7 @@
         </div>
     </div>
 
-  
+
     <script>
         checkPageAccess('products');
         buildAdminNav('products');
@@ -211,20 +212,20 @@
             gallery.innerHTML = "";
             productImages.forEach((url, index) => {
                 gallery.innerHTML += `<div style="position:relative;width:90px;">
-                        <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
-                        ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
-                        <button type="button" onclick="removeExistingImage(${index})" style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
-                        ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
-                    </div>`;
+                                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${index === 0 ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                                ${index === 0 ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                                <button type="button" onclick="removeExistingImage(${index})" style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
+                                ${index > 0 ? `<button type="button" onclick="setMainImage(${index})" style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:#10b981;color:white;border:none;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:10px;white-space:nowrap;">Principal</button>` : ''}
+                            </div>`;
             });
             newImageFiles.forEach((file, index) => {
                 const url = URL.createObjectURL(file);
                 const isMain = productImages.length === 0 && index === 0;
                 gallery.innerHTML += `<div style="position:relative;width:90px;">
-                        <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
-                        ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
-                        <button type="button" onclick="removeNewImage(${index})" style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
-                    </div>`;
+                                <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:${isMain ? '3px solid #10b981' : '2px solid #e5e7eb'};">
+                                ${isMain ? '<span style="position:absolute;top:4px;left:4px;background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700;">Principal</span>' : ''}
+                                <button type="button" onclick="removeNewImage(${index})" style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;">✕</button>
+                            </div>`;
             });
             if (!productImages.length && !newImageFiles.length) gallery.innerHTML = `<p style="color:#9ca3af;font-size:13px;">Aucune image ajoutée</p>`;
         }
@@ -242,10 +243,10 @@
             const combinations = keys.map(k => selectedAttrs[k]).reduce((acc, curr) => acc.flatMap(a => curr.map(b => [...a, b])), [[]]);
             const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
             document.getElementById("variantsList").innerHTML = `
-                    <table style="width:100%;border-collapse:collapse;">
-                        <thead><tr style="background:#f9fafb;"><th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th><th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th></tr></thead>
-                        <tbody>${labels.map((label, i) => `<tr><td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td><td style="padding:10px;border-bottom:1px solid #f3f4f6;"><input type="number" id="variant_stock_${i}" placeholder="0" min="0" style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;"></td></tr>`).join('')}</tbody>
-                    </table>`;
+                            <table style="width:100%;border-collapse:collapse;">
+                                <thead><tr style="background:#f9fafb;"><th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Variante</th><th style="padding:10px;text-align:left;border-bottom:1px solid #e5e7eb;">Stock</th></tr></thead>
+                                <tbody>${labels.map((label, i) => `<tr><td style="padding:10px;border-bottom:1px solid #f3f4f6;">${label}</td><td style="padding:10px;border-bottom:1px solid #f3f4f6;"><input type="number" id="variant_stock_${i}" placeholder="0" min="0" style="width:80px;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;"></td></tr>`).join('')}</tbody>
+                            </table>`;
             window._variantLabels = labels;
             document.getElementById("variantsSection").style.display = "block";
             document.getElementById("productStock").value = "0";
@@ -274,14 +275,14 @@
             if (!attrs.length) { section.style.display = "none"; return; }
             section.style.display = "block";
             document.getElementById("attributeFields").innerHTML = attrs.map(a => `
-                    <div class="attr-field full">
-                        <label>${a.attributeName}</label>
-                        ${a.attributeType === 'select'
+                            <div class="attr-field full">
+                                <label>${a.attributeName}</label>
+                                ${a.attributeType === 'select'
                     ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-                                ${a.attributeOptions.split(',').map(o => `<label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;"><input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')"><span>${o.trim()}</span></label>`).join('')}
-                                <input type="hidden" id="attr_${a.attributeName}" value=""></div>`
+                                        ${a.attributeOptions.split(',').map(o => `<label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;"><input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')"><span>${o.trim()}</span></label>`).join('')}
+                                        <input type="hidden" id="attr_${a.attributeName}" value=""></div>`
                     : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}" id="attr_${a.attributeName}" placeholder="${a.attributeName}">`}
-                    </div>`).join('');
+                            </div>`).join('');
             document.getElementById("variantsSection").style.display = attrs.some(a => a.attributeType === 'select') ? "block" : "none";
             document.getElementById("variantsList").innerHTML = "";
             window._variantLabels = null;
@@ -296,21 +297,21 @@
             const res = await fetch(`${API_BASE}/products`);
             const products = await res.json();
             document.getElementById("productsTable").innerHTML = products.map(p => `
-                    <tr>
-                        <td>${p.id}</td><td>${p.name}</td>
-                        <td>${Number(p.price).toLocaleString()} FCFA</td>
-                        <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
-                        <td>${p.stock}</td><td>${p.category?.name || "—"}</td>
-                        <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
-                        <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
-                        <td>
-                            <div style="display:flex;flex-direction:column;gap:6px;">
-                                <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">✏️ Modifier</button>
-                                <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">📋 Dupliquer</button>
-                                <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">🗑️ Supprimer</button>
-                            </div>
-                        </td>
-                    </tr>`).join('');
+                            <tr>
+                                <td>${p.id}</td><td>${p.name}</td>
+                                <td>${Number(p.price).toLocaleString()} FCFA</td>
+                                <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
+                                <td>${p.stock}</td><td>${p.category?.name || "—"}</td>
+                                <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
+                                <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
+                                <td>
+                                    <div style="display:flex;flex-direction:column;gap:6px;">
+                                        <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">✏️ Modifier</button>
+                                        <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">📋 Dupliquer</button>
+                                        <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">🗑️ Supprimer</button>
+                                    </div>
+                                </td>
+                            </tr>`).join('');
         }
 
         async function duplicateProduct(id) {
@@ -442,5 +443,6 @@
         loadCategories();
         loadProducts();
     </script>
+    <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
 </body>
 </html>
