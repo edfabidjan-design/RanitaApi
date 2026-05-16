@@ -452,6 +452,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .flash-timer {
@@ -1251,6 +1252,30 @@
 
             body {
                 padding-bottom: 68px;
+            }
+            .flash-header {
+                flex-wrap: nowrap;
+                gap: 8px;
+            }
+
+            .flash-badge {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .t-block {
+                font-size: 14px;
+                padding: 4px 8px;
+                min-width: 32px;
+            }
+
+            .t-sep {
+                font-size: 14px;
+            }
+
+            .see-all {
+                font-size: 12px;
+                white-space: nowrap;
             }
         }
     </style>
