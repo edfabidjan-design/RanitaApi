@@ -4,7 +4,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    
+
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -452,7 +452,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            white-space: nowrap;
         }
 
         .flash-timer {
@@ -1253,34 +1252,9 @@
             body {
                 padding-bottom: 68px;
             }
-            .flash-header {
-                flex-wrap: nowrap;
-                gap: 8px;
-            }
-
-            .flash-badge {
-                font-size: 12px;
-                padding: 6px 10px;
-            }
-
-            .t-block {
-                font-size: 14px;
-                padding: 4px 8px;
-                min-width: 32px;
-            }
-
-            .t-sep {
-                font-size: 14px;
-            }
-
-            .see-all {
-                font-size: 12px;
-                white-space: nowrap;
-            }
         }
     </style>
 </head>
-
 <body>
 
 
@@ -1292,7 +1266,7 @@
             <input type="text" placeholder="Rechercher..." onkeydown="if(event.key==='Enter')window.location.href='products.html?q='+encodeURIComponent(this.value)">
         </div>
         <a href="cart.html" class="mob-icon-btn" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg><span id="mobCartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#10b981;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span></a>
-
+        <a href="login.html" class="mob-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg></a>
     </nav>
 
 
@@ -1518,16 +1492,6 @@
         }
         function toggleMenu() { const m = document.getElementById("clientMenu"); m.style.display = m.style.display === "none" ? "block" : "none"; }
         function logout() { localStorage.removeItem("client"); window.location.reload(); }
-
-        // Initiale client mobile
-        const clientMob = JSON.parse(localStorage.getItem("client")) || null;
-        const mobAccountBtn = document.querySelector('.mob-icon-btn[href="login.html"]');
-        if (mobAccountBtn && clientMob) {
-            mobAccountBtn.innerHTML = `<span style="font-size:13px;font-weight:800;color:white;">${clientMob.name ? clientMob.name.charAt(0).toUpperCase() : '👤'}</span>`;
-            mobAccountBtn.href = 'client-orders.html';
-            mobAccountBtn.style.background = '#10b981';
-        }
-
         document.addEventListener("click", (e) => { const m = document.getElementById("clientMenu"); if (m && !e.target.closest("#authNav")) m.style.display = "none"; });
     </script>
 
@@ -1615,7 +1579,7 @@
             const idx = cart.findIndex(i => i.id === id);
             if (idx >= 0) { cart[idx].qty++; } else { cart.push({ id, name, price, imageUrl: img, qty: 1 }); }
             localStorage.setItem('cart', JSON.stringify(cart));
-            const total = cart.reduce((s, i) => s + (i.qty || i.quantity || 1), 0);
+            const total = cart.reduce((s, i) => s + i.qty, 0);
             localStorage.setItem('ranitaCart', total);
             if (typeof updateCartBadge === 'function') updateCartBadge();
             const btn = e.currentTarget;
@@ -1648,6 +1612,7 @@
           "openingHours":"Mo-Su 08:00-20:00"
         }
     </script>
+
     <script src="/cart-badge.js"></script>
 </body>
 
