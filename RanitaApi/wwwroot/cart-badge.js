@@ -10,11 +10,7 @@
 
     const count = document.getElementById('cartCount');
     if (count) count.textContent = total;
-
-    const cartBtn = document.getElementById('cartBtn');
-    if (cartBtn) cartBtn.style.visibility = 'visible';
 }
-
 
 document.addEventListener('DOMContentLoaded', updateCartBadge);
 window.addEventListener('storage', updateCartBadge);
