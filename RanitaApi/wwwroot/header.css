@@ -49,6 +49,8 @@
     text-decoration: none;
     white-space: nowrap;
     font-size: 14px;
+    min-width: 130px;
+    text-align: center;
 }
 
 .site-footer {
