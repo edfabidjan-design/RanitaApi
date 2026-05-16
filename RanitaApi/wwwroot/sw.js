@@ -1,4 +1,4 @@
-const CACHE_NAME = "ranita-v10";
+const CACHE_NAME = "ranita-v20";
 const URLS = ["/index.html", "/products.html", "/cart.html", "/products.css", "/header.css"];
 
 self.addEventListener("install", e => {
@@ -16,6 +16,11 @@ self.addEventListener("activate", e => {
 });
 
 self.addEventListener("fetch", e => {
+    // Ne jamais mettre en cache product-details.html
+    if (e.request.url.includes("product-details.html")) {
+        e.respondWith(fetch(e.request));
+        return;
+    }
     if (e.request.mode === "navigate") {
         e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
         return;
