@@ -139,8 +139,8 @@
             }
 
         /* Image */
-        .product-img {
-            height: 110px;
+        .product-img-list {
+            height: 200px;
             width: 100%;
             overflow: hidden;
             background: var(--lk3);
@@ -151,15 +151,15 @@
             position: relative;
         }
 
-            .product-img img {
+            .product-img-list img {
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
-                padding: 6px;
+                padding: 8px;
                 transition: transform .3s;
             }
 
-        .product-card:hover .product-img img {
+        .product-card:hover .product-img-list img {
             transform: scale(1.04);
         }
 
@@ -400,23 +400,31 @@
 
             #productsGrid {
                 grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-                gap: 8px !important;
+                gap: 10px !important;
+                align-items: stretch !important;
             }
 
             .product-card {
                 padding: 0 !important;
-                border-radius: 10px !important;
+                border-radius: 14px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                height: 100% !important;
             }
 
-            .product-img {
-                height: 110px !important;
-                max-height: 110px !important;
-                border-radius: 10px 10px 0 0 !important;
+            .product-img-list {
+                height: 160px !important;
+                max-height: 160px !important;
+                border-radius: 14px 14px 0 0 !important;
+                flex-shrink: 0 !important;
             }
 
             .product-info {
-                padding: 6px 8px 8px !important;
-                gap: 2px !important;
+                padding: 8px 10px 10px !important;
+                gap: 3px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                flex: 1 !important;
             }
 
             .product-category {
@@ -424,37 +432,37 @@
             }
 
             .product-name {
-                font-size: 12px !important;
+                font-size: 13px !important;
                 font-weight: 700 !important;
             }
 
             .stars-row {
-                font-size: 10px !important;
+                font-size: 11px !important;
             }
 
             .price-current {
-                font-size: 12px !important;
+                font-size: 14px !important;
                 white-space: nowrap !important;
             }
 
             .price-old {
-                font-size: 10px !important;
+                font-size: 11px !important;
             }
 
             .product-stock {
-                font-size: 10px !important;
+                font-size: 11px !important;
             }
 
             .btn-buy, .btn-disabled {
                 width: 100% !important;
-                height: 34px !important;
-                font-size: 11px !important;
-                border-radius: 8px !important;
-                padding: 0 !important;
+                font-size: 12px !important;
+                border-radius: 10px !important;
+                padding: 9px 4px !important;
                 margin-top: auto !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
+                box-sizing: border-box !important;
             }
         }
 
@@ -463,7 +471,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .product-img {
+            .product-img-list {
                 height: 180px;
             }
 
@@ -655,7 +663,7 @@
 
                 return `
                     <div class="product-card" onclick="openProductDetails(${p.id})">
-                      <div class="product-img">
+                      <div class="product-img-list">
                         ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
                         ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
                       </div>
