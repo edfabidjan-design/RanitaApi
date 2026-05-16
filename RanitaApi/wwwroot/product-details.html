@@ -698,6 +698,7 @@
                 });
             }
             localStorage.setItem("cart", JSON.stringify(cart));
+            updateCartBadge();
             updateCartCount();
             showToast(`✅ ${quantity} article(s) ajouté(s) au panier !`);
         }
