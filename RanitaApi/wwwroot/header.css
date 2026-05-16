@@ -49,9 +49,10 @@
     text-decoration: none;
     white-space: nowrap;
     font-size: 14px;
-    min-width: 130px;
+    min-width: 160px;
     text-align: center;
 }
+
 
 .site-footer {
     padding: 30px;
