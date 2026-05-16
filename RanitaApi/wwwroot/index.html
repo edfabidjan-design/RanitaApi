@@ -68,7 +68,6 @@
             font-family: Arial,sans-serif;
         }
 
-        /* CATS BAR */
         .cats-bar {
             background: var(--dk2);
             border-bottom: 1px solid var(--dk-border);
@@ -108,7 +107,6 @@
                 border-bottom-color: var(--green);
             }
 
-        /* HERO */
         .hero-zone {
             background: var(--dk);
             padding: 28px 20px 40px;
@@ -375,7 +373,6 @@
             cursor: pointer;
         }
 
-        /* WAVE */
         .wave-sep {
             height: 48px;
             background: var(--dk);
@@ -383,7 +380,6 @@
             margin-bottom: -2px;
         }
 
-        /* SECTIONS */
         .sec {
             max-width: 1280px;
             margin: 0 auto;
@@ -427,7 +423,6 @@
                 letter-spacing: .5px;
             }
 
-        /* FLASH */
         .flash-section {
             background: var(--lk);
             border-top: 3px solid var(--green);
@@ -478,7 +473,6 @@
             font-size: 18px;
         }
 
-        /* PRODUCT GRID */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill,minmax(195px,1fr));
@@ -633,11 +627,12 @@
                 color: var(--red);
             }
 
+        /* ✅ CORRECTION : prix barré visible */
         .p-row {
             display: flex;
             align-items: center;
-            gap: 6px;
-            flex-wrap: nowrap;
+            gap: 4px;
+            flex-wrap: wrap;
             margin-top: auto;
         }
 
@@ -654,10 +649,9 @@
             color: var(--lk-text3);
             text-decoration: line-through;
             white-space: nowrap;
-            flex-shrink: 1;
-            min-width: 0;
-            overflow: hidden;
+            flex-shrink: 0;
         }
+        /* ✅ FIN CORRECTION */
 
         .add-btn {
             margin-left: auto;
@@ -684,7 +678,6 @@
                 cursor: not-allowed;
             }
 
-        /* SKELETON */
         .skeleton {
             background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);
             background-size: 200% 100%;
@@ -731,7 +724,6 @@
             margin: 8px 12px 12px auto;
         }
 
-        /* API ERROR */
         .api-error {
             background: #FEF2F2;
             border: 1px solid #FECACA;
@@ -755,7 +747,6 @@
                 font-weight: 600;
             }
 
-        /* STATS */
         .stats-band {
             background: linear-gradient(135deg,var(--green-10b),var(--green-059));
         }
@@ -787,7 +778,6 @@
             font-weight: 500;
         }
 
-        /* CATS GRID */
         .cats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill,minmax(128px,1fr));
@@ -829,7 +819,6 @@
                 color: var(--lk-text3);
             }
 
-        /* VENDORS */
         .vendors-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
@@ -892,7 +881,6 @@
             display: inline-block;
         }
 
-        /* TRUST */
         .trust-strip {
             background: var(--lk3);
             border-top: 1px solid var(--lk-border);
@@ -940,7 +928,6 @@
             color: var(--lk-text2);
         }
 
-        /* PAYMENT */
         .pay-bar {
             background: var(--lk);
             border-top: 1px solid var(--lk-border);
@@ -978,7 +965,6 @@
             color: var(--lk-text2);
         }
 
-        /* REFERRAL */
         .ref-section {
             background: var(--dk);
             padding: 40px 20px;
@@ -1051,7 +1037,6 @@
                 transform: scale(1.03);
             }
 
-        /* APP */
         .app-section {
             background: var(--lk);
             border-top: 1px solid var(--lk-border);
@@ -1120,7 +1105,6 @@
             font-size: 68px;
         }
 
-        /* MOBILE NAV */
         .mob-nav {
             display: none;
             position: fixed;
@@ -1174,7 +1158,6 @@
             box-shadow: 0 4px 14px rgba(16,185,129,.35);
         }
 
-        /* ANIMATIONS */
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -1199,7 +1182,6 @@
             animation: fadeUp .5s ease .3s both;
         }
 
-        /* RESPONSIVE */
         @media(max-width:1024px) {
             .hero-inner {
                 grid-template-columns: 1fr 1fr;
@@ -1517,7 +1499,8 @@
             const img = p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : '';
             const placeholder = `<div class="p-img-placeholder" style="${p.imageUrl ? 'display:none' : ''}">🛍️</div>`;
             const badge = discount ? `<span class="bdg bdg-r">-${discount}%</span>` : outOfStock ? `<span class="bdg bdg-oos">Épuisé</span>` : `<span class="bdg bdg-g">Nouveau</span>`;
-            return `<div class="p-card" onclick="location.href='product-details.html?id=${p.id}'"><div class="p-img">${img}${placeholder}${badge}<button class="w-btn" onclick="event.stopPropagation();wsh(this,${p.id})" title="Favoris">♡</button></div><div class="p-info"><div class="p-cat">${p.category?.name || 'Produit'}</div><div class="p-name" title="${p.name}">${p.name}</div><div class="p-stock ${stock.cls}">${stock.txt}</div><div class="p-row"><span class="p-price">${fmtPrice(p.price)}</span>${p.oldPrice && p.oldPrice > p.price ? `<span class="p-old">${fmtPrice(p.oldPrice)}</span>` : ''}<button class="add-btn" ${outOfStock ? 'disabled' : ''} onclick="addCart(event,${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${p.imageUrl || ''}')">${outOfStock ? 'Épuisé' : '+ Panier'}</button></div></div></div>`;
+            const oldPriceHtml = p.oldPrice && p.oldPrice > p.price ? `<span class="p-old">${Number(p.oldPrice).toLocaleString('fr-FR')} F</span>` : '';
+            return `<div class="p-card" onclick="location.href='product-details.html?id=${p.id}'"><div class="p-img">${img}${placeholder}${badge}<button class="w-btn" onclick="event.stopPropagation();wsh(this,${p.id})" title="Favoris">♡</button></div><div class="p-info"><div class="p-cat">${p.category?.name || 'Produit'}</div><div class="p-name" title="${p.name}">${p.name}</div><div class="p-stock ${stock.cls}">${stock.txt}</div><div class="p-row"><span class="p-price">${fmtPrice(p.price)}</span>${oldPriceHtml}<button class="add-btn" ${outOfStock ? 'disabled' : ''} onclick="addCart(event,${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${p.imageUrl || ''}')">${outOfStock ? 'Épuisé' : '+ Panier'}</button></div></div></div>`;
         }
         function skeleton(n = 4) { return Array(n).fill(`<div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>`).join(''); }
         function errHTML() { return `<div class="api-error" style="grid-column:1/-1">Impossible de charger les produits.<br><button onclick="loadProducts()">Réessayer</button></div>`; }
