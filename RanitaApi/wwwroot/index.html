@@ -1582,6 +1582,7 @@
             localStorage.setItem('cart', JSON.stringify(cart));
             const total = cart.reduce((s, i) => s + i.qty, 0);
             localStorage.setItem('ranitaCart', total);
+            if (typeof updateCartBadge === 'function') updateCartBadge();
             const btn = e.currentTarget;
             btn.textContent = '✓ Ajouté'; btn.style.background = '#059669';
             setTimeout(() => { btn.textContent = '+ Panier'; btn.style.background = ''; }, 1200);
