@@ -627,7 +627,6 @@
 
         function updateCartCount() {
             const total = cart.reduce((s, i) => s + (i.quantity || i.qty || 1), 0);
-            document.getElementById("cartCount").textContent = total;
             if (typeof updateCartBadge === 'function') updateCartBadge();
         }
 
@@ -840,6 +839,6 @@
             } catch (e) { }
         }
     </script>
-    
+    <script src="/cart-badge.js"></script>
 </body>
 </html>
