@@ -415,7 +415,10 @@
     <nav class="mob-header">
         <a href="index.html" class="mob-header-logo">🛒 Ranita Market</a>
         <div style="flex:1"></div>
-        <a href="cart.html" class="cart-link" style="font-size:13px;padding:7px 14px;">🛒 Panier (<span id="mobCartCount">0</span>)</a>
+        <a href="cart.html" class="mob-icon-btn" style="position:relative">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg>
+            <span id="mobCartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#10b981;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span>
+        </a>
     </nav>
 
     <!-- Header desktop (masqué sur mobile via header.css) -->
