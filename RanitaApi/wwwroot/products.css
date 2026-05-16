@@ -1043,11 +1043,19 @@ body {
         height: auto !important;
         font-size: 11px !important;
         padding: 8px 4px !important;
-        margin-top: 4px !important;
+        margin-top: auto !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         border-radius: 8px !important;
         box-sizing: border-box !important;
+    }
+
+    #productsGrid {
+        align-items: start !important;
+    }
+
+    .product-card {
+        height: 100% !important;
     }
 }
