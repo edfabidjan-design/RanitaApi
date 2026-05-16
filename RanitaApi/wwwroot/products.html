@@ -386,8 +386,12 @@
         }
 
         @media(max-width:768px) {
+            .products-toolbar {
+                display: none;
+            }
+
             .products-page {
-                padding: 92px 12px 40px;
+                padding: 62px 8px 40px;
             }
 
             .products-title h1 {
@@ -408,25 +412,42 @@
 
             #productsGrid {
                 grid-template-columns: repeat(2,minmax(0,1fr));
-                gap: 10px;
+                gap: 8px;
             }
 
             .product-img {
-                height: 140px;
+                height: 110px;
             }
 
             .product-info {
-                padding: 8px 10px 10px;
+                padding: 6px 8px 8px;
                 gap: 2px;
             }
 
+            .product-name {
+                font-size: 11px;
+                -webkit-line-clamp: 2;
+            }
+
             .price-current {
-                font-size: 14px;
+                font-size: 12px;
+            }
+
+            .price-old {
+                font-size: 10px;
+            }
+
+            .product-stock {
+                font-size: 10px;
+            }
+
+            .stars-row {
+                font-size: 10px;
             }
 
             .btn-buy, .btn-disabled {
-                font-size: 12px;
-                padding: 9px 8px;
+                font-size: 11px;
+                padding: 7px 6px;
             }
         }
 
@@ -697,7 +718,7 @@
         loadProducts();
         updateCartCount();
     </script>
-    
+
     <script src="/install-prompt.js"></script>
 </body>
 </html>
