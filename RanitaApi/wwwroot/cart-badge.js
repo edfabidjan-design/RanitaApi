@@ -12,5 +12,5 @@
     if (count) count.textContent = total;
 }
 
-document.addEventListener('DOMContentLoaded', updateCartBadge);
+
 window.addEventListener('storage', updateCartBadge);
