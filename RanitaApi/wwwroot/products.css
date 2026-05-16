@@ -115,7 +115,7 @@ body {
 
 .product-img {
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: unset;
     border-radius: 14px;
     overflow: hidden;
     background: #f3f4f6;
