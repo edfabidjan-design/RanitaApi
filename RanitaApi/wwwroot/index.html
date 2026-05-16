@@ -1277,6 +1277,13 @@
         <nav style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
             <a href="products.html">Produits</a>
             <a href="cart.html">Panier (<span id="cartCount">0</span>)</a>
+            <script>
+                (function () {
+                    var c = JSON.parse(localStorage.getItem('cart') || '[]');
+                    var t = c.reduce(function (s, i) { return s + (i.qty || i.quantity || 1); }, 0);
+                    document.getElementById('cartCount').textContent = t;
+                })();
+            </script>
             <a href="vendeur.html">Vendre sur Ranita</a>
             <div id="authNav" style="display:inline-flex;align-items:center;"></div>
         </nav>
