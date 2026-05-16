@@ -176,7 +176,7 @@
     }
 
     .mob-header {
-        display: flex;
+        display: flex !important;
     }
 }
 
