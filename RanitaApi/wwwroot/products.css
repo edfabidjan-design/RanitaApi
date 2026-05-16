@@ -1060,4 +1060,8 @@ body {
         display: flex !important;
         flex-direction: column !important;
     }
+
+    .product-info {
+        min-height: 180px !important;
+    }
 }
