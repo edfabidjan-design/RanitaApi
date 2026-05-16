@@ -1,4 +1,4 @@
-const CACHE_NAME = "ranita-v4";
+const CACHE_NAME = "ranita-v10";
 const URLS = ["/index.html", "/products.html", "/cart.html", "/products.css", "/header.css"];
 
 self.addEventListener("install", e => {
