@@ -1255,6 +1255,7 @@
         }
     </style>
 </head>
+
 <body>
 
 
@@ -1265,10 +1266,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
             <input type="text" placeholder="Rechercher..." onkeydown="if(event.key==='Enter')window.location.href='products.html?q='+encodeURIComponent(this.value)">
         </div>
-        <a href="cart.html" class="mob-icon-btn" style="position:relative">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg>
-            <span id="cartBadgeHome" style="display:none;position:absolute;top:-4px;right:-4px;background:#10b981;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span>
-        </a>
+        <a href="cart.html" class="mob-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg></a>
 
     </nav>
 
@@ -1614,23 +1612,7 @@
           "openingHours":"Mo-Su 08:00-20:00"
         }
     </script>
-
-
-    <script>
-        function updateCartBadge() {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const total = cart.reduce((s, i) => s + (i.qty || i.quantity || 1), 0);
-            const badge = document.getElementById('cartBadgeHome');
-            if (badge) {
-                badge.textContent = total;
-                badge.style.display = total > 0 ? 'flex' : 'none';
-            }
-        }
-        updateCartBadge();
-        window.addEventListener('storage', updateCartBadge);
-    </script>
-
-
+    <script src="/cart-badge.js"></script>
 </body>
 
 </html>
