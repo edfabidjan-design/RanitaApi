@@ -612,9 +612,9 @@
         }
 
         function updateCartCount() {
-            const total = cart.reduce((s, i) => s + i.quantity, 0);
+            const total = cart.reduce((s, i) => s + (i.quantity || i.qty || 1), 0);
             document.getElementById("cartCount").textContent = total;
-            const mob = document.getElementById("mobCartCount"); if (mob) mob.textContent = total;
+            if (typeof updateCartBadge === 'function') updateCartBadge();
         }
 
         function showToast(msg) {
