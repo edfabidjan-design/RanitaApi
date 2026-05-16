@@ -395,28 +395,20 @@
             }
 
             .products-title h1 {
-                font-size: 22px;
+                font-size: 20px;
             }
-
-            .products-toolbar {
-                flex-direction: column;
-                gap: 8px;
-                padding: 12px;
-            }
-
-                .products-toolbar input, .products-toolbar select {
-                    width: 100%;
-                    height: 44px;
-                    font-size: 15px;
-                }
 
             #productsGrid {
                 grid-template-columns: repeat(2,minmax(0,1fr));
                 gap: 8px;
             }
 
+            .product-card {
+                border-radius: 10px;
+            }
+
             .product-img {
-                height: 110px;
+                height: 120px;
             }
 
             .product-info {
@@ -424,52 +416,22 @@
                 gap: 2px;
             }
 
+            .product-category {
+                font-size: 9px;
+            }
+
             .product-name {
-                font-size: 11px;
-                -webkit-line-clamp: 2;
-            }
-
-            .price-current {
                 font-size: 12px;
-            }
-
-            .price-old {
-                font-size: 10px;
-            }
-
-            .product-stock {
-                font-size: 10px;
+                font-weight: 700;
             }
 
             .stars-row {
                 font-size: 10px;
-            }
-
-            .btn-buy, .btn-disabled {
-                font-size: 11px;
-                padding: 7px 6px;
-            }
-        }
-
-        @media(max-width:480px) {
-            .products-page {
-                padding: 92px 8px 40px;
-            }
-
-            #productsGrid {
-                gap: 8px;
-            }
-
-            .product-img {
-                height: 130px;
-            }
-
-            .product-name {
-                font-size: 12px;
             }
 
             .price-current {
                 font-size: 13px;
+                font-weight: 800;
             }
 
             .price-old {
@@ -480,19 +442,28 @@
                 font-size: 10px;
             }
 
-            .stars-row {
-                font-size: 10px;
-            }
-
             .btn-buy, .btn-disabled {
+                width: 100%;
                 font-size: 11px;
-                padding: 8px 6px;
+                padding: 8px 4px;
+                margin-top: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
             }
 
             .discount-badge {
                 font-size: 10px;
                 padding: 2px 6px;
             }
+        }
+
+        .discount-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+        }
+
         }
 
         @media(max-width:360px) {
@@ -523,7 +494,7 @@
 
     <!-- Navbar mobile (visible uniquement sur mobile via header.css) -->
     <nav class="mob-header">
-        <a href="index.html" class="mob-header-logo">🛒 Ranita</a>
+        <a href="index.html" class="mob-header-logo">🛒 Ranita Market</a>
         <div class="mob-search">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
             <input type="text" id="mobSearchInput" placeholder="Rechercher..." onkeydown="if(event.key==='Enter'){document.getElementById('searchInput').value=this.value;renderProducts();}">
