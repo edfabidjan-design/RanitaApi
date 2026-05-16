@@ -34,15 +34,6 @@
             color: #111827;
         }
 
-        .site-header {
-            position: fixed !important;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            z-index: 9999;
-        }
-
         .toast {
             position: fixed;
             bottom: 30px;
@@ -433,11 +424,18 @@
         <div class="site-logo" onclick="window.location.href='index.html'">🛒 Ranita Market</div>
         <nav style="display:flex;align-items:center;gap:8px;">
             <a href="products.html">Produits</a>
-            <a href="cart.html" class="cart-link" style="white-space:nowrap;min-width:120px;text-align:center;">🛒 Panier (<span id="cartCount">0</span>)</a>
+            <a href="cart.html" class="cart-link" style="white-space:nowrap;min-width:130px;text-align:center;">🛒 Panier (<span id="cartCount">0</span>)</a>
         </nav>
     </header>
+    <script>
+        (function () {
+            var c = JSON.parse(localStorage.getItem('cart') || '[]');
+            var t = c.reduce(function (s, i) { return s + (i.qty || i.quantity || 1); }, 0);
+            document.getElementById('cartCount').textContent = t;
+        })();
+    </script>
 
-    <div id="productDetails" style="padding-top: 60px;">
+    <div id="productDetails" style="padding-top: 92px;">
         <div class="loading-page">Chargement du produit...</div>
     </div>
 
@@ -451,7 +449,7 @@
         let quantity = 1;
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-     
+        updateCartCount();
 
         // ── SEO DYNAMIQUE ──────────────────────────────────────────────────────
         function updateSEO(product, images) {
