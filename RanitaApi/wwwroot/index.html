@@ -1548,13 +1548,20 @@
         function stockLabel(stock) { if (stock <= 0) return { cls: 'out', txt: 'Rupture de stock' }; if (stock <= 3) return { cls: 'low', txt: `⚠ Plus que ${stock} en stock` }; return { cls: 'ok', txt: `Stock : ${stock}` }; }
         function buildCard(p) {
             const discount = pct(p.price, p.oldPrice);
-            const stock = stockLabel(p.stock);
-            const outOfStock = p.stock <= 0;
+            const hasVariants = p.variants && p.variants.length > 0;
+            const globalStock = hasVariants ? p.variants.reduce((s, v) => s + v.stock, 0) : p.stock;
+            const outOfStock = globalStock <= 0;
+            const stock = stockLabel(globalStock);
             const img = p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : '';
-            const placeholder = `<div class="p-img-placeholder" style="${p.imageUrl ? 'display:none' : ''}">🛍️</div>`;
-            const badge = discount ? `<span class="bdg bdg-r">-${discount}%</span>` : outOfStock ? `<span class="bdg bdg-oos">Épuisé</span>` : `<span class="bdg bdg-g">Nouveau</span>`;
+            const placeholder = `<div class="p-img-placeholder" style="${p.imageUrl ? 'display:none' : ''}">&#x1F6CD;&#xFE0F;</div>`;
+            const badge = discount ? `<span class="bdg bdg-r">-${discount}%</span>` : outOfStock ? `<span class="bdg bdg-oos">&#xC9;puis&#xE9;</span>` : `<span class="bdg bdg-g">Nouveau</span>`;
             const oldPriceHtml = p.oldPrice && p.oldPrice > p.price ? `<span class="p-old">${Number(p.oldPrice).toLocaleString('fr-FR')} F</span>` : '';
-            return `<div class="p-card" onclick="location.href='product-details.html?id=${p.id}'"><div class="p-img">${img}${placeholder}${badge}<button class="w-btn" onclick="event.stopPropagation();wsh(this,${p.id})" title="Favoris">♡</button></div><div class="p-info"><div class="p-cat">${p.category?.name || 'Produit'}</div><div class="p-name" title="${p.name}">${p.name}</div><div class="p-stock ${stock.cls}">${stock.txt}</div><div class="p-row"><span class="p-price">${fmtPrice(p.price)}</span>${oldPriceHtml}<button class="add-btn" ${outOfStock ? 'disabled' : ''} onclick="addCart(event,${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${p.imageUrl || ''}')">${outOfStock ? 'Épuisé' : '+ Panier'}</button></div></div></div>`;
+            const btnHtml = outOfStock
+                ? `<button class="add-btn" disabled>&#xC9;puis&#xE9;</button>`
+                : hasVariants
+                    ? `<button class="add-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5)" onclick="event.stopPropagation();location.href='product-details.html?id=${p.id}'">&#x1F50D; Choisir</button>`
+                    : `<button class="add-btn" onclick="addCart(event,${p.id},'${p.name.replace(/'/g, "\'")}',${p.price},'${p.imageUrl || ''}')">+ Panier</button>`;
+            return `<div class="p-card" onclick="location.href='product-details.html?id=${p.id}'"><div class="p-img">${img}${placeholder}${badge}<button class="w-btn" onclick="event.stopPropagation();wsh(this,${p.id})" title="Favoris">&#x2661;</button></div><div class="p-info"><div class="p-cat">${p.category?.name || 'Produit'}</div><div class="p-name" title="${p.name}">${p.name}</div><div class="p-stock ${stock.cls}">${stock.txt}</div><div class="p-row"><span class="p-price">${fmtPrice(p.price)}</span>${oldPriceHtml}${btnHtml}</div></div></div>`;
         }
         function skeleton(n = 4) { return Array(n).fill(`<div class="p-card p-card-skeleton"><div class="p-img"><div class="skeleton skel-img" style="width:100%;height:160px"></div></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>`).join(''); }
         function errHTML() { return `<div class="api-error" style="grid-column:1/-1">Impossible de charger les produits.<br><button onclick="loadProducts()">Réessayer</button></div>`; }
