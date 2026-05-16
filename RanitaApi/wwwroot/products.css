@@ -1032,13 +1032,21 @@ body {
         gap: 10px !important;
     }
 
-    .product-card {
-        padding: 0 !important;
-    }
-
     .product-img {
         height: 110px !important;
         max-height: 110px !important;
         aspect-ratio: unset !important;
+    }
+
+    .btn-buy, .btn-disabled {
+        width: 100% !important;
+        height: 34px !important;
+        font-size: 11px !important;
+        padding: 0 !important;
+        margin-top: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
     }
 }
