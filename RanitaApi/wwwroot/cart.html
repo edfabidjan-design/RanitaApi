@@ -318,9 +318,9 @@
             let totalItems = 0;
 
             container.innerHTML = cart.map(item => {
-                const subtotal = item.price * item.quantity;
+                const subtotal = item.price * (item.quantity || item.qty || 1);
                 total += subtotal;
-                totalItems += item.quantity;
+                totalItems += (item.quantity || item.qty || 1);
                 const imgUrl = item.imageUrl
                     ? item.imageUrl.replace('/upload/', '/upload/w_120,h_120,c_fill,q_auto,f_auto/')
                     : 'https://via.placeholder.com/120';
@@ -336,7 +336,7 @@
                         </div>
                         <div class="qty-controls">
                             <button class="qty-btn" onclick="changeQty('${item.cartKey || item.id}', -1)">−</button>
-                            <span class="qty-num">${item.quantity}</span>
+                           <span class="qty-num">${item.quantity || item.qty || 1}</span>
                             <button class="qty-btn" onclick="changeQty('${item.cartKey || item.id}', 1)">+</button>
                         </div>
                         <button class="btn-remove" onclick="removeItem('${item.cartKey || item.id}')" title="Supprimer">🗑</button>
@@ -367,7 +367,7 @@
             const item = cart.find(i => (i.cartKey || i.id) == cartKey);
             if (!item) return;
 
-            const newQty = item.quantity + delta;
+            const newQty = (item.quantity || item.qty || 1) + delta;
 
             if (newQty <= 0) {
                 cart = cart.filter(i => (i.cartKey || i.id) != cartKey);
@@ -375,7 +375,7 @@
                 alert(`Stock maximum atteint (${item.maxStock} disponibles)`);
                 return;
             } else {
-                item.quantity = newQty;
+                item.quantity = newQty; item.qty = newQty;
             }
 
             saveCart();
