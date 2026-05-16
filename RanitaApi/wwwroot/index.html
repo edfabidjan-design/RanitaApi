@@ -437,8 +437,9 @@
         .flash-header {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: nowrap;
         }
 
         .flash-badge {
@@ -446,18 +447,21 @@
             color: #fff;
             font-family: Arial,sans-serif;
             font-weight: 700;
-            font-size: 14px;
-            padding: 8px 18px;
+            font-size: 13px;
+            padding: 7px 12px;
             border-radius: var(--r-sm);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .flash-timer {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .t-block {
@@ -465,17 +469,17 @@
             color: #fff;
             font-family: Arial,sans-serif;
             font-weight: 700;
-            font-size: 18px;
-            padding: 6px 11px;
+            font-size: 16px;
+            padding: 5px 8px;
             border-radius: var(--r-sm);
-            min-width: 42px;
+            min-width: 34px;
             text-align: center;
         }
 
         .t-sep {
             color: var(--lk-text);
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .products-grid {
@@ -1251,6 +1255,25 @@
 
             body {
                 padding-bottom: 68px;
+            }
+
+            .flash-badge {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .t-block {
+                font-size: 13px;
+                padding: 4px 6px;
+                min-width: 28px;
+            }
+
+            .t-sep {
+                font-size: 13px;
+            }
+
+            .flash-header {
+                gap: 8px;
             }
         }
     </style>
