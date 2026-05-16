@@ -174,11 +174,7 @@
 
 
 @media(max-width:768px) {
-    .site-header nav a {
-        display: none !important;
-    }
-
-    .site-header nav .cart-link {
+    .site-header nav a:not(.cart-link) {
         display: none !important;
     }
 
