@@ -1030,12 +1030,28 @@ body {
     #productsGrid {
         grid-template-columns: repeat(2,minmax(0,1fr)) !important;
         gap: 10px !important;
+        align-items: stretch !important;
+    }
+
+    .product-card {
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
     }
 
     .product-img {
         height: 110px !important;
         max-height: 110px !important;
         aspect-ratio: unset !important;
+        flex-shrink: 0 !important;
+    }
+
+    .product-info {
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 !important;
+        padding: 6px 8px 8px !important;
     }
 
     .btn-buy, .btn-disabled {
@@ -1049,19 +1065,5 @@ body {
         justify-content: center !important;
         border-radius: 8px !important;
         box-sizing: border-box !important;
-    }
-
-    #productsGrid {
-        align-items: stretch !important;
-    }
-
-    .product-card {
-        height: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-    }
-
-    .product-info {
-        min-height: 180px !important;
     }
 }
