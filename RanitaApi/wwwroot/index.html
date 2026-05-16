@@ -1518,6 +1518,16 @@
         }
         function toggleMenu() { const m = document.getElementById("clientMenu"); m.style.display = m.style.display === "none" ? "block" : "none"; }
         function logout() { localStorage.removeItem("client"); window.location.reload(); }
+
+        // Initiale client mobile
+        const clientMob = JSON.parse(localStorage.getItem("client")) || null;
+        const mobAccountBtn = document.querySelector('.mob-icon-btn[href="login.html"]');
+        if (mobAccountBtn && clientMob) {
+            mobAccountBtn.innerHTML = `<span style="font-size:13px;font-weight:800;color:white;">${clientMob.name ? clientMob.name.charAt(0).toUpperCase() : '👤'}</span>`;
+            mobAccountBtn.href = 'client-orders.html';
+            mobAccountBtn.style.background = '#10b981';
+        }
+
         document.addEventListener("click", (e) => { const m = document.getElementById("clientMenu"); if (m && !e.target.closest("#authNav")) m.style.display = "none"; });
     </script>
 
@@ -1605,7 +1615,7 @@
             const idx = cart.findIndex(i => i.id === id);
             if (idx >= 0) { cart[idx].qty++; } else { cart.push({ id, name, price, imageUrl: img, qty: 1 }); }
             localStorage.setItem('cart', JSON.stringify(cart));
-            const total = cart.reduce((s, i) => s + i.qty, 0);
+            const total = cart.reduce((s, i) => s + (i.qty || i.quantity || 1), 0);
             localStorage.setItem('ranitaCart', total);
             if (typeof updateCartBadge === 'function') updateCartBadge();
             const btn = e.currentTarget;
