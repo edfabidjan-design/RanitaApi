@@ -85,7 +85,7 @@
 }
 
 .mob-header-logo {
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
     color: white;
     text-decoration: none;
@@ -115,7 +115,7 @@
         border: none;
         outline: none;
         color: white;
-        font-size: 13px;
+        font-size: 12px;
         width: 100%;
         min-width: 0;
     }
