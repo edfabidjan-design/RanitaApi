@@ -15,6 +15,6 @@
     if (cartBtn) cartBtn.style.visibility = 'visible';
 }
 
-updateCartBadge();
+
 document.addEventListener('DOMContentLoaded', updateCartBadge);
 window.addEventListener('storage', updateCartBadge);
