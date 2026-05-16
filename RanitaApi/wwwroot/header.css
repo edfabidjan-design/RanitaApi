@@ -1,9 +1,8 @@
 ﻿/* =============================================
-   HEADER COMMUN — Ranita Market
+   HEADER DESKTOP
 ============================================= */
 .site-header {
     position: fixed;
-    min-height: 56px;
     top: 0;
     left: 0;
     right: 0;
@@ -34,12 +33,7 @@
     font-size: 14px;
     font-weight: 600;
     opacity: 0.85;
-    transition: opacity 0.2s;
 }
-
-    .site-header nav a:hover {
-        opacity: 1;
-    }
 
 .cart-link {
     background: #10b981;
@@ -52,36 +46,23 @@
     font-size: 14px;
 }
 
-.cart-badge {
-    background: white;
-    color: #10b981;
-    padding: 2px 7px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 800;
-    margin-left: 4px;
+.site-footer {
+    padding: 30px;
+    background: #06142b;
+    color: white;
+    text-align: center;
 }
 
-@media (max-width: 768px) {
-    .site-header {
-        padding: 10px 14px;
+    .site-footer a {
+        color: #10b981;
+        margin: 0 10px;
+        font-weight: 700;
+        text-decoration: none;
     }
 
-    .site-logo {
-        font-size: 15px;
-    }
-
-    .site-header nav a {
-        margin-left: 10px;
-        font-size: 13px;
-    }
-
-    .cart-link {
-        font-size: 13px;
-        padding: 7px 12px;
-    }
-}
-
+/* =============================================
+   HEADER MOBILE — 1 ligne compacte
+============================================= */
 .mob-header {
     display: none;
     position: fixed;
@@ -91,50 +72,32 @@
     z-index: 9999;
     background: #111827;
     border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding: 0;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-.mob-header-top {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.mob-header-bottom {
-    display: flex;
-    flex-direction: row;
+    padding: 10px 12px;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
+    box-sizing: border-box;
+    min-height: 54px;
 }
 
 .mob-header-logo {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     color: white;
-    cursor: pointer;
+    text-decoration: none;
     white-space: nowrap;
     flex-shrink: 0;
-    text-decoration: none;
 }
-
-    .mob-header-logo span {
-        color: #10b981;
-    }
 
 .mob-search {
     flex: 1;
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 999px;
-    padding: 7px 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 6px 10px;
     gap: 6px;
+    min-width: 0;
 }
 
     .mob-search input {
@@ -147,22 +110,21 @@
     }
 
         .mob-search input::placeholder {
-            color: rgba(255,255,255,0.45);
+            color: rgba(255,255,255,0.35);
         }
 
 .mob-icon-btn {
     position: relative;
-    background: rgba(255,255,255,0.1);
-    border: none;
-    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
     width: 36px;
     height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     color: white;
     text-decoration: none;
+    flex-shrink: 0;
 }
 
     .mob-icon-btn svg {
@@ -172,8 +134,8 @@
 
 .mob-cart-badge {
     position: absolute;
-    top: -3px;
-    right: -3px;
+    top: -4px;
+    right: -4px;
     background: #10b981;
     color: white;
     font-size: 9px;
@@ -186,51 +148,6 @@
     justify-content: center;
 }
 
-.mob-cart-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #10b981;
-    color: white;
-    text-decoration: none;
-    padding: 7px 12px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 13px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    width: auto !important;
-}
-
-.mob-cart-num {
-    background: white;
-    color: #10b981;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 1px 6px;
-    border-radius: 999px;
-    min-width: 18px;
-    text-align: center;
-}
-
-
-
-@media(max-width:768px) {
-    .site-header {
-        display: none !important;
-    }
-
-        .site-header nav a:not(.cart-link) {
-            display: none !important;
-        }
-
-    .mob-header {
-        display: flex !important;
-    }
-}
-
-
-/* Header mobile double ligne — padding-top pages */
 @media(max-width:768px) {
     .site-header {
         display: none !important;
@@ -238,5 +155,14 @@
 
     .mob-header {
         display: flex !important;
+    }
+
+    .product-page {
+        margin-top: 60px !important;
+        padding: 0 12px !important;
+    }
+
+    .product-description-full {
+        padding: 0 12px !important;
     }
 }
