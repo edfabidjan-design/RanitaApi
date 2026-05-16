@@ -718,7 +718,7 @@
                 document.getElementById("productDetails").innerHTML = "<p style='padding:40px;text-align:center'>Produit invalide.</p>";
                 return;
             }
-            const res = await fetch(`${API_BASE}/products/${productId}`);
+            let res; try { res = await fetch(`${API_BASE}/products/${productId}`); } catch (e) { document.getElementById("productDetails").innerHTML = "<div style='padding:60px;text-align:center'><p style='color:#ef4444;font-weight:700'>⚠️ Erreur réseau</p><button onclick='loadProduct()' style='margin-top:12px;padding:12px 24px;background:#10b981;color:white;border:none;border-radius:10px;font-weight:700;cursor:pointer'>🔄 Réessayer</button></div>"; return; }
             if (!res.ok) {
                 document.getElementById("productDetails").innerHTML = "<p style='padding:40px;text-align:center'>Produit introuvable.</p>";
                 return;
