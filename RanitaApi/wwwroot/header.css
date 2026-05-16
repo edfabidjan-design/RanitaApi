@@ -1,5 +1,5 @@
 ﻿/* =============================================
-   HEADER DESKTOP
+   HEADER DESKTOP — Ranita Market
 ============================================= */
 .site-header {
     position: fixed;
@@ -33,7 +33,12 @@
     font-size: 14px;
     font-weight: 600;
     opacity: 0.85;
+    transition: opacity 0.2s;
 }
+
+    .site-header nav a:hover {
+        opacity: 1;
+    }
 
 .cart-link {
     background: #10b981;
@@ -80,7 +85,7 @@
 }
 
 .mob-header-logo {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
     color: white;
     text-decoration: none;
@@ -100,6 +105,11 @@
     min-width: 0;
 }
 
+    .mob-search svg {
+        flex-shrink: 0;
+        color: rgba(255,255,255,0.4);
+    }
+
     .mob-search input {
         background: none;
         border: none;
@@ -107,6 +117,7 @@
         color: white;
         font-size: 13px;
         width: 100%;
+        min-width: 0;
     }
 
         .mob-search input::placeholder {
