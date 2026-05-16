@@ -387,84 +387,76 @@
 
         @media(max-width:768px) {
             .products-toolbar {
-                display: none;
+                display: none !important;
             }
 
             .products-page {
-                padding: 62px 8px 40px;
+                padding: 62px 8px 40px !important;
             }
 
             .products-title h1 {
-                font-size: 20px;
+                font-size: 20px !important;
             }
 
             #productsGrid {
-                grid-template-columns: repeat(2,minmax(0,1fr));
-                gap: 8px;
+                grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+                gap: 8px !important;
             }
 
             .product-card {
-                border-radius: 10px;
+                padding: 0 !important;
+                border-radius: 10px !important;
             }
 
             .product-img {
-                height: 120px;
+                height: 110px !important;
+                max-height: 110px !important;
+                border-radius: 10px 10px 0 0 !important;
             }
 
             .product-info {
-                padding: 6px 8px 8px;
-                gap: 2px;
+                padding: 6px 8px 8px !important;
+                gap: 2px !important;
             }
 
             .product-category {
-                font-size: 9px;
+                font-size: 9px !important;
             }
 
             .product-name {
-                font-size: 12px;
-                font-weight: 700;
+                font-size: 12px !important;
+                font-weight: 700 !important;
             }
 
             .stars-row {
-                font-size: 10px;
+                font-size: 10px !important;
             }
 
             .price-current {
-                font-size: 13px;
-                font-weight: 800;
+                font-size: 12px !important;
+                white-space: nowrap !important;
             }
 
             .price-old {
-                font-size: 10px;
+                font-size: 10px !important;
             }
 
             .product-stock {
-                font-size: 10px;
+                font-size: 10px !important;
             }
 
             .btn-buy, .btn-disabled {
-                width: 100%;
-                font-size: 11px;
-                padding: 8px 4px;
-                margin-top: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 8px;
-            }
-
-            .discount-badge {
-                font-size: 10px;
-                padding: 2px 6px;
+                width: 100% !important;
+                height: 34px !important;
+                font-size: 11px !important;
+                border-radius: 8px !important;
+                padding: 0 !important;
+                margin-top: 4px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
         }
-
-        .discount-badge {
-            font-size: 10px;
-            padding: 2px 6px;
-        }
-
-        
 
         @media(max-width:360px) {
             #productsGrid {
