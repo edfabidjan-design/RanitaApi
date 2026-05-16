@@ -32,7 +32,6 @@
             color: var(--lk-text);
         }
 
-        /* PAGE */
         .products-page {
             max-width: 1280px;
             margin: 0 auto;
@@ -66,7 +65,6 @@
             color: var(--lk-text2);
         }
 
-        /* TOOLBAR */
         .products-toolbar {
             display: flex;
             gap: 12px;
@@ -111,14 +109,12 @@
                     border-color: var(--green-10b);
                 }
 
-        /* GRILLE */
         #productsGrid {
             display: grid;
             grid-template-columns: repeat(2,minmax(0,1fr));
             gap: 16px;
         }
 
-        /* ══ CARTE — style identique homepage ══ */
         .product-card {
             background: var(--lk);
             border: 1px solid var(--lk-border);
@@ -138,7 +134,6 @@
                 box-shadow: 0 8px 24px rgba(16,185,129,0.14);
             }
 
-        /* Image */
         .product-img {
             height: 160px;
             width: 100%;
@@ -163,7 +158,6 @@
             transform: scale(1.04);
         }
 
-        /* Badge */
         .discount-badge {
             position: absolute;
             top: 10px;
@@ -177,7 +171,6 @@
             z-index: 2;
         }
 
-        /* Info */
         .product-info {
             padding: 10px 12px 12px;
             display: flex;
@@ -206,7 +199,6 @@
             overflow: hidden;
         }
 
-        /* Stars */
         .stars-row {
             display: flex;
             align-items: center;
@@ -222,7 +214,6 @@
                 color: var(--lk-text3);
             }
 
-        /* Prix — style homepage : prix barré visible */
         .product-prices {
             display: flex;
             align-items: center;
@@ -255,7 +246,6 @@
             font-weight: 700;
         }
 
-        /* Stock */
         .product-stock {
             font-size: 11px;
             color: var(--lk-text3);
@@ -271,7 +261,6 @@
                 font-weight: 700;
             }
 
-        /* Boutons — style homepage */
         .btn-buy {
             width: 100%;
             background: linear-gradient(135deg,var(--green-10b),var(--green-059));
@@ -310,7 +299,6 @@
             font-family: Arial,sans-serif;
         }
 
-        /* SKELETON */
         .skeleton {
             background: linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);
             background-size: 200% 100%;
@@ -359,7 +347,6 @@
             border-radius: var(--r-sm);
         }
 
-        /* VIDE */
         .empty-state {
             grid-column: 1/-1;
             text-align: center;
@@ -377,7 +364,6 @@
                 font-size: 15px;
             }
 
-        /* RESPONSIVE */
         @media(max-width:1024px) {
             #productsGrid {
                 grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
@@ -492,16 +478,26 @@
                 padding: 10px;
             }
         }
-
-
-    @media(max-width:768px){.site-header{display:flex!important;}}</style>
+    </style>
 </head>
 <body>
 
+    <!-- Navbar mobile (header.css la rend visible sur mobile) -->
+    <nav class="mob-header">
+        <a href="index.html" class="mob-header-logo">Ranita<span style="color:#10b981">.</span></a>
+        <div class="mob-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+            <input type="text" id="mobSearchInput" placeholder="Rechercher un produit..." onkeydown="if(event.key==='Enter'){document.getElementById('searchInput').value=this.value;renderProducts();}">
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+            <a href="cart.html" class="mob-icon-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg>
+                <span class="mob-cart-badge" id="mobCartBadge" style="display:none">0</span>
+            </a>
+        </div>
+    </nav>
 
-
-
-
+    <!-- Header desktop (header.css le masque sur mobile) -->
     <header class="site-header">
         <div class="site-logo" onclick="window.location.href='index.html'">🛒 Ranita Market</div>
         <a href="cart.html" class="cart-link">🛒 Panier (<span id="cartCount">0</span>)</a>
@@ -590,6 +586,8 @@
         function updateCartCount() {
             const total = cart.reduce((sum, item) => sum + item.quantity, 0);
             document.getElementById("cartCount").textContent = total;
+            const mob = document.getElementById("mobCartBadge");
+            if (mob) { mob.textContent = total; mob.style.display = total > 0 ? 'flex' : 'none'; }
         }
 
         function addToCart(id) {
@@ -654,30 +652,29 @@
                     btnHtml = `<button class="btn-buy" data-id="${p.id}" onclick="event.stopPropagation();addToCart(${p.id})">🛒 Ajouter au panier</button>`;
                 }
 
-                /* Prix barré — flex-shrink:0 pour ne pas couper */
                 const oldPriceHtml = p.oldPrice && p.oldPrice > p.price
                     ? `<span class="price-old">${Number(p.oldPrice).toLocaleString('fr-FR')} F</span>`
                     : '';
 
                 return `
-                <div class="product-card" onclick="openProductDetails(${p.id})">
-                  <div class="product-img">
-                    ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
-                    ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-                  </div>
-                  <div class="product-info">
-                    <span class="product-category">${p.category?.name || ''}</span>
-                    <h3 class="product-name">${p.name}</h3>
-                    ${starsHtml}
-                    <div class="product-prices">
-                      <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
-                      ${oldPriceHtml}
-                      ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
-                    </div>
-                    ${stockHtml}
-                    ${btnHtml}
-                  </div>
-                </div>`;
+                    <div class="product-card" onclick="openProductDetails(${p.id})">
+                      <div class="product-img">
+                        ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
+                        ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                      </div>
+                      <div class="product-info">
+                        <span class="product-category">${p.category?.name || ''}</span>
+                        <h3 class="product-name">${p.name}</h3>
+                        ${starsHtml}
+                        <div class="product-prices">
+                          <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
+                          ${oldPriceHtml}
+                          ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                        </div>
+                        ${stockHtml}
+                        ${btnHtml}
+                      </div>
+                    </div>`;
             }).join('');
         }
 
@@ -687,7 +684,7 @@
         loadProducts();
         updateCartCount();
     </script>
-
+    
     <script src="/install-prompt.js"></script>
 </body>
-</html>
+</html>  

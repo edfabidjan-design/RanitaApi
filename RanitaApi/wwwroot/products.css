@@ -13,13 +13,6 @@ body {
     overflow-x: hidden;
 }
 
-
-
-
-
-
-
-
 /* =============================================
    CART LINK (bouton panier vert)
 ============================================= */
@@ -536,23 +529,19 @@ body {
     }
 
 /* =============================================
-   MOBILE — max-width: 768px  (UN SEUL BLOC)
+   MOBILE — max-width: 768px
 ============================================= */
 @media (max-width: 768px) {
-
 
     .site-logo {
         font-size: 15px !important;
     }
-
-
 
     .mobile-shop-header .cart-link {
         font-size: 13px !important;
         padding: 8px 12px !important;
     }
 
-    /* ── Products page ── */
     .products-page {
         padding: 80px 12px 40px !important;
     }
@@ -644,7 +633,6 @@ body {
         margin-top: 2px !important;
     }
 
-
     .product-card strong {
         font-size: 15px !important;
     }
@@ -670,7 +658,6 @@ body {
         font-size: 11px !important;
     }
 
-    /* ── Cart page ── */
     .cart-page {
         margin: 16px auto !important;
         padding: 0 12px 40px !important;
@@ -755,7 +742,6 @@ body {
             text-decoration: none !important;
         }
 
-    /* ── Checkout page ── */
     .checkout-page {
         padding: 16px 12px 50px !important;
         align-items: flex-start !important;
@@ -774,7 +760,6 @@ body {
             text-align: center !important;
         }
 
-    /* ── Product details ── */
     .product-detail-card {
         flex-direction: column !important;
         padding: 16px 12px 40px !important;
@@ -815,7 +800,6 @@ body {
             padding: 12px !important;
         }
 
-    /* ── Home ── */
     .hero-home {
         margin: 16px !important;
         padding: 30px 20px !important;
@@ -843,7 +827,6 @@ body {
    TRÈS PETIT MOBILE — max-width: 380px
 ============================================= */
 @media (max-width: 380px) {
-
     #productsGrid {
         grid-template-columns: 1fr !important;
     }
@@ -868,6 +851,7 @@ body {
         height: 170px !important;
     }
 }
+
 @media (max-width: 480px) {
     .payment-option {
         flex-wrap: wrap !important;
@@ -908,18 +892,9 @@ body {
     }
 }
 
-
-/* ── Header fixed mobile ── */
+/* ── Header mobile — header.css est la seule source de vérité ── */
 @media (max-width: 768px) {
-    .site-header {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        z-index: 9999 !important;
-    }
-
+    /* .site-header : masqué par header.css via display:none !important */
     .checkout-wrapper {
         padding-top: 70px !important;
     }
@@ -933,13 +908,9 @@ body {
     }
 }
 
-
-
 /* =============================================
    CORRECTIONS RESPONSIVE MANQUANTES
 ============================================= */
-
-/* Client orders page */
 @media (max-width: 768px) {
     .orders-page {
         padding: 0 12px !important;
@@ -960,33 +931,31 @@ body {
         font-size: 12px !important;
     }
 
-    .order-table th, .order-table td {
-        padding: 8px !important;
-    }
+        .order-table th, .order-table td {
+            padding: 8px !important;
+        }
 }
 
-/* Thank you page */
 @media (max-width: 768px) {
     .thank-you-card {
         padding: 28px 20px !important;
         margin: 16px !important;
     }
 
-    .thank-you-card h1 {
-        font-size: 22px !important;
-    }
+        .thank-you-card h1 {
+            font-size: 22px !important;
+        }
 
     .thank-you-actions {
         flex-direction: column !important;
     }
 
-    .thank-you-actions a {
-        width: 100% !important;
-        text-align: center !important;
-    }
+        .thank-you-actions a {
+            width: 100% !important;
+            text-align: center !important;
+        }
 }
 
-/* Product details page responsive */
 @media (max-width: 768px) {
     .product-page {
         margin-top: 70px !important;
@@ -998,7 +967,6 @@ body {
     }
 }
 
-/* Auth pages */
 .auth-card {
     max-width: 420px;
     margin: 60px auto;
@@ -1059,9 +1027,15 @@ body {
     font-size: 14px;
 }
 
-.auth-links a {
-    color: #10b981;
-    text-decoration: none;
-    font-weight: 600;
+    .auth-links a {
+        color: #10b981;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+@media(max-width:768px) {
+    #productsGrid {
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+        gap: 10px !important;
+    }
 }
-@media(max-width:768px){#productsGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;}}

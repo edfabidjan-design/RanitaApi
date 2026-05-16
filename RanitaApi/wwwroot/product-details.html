@@ -8,17 +8,11 @@
     <link rel="stylesheet" href="header.css">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
-    <!-- SEO de base (sera écrasé dynamiquement) -->
     <meta name="description" content="Découvrez nos produits de qualité livrés rapidement à Abidjan et partout en Côte d'Ivoire.">
     <meta name="robots" content="index, follow">
-
-    <!-- Open Graph -->
     <meta property="og:type" content="product">
     <meta property="og:site_name" content="Ranita Market">
     <meta property="og:locale" content="fr_FR">
-
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
 
     <style>
@@ -32,39 +26,6 @@
             font-family: 'Segoe UI', sans-serif;
             background: #f8f9fa;
             color: #111827;
-        }
-
-        .site-header {
-            background: #111827;
-            color: white;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .site-logo {
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            color: white;
-        }
-
-        .site-header nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .cart-badge {
-            background: #10b981;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 12px;
-            margin-left: 4px;
         }
 
         .toast {
@@ -440,15 +401,26 @@
             color: #9ca3af;
             font-size: 16px;
         }
-        @media(max-width:768px) {
-            .site-header nav .cart-link {
-                display: inline-flex !important;
-            }
-        }
-    @media(max-width:768px){.site-header nav .cart-link{display:inline-flex!important;}}@media(max-width:768px){.site-header{display:flex!important;}}</style>
+    </style>
 </head>
 <body>
 
+    <!-- Navbar mobile (header.css la rend visible sur mobile) -->
+    <nav class="mob-header">
+        <a href="index.html" class="mob-header-logo">Ranita<span style="color:#10b981">.</span></a>
+        <div style="flex:1"></div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+            <a href="products.html" class="mob-icon-btn" title="Produits">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
+            </a>
+            <a href="cart.html" class="mob-icon-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg>
+                <span class="mob-cart-badge" id="mobCartBadge" style="display:none">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Header desktop (header.css le masque sur mobile) -->
     <header class="site-header">
         <div class="site-logo" onclick="window.location.href='index.html'">🛒 Ranita Market</div>
         <nav style="display:flex;align-items:center;gap:8px;">
@@ -473,7 +445,6 @@
 
         updateCartCount();
 
-        // ── SEO DYNAMIQUE ──────────────────────────────────────────────────────
         function updateSEO(product, images) {
             const title = `${product.name} — Ranita Market`;
             const description = product.shortDescription
@@ -482,13 +453,10 @@
             const imageUrl = images[0] || 'https://www.ranita-shop.com/images/logo.png';
             const pageUrl = `https://www.ranita-shop.com/product-details.html?id=${product.id}`;
 
-            // Title + meta de base
             document.title = title;
             setMeta('name', 'description', description);
             setMeta('name', 'keywords', `${product.name}, ${product.category?.name || ''}, acheter en ligne Côte d'Ivoire, Abidjan, Ranita Market`);
             setMeta('name', 'robots', 'index, follow');
-
-            // Open Graph
             setMeta('property', 'og:title', title);
             setMeta('property', 'og:description', description);
             setMeta('property', 'og:image', imageUrl);
@@ -498,50 +466,29 @@
             setMeta('property', 'og:site_name', 'Ranita Market');
             setMeta('property', 'product:price:amount', product.price);
             setMeta('property', 'product:price:currency', 'XOF');
-
-            // Twitter Card
             setMeta('name', 'twitter:card', 'summary_large_image');
             setMeta('name', 'twitter:title', title);
             setMeta('name', 'twitter:description', description);
             setMeta('name', 'twitter:image', imageUrl);
 
-            // Canonical
             let canonical = document.querySelector('link[rel="canonical"]');
-            if (!canonical) {
-                canonical = document.createElement('link');
-                canonical.rel = 'canonical';
-                document.head.appendChild(canonical);
-            }
+            if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical); }
             canonical.href = pageUrl;
 
-            // JSON-LD — Google Rich Results (étoiles, prix, disponibilité)
-            const hasStock = (product.stock > 0) ||
-                (product.variants && product.variants.some(v => v.stock > 0));
-
+            const hasStock = (product.stock > 0) || (product.variants && product.variants.some(v => v.stock > 0));
             const jsonLd = {
-                "@context": "https://schema.org/",
-                "@type": "Product",
+                "@context": "https://schema.org/", "@type": "Product",
                 "name": product.name,
                 "description": product.shortDescription || product.description || product.name,
-                "image": images,
-                "sku": product.sku || `RAN-${product.id}`,
-                "url": pageUrl,
+                "image": images, "sku": product.sku || `RAN-${product.id}`, "url": pageUrl,
                 ...(product.brand ? { "brand": { "@type": "Brand", "name": product.brand } } : {}),
                 "offers": {
-                    "@type": "Offer",
-                    "url": pageUrl,
-                    "priceCurrency": "XOF",
-                    "price": product.price,
-                    "availability": hasStock
-                        ? "https://schema.org/InStock"
-                        : "https://schema.org/OutOfStock",
+                    "@type": "Offer", "url": pageUrl, "priceCurrency": "XOF", "price": product.price,
+                    "availability": hasStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
                     "seller": { "@type": "Organization", "name": "Ranita Market" },
                     "shippingDetails": {
                         "@type": "OfferShippingDetails",
-                        "shippingDestination": {
-                            "@type": "DefinedRegion",
-                            "addressCountry": "CI"
-                        },
+                        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "CI" },
                         "deliveryTime": {
                             "@type": "ShippingDeliveryTime",
                             "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY" },
@@ -550,27 +497,20 @@
                     }
                 }
             };
-
             const oldLd = document.getElementById('product-jsonld');
             if (oldLd) oldLd.remove();
             const script = document.createElement('script');
-            script.id = 'product-jsonld';
-            script.type = 'application/ld+json';
+            script.id = 'product-jsonld'; script.type = 'application/ld+json';
             script.textContent = JSON.stringify(jsonLd);
             document.head.appendChild(script);
         }
 
         function setMeta(attr, name, content) {
             let el = document.querySelector(`meta[${attr}="${name}"]`);
-            if (!el) {
-                el = document.createElement('meta');
-                el.setAttribute(attr, name);
-                document.head.appendChild(el);
-            }
+            if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
             el.setAttribute('content', content);
         }
 
-        // ── MASQUER NOM CLIENT ─────────────────────────────────────────────────
         function maskName(fullName) {
             if (!fullName) return 'Client';
             const parts = fullName.trim().split(' ');
@@ -578,15 +518,11 @@
             return parts[0] + ' ' + parts[1].charAt(0) + '***';
         }
 
-        // ── AVIS ───────────────────────────────────────────────────────────────
         async function loadReviews() {
             const res = await fetch(`${API_BASE}/reviews/product/${productId}`);
             const reviews = await res.json();
             const container = document.getElementById("reviewsList");
-            if (!reviews.length) {
-                container.innerHTML = `<p style="color:#9ca3af;font-size:14px;">Aucun avis pour ce produit.</p>`;
-                return;
-            }
+            if (!reviews.length) { container.innerHTML = `<p style="color:#9ca3af;font-size:14px;">Aucun avis pour ce produit.</p>`; return; }
             const moyenne = (reviews.reduce((s, r) => s + r.note, 0) / reviews.length).toFixed(1);
             let visible = 3;
             function render() {
@@ -606,35 +542,18 @@
                             </div>
                             ${r.commentaire ? `<p style="font-size:14px;color:#374151;margin:0;">${r.commentaire}</p>` : ''}
                         </div>`).join('')}
-                        ${reviews.length > visible ? `
-                        <button onclick="showMore()"
-                            style="width:100%;margin-top:16px;padding:12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;color:#374151;">
-                            Voir plus (${reviews.length - visible} restants)
-                        </button>` : ''}`;
+                        ${reviews.length > visible ? `<button onclick="showMore()" style="width:100%;margin-top:16px;padding:12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;color:#374151;">Voir plus (${reviews.length - visible} restants)</button>` : ''}`;
             }
             window.showMore = () => { visible += 3; render(); };
             render();
 
-            // JSON-LD avis — enrichit les Rich Results Google
             if (reviews.length > 0) {
                 const avgRating = parseFloat(moyenne);
-                const reviewsLd = {
-                    "@context": "https://schema.org/",
-                    "@type": "Product",
-                    "name": currentProduct?.name || '',
-                    "aggregateRating": {
-                        "@type": "AggregateRating",
-                        "ratingValue": avgRating,
-                        "reviewCount": reviews.length,
-                        "bestRating": 5,
-                        "worstRating": 1
-                    }
-                };
+                const reviewsLd = { "@context": "https://schema.org/", "@type": "Product", "name": currentProduct?.name || '', "aggregateRating": { "@type": "AggregateRating", "ratingValue": avgRating, "reviewCount": reviews.length, "bestRating": 5, "worstRating": 1 } };
                 const oldR = document.getElementById('reviews-jsonld');
                 if (oldR) oldR.remove();
                 const s = document.createElement('script');
-                s.id = 'reviews-jsonld';
-                s.type = 'application/ld+json';
+                s.id = 'reviews-jsonld'; s.type = 'application/ld+json';
                 s.textContent = JSON.stringify(reviewsLd);
                 document.head.appendChild(s);
             }
@@ -643,6 +562,8 @@
         function updateCartCount() {
             const total = cart.reduce((s, i) => s + i.quantity, 0);
             document.getElementById("cartCount").textContent = total;
+            const mob = document.getElementById("mobCartBadge");
+            if (mob) { mob.textContent = total; mob.style.display = total > 0 ? 'flex' : 'none'; }
         }
 
         function showToast(msg) {
@@ -652,16 +573,11 @@
             setTimeout(() => t.remove(), 2500);
         }
 
-        function calcDiscount(price, oldPrice) {
-            if (!oldPrice || oldPrice <= price) return null;
-            return Math.round((1 - price / oldPrice) * 100);
-        }
+        function calcDiscount(price, oldPrice) { if (!oldPrice || oldPrice <= price) return null; return Math.round((1 - price / oldPrice) * 100); }
 
         function selectVariant(variantId) {
             selectedVariant = currentProduct.variants.find(v => v.id === variantId);
-            document.querySelectorAll(".variant-btn").forEach(b => {
-                b.classList.toggle("selected", parseInt(b.dataset.id) === variantId);
-            });
+            document.querySelectorAll(".variant-btn").forEach(b => { b.classList.toggle("selected", parseInt(b.dataset.id) === variantId); });
             updateStockDisplay();
         }
 
@@ -675,25 +591,10 @@
             const stock = getStock();
             const stockEl = document.getElementById("stockInfo");
             const addBtn = document.getElementById("addBtn");
-            if (stock === null) {
-                stockEl.textContent = "Sélectionnez une variante";
-                stockEl.className = "stock-info";
-                if (addBtn) addBtn.disabled = true;
-                return;
-            }
-            if (stock <= 0) {
-                stockEl.textContent = "Rupture de stock";
-                stockEl.className = "stock-info out";
-                if (addBtn) { addBtn.disabled = true; addBtn.textContent = "Rupture de stock"; }
-            } else if (stock <= 5) {
-                stockEl.textContent = `⚠️ Plus que ${stock} en stock`;
-                stockEl.className = "stock-info low";
-                if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; }
-            } else {
-                stockEl.textContent = `En stock (${stock} disponibles)`;
-                stockEl.className = "stock-info";
-                if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; }
-            }
+            if (stock === null) { stockEl.textContent = "Sélectionnez une variante"; stockEl.className = "stock-info"; if (addBtn) addBtn.disabled = true; return; }
+            if (stock <= 0) { stockEl.textContent = "Rupture de stock"; stockEl.className = "stock-info out"; if (addBtn) { addBtn.disabled = true; addBtn.textContent = "Rupture de stock"; } }
+            else if (stock <= 5) { stockEl.textContent = `⚠️ Plus que ${stock} en stock`; stockEl.className = "stock-info low"; if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; } }
+            else { stockEl.textContent = `En stock (${stock} disponibles)`; stockEl.className = "stock-info"; if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; } }
         }
 
         function changeQty(delta) {
@@ -710,34 +611,17 @@
             if (stock <= 0) { showToast("Rupture de stock"); return; }
             const cartKey = hasVariants ? `${currentProduct.id}-${selectedVariant.id}` : `${currentProduct.id}`;
             const existing = cart.find(i => i.cartKey === cartKey);
-            if (existing) {
-                existing.quantity = Math.min(existing.quantity + quantity, stock);
-            } else {
-                cart.push({
-                    cartKey, id: currentProduct.id, name: currentProduct.name,
-                    price: selectedVariant?.price || currentProduct.price,
-                    imageUrl: currentProduct.imageUrl, quantity,
-                    variant: selectedVariant?.combination || null,
-                    variantId: selectedVariant?.id || null,
-                    maxStock: getStock()
-                });
-            }
+            if (existing) { existing.quantity = Math.min(existing.quantity + quantity, stock); }
+            else { cart.push({ cartKey, id: currentProduct.id, name: currentProduct.name, price: selectedVariant?.price || currentProduct.price, imageUrl: currentProduct.imageUrl, quantity, variant: selectedVariant?.combination || null, variantId: selectedVariant?.id || null, maxStock: getStock() }); }
             localStorage.setItem("cart", JSON.stringify(cart));
             updateCartCount();
             showToast(`✅ ${quantity} article(s) ajouté(s) au panier !`);
         }
 
-        // ── CHARGER PRODUIT ────────────────────────────────────────────────────
         async function loadProduct() {
-            if (!productId) {
-                document.getElementById("productDetails").innerHTML = "<p style='padding:40px;text-align:center'>Produit invalide.</p>";
-                return;
-            }
+            if (!productId) { document.getElementById("productDetails").innerHTML = "<p style='padding:40px;text-align:center'>Produit invalide.</p>"; return; }
             const res = await fetch(`${API_BASE}/products/${productId}`);
-            if (!res.ok) {
-                document.getElementById("productDetails").innerHTML = "<p style='padding:40px;text-align:center'>Produit introuvable.</p>";
-                return;
-            }
+            if (!res.ok) { document.getElementById("productDetails").innerHTML = "<p style='padding:40px;text-align:center'>Produit introuvable.</p>"; return; }
             currentProduct = await res.json();
 
             let images = [];
@@ -745,7 +629,6 @@
             if (images.length === 0 && currentProduct.imageUrl) images = [currentProduct.imageUrl];
             if (images.length === 0) images = ["https://via.placeholder.com/600x600?text=Ranita"];
 
-            // ✅ SEO dynamique — titre, og:image, JSON-LD, canonical
             updateSEO(currentProduct, images);
 
             const discount = calcDiscount(currentProduct.price, currentProduct.oldPrice);
@@ -753,9 +636,7 @@
             try { attrs = JSON.parse(currentProduct.attributes || "{}"); } catch (e) { }
             const attrKeys = Object.keys(attrs).filter(k => attrs[k]);
             const hasVariants = currentProduct.variants && currentProduct.variants.length > 0;
-            const globalStock = hasVariants
-                ? currentProduct.variants.reduce((s, v) => s + v.stock, 0)
-                : currentProduct.stock;
+            const globalStock = hasVariants ? currentProduct.variants.reduce((s, v) => s + v.stock, 0) : currentProduct.stock;
 
             document.getElementById("productDetails").innerHTML = `
                     <div style="max-width:1100px;margin:16px auto 0;padding:0 20px;">
@@ -767,19 +648,8 @@
                     </div>
                     <div class="product-page">
                         <div class="gallery">
-                            <div class="gallery-main">
-                                <img id="mainImg" src="${images[0]}" alt="${currentProduct.name}">
-                            </div>
-                            ${images.length > 1 ? `
-                            <div class="gallery-thumbs">
-                                ${images.map((url, i) => `
-                                    <div class="gallery-thumb ${i === 0 ? 'active' : ''}"
-                                         onclick="document.getElementById('mainImg').src='${url}';
-                                                  this.parentElement.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));
-                                                  this.classList.add('active')">
-                                        <img src="${url}" alt="${currentProduct.name} — image ${i + 1}">
-                                    </div>`).join('')}
-                            </div>` : ''}
+                            <div class="gallery-main"><img id="mainImg" src="${images[0]}" alt="${currentProduct.name}"></div>
+                            ${images.length > 1 ? `<div class="gallery-thumbs">${images.map((url, i) => `<div class="gallery-thumb ${i === 0 ? 'active' : ''}" onclick="document.getElementById('mainImg').src='${url}';this.parentElement.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active')"><img src="${url}" alt="${currentProduct.name} — image ${i + 1}"></div>`).join('')}</div>` : ''}
                         </div>
                         <div class="product-info">
                             <h1 class="product-title">${currentProduct.name}</h1>
@@ -789,16 +659,7 @@
                                 ${currentProduct.oldPrice ? `<span class="price-old">${Number(currentProduct.oldPrice).toLocaleString()} FCFA</span>` : ''}
                                 ${discount ? `<span class="price-discount">-${discount}%</span>` : ''}
                             </div>
-                            ${hasVariants ? `
-                            <div class="variants-section">
-                                <div class="variant-label">Choisir une variante :</div>
-                                <div class="variant-options">
-                                    ${currentProduct.variants.map(v => `
-                                        <button class="variant-btn ${v.stock <= 0 ? 'out-of-stock' : ''}"
-                                                data-id="${v.id}" onclick="selectVariant(${v.id})"
-                                                ${v.stock <= 0 ? 'disabled' : ''}>${v.combination}</button>`).join('')}
-                                </div>
-                            </div>` : ''}
+                            ${hasVariants ? `<div class="variants-section"><div class="variant-label">Choisir une variante :</div><div class="variant-options">${currentProduct.variants.map(v => `<button class="variant-btn ${v.stock <= 0 ? 'out-of-stock' : ''}" data-id="${v.id}" onclick="selectVariant(${v.id})" ${v.stock <= 0 ? 'disabled' : ''}>${v.combination}</button>`).join('')}</div></div>` : ''}
                             <div class="qty-block">
                                 <span class="qty-label">Quantité :</span>
                                 <div class="qty-controls">
@@ -808,25 +669,11 @@
                                 </div>
                             </div>
                             <div id="stockInfo" class="stock-info"></div>
-                            ${globalStock <= 0
-                    ? `<button class="btn-disabled" disabled>Rupture de stock</button>`
-                    : `<button class="btn-add-cart" id="addBtn" onclick="addToCart()">🛒 Ajouter au panier</button>`}
-                            ${attrKeys.length > 0 ? `
-                            <div class="attributes-block">
-                                <h4>Caractéristiques</h4>
-                                ${attrKeys.map(k => `
-                                    <div class="attr-row">
-                                        <span class="attr-key">${k}</span>
-                                        <span class="attr-val">${attrs[k]}</span>
-                                    </div>`).join('')}
-                            </div>` : ''}
+                            ${globalStock <= 0 ? `<button class="btn-disabled" disabled>Rupture de stock</button>` : `<button class="btn-add-cart" id="addBtn" onclick="addToCart()">🛒 Ajouter au panier</button>`}
+                            ${attrKeys.length > 0 ? `<div class="attributes-block"><h4>Caractéristiques</h4>${attrKeys.map(k => `<div class="attr-row"><span class="attr-key">${k}</span><span class="attr-val">${attrs[k]}</span></div>`).join('')}</div>` : ''}
                         </div>
                     </div>
-                    ${currentProduct.description ? `
-                    <div class="product-description-full">
-                        <h3>Description du produit</h3>
-                        <p>${currentProduct.description}</p>
-                    </div>` : ''}
+                    ${currentProduct.description ? `<div class="product-description-full"><h3>Description du produit</h3><p>${currentProduct.description}</p></div>` : ''}
                     <div class="product-description-full" id="reviewsSection">
                         <h3>⭐ Avis clients</h3>
                         <div id="reviewsList"><p style="color:#9ca3af;font-size:14px;">Chargement des avis...</p></div>
@@ -845,11 +692,7 @@
                 if (!res.ok) return;
                 const data = await res.json();
                 if (data.sellerId) {
-                    document.getElementById('seller-badge').innerHTML = `
-                            <a href="boutique.html?id=${data.sellerId}"
-                               style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">
-                                🏪 ${data.shopName}
-                            </a>`;
+                    document.getElementById('seller-badge').innerHTML = `<a href="boutique.html?id=${data.sellerId}" style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">🏪 ${data.shopName}</a>`;
                 }
             } catch (e) { }
         }
