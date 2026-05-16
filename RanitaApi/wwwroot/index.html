@@ -1266,23 +1266,7 @@
             <input type="text" placeholder="Rechercher..." onkeydown="if(event.key==='Enter')window.location.href='products.html?q='+encodeURIComponent(this.value)">
         </div>
         <a href="cart.html" class="mob-icon-btn" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg><span id="mobCartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#10b981;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span></a>
-
-
-        <a href="cart.html" class="mob-icon-btn" style="position:relative">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-            </svg>
-            <span id="mobCartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#10b981;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span>
-        </a>
-        <script>
-            (function () {
-                var c = JSON.parse(localStorage.getItem('cart') || '[]');
-                var t = c.reduce(function (s, i) { return s + (i.qty || i.quantity || 1); }, 0);
-                var b = document.getElementById('mobCartBadge');
-                if (t > 0) { b.textContent = t; b.style.display = 'flex'; }
-            })();
-        </script>
+        <script>(function () { var c = JSON.parse(localStorage.getItem('cart') || '[]'); var t = c.reduce(function (s, i) { return s + (i.qty || i.quantity || 1); }, 0); var b = document.getElementById('mobCartBadge'); if (t > 0) { b.textContent = t; b.style.display = 'flex'; } })();</script>
 
 
 
