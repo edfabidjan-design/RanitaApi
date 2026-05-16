@@ -182,5 +182,4 @@
         display: none !important;
     }
 }
-@media(max-width:768px){.site-header{display:none!important;}.mob-header{display:flex!important;}}
-@media(min-width:769px){.mob-header{display:none!important;}}
+
