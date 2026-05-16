@@ -36,7 +36,7 @@
         .products-page {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 100px 20px 60px;
+            padding: 92px 20px 60px;
         }
 
         .products-title {
@@ -114,7 +114,7 @@
         /* GRILLE */
         #productsGrid {
             display: grid;
-            grid-template-columns: repeat(2,minmax(0,1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 16px;
         }
 
@@ -387,7 +387,7 @@
 
         @media(max-width:768px) {
             .products-page {
-                padding: 80px 12px 40px;
+                padding: 92px 12px 40px;
             }
 
             .products-title h1 {
@@ -432,7 +432,7 @@
 
         @media(max-width:480px) {
             .products-page {
-                padding: 76px 8px 40px;
+                padding: 92px 8px 40px;
             }
 
             #productsGrid {
@@ -502,9 +502,12 @@
 
     <!-- Navbar mobile (visible uniquement sur mobile via header.css) -->
     <nav class="mob-header">
-        <a href="index.html" class="mob-header-logo">🛒 Ranita Market</a>
-        <div style="flex:1"></div>
-        <a href="cart.html" class="cart-link" style="font-size:13px;padding:7px 14px;">🛒 Panier (<span id="mobCartCount">0</span>)</a>
+        <a href="index.html" class="mob-header-logo">🛒 Ranita</a>
+        <div class="mob-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+            <input type="text" id="mobSearchInput" placeholder="Rechercher..." onkeydown="if(event.key==='Enter'){document.getElementById('searchInput').value=this.value;renderProducts();}">
+        </div>
+        <a href="cart.html" class="mob-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg><span class="mob-cart-badge" id="mobCartBadge" style="display:none">0</span></a>
     </nav>
 
     <!-- Header desktop (masqué sur mobile via header.css) -->
@@ -596,8 +599,7 @@
         function updateCartCount() {
             const total = cart.reduce((sum, item) => sum + item.quantity, 0);
             document.getElementById("cartCount").textContent = total;
-            const mob = document.getElementById("mobCartCount");
-            if (mob) mob.textContent = total;
+            const mob = document.getElementById("mobCartCount"); if (mob) mob.textContent = total;
         }
 
         function addToCart(id) {
@@ -695,7 +697,7 @@
         loadProducts();
         updateCartCount();
     </script>
-
+    
     <script src="/install-prompt.js"></script>
 </body>
 </html>
