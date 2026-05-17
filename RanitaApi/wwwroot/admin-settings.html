@@ -237,45 +237,97 @@
 
         <!-- BIG CARDS -->
         <div class="tab-panel" id="panel-bigcards">
-            <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">Pour les images, collez l'URL d'une image (ex: https://monsite.com/image.jpg) ou utilisez une image déjà uploadée dans votre catalogue.</p>
-            <div class="section-card">
-                <div class="section-title">👗 Card 1 — Mode & Vêtements</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Tag (ex: Tendances)</label><input type="text" id="bc1_tag" placeholder="Tendances"></div>
-                    <div class="field"><label>Titre</label><input type="text" id="bc1_name" placeholder="Mode & Vêtements"></div>
-                    <div class="field full"><label>Description</label><textarea id="bc1_desc" placeholder="Les dernières tendances..."></textarea></div>
-                    <div class="field"><label>URL de l'image</label><input type="text" id="bc1_img" placeholder="https://...image.jpg"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc1_link" placeholder="products.html?cat=mode"></div>
+            <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">Modifiez chaque card — aperçu live à droite. Pour l'image, collez une URL directe (ex: https://monsite.com/image.jpg).</p>
+
+            <!-- CARD 1 -->
+            <div class="section-card" style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;">
+                <div>
+                    <div class="section-title">Card 1</div>
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc1_tag" placeholder="Tendances" oninput="previewCard(1)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc1_name" placeholder="Mode & Vêtements" oninput="previewCard(1)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc1_desc" placeholder="Les dernières tendances..." oninput="previewCard(1)" style="min-height:60px;"></textarea></div>
+                        <div class="field full"><label>URL Image</label><input type="text" id="bc1_img" placeholder="https://...image.jpg" oninput="previewCard(1)"></div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc1_link" placeholder="products.html?cat=mode"></div>
+                    </div>
+                </div>
+                <div id="prev-bc1" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
+                    <div id="prev-bc1-img" style="height:140px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:48px;">👗</div>
+                    <div style="padding:14px;">
+                        <div id="prev-bc1-tag" style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;margin-bottom:4px;">Tendances</div>
+                        <div id="prev-bc1-name" style="font-size:16px;font-weight:800;color:#111827;margin-bottom:4px;">Mode & Vêtements</div>
+                        <div id="prev-bc1-desc" style="font-size:12px;color:#6b7280;margin-bottom:10px;line-height:1.4;">Les dernières tendances africaines...</div>
+                        <div style="background:#10b981;color:white;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;display:inline-block;">Explorer →</div>
+                    </div>
                 </div>
             </div>
-            <div class="section-card">
-                <div class="section-title">📱 Card 2 — Électronique</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Tag</label><input type="text" id="bc2_tag" placeholder="High-Tech"></div>
-                    <div class="field"><label>Titre</label><input type="text" id="bc2_name" placeholder="Électronique & Gadgets"></div>
-                    <div class="field full"><label>Description</label><textarea id="bc2_desc" placeholder="Smartphones, accessoires..."></textarea></div>
-                    <div class="field"><label>URL de l'image</label><input type="text" id="bc2_img" placeholder="https://...image.jpg"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc2_link" placeholder="products.html?cat=elec"></div>
+
+            <!-- CARD 2 -->
+            <div class="section-card" style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;">
+                <div>
+                    <div class="section-title">Card 2</div>
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc2_tag" placeholder="High-Tech" oninput="previewCard(2)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc2_name" placeholder="Électronique & Gadgets" oninput="previewCard(2)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc2_desc" placeholder="Smartphones, accessoires..." oninput="previewCard(2)" style="min-height:60px;"></textarea></div>
+                        <div class="field full"><label>URL Image</label><input type="text" id="bc2_img" placeholder="https://...image.jpg" oninput="previewCard(2)"></div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc2_link" placeholder="products.html?cat=elec"></div>
+                    </div>
+                </div>
+                <div id="prev-bc2" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
+                    <div id="prev-bc2-img" style="height:140px;background:linear-gradient(135deg,#0a1628,#0d1f3c);display:flex;align-items:center;justify-content:center;font-size:48px;">📱</div>
+                    <div style="padding:14px;">
+                        <div id="prev-bc2-tag" style="font-size:10px;font-weight:700;color:#3b82f6;text-transform:uppercase;margin-bottom:4px;">High-Tech</div>
+                        <div id="prev-bc2-name" style="font-size:16px;font-weight:800;color:#111827;margin-bottom:4px;">Électronique & Gadgets</div>
+                        <div id="prev-bc2-desc" style="font-size:12px;color:#6b7280;margin-bottom:10px;line-height:1.4;">Smartphones, accessoires...</div>
+                        <div style="background:#3b82f6;color:white;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;display:inline-block;">Explorer →</div>
+                    </div>
                 </div>
             </div>
-            <div class="section-card">
-                <div class="section-title">🥘 Card 3 — Alimentation</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Tag</label><input type="text" id="bc3_tag" placeholder="Produits frais"></div>
-                    <div class="field"><label>Titre</label><input type="text" id="bc3_name" placeholder="Alimentation & Épicerie"></div>
-                    <div class="field full"><label>Description</label><textarea id="bc3_desc" placeholder="Épices, céréales..."></textarea></div>
-                    <div class="field"><label>URL de l'image</label><input type="text" id="bc3_img" placeholder="https://...image.jpg"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc3_link" placeholder="products.html?cat=alim"></div>
+
+            <!-- CARD 3 -->
+            <div class="section-card" style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;">
+                <div>
+                    <div class="section-title">Card 3</div>
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc3_tag" placeholder="Produits frais" oninput="previewCard(3)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc3_name" placeholder="Alimentation & Épicerie" oninput="previewCard(3)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc3_desc" placeholder="Épices, céréales..." oninput="previewCard(3)" style="min-height:60px;"></textarea></div>
+                        <div class="field full"><label>URL Image</label><input type="text" id="bc3_img" placeholder="https://...image.jpg" oninput="previewCard(3)"></div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc3_link" placeholder="products.html?cat=alim"></div>
+                    </div>
+                </div>
+                <div id="prev-bc3" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
+                    <div id="prev-bc3-img" style="height:140px;background:linear-gradient(135deg,#0a1a12,#0d2416);display:flex;align-items:center;justify-content:center;font-size:48px;">🥘</div>
+                    <div style="padding:14px;">
+                        <div id="prev-bc3-tag" style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;margin-bottom:4px;">Produits frais</div>
+                        <div id="prev-bc3-name" style="font-size:16px;font-weight:800;color:#111827;margin-bottom:4px;">Alimentation & Épicerie</div>
+                        <div id="prev-bc3-desc" style="font-size:12px;color:#6b7280;margin-bottom:10px;line-height:1.4;">Épices, céréales, boissons...</div>
+                        <div style="background:#f59e0b;color:white;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;display:inline-block;">Explorer →</div>
+                    </div>
                 </div>
             </div>
-            <div class="section-card">
-                <div class="section-title">💄 Card 4 — Beauté & Santé</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Tag</label><input type="text" id="bc4_tag" placeholder="Bien-être"></div>
-                    <div class="field"><label>Titre</label><input type="text" id="bc4_name" placeholder="Beauté & Santé"></div>
-                    <div class="field full"><label>Description</label><textarea id="bc4_desc" placeholder="Soins, parfums..."></textarea></div>
-                    <div class="field"><label>URL de l'image</label><input type="text" id="bc4_img" placeholder="https://...image.jpg"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc4_link" placeholder="products.html?cat=beau"></div>
+
+            <!-- CARD 4 -->
+            <div class="section-card" style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;">
+                <div>
+                    <div class="section-title">Card 4</div>
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc4_tag" placeholder="Bien-être" oninput="previewCard(4)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc4_name" placeholder="Beauté & Santé" oninput="previewCard(4)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc4_desc" placeholder="Soins, parfums..." oninput="previewCard(4)" style="min-height:60px;"></textarea></div>
+                        <div class="field full"><label>URL Image</label><input type="text" id="bc4_img" placeholder="https://...image.jpg" oninput="previewCard(4)"></div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc4_link" placeholder="products.html?cat=beau"></div>
+                    </div>
+                </div>
+                <div id="prev-bc4" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
+                    <div id="prev-bc4-img" style="height:140px;background:linear-gradient(135deg,#1a0a1a,#2d0d2d);display:flex;align-items:center;justify-content:center;font-size:48px;">💄</div>
+                    <div style="padding:14px;">
+                        <div id="prev-bc4-tag" style="font-size:10px;font-weight:700;color:#ec4899;text-transform:uppercase;margin-bottom:4px;">Bien-être</div>
+                        <div id="prev-bc4-name" style="font-size:16px;font-weight:800;color:#111827;margin-bottom:4px;">Beauté & Santé</div>
+                        <div id="prev-bc4-desc" style="font-size:12px;color:#6b7280;margin-bottom:10px;line-height:1.4;">Soins, parfums, cosmétiques...</div>
+                        <div style="background:#ec4899;color:white;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;display:inline-block;">Explorer →</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -344,6 +396,23 @@
             'bc4_tag','bc4_name','bc4_desc','bc4_img','bc4_link'
         ];
 
+        function previewCard(n) {
+            const tag = (document.getElementById('bc'+n+'_tag')||{}).value || '';
+            const name = (document.getElementById('bc'+n+'_name')||{}).value || '';
+            const desc = (document.getElementById('bc'+n+'_desc')||{}).value || '';
+            const img = (document.getElementById('bc'+n+'_img')||{}).value || '';
+            const pTag = document.getElementById('prev-bc'+n+'-tag');
+            const pName = document.getElementById('prev-bc'+n+'-name');
+            const pDesc = document.getElementById('prev-bc'+n+'-desc');
+            const pImg = document.getElementById('prev-bc'+n+'-img');
+            if(pTag) pTag.textContent = tag;
+            if(pName) pName.textContent = name;
+            if(pDesc) pDesc.textContent = desc;
+            if(pImg && img) {
+                pImg.innerHTML = '<img src="'+img+'" style="width:100%;height:140px;object-fit:cover;" onerror="this.parentElement.innerHTML=\'❌\'">';
+            }
+        }
+
         function switchTab(tab, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -373,6 +442,8 @@
                 const data = await res.json();
                 KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
                 updatePreview();
+                // Previews des big cards
+                [1,2,3,4].forEach(n => previewCard(n));
             } catch(e) { console.error('Erreur chargement:', e); }
         }
 
