@@ -3,7 +3,7 @@
 const PRESET_ROLES = {
     SuperAdmin: {
         label: '👑 Super Admin', color: '#7c3aed',
-        pages: ['dashboard', 'products', 'categories', 'attributes', 'orders', 'clients', 'reviews', 'sellers', 'commissions', 'users'],
+        pages: ['dashboard', 'products', 'categories', 'attributes', 'orders', 'clients', 'reviews', 'sellers', 'commissions', 'settings', 'users'],
         canEditOrders: true, canPayVendors: true, canDeleteProducts: true, canManageAdmins: true, canEditCommissions: true, readOnly: false
     },
     Analyste: {
@@ -23,6 +23,7 @@ const ALL_PAGES = {
     reviews: { label: '⭐ Avis', href: 'admin-reviews.html' },
     sellers: { label: 'Vendeurs', href: 'admin-sellers.html' },
     commissions: { label: 'Commissions', href: 'admin-commissions.html' },
+    settings: { label: '⚙️ Paramètres', href: 'admin-settings.html' },
     settings: { label: '⚙️ Paramètres', href: 'admin-settings.html' },
     users: { label: '👑 Admins', href: 'admin-users.html' },
 };
