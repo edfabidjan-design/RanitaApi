@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranita Admin — Paramètres Site</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <script src="admin-auth.js"></script>
+    <style>
+        body {
+            background: #f1f5f9;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media(max-width:768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+            border: 1px solid #e5e7eb;
+        }
+
+            .settings-card h3 {
+                font-size: 14px;
+                font-weight: 700;
+                color: #111827;
+                margin-bottom: 16px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #10b981;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+            .field label {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                color: #6b7280;
+                margin-bottom: 5px;
+                text-transform: uppercase;
+                letter-spacing: .4px;
+            }
+
+            .field input, .field textarea {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: Arial, sans-serif;
+                outline: none;
+                transition: border-color .2s;
+                background: #f9fafb;
+            }
+
+                .field input:focus, .field textarea:focus {
+                    border-color: #10b981;
+                    background: white;
+                }
+
+            .field textarea {
+                resize: vertical;
+                min-height: 70px;
+            }
+
+        .save-bar {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 24px;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,.06);
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+            .btn-save:hover {
+                background: #059669;
+            }
+
+            .btn-save:disabled {
+                background: #d1d5db;
+                cursor: not-allowed;
+            }
+
+        .toast-msg {
+            font-size: 13px;
+            font-weight: 600;
+            color: #059669;
+            display: none;
+        }
+
+        .preview-hero {
+            background: #0D1117;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 20px;
+            color: white;
+        }
+
+            .preview-hero h4 {
+                font-size: 11px;
+                color: #6b7280;
+                margin-bottom: 12px;
+                text-transform: uppercase;
+                letter-spacing: .5px;
+            }
+
+        .preview-title {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+            .preview-title span {
+                color: #10b981;
+            }
+
+        .preview-sub {
+            font-size: 13px;
+            color: #8B949E;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .preview-badge {
+            display: inline-block;
+            background: #F59E0B;
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 56px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
+        <nav id="adminNav"></nav>
+        <button class="btn-logout" onclick="adminLogout()">Déconnexion</button>
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <div class="admin-container">
+        <div style="margin-bottom:20px;">
+            <h1 style="font-size:20px;font-weight:800;color:#111827;">⚙️ Paramètres du site</h1>
+            <p style="font-size:13px;color:#6b7280;margin-top:4px;">Modifiez les textes et contenus affichés sur la page d'accueil.</p>
+        </div>
+
+        <div class="settings-grid">
+
+            <!-- HERO -->
+            <div class="settings-card">
+                <h3>🏠 Section Hero (bannière principale)</h3>
+                <div class="field">
+                    <label>Titre ligne 1</label>
+                    <input type="text" id="hero_title" placeholder="Mode & Style">
+                </div>
+                <div class="field">
+                    <label>Titre ligne 2 (en vert)</label>
+                    <input type="text" id="hero_title_highlight" placeholder="Abidjan">
+                </div>
+                <div class="field">
+                    <label>Sous-titre</label>
+                    <textarea id="hero_subtitle" placeholder="Les meilleures marques..."></textarea>
+                </div>
+                <div class="field">
+                    <label>Badge promo (ex: -60%)</label>
+                    <input type="text" id="hero_badge" placeholder="-60%">
+                </div>
+                <div class="field">
+                    <label>Label du badge (ex: mode)</label>
+                    <input type="text" id="hero_badge_label" placeholder="mode">
+                </div>
+
+                <!-- Aperçu live -->
+                <div class="preview-hero">
+                    <h4>👁 Aperçu live</h4>
+                    <div class="preview-title" id="prev-title">Mode & Style<br><span id="prev-highlight">Abidjan</span></div>
+                    <div class="preview-sub" id="prev-sub">Les meilleures marques africaines...</div>
+                    <div class="preview-badge" id="prev-badge">-60%<br><small style="font-size:9px">mode</small></div>
+                </div>
+            </div>
+
+            <!-- STATS + PROMOS -->
+            <div>
+                <div class="settings-card" style="margin-bottom:20px;">
+                    <h3>📊 Statistiques (bande verte)</h3>
+                    <div class="field">
+                        <label>Nombre de vendeurs</label>
+                        <input type="text" id="stat_vendors" placeholder="3 200+">
+                    </div>
+                    <div class="field">
+                        <label>Taux de satisfaction</label>
+                        <input type="text" id="stat_satisfaction" placeholder="98%">
+                    </div>
+                    <div class="field">
+                        <label>Délai livraison</label>
+                        <input type="text" id="stat_delivery" placeholder="24h">
+                    </div>
+                </div>
+
+                <div class="settings-card" style="margin-bottom:20px;">
+                    <h3>🎁 Card Parrainage</h3>
+                    <div class="field">
+                        <label>Titre</label>
+                        <input type="text" id="promo_referral_title" placeholder="Invitez un ami, gagnez 2 500 F">
+                    </div>
+                    <div class="field">
+                        <label>Description</label>
+                        <textarea id="promo_referral_desc" placeholder="Pour chaque ami..."></textarea>
+                    </div>
+                </div>
+
+                <div class="settings-card" style="margin-bottom:20px;">
+                    <h3>📦 Card Livraison offerte</h3>
+                    <div class="field">
+                        <label>Titre</label>
+                        <input type="text" id="promo_delivery_title" placeholder="Gratuite dès 15 000 F">
+                    </div>
+                    <div class="field">
+                        <label>Description</label>
+                        <textarea id="promo_delivery_desc" placeholder="Abidjan & banlieue..."></textarea>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>🎁 Bannière parrainage (bas de page)</h3>
+                    <div class="field">
+                        <label>Titre</label>
+                        <input type="text" id="referral_title" placeholder="🎁 Invitez un ami, gagnez 2 500 F CFA">
+                    </div>
+                    <div class="field">
+                        <label>Description</label>
+                        <textarea id="referral_desc" placeholder="Pour chaque ami..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="save-bar">
+            <span class="toast-msg" id="toastMsg">✅ Modifications enregistrées !</span>
+            <button class="btn-save" id="btnSave" onclick="saveSettings()">💾 Enregistrer les modifications</button>
+        </div>
+    </div>
+
+    <div id="mobileNav">
+        <div id="mobileNavLinks"></div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+            <button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button>
+        </div>
+    </div>
+
+    <script>
+        checkPageAccess('settings');
+        buildAdminNav('settings');
+
+        const API = 'https://ranitaapi-production.up.railway.app/api';
+        const KEYS = [
+            'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label',
+            'stat_vendors','stat_satisfaction','stat_delivery',
+            'promo_referral_title','promo_referral_desc',
+            'promo_delivery_title','promo_delivery_desc',
+            'referral_title','referral_desc'
+        ];
+
+        // Charger les settings depuis l'API
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API}/site-settings`);
+                const data = await res.json();
+                KEYS.forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && data[key]) el.value = data[key];
+                });
+                updatePreview();
+            } catch(e) {
+                console.error('Erreur chargement settings:', e);
+            }
+        }
+
+        // Aperçu live du hero
+        function updatePreview() {
+            document.getElementById('prev-title').innerHTML =
+                (document.getElementById('hero_title').value || 'Mode & Style') +
+                '<br><span id="prev-highlight" style="color:#10b981">' +
+                (document.getElementById('hero_title_highlight').value || 'Abidjan') + '</span>';
+            document.getElementById('prev-sub').textContent =
+                document.getElementById('hero_subtitle').value || '';
+            const badge = document.getElementById('hero_badge').value || '-60%';
+            const label = document.getElementById('hero_badge_label').value || 'mode';
+            document.getElementById('prev-badge').innerHTML =
+                badge + '<br><small style="font-size:9px">' + label + '</small>';
+        }
+
+        ['hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label']
+            .forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', updatePreview);
+            });
+
+        // Sauvegarder
+        async function saveSettings() {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true;
+            btn.textContent = '⏳ Enregistrement...';
+
+            const updates = {};
+            KEYS.forEach(key => {
+                const el = document.getElementById(key);
+                if (el) updates[key] = el.value;
+            });
+
+            try {
+                const res = await fetch(`${API}/site-settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates)
+                });
+                if (res.ok) {
+                    const msg = document.getElementById('toastMsg');
+                    msg.style.display = 'block';
+                    setTimeout(() => msg.style.display = 'none', 3000);
+                } else {
+                    alert('Erreur lors de la sauvegarde.');
+                }
+            } catch(e) {
+                alert('Erreur réseau.');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '💾 Enregistrer les modifications';
+        }
+
+        loadSettings();
+    </script>
+</body>
+</html>

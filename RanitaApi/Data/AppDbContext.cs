@@ -27,6 +27,7 @@ namespace RanitaApi.Data
         public DbSet<SellerPayout> SellerPayouts { get; set; }
         public DbSet<SellerPushSubscription> SellerPushSubscriptions { get; set; }
         public DbSet<CommissionSetting> CommissionSettings { get; set; }
+        public DbSet<SiteSetting> SiteSettings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -114,4 +115,3 @@ namespace RanitaApi.Data
         }
     }
 }
-

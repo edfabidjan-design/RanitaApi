@@ -627,4 +627,46 @@ catch (Exception ex) { Console.WriteLine("Users migration error: " + ex.Message)
 
 
 
+// ── SiteSettings table + seed ─────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""SiteSettings"" (
+            ""Id""    SERIAL PRIMARY KEY,
+            ""Key""   TEXT NOT NULL UNIQUE,
+            ""Value"" TEXT NOT NULL DEFAULT ''
+        );
+    ");
+    // Seed des valeurs par défaut
+    var defaults = new Dictionary<string, string>
+    {
+        ["hero_title"] = "Mode & Style",
+        ["hero_title_highlight"] = "Abidjan",
+        ["hero_subtitle"] = "Les meilleures marques africaines et internationales livrées directement chez vous en Côte d'Ivoire.",
+        ["hero_badge"] = "-60%",
+        ["hero_badge_label"] = "mode",
+        ["stat_vendors"] = "3 200+",
+        ["stat_satisfaction"] = "98%",
+        ["stat_delivery"] = "24h",
+        ["promo_referral_title"] = "Invitez un ami, gagnez 2 500 F",
+        ["promo_referral_desc"] = "Pour chaque ami qui effectue son premier achat sur Ranita Market.",
+        ["promo_delivery_title"] = "Gratuite dès 15 000 F",
+        ["promo_delivery_desc"] = "Abidjan & banlieue — livraison en 24h chrono.",
+        ["referral_title"] = "🎁 Invitez un ami, gagnez 2 500 F CFA",
+        ["referral_desc"] = "Pour chaque ami qui effectue son premier achat sur Ranita Market, vous recevez 2 500 F sur votre compte.",
+    };
+    foreach (var (key, value) in defaults)
+    {
+        db.Database.ExecuteSqlRaw($@"
+            INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
+            VALUES ('{key}', '{value.Replace("'", "''")}')
+            ON CONFLICT (""Key"") DO NOTHING;
+        ");
+    }
+    Console.WriteLine("SiteSettings OK");
+}
+catch (Exception ex) { Console.WriteLine("SiteSettings error: " + ex.Message); }
+
 app.Run();
