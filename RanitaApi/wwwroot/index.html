@@ -2205,7 +2205,12 @@
             } catch (e) { console.log('Settings non chargés, valeurs par défaut utilisées.'); }
         }
         // Charger après que le DOM hero soit visible
-        document.addEventListener('DOMContentLoaded', loadSiteSettings);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Slider par défaut immédiat
+            buildSlider({});
+            // Puis charger les settings
+            loadSiteSettings();
+        });
         let allProducts = [];
         let currentCat = 'all';
         function fmtPrice(p) { return Number(p).toLocaleString('fr-FR') + ' FCFA'; }
