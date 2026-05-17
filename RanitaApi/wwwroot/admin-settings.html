@@ -7,52 +7,332 @@
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-auth.js"></script>
     <style>
-        body { background: #f1f5f9; }
-        .page-title { font-size: 22px; font-weight: 800; color: #111827; margin-bottom: 4px; }
-        .page-sub { font-size: 13px; color: #6b7280; margin-bottom: 24px; }
-        .tabs { display: flex; gap: 0; border-bottom: 2px solid #e5e7eb; margin-bottom: 28px; overflow-x: auto; scrollbar-width: none; }
-        .tabs::-webkit-scrollbar { display: none; }
-        .tab { padding: 10px 20px; font-size: 13px; font-weight: 700; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all .2s; }
-        .tab:hover { color: #111827; }
-        .tab.active { color: #10b981; border-bottom-color: #10b981; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        .section-card { background: white; border-radius: 14px; border: 1px solid #e5e7eb; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
-        .section-title { font-size: 15px; font-weight: 800; color: #111827; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 8px; }
-        .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .fields-grid.one { grid-template-columns: 1fr; }
-        .fields-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-        @media(max-width:700px) { .fields-grid, .fields-grid.three { grid-template-columns: 1fr; } }
-        .field { display: flex; flex-direction: column; gap: 6px; }
-        .field.full { grid-column: 1 / -1; }
-        .field label { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: .6px; }
-        .field input, .field textarea { padding: 10px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: Arial, sans-serif; color: #111827; background: #f9fafb; outline: none; transition: border-color .2s, background .2s; }
-        .field input:focus, .field textarea:focus { border-color: #10b981; background: white; }
-        .field textarea { resize: vertical; min-height: 80px; }
-        .field .hint { font-size: 11px; color: #9ca3af; }
-        .preview-box { background: #0D1117; border-radius: 12px; padding: 28px; margin-top: 20px; }
-        .preview-label { font-size: 10px; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
-        .preview-hero-title { font-size: 32px; font-weight: 800; color: #F0F6FC; line-height: 1.15; }
-        .preview-hero-sub { font-size: 13px; color: #8B949E; margin-top: 10px; line-height: 1.6; max-width: 380px; }
-        .preview-badge { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: #F59E0B; color: white; font-size: 16px; font-weight: 800; margin-top: 14px; line-height: 1.1; }
-        .preview-badge small { font-size: 9px; font-weight: 500; }
-        .stats-preview { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; background: linear-gradient(135deg,#10b981,#059669); border-radius: 10px; padding: 20px; margin-top: 16px; }
-        .stat-prev { text-align: center; }
-        .stat-prev-n { font-size: 22px; font-weight: 800; color: white; }
-        .stat-prev-l { font-size: 11px; color: rgba(255,255,255,.8); margin-top: 2px; }
-        .cards-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-        .card-prev { background: #161B22; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 16px; }
-        .card-prev-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
-        .card-prev-title { font-size: 16px; font-weight: 700; color: #F0F6FC; line-height: 1.25; }
-        .card-prev-sub { font-size: 11px; color: #8B949E; margin-top: 4px; }
-        .save-bar { position: sticky; bottom: 0; background: white; border-top: 1px solid #e5e7eb; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: 0 -4px 16px rgba(0,0,0,.06); z-index: 10; }
-        .save-info { font-size: 13px; color: #6b7280; }
-        .btn-save { background: #10b981; color: white; border: none; padding: 12px 32px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: background .2s, transform .1s; }
-        .btn-save:hover { background: #059669; }
-        .btn-save:active { transform: scale(.98); }
-        .btn-save:disabled { background: #d1d5db; cursor: not-allowed; }
-        .toast-ok { display: none; font-size: 13px; font-weight: 700; color: #059669; }
-        .toast-ok.show { display: flex; align-items: center; gap: 6px; }
+        body {
+            background: #f1f5f9;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .page-sub {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 28px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+        .tab {
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+            transition: all .2s;
+        }
+
+            .tab:hover {
+                color: #111827;
+            }
+
+            .tab.active {
+                color: #10b981;
+                border-bottom-color: #10b981;
+            }
+
+        .tab-panel {
+            display: none;
+        }
+
+            .tab-panel.active {
+                display: block;
+            }
+
+        .section-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.04);
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fields-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+            .fields-grid.one {
+                grid-template-columns: 1fr;
+            }
+
+            .fields-grid.three {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+        @media(max-width:700px) {
+            .fields-grid, .fields-grid.three {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+            .field.full {
+                grid-column: 1 / -1;
+            }
+
+            .field label {
+                font-size: 11px;
+                font-weight: 700;
+                color: #9ca3af;
+                text-transform: uppercase;
+                letter-spacing: .6px;
+            }
+
+            .field input, .field textarea, .field select {
+                padding: 10px 14px;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: Arial, sans-serif;
+                color: #111827;
+                background: #f9fafb;
+                outline: none;
+                transition: border-color .2s, background .2s;
+            }
+
+                .field input:focus, .field textarea:focus {
+                    border-color: #10b981;
+                    background: white;
+                }
+
+            .field textarea {
+                resize: vertical;
+                min-height: 80px;
+            }
+
+            .field .hint {
+                font-size: 11px;
+                color: #9ca3af;
+            }
+
+        .preview-box {
+            background: #0D1117;
+            border-radius: 12px;
+            padding: 28px;
+            margin-top: 20px;
+        }
+
+        .preview-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #4b5563;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+
+        .preview-hero-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #F0F6FC;
+            line-height: 1.15;
+        }
+
+        .preview-hero-sub {
+            font-size: 13px;
+            color: #8B949E;
+            margin-top: 10px;
+            line-height: 1.6;
+            max-width: 380px;
+        }
+
+        .preview-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #F59E0B;
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            margin-top: 14px;
+            line-height: 1.1;
+        }
+
+            .preview-badge small {
+                font-size: 9px;
+                font-weight: 500;
+            }
+
+        .stats-preview {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 12px;
+            background: linear-gradient(135deg,#10b981,#059669);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .stat-prev {
+            text-align: center;
+        }
+
+        .stat-prev-n {
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .stat-prev-l {
+            font-size: 11px;
+            color: rgba(255,255,255,.8);
+            margin-top: 2px;
+        }
+
+        .cards-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .card-prev {
+            background: #161B22;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .card-prev-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .card-prev-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #F0F6FC;
+            line-height: 1.25;
+        }
+
+        .card-prev-sub {
+            font-size: 11px;
+            color: #8B949E;
+            margin-top: 4px;
+        }
+
+        .save-bar {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 -4px 16px rgba(0,0,0,.06);
+            z-index: 10;
+        }
+
+        .save-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background .2s, transform .1s;
+        }
+
+            .btn-save:hover {
+                background: #059669;
+            }
+
+            .btn-save:active {
+                transform: scale(.98);
+            }
+
+            .btn-save:disabled {
+                background: #d1d5db;
+                cursor: not-allowed;
+            }
+
+        .toast-ok {
+            display: none;
+            font-size: 13px;
+            font-weight: 700;
+            color: #059669;
+        }
+
+            .toast-ok.show {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+        /* Badge correction info */
+        .fix-badge {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #92400e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -78,7 +358,7 @@
             <div class="tab" onclick="switchTab('banners',this)">⚡ Bannières</div>
         </div>
 
-        <!-- HERO -->
+        <!-- ═══ HERO ═══ -->
         <div class="tab-panel active" id="panel-hero">
             <div class="section-card">
                 <div class="section-title">🏠 Bannière principale</div>
@@ -119,47 +399,16 @@
             </div>
         </div>
 
-        <!-- SLIDER -->
+        <!-- ═══ SLIDER ═══ -->
         <div class="tab-panel" id="panel-slider">
-            <div class="section-card">
-                <div class="section-title">🎠 Slide 1 (Principal)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre (HTML autorisé, ex: Mode &amp; Style&lt;br&gt;&lt;em&gt;Abidjan&lt;/em&gt;)</label><input type="text" id="slide0_title" placeholder="Mode & Style<br><em>Abidjan</em>"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide0_sub" placeholder="Les meilleures marques..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide0_cta_text" placeholder="Voir les produits →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide0_cta_link" placeholder="products.html"></div>
-                    <div class="field full">
-                        <label>Image du slide</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="slide0_img" placeholder="https://...image.jpg" style="flex:1;">
-                            <label for="slide0_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="slide0_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(0, this)">
-                            <span id="slide0_upload_status" style="font-size:12px;color:#6b7280;"></span>
-                        </div>
-                    </div>
-                </div>
+            <div class="fix-badge">
+                💡 <strong>Nouveau :</strong> Chaque slide a maintenant son propre badge catégorie et son badge de remise — tous éditables ci-dessous.
             </div>
-            <div class="section-card">
-                <div class="section-title">🎠 Slide 2 (Électronique)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="slide1_title" placeholder="Smartphones<br><em style='color:#60a5fa'>& Gadgets</em>"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide1_sub" placeholder="Tecno, Samsung, iPhone..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide1_cta_text" placeholder="Découvrir →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide1_cta_link" placeholder="products.html"></div>
-                </div>
-            </div>
-            <div class="section-card">
-                <div class="section-title">🎠 Slide 3 (Alimentation)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="slide2_title" placeholder="Produits Frais<br><em>& Locaux</em>"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide2_sub" placeholder="Épices, céréales, boissons..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide2_cta_text" placeholder="Commander →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide2_cta_link" placeholder="products.html"></div>
-                </div>
-            </div>
+            <div id="slidesContainer"></div>
+            <button onclick="addSlide()" style="background:#f0fdf4;border:2px dashed #10b981;color:#059669;padding:14px 28px;border-radius:10px;font-weight:700;cursor:pointer;width:100%;font-size:14px;margin-bottom:20px;">+ Ajouter un slide</button>
         </div>
 
-        <!-- CARDS -->
+        <!-- ═══ CARDS ═══ -->
         <div class="tab-panel" id="panel-cards">
             <div class="section-card">
                 <div class="section-title">📱 Card Électronique</div>
@@ -196,7 +445,7 @@
             </div>
         </div>
 
-        <!-- STATS -->
+        <!-- ═══ STATS ═══ -->
         <div class="tab-panel" id="panel-stats">
             <div class="section-card">
                 <div class="section-title">📊 Bande statistiques (fond vert)</div>
@@ -215,7 +464,7 @@
             </div>
         </div>
 
-        <!-- PROMOS -->
+        <!-- ═══ PROMOS ═══ -->
         <div class="tab-panel" id="panel-promos">
             <div class="section-card">
                 <div class="section-title">🎁 Card Parrainage (hero)</div>
@@ -233,7 +482,7 @@
             </div>
         </div>
 
-        <!-- REFERRAL -->
+        <!-- ═══ REFERRAL ═══ -->
         <div class="tab-panel" id="panel-referral">
             <div class="section-card">
                 <div class="section-title">📣 Bannière parrainage (bas de page)</div>
@@ -244,7 +493,7 @@
             </div>
         </div>
 
-        <!-- BIG CARDS -->
+        <!-- ═══ BIG CARDS ═══ -->
         <div class="tab-panel" id="panel-bigcards">
             <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">Modifiez chaque card — aperçu live à droite. Pour l'image, collez une URL directe (ex: https://monsite.com/image.jpg).</p>
 
@@ -257,14 +506,14 @@
                         <div class="field"><label>Titre</label><input type="text" id="bc1_name" placeholder="Mode & Vêtements" oninput="previewCard(1)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc1_desc" placeholder="Les dernières tendances..." oninput="previewCard(1)" style="min-height:60px;"></textarea></div>
                         <div class="field full">
-                        <label>Image</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="bc1_img" placeholder="https://...image.jpg" oninput="previewCard(1)" style="flex:1;">
-                            <label for="bc1_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="bc1_file" accept="image/*" style="display:none;" onchange="uploadImage(1, this)">
-                            <span id="bc1_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc1_img" placeholder="https://...image.jpg" oninput="previewCard(1)" style="flex:1;">
+                                <label for="bc1_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                                <input type="file" id="bc1_file" accept="image/*" style="display:none;" onchange="uploadImage(1, this)">
+                                <span id="bc1_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            </div>
                         </div>
-                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc1_link" placeholder="products.html?cat=mode"></div>
                     </div>
                 </div>
@@ -288,14 +537,14 @@
                         <div class="field"><label>Titre</label><input type="text" id="bc2_name" placeholder="Électronique & Gadgets" oninput="previewCard(2)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc2_desc" placeholder="Smartphones, accessoires..." oninput="previewCard(2)" style="min-height:60px;"></textarea></div>
                         <div class="field full">
-                        <label>Image</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="bc2_img" placeholder="https://...image.jpg" oninput="previewCard(2)" style="flex:1;">
-                            <label for="bc2_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="bc2_file" accept="image/*" style="display:none;" onchange="uploadImage(2, this)">
-                            <span id="bc2_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc2_img" placeholder="https://...image.jpg" oninput="previewCard(2)" style="flex:1;">
+                                <label for="bc2_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                                <input type="file" id="bc2_file" accept="image/*" style="display:none;" onchange="uploadImage(2, this)">
+                                <span id="bc2_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            </div>
                         </div>
-                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc2_link" placeholder="products.html?cat=elec"></div>
                     </div>
                 </div>
@@ -319,14 +568,14 @@
                         <div class="field"><label>Titre</label><input type="text" id="bc3_name" placeholder="Alimentation & Épicerie" oninput="previewCard(3)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc3_desc" placeholder="Épices, céréales..." oninput="previewCard(3)" style="min-height:60px;"></textarea></div>
                         <div class="field full">
-                        <label>Image</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="bc3_img" placeholder="https://...image.jpg" oninput="previewCard(3)" style="flex:1;">
-                            <label for="bc3_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="bc3_file" accept="image/*" style="display:none;" onchange="uploadImage(3, this)">
-                            <span id="bc3_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc3_img" placeholder="https://...image.jpg" oninput="previewCard(3)" style="flex:1;">
+                                <label for="bc3_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                                <input type="file" id="bc3_file" accept="image/*" style="display:none;" onchange="uploadImage(3, this)">
+                                <span id="bc3_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            </div>
                         </div>
-                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc3_link" placeholder="products.html?cat=alim"></div>
                     </div>
                 </div>
@@ -350,14 +599,14 @@
                         <div class="field"><label>Titre</label><input type="text" id="bc4_name" placeholder="Beauté & Santé" oninput="previewCard(4)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc4_desc" placeholder="Soins, parfums..." oninput="previewCard(4)" style="min-height:60px;"></textarea></div>
                         <div class="field full">
-                        <label>Image</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="bc4_img" placeholder="https://...image.jpg" oninput="previewCard(4)" style="flex:1;">
-                            <label for="bc4_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="bc4_file" accept="image/*" style="display:none;" onchange="uploadImage(4, this)">
-                            <span id="bc4_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc4_img" placeholder="https://...image.jpg" oninput="previewCard(4)" style="flex:1;">
+                                <label for="bc4_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                                <input type="file" id="bc4_file" accept="image/*" style="display:none;" onchange="uploadImage(4, this)">
+                                <span id="bc4_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            </div>
                         </div>
-                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc4_link" placeholder="products.html?cat=beau"></div>
                     </div>
                 </div>
@@ -373,15 +622,16 @@
             </div>
         </div>
 
-        <!-- BANNIÈRES -->
+        <!-- ═══ BANNIÈRES ═══ -->
         <div class="tab-panel" id="panel-banners">
             <div class="section-card">
                 <div class="section-title">📢 Barre promo (haut de page)</div>
                 <div class="fields-grid">
                     <div class="field full"><label>Texte affiché</label><input type="text" id="promo_bar_text" placeholder="Livraison gratuite dès 15 000 F · Paiement à la livraison disponible"></div>
                     <div class="field"><label>Lien du bouton "Voir les offres"</label><input type="text" id="promo_bar_link" placeholder="products.html"></div>
-                    <div class="field"><label>Masquer cette barre ?</label>
-                        <select id="promo_bar_hide" style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;background:#f9fafb;outline:none;">
+                    <div class="field">
+                        <label>Masquer cette barre ?</label>
+                        <select id="promo_bar_hide">
                             <option value="false">Non — afficher la barre</option>
                             <option value="true">Oui — masquer la barre</option>
                         </select>
@@ -394,8 +644,9 @@
                     <div class="field"><label>Titre</label><input type="text" id="urgency_title" placeholder="Ventes Flash — Offres limitées !"></div>
                     <div class="field"><label>Sous-titre</label><input type="text" id="urgency_subtitle" placeholder="Profitez de nos meilleures réductions..."></div>
                     <div class="field"><label>Lien du bouton</label><input type="text" id="urgency_link" placeholder="products.html"></div>
-                    <div class="field"><label>Masquer cette bannière ?</label>
-                        <select id="urgency_hide" style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;background:#f9fafb;outline:none;">
+                    <div class="field">
+                        <label>Masquer cette bannière ?</label>
+                        <select id="urgency_hide">
                             <option value="false">Non — afficher</option>
                             <option value="true">Oui — masquer</option>
                         </select>
@@ -418,31 +669,43 @@
         buildAdminNav('settings');
 
         const API = 'https://ranitaapi-production.up.railway.app/api';
-        const KEYS = [
-            'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label','hero_btn_link',
-            'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link','slide0_img',
-            'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link','slide1_img',
-            'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link','slide2_img',
-            'slide3_title','slide3_sub','slide3_cta_text','slide3_cta_link','slide3_img',
-            'slide4_title','slide4_sub','slide4_cta_text','slide4_cta_link','slide4_img',
-            'card1_title1','card1_title2','card1_subtitle','card1_link',
-            'card2_title1','card2_title2','card2_subtitle','card2_link',
-            'stat_vendors','stat_satisfaction','stat_delivery',
-            'promo_referral_title','promo_referral_desc',
-            'promo_delivery_title','promo_delivery_desc',
-            'referral_title','referral_desc',
-            'promo_bar_text','promo_bar_link','promo_bar_hide',
-            'urgency_title','urgency_subtitle','urgency_link','urgency_hide',
-            'bc1_tag','bc1_name','bc1_desc','bc1_img','bc1_link',
-            'bc2_tag','bc2_name','bc2_desc','bc2_img','bc2_link',
-            'bc3_tag','bc3_name','bc3_desc','bc3_img','bc3_link',
-            'bc4_tag','bc4_name','bc4_desc','bc4_img','bc4_link'
+
+        // ── CLÉS DE BASE (hors slides dynamiques) ──────────────────────────────
+        const BASE_KEYS = [
+            'hero_title', 'hero_title_highlight', 'hero_subtitle', 'hero_badge', 'hero_badge_label', 'hero_btn_link',
+            'card1_title1', 'card1_title2', 'card1_subtitle', 'card1_link',
+            'card2_title1', 'card2_title2', 'card2_subtitle', 'card2_link',
+            'stat_vendors', 'stat_satisfaction', 'stat_delivery',
+            'promo_referral_title', 'promo_referral_desc',
+            'promo_delivery_title', 'promo_delivery_desc',
+            'referral_title', 'referral_desc',
+            'promo_bar_text', 'promo_bar_link', 'promo_bar_hide',
+            'urgency_title', 'urgency_subtitle', 'urgency_link', 'urgency_hide',
+            'bc1_tag', 'bc1_name', 'bc1_desc', 'bc1_img', 'bc1_link',
+            'bc2_tag', 'bc2_name', 'bc2_desc', 'bc2_img', 'bc2_link',
+            'bc3_tag', 'bc3_name', 'bc3_desc', 'bc3_img', 'bc3_link',
+            'bc4_tag', 'bc4_name', 'bc4_desc', 'bc4_img', 'bc4_link'
         ];
 
+        // Clés slide par index — ✅ CORRECTION : badge + discount + discount_label ajoutés
+        function slideKeys(n) {
+            return [
+                'slide' + n + '_title',
+                'slide' + n + '_sub',
+                'slide' + n + '_cta_text',
+                'slide' + n + '_cta_link',
+                'slide' + n + '_img',
+                'slide' + n + '_badge',          // ✅ NOUVEAU : label badge catégorie ex: "💄 BEAUTÉ"
+                'slide' + n + '_discount',       // ✅ NOUVEAU : badge % ex: "-30%"
+                'slide' + n + '_discount_label'  // ✅ NOUVEAU : label sous le % ex: "beauté"
+            ];
+        }
+
+        // ── UPLOAD IMAGES ───────────────────────────────────────────────────────
         async function uploadSlideImg(n, input) {
             const file = input.files[0];
             if (!file) return;
-            const status = document.getElementById('slide'+n+'_upload_status');
+            const status = document.getElementById('slide' + n + '_upload_status');
             status.textContent = '⏳ Upload...';
             const formData = new FormData();
             formData.append('file', file);
@@ -450,18 +713,18 @@
                 const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.url) {
-                    document.getElementById('slide'+n+'_img').value = data.url;
+                    document.getElementById('slide' + n + '_img').value = data.url;
                     status.textContent = '✅ OK';
                     status.style.color = '#059669';
                     setTimeout(() => status.textContent = '', 3000);
                 }
-            } catch(e) { status.textContent = '❌ Erreur'; }
+            } catch (e) { status.textContent = '❌ Erreur'; }
         }
 
         async function uploadImage(n, input) {
             const file = input.files[0];
             if (!file) return;
-            const status = document.getElementById('bc'+n+'_upload_status');
+            const status = document.getElementById('bc' + n + '_upload_status');
             status.textContent = '⏳ Upload en cours...';
             status.style.color = '#6b7280';
             const formData = new FormData();
@@ -470,7 +733,7 @@
                 const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.url) {
-                    document.getElementById('bc'+n+'_img').value = data.url;
+                    document.getElementById('bc' + n + '_img').value = data.url;
                     previewCard(n);
                     status.textContent = '✅ Uploadée !';
                     status.style.color = '#059669';
@@ -479,29 +742,26 @@
                     status.textContent = '❌ Erreur upload';
                     status.style.color = '#ef4444';
                 }
-            } catch(e) {
+            } catch (e) {
                 status.textContent = '❌ Erreur réseau';
                 status.style.color = '#ef4444';
             }
         }
 
+        // ── PREVIEW CARDS ───────────────────────────────────────────────────────
         function previewCard(n) {
-            const tag = (document.getElementById('bc'+n+'_tag')||{}).value || '';
-            const name = (document.getElementById('bc'+n+'_name')||{}).value || '';
-            const desc = (document.getElementById('bc'+n+'_desc')||{}).value || '';
-            const img = (document.getElementById('bc'+n+'_img')||{}).value || '';
-            const pTag = document.getElementById('prev-bc'+n+'-tag');
-            const pName = document.getElementById('prev-bc'+n+'-name');
-            const pDesc = document.getElementById('prev-bc'+n+'-desc');
-            const pImg = document.getElementById('prev-bc'+n+'-img');
-            if(pTag) pTag.textContent = tag;
-            if(pName) pName.textContent = name;
-            if(pDesc) pDesc.textContent = desc;
-            if(pImg && img) {
-                pImg.innerHTML = '<img src="'+img+'" style="width:100%;height:140px;object-fit:cover;" onerror="this.parentElement.innerHTML=\'❌\'">';
-            }
+            const tag = (document.getElementById('bc' + n + '_tag') || {}).value || '';
+            const name = (document.getElementById('bc' + n + '_name') || {}).value || '';
+            const desc = (document.getElementById('bc' + n + '_desc') || {}).value || '';
+            const img = (document.getElementById('bc' + n + '_img') || {}).value || '';
+            if (document.getElementById('prev-bc' + n + '-tag')) document.getElementById('prev-bc' + n + '-tag').textContent = tag;
+            if (document.getElementById('prev-bc' + n + '-name')) document.getElementById('prev-bc' + n + '-name').textContent = name;
+            if (document.getElementById('prev-bc' + n + '-desc')) document.getElementById('prev-bc' + n + '-desc').textContent = desc;
+            const pImg = document.getElementById('prev-bc' + n + '-img');
+            if (pImg && img) pImg.innerHTML = '<img src="' + img + '" style="width:100%;height:140px;object-fit:cover;" onerror="this.parentElement.innerHTML=\'❌\'">';
         }
 
+        // ── TABS ────────────────────────────────────────────────────────────────
         function switchTab(tab, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -509,85 +769,74 @@
             document.getElementById('panel-' + tab).classList.add('active');
         }
 
+        // ── PREVIEW HERO LIVE ───────────────────────────────────────────────────
         function updatePreview() {
             const g = id => (document.getElementById(id) || {}).value || '';
-            document.getElementById('prev-title').innerHTML = (g('hero_title')||'Mode & Style') + '<br><span style="color:#10b981">' + (g('hero_title_highlight')||'Abidjan') + '</span>';
+            document.getElementById('prev-title').innerHTML = (g('hero_title') || 'Mode & Style') + '<br><span style="color:#10b981">' + (g('hero_title_highlight') || 'Abidjan') + '</span>';
             document.getElementById('prev-sub').textContent = g('hero_subtitle');
-            document.getElementById('prev-badge').innerHTML = (g('hero_badge')||'-60%') + '<br><small>' + (g('hero_badge_label')||'mode') + '</small>';
-            document.getElementById('prev-c1-title').innerHTML = (g('card1_title1')||'Smartphones') + '<br>' + (g('card1_title2')||'& Gadgets');
+            document.getElementById('prev-badge').innerHTML = (g('hero_badge') || '-60%') + '<br><small>' + (g('hero_badge_label') || 'mode') + '</small>';
+            document.getElementById('prev-c1-title').innerHTML = (g('card1_title1') || 'Smartphones') + '<br>' + (g('card1_title2') || '& Gadgets');
             document.getElementById('prev-c1-sub').textContent = g('card1_subtitle') || 'Tecno, Samsung, iPhone…';
-            document.getElementById('prev-c2-title').innerHTML = (g('card2_title1')||'Produits Frais') + '<br>' + (g('card2_title2')||'& Locaux');
+            document.getElementById('prev-c2-title').innerHTML = (g('card2_title1') || 'Produits Frais') + '<br>' + (g('card2_title2') || '& Locaux');
             document.getElementById('prev-c2-sub').textContent = g('card2_subtitle') || 'Épices, céréales, boissons';
             document.getElementById('prev-vendors').textContent = g('stat_vendors') || '3 200+';
             document.getElementById('prev-satis').textContent = g('stat_satisfaction') || '98%';
             document.getElementById('prev-deliv').textContent = g('stat_delivery') || '24h';
         }
+        BASE_KEYS.forEach(k => { const el = document.getElementById(k); if (el) el.addEventListener('input', updatePreview); });
 
-        KEYS.forEach(k => { const el = document.getElementById(k); if (el) el.addEventListener('input', updatePreview); });
-
-        async function loadSettings() {
-            try {
-                const res = await fetch(`${API}/site-settings`);
-                const data = await res.json();
-                KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
-                updatePreview();
-                [1,2,3,4].forEach(n => previewCard(n));
-                // Remplir les slides
-                buildSlidesUI();
-                let sn = 0;
-                while (data['slide'+sn+'_title'] !== undefined || sn < 3) {
-                    if (sn >= slideCount && data['slide'+sn+'_title']) { addSlide(); }
-                    ['title','sub','cta_text','cta_link','img'].forEach(k => {
-                        const el = document.getElementById('slide'+sn+'_'+k);
-                        if (el && data['slide'+sn+'_'+k] !== undefined) el.value = data['slide'+sn+'_'+k];
-                    });
-                    sn++;
-                    if (sn > 10) break;
-                }
-            } catch(e) { console.error('Erreur chargement:', e); }
-        }
-
-        async function saveSettings() {
-            const btn = document.getElementById('btnSave');
-            btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
-            document.getElementById('toastOk').classList.remove('show');
-            document.getElementById('saveInfo').style.display = 'none';
-            const updates = {};
-            KEYS.forEach(key => { const el = document.getElementById(key); if (el) updates[key] = el.value; });
-            try {
-                const res = await fetch(`${API}/site-settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) });
-                if (res.ok) {
-                    document.getElementById('toastOk').classList.add('show');
-                    setTimeout(() => { document.getElementById('toastOk').classList.remove('show'); document.getElementById('saveInfo').style.display = ''; }, 4000);
-                } else { alert('Erreur sauvegarde.'); }
-            } catch(e) { alert('Erreur réseau.'); }
-            btn.disabled = false; btn.textContent = '💾 Enregistrer';
-        }
-
-        // ── Slides dynamiques
+        // ── SLIDES DYNAMIQUES ───────────────────────────────────────────────────
         let slideCount = 3;
+
+        const SLIDE_BADGE_DEFAULTS = [
+            '✦ Offres du moment',
+            '📱 Électronique',
+            '🛒 Alimentation',
+            '💄 Beauté',
+            '🏡 Maison'
+        ];
+
         function slideCard(n) {
+            const badgeDef = SLIDE_BADGE_DEFAULTS[n] || '✦ Offres';
             return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
-                    <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n+1}</div>
-                    ${n >= 3 ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : ''}
-                </div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
-                    <div class="field full">
-                        <label>Image</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="slide${n}_img" placeholder="https://...image.jpg" style="flex:1;">
-                            <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n}, this)">
-                            <span id="slide${n}_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
+                        <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n + 1}</div>
+                        ${n >= 3 ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : ''}
+                    </div>
+                    <div class="fields-grid">
+                        <div class="field"><label>Titre (HTML autorisé)</label><input type="text" id="slide${n}_title" placeholder="Mode & Style&lt;br&gt;&lt;em&gt;Abidjan&lt;/em&gt;"></div>
+                        <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..."></div>
+                        <div class="field"><label>Texte du bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →"></div>
+                        <div class="field"><label>Lien du bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
+
+                        <!-- ✅ CORRECTION : Champs badge et discount désormais éditables -->
+                        <div class="field">
+                            <label>🏷️ Badge catégorie (ex: 💄 BEAUTÉ)</label>
+                            <input type="text" id="slide${n}_badge" placeholder="${badgeDef}">
+                            <span class="hint">Affiché en haut à gauche du slide</span>
+                        </div>
+                        <div class="field">
+                            <label>🔴 Badge remise (ex: -30%)</label>
+                            <input type="text" id="slide${n}_discount" placeholder="-${(n + 1) * 10}%">
+                            <span class="hint">Laisser vide = pas de badge rond</span>
+                        </div>
+                        <div class="field">
+                            <label>Label sous la remise (ex: beauté)</label>
+                            <input type="text" id="slide${n}_discount_label" placeholder="remise">
+                            <span class="hint">Petit texte sous le pourcentage</span>
+                        </div>
+
+                        <div class="field full">
+                            <label>Image du slide</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="slide${n}_img" placeholder="https://...image.jpg" style="flex:1;">
+                                <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                                <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n}, this)">
+                                <span id="slide${n}_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>`;
+                </div>`;
         }
 
         function buildSlidesUI() {
@@ -607,29 +856,97 @@
         }
 
         function removeSlide(n) {
-            const el = document.getElementById('slide-card-'+n);
+            const el = document.getElementById('slide-card-' + n);
             if (el) el.remove();
-            // Vider les valeurs dans les KEYS
-            ['title','sub','cta_text','cta_link','img'].forEach(k => {
-                const inp = document.getElementById('slide'+n+'_'+k);
-                if (inp) inp.value = '';
+            slideKeys(n).forEach(k => {
+                const inp = document.getElementById(k.replace('slide' + n + '_', 'slide' + n + '_'));
+                // Chercher l'input par id exact
+                const inp2 = document.getElementById(k);
+                if (inp2) inp2.value = '';
             });
         }
 
-        // Initialiser les slides
         buildSlidesUI();
 
-        // Mettre à jour les KEYS dynamiquement avant save
-        const origSave = saveSettings;
-        saveSettings = async function() {
-            // Ajouter les clés slides dynamiques
+        // ── CHARGEMENT DEPUIS L'API ─────────────────────────────────────────────
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API}/site-settings`);
+                const data = await res.json();
+
+                // Charger les clés de base
+                BASE_KEYS.forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && data[key] !== undefined) el.value = data[key];
+                });
+
+                // Charger les slides
+                let sn = 0;
+                while (sn < 5) {
+                    const hasData = slideKeys(sn).some(k => data[k] !== undefined && data[k] !== '');
+                    if (!hasData && sn >= 3) break;
+
+                    if (sn >= slideCount && hasData) addSlide();
+
+                    slideKeys(sn).forEach(k => {
+                        const el = document.getElementById(k);
+                        if (el && data[k] !== undefined) el.value = data[k];
+                    });
+                    sn++;
+                }
+
+                updatePreview();
+                [1, 2, 3, 4].forEach(n => previewCard(n));
+
+            } catch (e) { console.error('Erreur chargement:', e); }
+        }
+
+        // ── SAUVEGARDE ──────────────────────────────────────────────────────────
+        async function saveSettings() {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true;
+            btn.textContent = '⏳ Enregistrement...';
+            document.getElementById('toastOk').classList.remove('show');
+            document.getElementById('saveInfo').style.display = 'none';
+
+            const updates = {};
+
+            // Clés de base
+            BASE_KEYS.forEach(key => {
+                const el = document.getElementById(key);
+                if (el) updates[key] = el.value;
+            });
+
+            // ✅ CORRECTION : Clés slides dynamiques incluant badge + discount + discount_label
             for (let i = 0; i < slideCount; i++) {
-                ['title','sub','cta_text','cta_link','img'].forEach(k => {
-                    if (!KEYS.includes('slide'+i+'_'+k)) KEYS.push('slide'+i+'_'+k);
+                slideKeys(i).forEach(k => {
+                    const el = document.getElementById(k);
+                    if (el) updates[k] = el.value;
                 });
             }
-            await origSave();
-        };
+
+            try {
+                const res = await fetch(`${API}/site-settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates)
+                });
+                if (res.ok) {
+                    document.getElementById('toastOk').classList.add('show');
+                    setTimeout(() => {
+                        document.getElementById('toastOk').classList.remove('show');
+                        document.getElementById('saveInfo').style.display = '';
+                    }, 4000);
+                } else {
+                    alert('Erreur lors de la sauvegarde.');
+                }
+            } catch (e) {
+                alert('Erreur réseau. Vérifiez votre connexion.');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '💾 Enregistrer';
+        }
 
         loadSettings();
     </script>
