@@ -856,33 +856,65 @@
 
         function featuredRenderProds(prods) {
             const grid = document.getElementById('featuredProductsList');
-            if (!prods.length) { grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">Aucun produit</div>'; return; }
+            if (!prods.length) {
+                grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">Aucun produit</div>';
+                return;
+            }
             grid.innerHTML = prods.map(p => {
                 const img = featuredParseImgs(p.images)[0] || '';
                 const sel = featuredSelIds.includes(p.id);
-                return `<div id="fprod-${p.id}" onclick="featuredToggle(${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${img}')" style="border:2px solid ${sel ? '#10b981' : '#e5e7eb'};background:${sel ? '#f0fdf4' : 'white'};border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;">
-                ${sel ? '<div style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;">✓</div>' : ''}
-                <div style="height:100px;background:#f9fafb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                    ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:contain;padding:4px;" onerror="this.style.display='none'">` : '<span style="font-size:32px">📦</span>'}
-                </div>
-                <div style="padding:8px;">
-                    <div style="font-size:11px;font-weight:600;color:#111827;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;">${p.name}</div>
-                    <div style="font-size:12px;font-weight:700;color:#10b981;">${Number(p.price).toLocaleString('fr-FR')} F</div>
-                </div>
-            </div>`;
+                // ✅ Plus de données dans onclick — juste l'ID
+                return `<div id="fprod-${p.id}" data-pid="${p.id}" onclick="featuredToggleById(${p.id})" 
+            style="border:2px solid ${sel ? '#10b981' : '#e5e7eb'};background:${sel ? '#f0fdf4' : 'white'};border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;">
+            ${sel ? '<div class="fcheck" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;">✓</div>' : ''}
+            <div style="height:100px;background:#f9fafb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:contain;padding:4px;" onerror="this.style.display='none'">` : ' <span style="font-size:32px">📦</span>'}
+            </div>
+            <div style="padding:8px;">
+                <div style="font-size:11px;font-weight:600;color:#111827;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;">${p.name}</div>
+                <div style="font-size:12px;font-weight:700;color:#10b981;">${Number(p.price).toLocaleString('fr-FR')} F</div>
+            </div>
+        </div>`;
             }).join('');
         }
 
-        function featuredToggle(id, name, price, imgSrc) {
+        function featuredToggleById(id) {
+            // Données récupérées depuis le tableau — pas depuis onclick
+            const prod = featuredAllProds.find(p => p.id === id);
+            if (!prod) return;
+
             if (featuredSelIds.includes(id)) {
                 featuredSelIds = featuredSelIds.filter(x => x !== id);
                 delete featuredSelData[id];
             } else {
                 if (featuredSelIds.length >= 20) { alert('Maximum 20 produits.'); return; }
                 featuredSelIds.push(id);
-                featuredSelData[id] = { id, name, price, img: imgSrc };
+                const img = featuredParseImgs(prod.images)[0] || '';
+                featuredSelData[id] = { id, name: prod.name, price: prod.price, img };
             }
-            featuredRenderProds(featuredAllProds);
+
+            // Mettre à jour la card sans re-render complet
+            const card = document.getElementById('fprod-' + id);
+            if (card) {
+                const sel = featuredSelIds.includes(id);
+                card.style.borderColor = sel ? '#10b981' : '#e5e7eb';
+                card.style.background = sel ? '#f0fdf4' : 'white';
+                const existing = card.querySelector('.fcheck');
+                if (sel && !existing) {
+                    const check = document.createElement('div');
+                    check.className = 'fcheck';
+                    check.style.cssText = 'position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
+                    check.textContent = '✓';
+                    card.appendChild(check);
+                } else if (!sel && existing) {
+                    existing.remove();
+                }
+            }
+
+            // Mettre à jour l'input hidden pour la sauvegarde
+            const hiddenEl = document.getElementById('featured_product_ids');
+            if (hiddenEl) hiddenEl.value = featuredSelIds.join(',');
+
             featuredRenderSelected();
         }
 
