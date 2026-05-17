@@ -2322,27 +2322,36 @@
             if (!bar) return;
             // Charger les catégories parentes depuis l'API
             fetch('/api/categories').then(r => r.json()).then(cats => {
-                // Garder seulement les catégories parentes (sans ParentId)
                 const parents = cats.filter(c => !c.parentId);
-                bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>';
+                bar.innerHTML = '';
+                const all = document.createElement('div');
+                all.className = 'cat-tab active';
+                all.textContent = '🏠 Tout';
+                all.onclick = function() { filterCat(this, 'all'); };
+                bar.appendChild(all);
                 parents.forEach(cat => {
                     const icon = getCatIcon(cat.name);
                     const tab = document.createElement('div');
                     tab.className = 'cat-tab';
                     tab.textContent = icon + ' ' + cat.name;
+                    const catId = cat.id;
                     const catName = cat.name.toLowerCase();
-                    tab.onclick = function() { filterCatByParent(this, cat.id, catName); };
+                    tab.onclick = function() { filterCatByParent(this, catId, catName); };
                     bar.appendChild(tab);
                 });
             }).catch(() => {
-                // Fallback : utiliser les catégories des produits
                 const cats = {};
                 products.forEach(p => {
                     const cat = p.category;
                     if (cat && cat.name && !cats[cat.name]) cats[cat.name] = { name: cat.name, count: 0 };
                     if (cat && cat.name) cats[cat.name].count++;
                 });
-                bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>';
+                bar.innerHTML = '';
+                const allTab = document.createElement('div');
+                allTab.className = 'cat-tab active';
+                allTab.textContent = '🏠 Tout';
+                allTab.onclick = function() { filterCat(this, 'all'); };
+                bar.appendChild(allTab);
                 Object.values(cats).sort((a,b) => b.count - a.count).forEach(cat => {
                     const icon = getCatIcon(cat.name);
                     const tab = document.createElement('div');
