@@ -1743,7 +1743,8 @@
         }
 
         .featured-card {
-            min-width: 200px;
+            min-width: 180px;
+            max-width: 180px;
             background: var(--lk);
             border: 1px solid var(--lk-border);
             border-radius: var(--r);
@@ -1762,7 +1763,7 @@
             }
 
         .featured-card-img {
-            height: 160px;
+            height: 140px;
             background: var(--lk3);
             display: flex;
             align-items: center;
@@ -2662,7 +2663,7 @@
             track.innerHTML = ''; dots.innerHTML = '';
             const wrap = document.querySelector('.featured-track-wrap');
             const wrapW = wrap ? wrap.offsetWidth : window.innerWidth - 40;
-            const cardW = window.innerWidth <= 640 ? 171 : 216;
+            const cardW = window.innerWidth <= 640 ? 141 : 196; // 180px + 16px gap
             featuredCardW = cardW;
             const visible = Math.max(Math.floor(wrapW / cardW), 1);
             // Cloner pour l'infini
