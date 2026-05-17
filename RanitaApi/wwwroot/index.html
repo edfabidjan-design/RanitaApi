@@ -1808,16 +1808,8 @@
     </div>
 
     <div class="cats-bar">
-        <div class="cats-inner">
+        <div class="cats-inner" id="catsBarInner">
             <div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>
-            <div class="cat-tab" onclick="filterCat(this,'mode')">👗 Mode femme</div>
-            <div class="cat-tab" onclick="filterCat(this,'mode')">👔 Mode homme</div>
-            <div class="cat-tab" onclick="filterCat(this,'elec')">📱 Électronique</div>
-            <div class="cat-tab" onclick="filterCat(this,'alim')">🛒 Alimentation</div>
-            <div class="cat-tab" onclick="filterCat(this,'beau')">💄 Beauté & Santé</div>
-            <div class="cat-tab" onclick="filterCat(this,'mais')">🏡 Maison & Déco</div>
-            <div class="cat-tab" onclick="filterCat(this,'enfa')">🧸 Enfants</div>
-            <div class="cat-tab" onclick="filterCat(this,'spor')">⚽ Sports</div>
         </div>
     </div>
 
@@ -2297,6 +2289,7 @@
                 const active = allProducts.filter(p => p.isActive !== false);
                 document.getElementById('stat-total').textContent = active.length >= 1000 ? Math.floor(active.length / 1000) + 'K+' : active.length + '+';
                 updateCatCounts(active);
+                buildCatsBar(active);
                 const flash = active.filter(p => p.oldPrice && p.oldPrice > p.price).sort((a, b) => pct(b.price, b.oldPrice) - pct(a.price, a.oldPrice)).slice(0, 6);
                 const flashFill = flash.length < 4 ? [...flash, ...active.filter(p => !flash.includes(p)).slice(0, 6 - flash.length)] : flash;
                 document.getElementById('flash-grid').innerHTML = flashFill.length ? flashFill.map(buildCard).join('') : errHTML();
@@ -2309,6 +2302,40 @@
                 document.getElementById('bestsellers-grid').innerHTML = errHTML();
             }
         }
+        const CAT_ICONS = {
+            'mode': '👗', 'femme': '👗', 'homme': '👔', 'électronique': '📱', 'elec': '📱',
+            'alimentation': '🛒', 'alim': '🛒', 'beauté': '💄', 'beau': '💄', 'santé': '💊',
+            'maison': '🏡', 'déco': '🏡', 'enfants': '🧸', 'sports': '⚽', 'sport': '⚽',
+            'informatique': '💻', 'jeux': '🎮', 'jouets': '🧸', 'livres': '📚',
+            'auto': '🚗', 'véhicules': '🚗', 'jardin': '🌿', 'animaux': '🐾',
+        };
+        function getCatIcon(name) {
+            const n = (name || '').toLowerCase();
+            for (const [key, icon] of Object.entries(CAT_ICONS)) {
+                if (n.includes(key)) return icon;
+            }
+            return '📦';
+        }
+        function buildCatsBar(products) {
+            const bar = document.getElementById('catsBarInner');
+            if (!bar) return;
+            const cats = {};
+            products.forEach(p => {
+                const cat = p.category;
+                if (cat && cat.name && !cats[cat.name]) cats[cat.name] = { name: cat.name, count: 0 };
+                if (cat && cat.name) cats[cat.name].count++;
+            });
+            bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>';
+            Object.values(cats).sort((a,b) => b.count - a.count).forEach(cat => {
+                const icon = getCatIcon(cat.name);
+                const tab = document.createElement('div');
+                tab.className = 'cat-tab';
+                tab.textContent = icon + ' ' + cat.name;
+                tab.onclick = function() { filterCat(this, cat.name.toLowerCase().slice(0,4)); };
+                bar.appendChild(tab);
+            });
+        }
+
         function updateCatCounts(products) {
             const catEls = document.querySelectorAll('#cats-grid .cnt');
             const catMap = {};
@@ -2326,6 +2353,7 @@
             el.classList.add('active'); currentCat = key;
             const active = allProducts.filter(p => p.isActive !== false);
             let filtered = key === 'all' ? active : active.filter(p => (p.category?.name || '').toLowerCase().includes(key));
+            if (filtered.length === 0 && key !== 'all') filtered = active.filter(p => (p.category?.name || '').toLowerCase().startsWith(key.slice(0,3)));
             const flashIds = new Set(filtered.filter(p => p.oldPrice && p.oldPrice > p.price).slice(0, 6).map(p => p.id));
             const flash = filtered.filter(p => p.oldPrice && p.oldPrice > p.price).slice(0, 6);
             const best = filtered.filter(p => !flashIds.has(p.id)).slice(0, 4);
