@@ -656,6 +656,15 @@ try
         ["promo_delivery_desc"] = "Abidjan & banlieue — livraison en 24h chrono.",
         ["referral_title"] = "🎁 Invitez un ami, gagnez 2 500 F CFA",
         ["referral_desc"] = "Pour chaque ami qui effectue son premier achat sur Ranita Market, vous recevez 2 500 F sur votre compte.",
+        ["hero_btn_link"] = "products.html",
+        ["card1_title1"] = "Smartphones",
+        ["card1_title2"] = "& Gadgets",
+        ["card1_subtitle"] = "Tecno, Samsung, iPhone...",
+        ["card1_link"] = "products.html",
+        ["card2_title1"] = "Produits Frais",
+        ["card2_title2"] = "& Locaux",
+        ["card2_subtitle"] = "Épices, céréales, boissons",
+        ["card2_link"] = "products.html",
     };
     foreach (var (key, value) in defaults)
     {

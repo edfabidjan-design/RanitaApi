@@ -1561,6 +1561,29 @@
                 if (disc && s.hero_badge && s.hero_badge_label)
                     disc.innerHTML = s.hero_badge + '<small>' + s.hero_badge_label + '</small>';
 
+                // Lien bouton hero
+                const heroBtn = document.querySelector('.hero-btn');
+                if (heroBtn && s.hero_btn_link) heroBtn.href = s.hero_btn_link;
+                const heroMain = document.querySelector('.hero-main');
+                if (heroMain && s.hero_btn_link) heroMain.setAttribute('onclick', `location.href='${s.hero_btn_link}'`);
+
+                // Cards Électronique & Alimentation
+                const cards = document.querySelectorAll('.hero-card-sm');
+                if (cards[0]) {
+                    const h3 = cards[0].querySelector('h3');
+                    if (h3 && s.card1_title1 && s.card1_title2) h3.innerHTML = s.card1_title1 + '<br>' + s.card1_title2;
+                    const p = cards[0].querySelector('p');
+                    if (p && s.card1_subtitle) p.textContent = s.card1_subtitle;
+                    if (s.card1_link) cards[0].setAttribute('onclick', `location.href='${s.card1_link}'`);
+                }
+                if (cards[1]) {
+                    const h3 = cards[1].querySelector('h3');
+                    if (h3 && s.card2_title1 && s.card2_title2) h3.innerHTML = s.card2_title1 + '<br>' + s.card2_title2;
+                    const p = cards[1].querySelector('p');
+                    if (p && s.card2_subtitle) p.textContent = s.card2_subtitle;
+                    if (s.card2_link) cards[1].setAttribute('onclick', `location.href='${s.card2_link}'`);
+                }
+
                 // Stats
                 if (s.stat_vendors) {
                     const statEls = document.querySelectorAll('.stat-n');
