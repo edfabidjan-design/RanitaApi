@@ -337,7 +337,7 @@
         <button class="btn-logout" onclick="adminLogout()">Déconnexion</button>
         <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     </header>
-
+    <input type="hidden" id="featured_product_ids">
     <div class="admin-container">
         <p class="page-title">⚙️ Paramètres du site</p>
         <p class="page-sub">Modifiez les textes et contenus affichés sur la page d'accueil sans toucher au code.</p>
@@ -351,6 +351,7 @@
             <div class="tab" onclick="switchTab('referral',this)">📣 Parrainage</div>
             <div class="tab" onclick="switchTab('bigcards',this)">🖼️ Cards phares</div>
             <div class="tab" onclick="switchTab('banners',this)">⚡ Bannières</div>
+            <div class="tab" onclick="switchTab('featured',this)">⭐ Produits phares</div>
         </div>
 
         <!-- HERO -->
@@ -550,6 +551,46 @@
             </div>
         </div>
 
+        <!-- PRODUITS PHARES -->
+        <div class="tab-panel" id="panel-featured">
+            <div class="fix-badge">💡 Sélectionnez jusqu'à <strong>20 produits vendeurs</strong> à mettre en avant sur la page d'accueil.</div>
+            <div class="section-card">
+                <div class="section-title">✏️ Texte de la section</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="featured_title" placeholder="⭐ Sélection Ranita"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="featured_subtitle" placeholder="Les meilleurs produits de nos vendeurs"></div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;">
+                <!-- Boutiques -->
+                <div class="section-card" style="padding:20px;">
+                    <div class="section-title" style="margin-bottom:12px;">🏪 Boutiques</div>
+                    <div id="featuredSellerList" style="display:flex;flex-direction:column;gap:8px;">
+                        <div style="color:#9ca3af;font-size:13px;">⏳ Chargement...</div>
+                    </div>
+                </div>
+                <!-- Produits -->
+                <div class="section-card" style="padding:20px;">
+                    <div class="section-title" id="featuredShopTitle" style="margin-bottom:12px;">📦 Sélectionnez une boutique</div>
+                    <input type="text" id="featuredSearch" placeholder="🔍 Rechercher..." oninput="featuredFilter()" style="width:100%;padding:9px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;margin-bottom:14px;">
+                    <div id="featuredProductsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;max-height:480px;overflow-y:auto;">
+                        <div style="color:#9ca3af;font-size:13px;grid-column:1/-1;text-align:center;padding:30px;">👈 Choisissez une boutique</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sélectionnés -->
+            <div class="section-card" style="margin-top:16px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="font-size:14px;font-weight:700;color:#111827;">Produits sélectionnés <span id="featuredCount" style="background:#10b981;color:white;border-radius:999px;padding:2px 10px;font-size:12px;margin-left:6px;">0</span>/20</div>
+                    <button onclick="featuredClearAll()" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✕ Tout effacer</button>
+                </div>
+                <div id="featuredSelectedGrid" style="display:flex;flex-wrap:wrap;gap:8px;min-height:50px;">
+                    <span style="color:#9ca3af;font-size:13px;font-style:italic;">Aucun produit sélectionné</span>
+                </div>
+            </div>
+        </div>
+
+
         <div class="save-bar">
             <div class="toast-ok" id="toastOk">✅ Modifications enregistrées !</div>
             <div class="save-info" id="saveInfo">Les modifications seront visibles immédiatement.</div>
@@ -583,7 +624,8 @@
             'bc1_tag', 'bc1_name', 'bc1_desc', 'bc1_img', 'bc1_link',
             'bc2_tag', 'bc2_name', 'bc2_desc', 'bc2_img', 'bc2_link',
             'bc3_tag', 'bc3_name', 'bc3_desc', 'bc3_img', 'bc3_link',
-            'bc4_tag', 'bc4_name', 'bc4_desc', 'bc4_img', 'bc4_link'
+            'bc4_tag', 'bc4_name', 'bc4_desc', 'bc4_img', 'bc4_link',
+            'featured_title', 'featured_subtitle', 'featured_product_ids'
         ];
 
         function slideKeys(n) {
@@ -675,34 +717,34 @@
             const bg = SLIDE_BG[n] || SLIDE_BG[0], icon = SLIDE_ICONS[n] || '🛍️', badgeDef = SLIDE_BADGE_DEF[n] || '✦ Offres';
             const delBtn = n >= 1 ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : '';
             return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;">
-                    <div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
-                            <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n + 1}</div>${delBtn}
-                        </div>
-                        <div class="fields-grid">
-                            <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style" oninput="previewSlide(${n})"></div>
-                            <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..." oninput="previewSlide(${n})"></div>
-                            <div class="field"><label>Texte bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →" oninput="previewSlide(${n})"></div>
-                            <div class="field"><label>Lien bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
-                            <div class="field"><label>🏷️ Badge catégorie</label><input type="text" id="slide${n}_badge" placeholder="${badgeDef}" oninput="previewSlide(${n})"><span class="hint">Ex: 💄 BEAUTÉ</span></div>
-                            <div class="field"><label>🔴 Badge remise</label><input type="text" id="slide${n}_discount" placeholder="-${(n + 1) * 10}%" oninput="previewSlide(${n})"><span class="hint">Vide = pas de badge</span></div>
-                            <div class="field"><label>Label remise</label><input type="text" id="slide${n}_discount_label" placeholder="remise" oninput="previewSlide(${n})"><span class="hint">Ex: beauté, tech</span></div>
-                            <div class="field full"><label>Image</label><div style="display:flex;gap:10px;align-items:center;"><input type="text" id="slide${n}_img" placeholder="https://...jpg" style="flex:1;" oninput="previewSlide(${n})"><label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁</label><input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n},this)"><span id="slide${n}_upload_status" style="font-size:11px;color:#6b7280;"></span></div></div>
-                        </div>
-                    </div>
-                    <div style="border-radius:12px;overflow:hidden;background:${bg};margin-top:36px;">
-                        <div id="prev-slide-${n}-img" style="height:110px;display:flex;align-items:center;justify-content:center;font-size:40px;">${icon}</div>
-                        <div style="padding:12px;">
-                            <div id="prev-slide-${n}-badge" style="font-size:10px;font-weight:700;color:#22C55E;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:7px;">${badgeDef}</div>
-                            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;">
-                                <div id="prev-slide-${n}-title" style="font-size:15px;font-weight:800;color:#F0F6FC;line-height:1.2;">Slide ${n + 1}</div>
-                                <div id="prev-slide-${n}-disc" style="display:none;background:#F59E0B;color:white;font-weight:800;font-size:10px;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;"></div>
+                        <div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
+                                <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n + 1}</div>${delBtn}
                             </div>
-                            <div id="prev-slide-${n}-sub" style="font-size:11px;color:#8B949E;margin:4px 0 7px;"></div>
-                            <div id="prev-slide-${n}-btn" style="background:#10b981;color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div>
+                            <div class="fields-grid">
+                                <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style" oninput="previewSlide(${n})"></div>
+                                <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..." oninput="previewSlide(${n})"></div>
+                                <div class="field"><label>Texte bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →" oninput="previewSlide(${n})"></div>
+                                <div class="field"><label>Lien bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
+                                <div class="field"><label>🏷️ Badge catégorie</label><input type="text" id="slide${n}_badge" placeholder="${badgeDef}" oninput="previewSlide(${n})"><span class="hint">Ex: 💄 BEAUTÉ</span></div>
+                                <div class="field"><label>🔴 Badge remise</label><input type="text" id="slide${n}_discount" placeholder="-${(n + 1) * 10}%" oninput="previewSlide(${n})"><span class="hint">Vide = pas de badge</span></div>
+                                <div class="field"><label>Label remise</label><input type="text" id="slide${n}_discount_label" placeholder="remise" oninput="previewSlide(${n})"><span class="hint">Ex: beauté, tech</span></div>
+                                <div class="field full"><label>Image</label><div style="display:flex;gap:10px;align-items:center;"><input type="text" id="slide${n}_img" placeholder="https://...jpg" style="flex:1;" oninput="previewSlide(${n})"><label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁</label><input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n},this)"><span id="slide${n}_upload_status" style="font-size:11px;color:#6b7280;"></span></div></div>
+                            </div>
                         </div>
-                    </div>
-                </div>`;
+                        <div style="border-radius:12px;overflow:hidden;background:${bg};margin-top:36px;">
+                            <div id="prev-slide-${n}-img" style="height:110px;display:flex;align-items:center;justify-content:center;font-size:40px;">${icon}</div>
+                            <div style="padding:12px;">
+                                <div id="prev-slide-${n}-badge" style="font-size:10px;font-weight:700;color:#22C55E;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:7px;">${badgeDef}</div>
+                                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;">
+                                    <div id="prev-slide-${n}-title" style="font-size:15px;font-weight:800;color:#F0F6FC;line-height:1.2;">Slide ${n + 1}</div>
+                                    <div id="prev-slide-${n}-disc" style="display:none;background:#F59E0B;color:white;font-weight:800;font-size:10px;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;"></div>
+                                </div>
+                                <div id="prev-slide-${n}-sub" style="font-size:11px;color:#8B949E;margin:4px 0 7px;"></div>
+                                <div id="prev-slide-${n}-btn" style="background:#10b981;color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div>
+                            </div>
+                        </div>
+                    </div>`;
         }
 
         function buildSlidesUI() {
@@ -765,6 +807,138 @@
             } catch (e) { alert('Erreur réseau.'); }
             btn.disabled = false; btn.textContent = '💾 Enregistrer';
         }
+
+
+        // ── PRODUITS PHARES ──────────────────────────────────────────────
+        let featuredAllProds = [], featuredSelIds = [], featuredSelData = {};
+
+        async function featuredLoadSellers() {
+            try {
+                const res = await fetch(`${API}/featured-products/sellers`);
+                const sellers = await res.json();
+                const list = document.getElementById('featuredSellerList');
+                if (!sellers.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:13px;">Aucune boutique approuvée</div>'; return; }
+                list.innerHTML = sellers.map(s => `
+                <div id="fsel-${s.id}" onclick="featuredSelectSeller(${s.id},'${s.shopName.replace(/'/g, "\\'")}')
+" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;cursor:pointer;transition:all .2s;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden;">
+                        ${s.shopLogoUrl ? `<img src="${s.shopLogoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">` : '🏪'}
+                    </div>
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:#111827;">${s.shopName}</div>
+                        <div style="font-size:11px;color:#6b7280;">${s.productCount} produit${s.productCount > 1 ? 's' : ''}</div>
+                    </div>
+                </div>`).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function featuredSelectSeller(id, name) {
+            document.querySelectorAll('[id^="fsel-"]').forEach(el => el.style.borderColor = '#e5e7eb');
+            const el = document.getElementById('fsel-' + id);
+            if (el) el.style.borderColor = '#10b981';
+            document.getElementById('featuredShopTitle').textContent = '📦 ' + name;
+            document.getElementById('featuredProductsList').innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">⏳ Chargement...</div>';
+            try {
+                const res = await fetch(`${API}/featured-products/sellers/${id}/products`);
+                featuredAllProds = await res.json();
+                featuredRenderProds(featuredAllProds);
+            } catch (e) { document.getElementById('featuredProductsList').innerHTML = '<div style="color:#ef4444;font-size:13px;">❌ Erreur</div>'; }
+        }
+
+        function featuredFilter() {
+            const q = document.getElementById('featuredSearch').value.toLowerCase();
+            featuredRenderProds(featuredAllProds.filter(p => p.name.toLowerCase().includes(q)));
+        }
+
+        function featuredParseImgs(images) {
+            try { const a = JSON.parse(images || '[]'); return Array.isArray(a) ? a : []; } catch { return images ? [images] : []; }
+        }
+
+        function featuredRenderProds(prods) {
+            const grid = document.getElementById('featuredProductsList');
+            if (!prods.length) { grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">Aucun produit</div>'; return; }
+            grid.innerHTML = prods.map(p => {
+                const img = featuredParseImgs(p.images)[0] || '';
+                const sel = featuredSelIds.includes(p.id);
+                return `<div id="fprod-${p.id}" onclick="featuredToggle(${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${img}')" style="border:2px solid ${sel ? '#10b981' : '#e5e7eb'};background:${sel ? '#f0fdf4' : 'white'};border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;">
+                ${sel ? '<div style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;">✓</div>' : ''}
+                <div style="height:100px;background:#f9fafb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                    ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:contain;padding:4px;" onerror="this.style.display='none'">` : '<span style="font-size:32px">📦</span>'}
+                </div>
+                <div style="padding:8px;">
+                    <div style="font-size:11px;font-weight:600;color:#111827;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;">${p.name}</div>
+                    <div style="font-size:12px;font-weight:700;color:#10b981;">${Number(p.price).toLocaleString('fr-FR')} F</div>
+                </div>
+            </div>`;
+            }).join('');
+        }
+
+        function featuredToggle(id, name, price, imgSrc) {
+            if (featuredSelIds.includes(id)) {
+                featuredSelIds = featuredSelIds.filter(x => x !== id);
+                delete featuredSelData[id];
+            } else {
+                if (featuredSelIds.length >= 20) { alert('Maximum 20 produits.'); return; }
+                featuredSelIds.push(id);
+                featuredSelData[id] = { id, name, price, img: imgSrc };
+            }
+            featuredRenderProds(featuredAllProds);
+            featuredRenderSelected();
+        }
+
+        function featuredRenderSelected() {
+            document.getElementById('featuredCount').textContent = featuredSelIds.length;
+            const grid = document.getElementById('featuredSelectedGrid');
+            if (!featuredSelIds.length) { grid.innerHTML = '<span style="color:#9ca3af;font-size:13px;font-style:italic;">Aucun produit sélectionné</span>'; return; }
+            grid.innerHTML = featuredSelIds.map(id => {
+                const p = featuredSelData[id]; if (!p) return '';
+                const name = p.name.length > 20 ? p.name.slice(0, 20) + '…' : p.name;
+                return `<div style="display:flex;align-items:center;gap:6px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:600;color:#065f46;">
+                ${p.img ? `<img src="${p.img}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;">` : '<span>📦</span>'}
+                <span>${name}</span>
+                <span onclick="featuredToggle(${id},'','','')" style="cursor:pointer;color:#6b7280;font-size:14px;margin-left:2px;" title="Retirer">×</span>
+            </div>`;
+            }).join('');
+            // Mettre à jour la clé featured_product_ids pour la sauvegarde
+            const hiddenEl = document.getElementById('featured_product_ids');
+            if (hiddenEl) hiddenEl.value = featuredSelIds.join(',');
+        }
+
+        function featuredClearAll() {
+            if (!confirm('Effacer tous les produits sélectionnés ?')) return;
+            featuredSelIds = []; featuredSelData = {};
+            featuredRenderProds(featuredAllProds);
+            featuredRenderSelected();
+        }
+
+        // Initialiser l'onglet quand on clique dessus
+        const origSwitchTab = switchTab;
+        switchTab = function (tab, el) {
+            origSwitchTab(tab, el);
+            if (tab === 'featured' && !document.getElementById('featuredSellerList').querySelector('[id^="fsel-"]')) {
+                featuredLoadSellers();
+            }
+        };
+
+        // Charger les IDs sauvegardés dans featuredSelIds après loadSettings
+        const origLoad = loadSettings;
+        loadSettings = async function () {
+            await origLoad();
+            const idsEl = document.getElementById('featured_product_ids');
+            if (idsEl && idsEl.value) {
+                featuredSelIds = idsEl.value.split(',').map(x => parseInt(x)).filter(x => !isNaN(x) && x > 0);
+                // Charger les données pour l'affichage
+                try {
+                    const res = await fetch(`${API}/featured-products`);
+                    const prods = await res.json();
+                    prods.forEach(p => {
+                        const img = featuredParseImgs(p.images)[0] || '';
+                        featuredSelData[p.id] = { id: p.id, name: p.name, price: p.price, img };
+                    });
+                    featuredRenderSelected();
+                } catch (e) { }
+            }
+        };
 
         loadSettings();
     </script>
