@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranita Admin — Paramètres Site</title>
     <link rel="stylesheet" href="admin-style.css">
@@ -401,11 +404,19 @@
 
         <!-- ═══ SLIDER ═══ -->
         <div class="tab-panel" id="panel-slider">
+<<<<<<< HEAD
             <div class="fix-badge">
                 💡 <strong>Nouveau :</strong> Chaque slide a maintenant son propre badge catégorie et son badge de remise — tous éditables ci-dessous.
             </div>
             <div id="slidesContainer"></div>
             <button onclick="addSlide()" style="background:#f0fdf4;border:2px dashed #10b981;color:#059669;padding:14px 28px;border-radius:10px;font-weight:700;cursor:pointer;width:100%;font-size:14px;margin-bottom:20px;">+ Ajouter un slide</button>
+=======
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <p style="font-size:13px;color:#6b7280;">Gérez vos slides. Laissez le titre vide pour désactiver un slide.</p>
+                <button onclick="addSlide()" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">+ Ajouter un slide</button>
+            </div>
+            <div id="slidesContainer"></div>
+>>>>>>> e2d0f3b4f0929172d863a93f7161b6d27b21c902
         </div>
 
         <!-- ═══ CARDS ═══ -->
@@ -669,6 +680,7 @@
         buildAdminNav('settings');
 
         const API = 'https://ranitaapi-production.up.railway.app/api';
+<<<<<<< HEAD
 
         // ── CLÉS DE BASE (hors slides dynamiques) ──────────────────────────────
         const BASE_KEYS = [
@@ -685,6 +697,27 @@
             'bc2_tag', 'bc2_name', 'bc2_desc', 'bc2_img', 'bc2_link',
             'bc3_tag', 'bc3_name', 'bc3_desc', 'bc3_img', 'bc3_link',
             'bc4_tag', 'bc4_name', 'bc4_desc', 'bc4_img', 'bc4_link'
+=======
+        const KEYS = [
+            'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label','hero_btn_link',
+            'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link','slide0_img','slide0_discount','slide0_discount_label',
+            'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link','slide1_img','slide1_discount','slide1_discount_label',
+            'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link','slide2_img','slide2_discount','slide2_discount_label',
+            'slide3_title','slide3_sub','slide3_cta_text','slide3_cta_link','slide3_img',
+            'slide4_title','slide4_sub','slide4_cta_text','slide4_cta_link','slide4_img',
+            'card1_title1','card1_title2','card1_subtitle','card1_link',
+            'card2_title1','card2_title2','card2_subtitle','card2_link',
+            'stat_vendors','stat_satisfaction','stat_delivery',
+            'promo_referral_title','promo_referral_desc',
+            'promo_delivery_title','promo_delivery_desc',
+            'referral_title','referral_desc',
+            'promo_bar_text','promo_bar_link','promo_bar_hide',
+            'urgency_title','urgency_subtitle','urgency_link','urgency_hide',
+            'bc1_tag','bc1_name','bc1_desc','bc1_img','bc1_link',
+            'bc2_tag','bc2_name','bc2_desc','bc2_img','bc2_link',
+            'bc3_tag','bc3_name','bc3_desc','bc3_img','bc3_link',
+            'bc4_tag','bc4_name','bc4_desc','bc4_img','bc4_link'
+>>>>>>> e2d0f3b4f0929172d863a93f7161b6d27b21c902
         ];
 
         // Clés slide par index — ✅ CORRECTION : badge + discount + discount_label ajoutés
@@ -785,6 +818,7 @@
         }
         BASE_KEYS.forEach(k => { const el = document.getElementById(k); if (el) el.addEventListener('input', updatePreview); });
 
+<<<<<<< HEAD
         // ── SLIDES DYNAMIQUES ───────────────────────────────────────────────────
         let slideCount = 3;
 
@@ -832,11 +866,136 @@
                                 <input type="text" id="slide${n}_img" placeholder="https://...image.jpg" style="flex:1;">
                                 <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
                                 <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n}, this)">
+=======
+        KEYS.forEach(k => { const el = document.getElementById(k); if (el) el.addEventListener('input', updatePreview); });
+
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API}/site-settings`);
+                const data = await res.json();
+                KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
+                updatePreview();
+                [1,2,3,4].forEach(n => previewCard(n));
+
+                // Compter les slides réellement sauvegardés
+                let realCount = 0;
+                for (let i = 0; i < 10; i++) {
+                    if (data['slide'+i+'_title'] || i === 0) realCount = i + 1;
+                    else break;
+                }
+                slideCount = Math.max(realCount, 1);
+
+                // Reconstruire l'UI avec le bon nombre de slides
+                const container = document.getElementById('slidesContainer');
+                container.innerHTML = '';
+                for (let i = 0; i < slideCount; i++) {
+                    container.insertAdjacentHTML('beforeend', slideCard(i));
+                }
+
+                // Remplir les valeurs
+                for (let sn = 0; sn < slideCount; sn++) {
+                    ['title','sub','cta_text','cta_link','img'].forEach(k => {
+                        const el = document.getElementById('slide'+sn+'_'+k);
+                        if (el && data['slide'+sn+'_'+k] !== undefined) el.value = data['slide'+sn+'_'+k];
+                    });
+                    previewSlide(sn);
+                }
+            } catch(e) { console.error('Erreur chargement:', e); }
+        }
+
+        async function saveSettings() {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
+            document.getElementById('toastOk').classList.remove('show');
+            document.getElementById('saveInfo').style.display = 'none';
+            const updates = {};
+            KEYS.forEach(key => { const el = document.getElementById(key); if (el) updates[key] = el.value; });
+            try {
+                const res = await fetch(`${API}/site-settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) });
+                if (res.ok) {
+                    document.getElementById('toastOk').classList.add('show');
+                    setTimeout(() => { document.getElementById('toastOk').classList.remove('show'); document.getElementById('saveInfo').style.display = ''; }, 4000);
+                } else { alert('Erreur sauvegarde.'); }
+            } catch(e) { alert('Erreur réseau.'); }
+            btn.disabled = false; btn.textContent = '💾 Enregistrer';
+        }
+
+        // ── Slides dynamiques
+        let slideCount = 3;
+        const SLIDE_BG = ['#0D1117','linear-gradient(135deg,#0a1628,#0d1f3c)','linear-gradient(135deg,#0a1a12,#0d2416)','linear-gradient(135deg,#1a0828,#2d0f3c)','linear-gradient(135deg,#1a1000,#2d1e00)'];
+        const SLIDE_ICONS = ['🛍️','📱','🥘','💄','🏡'];
+
+        function slideCard(n) {
+            const canDelete = n >= 1;
+            const delBtn = canDelete ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : '';
+            const bg = SLIDE_BG[n] || SLIDE_BG[0];
+            const icon = SLIDE_ICONS[n] || '🛍️';
+            return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;">
+                <div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
+                        <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n+1}</div>
+                        ${delBtn}
+                    </div>
+                    <div class="fields-grid">
+                        <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style" oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..." oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Texte du bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →" oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Lien du bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
+                        <div class="field"><label>Badge promo (ex: -30%)</label><input type="text" id="slide${n}_discount" placeholder="-30%" oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Label du badge (ex: tech)</label><input type="text" id="slide${n}_discount_label" placeholder="tech" oninput="previewSlide(${n})"></div>
+                        <div class="field full">
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="slide${n}_img" placeholder="https://...image.jpg" style="flex:1;" oninput="previewSlide(${n})">
+                                <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                                <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImgAndPreview(${n}, this)">
+>>>>>>> e2d0f3b4f0929172d863a93f7161b6d27b21c902
                                 <span id="slide${n}_upload_status" style="font-size:12px;color:#6b7280;"></span>
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
                 </div>`;
+=======
+                </div>
+                <div id="prev-slide-${n}" style="border-radius:12px;overflow:hidden;background:${bg};margin-top:36px;">
+                    <div id="prev-slide-${n}-img" style="height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;background:${bg};">${icon}</div>
+                    <div style="padding:14px;">
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                            <div id="prev-slide-${n}-title" style="font-size:18px;font-weight:800;color:#F0F6FC;line-height:1.2;margin-bottom:6px;">Slide ${n+1}</div>
+                            <div id="prev-slide-${n}-disc" style="display:none;background:#F59E0B;color:white;font-weight:800;font-size:12px;padding:4px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;"></div>
+                        </div>
+                        <div id="prev-slide-${n}-sub" style="font-size:11px;color:#8B949E;margin-bottom:10px;"></div>
+                        <div id="prev-slide-${n}-btn" style="background:#10b981;color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;display:inline-block;">Explorer →</div>
+                    </div>
+                </div>
+            </div>`;
+>>>>>>> e2d0f3b4f0929172d863a93f7161b6d27b21c902
+        }
+
+        function previewSlide(n) {
+            const title = (document.getElementById('slide'+n+'_title')||{}).value || '';
+            const sub = (document.getElementById('slide'+n+'_sub')||{}).value || '';
+            const btn = (document.getElementById('slide'+n+'_cta_text')||{}).value || 'Explorer →';
+            const img = (document.getElementById('slide'+n+'_img')||{}).value || '';
+            const disc = (document.getElementById('slide'+n+'_discount')||{}).value || '';
+            const discLabel = (document.getElementById('slide'+n+'_discount_label')||{}).value || '';
+            const pTitle = document.getElementById('prev-slide-'+n+'-title');
+            const pSub = document.getElementById('prev-slide-'+n+'-sub');
+            const pBtn = document.getElementById('prev-slide-'+n+'-btn');
+            const pImg = document.getElementById('prev-slide-'+n+'-img');
+            if (pTitle) pTitle.innerHTML = title || 'Slide '+(n+1);
+            if (pSub) pSub.textContent = sub;
+            if (pBtn) pBtn.textContent = btn;
+            if (pImg && img) pImg.innerHTML = '<img src="'+img+'" style="width:100%;height:120px;object-fit:cover;" onerror="this.parentElement.innerHTML=\''+SLIDE_ICONS[n]+'\'">';
+            // Badge promo
+            const pDisc = document.getElementById('prev-slide-'+n+'-disc');
+            if (pDisc) { pDisc.textContent = disc ? disc+(discLabel?' '+discLabel:'') : ''; pDisc.style.display = disc ? 'block' : 'none'; }
+        }
+
+        async function uploadSlideImgAndPreview(n, input) {
+            await uploadSlideImg(n, input);
+            previewSlide(n);
         }
 
         function buildSlidesUI() {
@@ -855,6 +1014,7 @@
             slideCount++;
         }
 
+<<<<<<< HEAD
         function removeSlide(n) {
             const el = document.getElementById('slide-card-' + n);
             if (el) el.remove();
@@ -863,7 +1023,34 @@
                 // Chercher l'input par id exact
                 const inp2 = document.getElementById(k);
                 if (inp2) inp2.value = '';
+=======
+        async function removeSlide(n) {
+            if (!confirm('Supprimer le Slide ' + (n+1) + ' ? Cette action sera sauvegardée immédiatement.')) return;
+
+            // Vider les valeurs en base
+            const updates = {};
+            ['title','sub','cta_text','cta_link','img'].forEach(k => {
+                updates['slide'+n+'_'+k] = '';
+>>>>>>> e2d0f3b4f0929172d863a93f7161b6d27b21c902
             });
+
+            try {
+                const res = await fetch(`${API}/site-settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates)
+                });
+                if (res.ok) {
+                    const el = document.getElementById('slide-card-'+n);
+                    if (el) el.remove();
+                    slideCount = Math.max(slideCount - 1, 1);
+                    alert('✅ Slide ' + (n+1) + ' supprimé avec succès !');
+                } else {
+                    alert('Erreur lors de la suppression.');
+                }
+            } catch(e) {
+                alert('Erreur réseau.');
+            }
         }
 
         buildSlidesUI();

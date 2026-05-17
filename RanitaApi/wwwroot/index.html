@@ -11,8 +11,8 @@
     <title>Ranita Market - Accueil</title>
     <link rel="stylesheet" href="header.css">
     <link rel="stylesheet" href="products.css">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#10b981">
+    
+    
     <meta name="description" content="Ranita Market - Boutique en ligne en Côte d'Ivoire. Vêtements, accessoires et plus livrés rapidement à Abidjan.">
     <meta name="keywords" content="boutique en ligne Abidjan, vêtements Côte d'Ivoire, acheter en ligne Abidjan, Ranita Market">
     <meta name="author" content="Ranita Market">
@@ -1332,7 +1332,7 @@
         }
         .slide {
             min-width: 100%;
-            padding: 48px 20px;
+            padding: 80px 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2416,15 +2416,18 @@
             let n = 0;
             while (settings['slide'+n+'_title'] || n < 3) {
                 const def = SLIDE_DEFAULTS[n] || SLIDE_DEFAULTS[0];
-                const title = settings['slide'+n+'_title'] || ['Mode & Style<br><em>Abidjan</em>','Smartphones<br><em style="color:#60a5fa">& Gadgets</em>','Produits Frais<br><em>& Locaux</em>'][n] || '';
+                const titleRaw = settings['slide'+n+'_title'] || '';
+                const defaults = ['Mode & Style<br><em>Abidjan</em>','Smartphones<br><em style="color:#60a5fa">& Gadgets</em>','Produits Frais<br><em>& Locaux</em>'];
+                // Si titre vide et n >= 1, ignorer ce slide
+                if (!titleRaw && n >= 1) break;
+                const title = titleRaw || defaults[n] || '';
+                if (!title) break;
                 const sub = settings['slide'+n+'_sub'] || '';
                 const ctaText = settings['slide'+n+'_cta_text'] || 'Explorer →';
                 const ctaLink = settings['slide'+n+'_cta_link'] || 'products.html';
                 const img = settings['slide'+n+'_img'] || '';
                 const discount = settings['slide'+n+'_discount'] || ['-20%','-30%','-15%','','' ][n] || '';
                 const discountLabel = settings['slide'+n+'_discount_label'] || ['mode','tech','frais','',''][n] || '';
-
-                if (!title && n >= 3) break;
 
                 const slide = document.createElement('div');
                 slide.className = 'slide';
@@ -2461,6 +2464,7 @@
                 sliderTotal++;
                 n++;
             }
+            sliderIdx = 0;
             resetSliderTimer();
         }
 
@@ -2529,6 +2533,13 @@
     </script>
 
     <script src="/cart-badge.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', e => {
+                if (e.data === 'reload') location.reload(true);
+            });
+        }
+    </script>
 </body>
 
 </html>
