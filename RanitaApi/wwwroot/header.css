@@ -175,6 +175,15 @@
         display: flex !important;
     }
 
+    body {
+        padding-top: 54px;
+    }
+
+    .promo-bar {
+        top: 54px;
+        position: relative;
+    }
+
     .product-page {
         margin-top: 60px !important;
         padding: 0 12px !important;
