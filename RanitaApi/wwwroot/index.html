@@ -2325,7 +2325,7 @@
                 if (cat && cat.name && !cats[cat.name]) cats[cat.name] = { name: cat.name, count: 0 };
                 if (cat && cat.name) cats[cat.name].count++;
             });
-            bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>';
+            bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,\'all\')">🏠 Tout</div>';
             Object.values(cats).sort((a,b) => b.count - a.count).forEach(cat => {
                 const icon = getCatIcon(cat.name);
                 const tab = document.createElement('div');
