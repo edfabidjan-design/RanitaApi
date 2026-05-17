@@ -23,6 +23,7 @@ const ALL_PAGES = {
     reviews: { label: '⭐ Avis', href: 'admin-reviews.html' },
     sellers: { label: 'Vendeurs', href: 'admin-sellers.html' },
     commissions: { label: 'Commissions', href: 'admin-commissions.html' },
+    settings: { label: '⚙️ Paramètres', href: 'admin-settings.html' },
     users: { label: '👑 Admins', href: 'admin-users.html' },
 };
 
