@@ -580,14 +580,34 @@
             slideCount++;
         }
 
-        function removeSlide(n) {
-            const el = document.getElementById('slide-card-'+n);
-            if (el) el.remove();
-            // Vider les valeurs dans les KEYS
+        async function removeSlide(n) {
+            if (!confirm('Supprimer le Slide ' + (n+1) + ' ?
+
+Cette action sera sauvegardée immédiatement.')) return;
+
+            // Vider les valeurs en base
+            const updates = {};
             ['title','sub','cta_text','cta_link','img'].forEach(k => {
-                const inp = document.getElementById('slide'+n+'_'+k);
-                if (inp) inp.value = '';
+                updates['slide'+n+'_'+k] = '';
             });
+
+            try {
+                const res = await fetch(`${API}/site-settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates)
+                });
+                if (res.ok) {
+                    const el = document.getElementById('slide-card-'+n);
+                    if (el) el.remove();
+                    slideCount = Math.max(slideCount - 1, 1);
+                    alert('✅ Slide ' + (n+1) + ' supprimé avec succès !');
+                } else {
+                    alert('Erreur lors de la suppression.');
+                }
+            } catch(e) {
+                alert('Erreur réseau.');
+            }
         }
 
         // Initialiser les slides
