@@ -296,11 +296,11 @@
 
         const API = 'https://ranitaapi-production.up.railway.app/api';
         const KEYS = [
-            'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label',
-            'stat_vendors','stat_satisfaction','stat_delivery',
-            'promo_referral_title','promo_referral_desc',
-            'promo_delivery_title','promo_delivery_desc',
-            'referral_title','referral_desc'
+            'hero_title', 'hero_title_highlight', 'hero_subtitle', 'hero_badge', 'hero_badge_label',
+            'stat_vendors', 'stat_satisfaction', 'stat_delivery',
+            'promo_referral_title', 'promo_referral_desc',
+            'promo_delivery_title', 'promo_delivery_desc',
+            'referral_title', 'referral_desc'
         ];
 
         // Charger les settings depuis l'API
@@ -313,7 +313,7 @@
                     if (el && data[key]) el.value = data[key];
                 });
                 updatePreview();
-            } catch(e) {
+            } catch (e) {
                 console.error('Erreur chargement settings:', e);
             }
         }
@@ -332,7 +332,7 @@
                 badge + '<br><small style="font-size:9px">' + label + '</small>';
         }
 
-        ['hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label']
+        ['hero_title', 'hero_title_highlight', 'hero_subtitle', 'hero_badge', 'hero_badge_label']
             .forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', updatePreview);
@@ -363,7 +363,7 @@
                 } else {
                     alert('Erreur lors de la sauvegarde.');
                 }
-            } catch(e) {
+            } catch (e) {
                 alert('Erreur réseau.');
             }
 
