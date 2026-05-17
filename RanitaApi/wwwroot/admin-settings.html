@@ -501,20 +501,32 @@
             try {
                 const res = await fetch(`${API}/site-settings`);
                 const data = await res.json();
-                // Remplir les champs standards
                 KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
                 updatePreview();
                 [1,2,3,4].forEach(n => previewCard(n));
-                // Remplir les slides sans reconstruire l'UI
-                let sn = 0;
-                while (sn < 10) {
-                    if (!data['slide'+sn+'_title'] && sn >= 3) break;
-                    if (sn >= slideCount) addSlide();
+
+                // Compter les slides réellement sauvegardés
+                let realCount = 0;
+                for (let i = 0; i < 10; i++) {
+                    if (data['slide'+i+'_title'] || i === 0) realCount = i + 1;
+                    else break;
+                }
+                slideCount = Math.max(realCount, 1);
+
+                // Reconstruire l'UI avec le bon nombre de slides
+                const container = document.getElementById('slidesContainer');
+                container.innerHTML = '';
+                for (let i = 0; i < slideCount; i++) {
+                    container.insertAdjacentHTML('beforeend', slideCard(i));
+                }
+
+                // Remplir les valeurs
+                for (let sn = 0; sn < slideCount; sn++) {
                     ['title','sub','cta_text','cta_link','img'].forEach(k => {
                         const el = document.getElementById('slide'+sn+'_'+k);
                         if (el && data['slide'+sn+'_'+k] !== undefined) el.value = data['slide'+sn+'_'+k];
                     });
-                    sn++;
+                    previewSlide(sn);
                 }
             } catch(e) { console.error('Erreur chargement:', e); }
         }
