@@ -581,9 +581,7 @@
         }
 
         async function removeSlide(n) {
-            if (!confirm('Supprimer le Slide ' + (n+1) + ' ?
-
-Cette action sera sauvegardée immédiatement.')) return;
+            if (!confirm('Supprimer le Slide ' + (n+1) + ' ? Cette action sera sauvegardée immédiatement.')) return;
 
             // Vider les valeurs en base
             const updates = {};
