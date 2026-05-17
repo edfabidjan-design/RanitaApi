@@ -74,6 +74,7 @@
             <div class="tab" onclick="switchTab('stats',this)">📊 Statistiques</div>
             <div class="tab" onclick="switchTab('promos',this)">🎁 Promos</div>
             <div class="tab" onclick="switchTab('referral',this)">📣 Parrainage</div>
+            <div class="tab" onclick="switchTab('bigcards',this)">🖼️ Cards phares</div>
             <div class="tab" onclick="switchTab('banners',this)">⚡ Bannières</div>
         </div>
 
@@ -234,6 +235,51 @@
             </div>
         </div>
 
+        <!-- BIG CARDS -->
+        <div class="tab-panel" id="panel-bigcards">
+            <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">Pour les images, collez l'URL d'une image (ex: https://monsite.com/image.jpg) ou utilisez une image déjà uploadée dans votre catalogue.</p>
+            <div class="section-card">
+                <div class="section-title">👗 Card 1 — Mode & Vêtements</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Tag (ex: Tendances)</label><input type="text" id="bc1_tag" placeholder="Tendances"></div>
+                    <div class="field"><label>Titre</label><input type="text" id="bc1_name" placeholder="Mode & Vêtements"></div>
+                    <div class="field full"><label>Description</label><textarea id="bc1_desc" placeholder="Les dernières tendances..."></textarea></div>
+                    <div class="field"><label>URL de l'image</label><input type="text" id="bc1_img" placeholder="https://...image.jpg"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc1_link" placeholder="products.html?cat=mode"></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">📱 Card 2 — Électronique</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Tag</label><input type="text" id="bc2_tag" placeholder="High-Tech"></div>
+                    <div class="field"><label>Titre</label><input type="text" id="bc2_name" placeholder="Électronique & Gadgets"></div>
+                    <div class="field full"><label>Description</label><textarea id="bc2_desc" placeholder="Smartphones, accessoires..."></textarea></div>
+                    <div class="field"><label>URL de l'image</label><input type="text" id="bc2_img" placeholder="https://...image.jpg"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc2_link" placeholder="products.html?cat=elec"></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">🥘 Card 3 — Alimentation</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Tag</label><input type="text" id="bc3_tag" placeholder="Produits frais"></div>
+                    <div class="field"><label>Titre</label><input type="text" id="bc3_name" placeholder="Alimentation & Épicerie"></div>
+                    <div class="field full"><label>Description</label><textarea id="bc3_desc" placeholder="Épices, céréales..."></textarea></div>
+                    <div class="field"><label>URL de l'image</label><input type="text" id="bc3_img" placeholder="https://...image.jpg"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc3_link" placeholder="products.html?cat=alim"></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">💄 Card 4 — Beauté & Santé</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Tag</label><input type="text" id="bc4_tag" placeholder="Bien-être"></div>
+                    <div class="field"><label>Titre</label><input type="text" id="bc4_name" placeholder="Beauté & Santé"></div>
+                    <div class="field full"><label>Description</label><textarea id="bc4_desc" placeholder="Soins, parfums..."></textarea></div>
+                    <div class="field"><label>URL de l'image</label><input type="text" id="bc4_img" placeholder="https://...image.jpg"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="bc4_link" placeholder="products.html?cat=beau"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- BANNIÈRES -->
         <div class="tab-panel" id="panel-banners">
             <div class="section-card">
@@ -291,7 +337,11 @@
             'promo_delivery_title','promo_delivery_desc',
             'referral_title','referral_desc',
             'promo_bar_text','promo_bar_link','promo_bar_hide',
-            'urgency_title','urgency_subtitle','urgency_link','urgency_hide'
+            'urgency_title','urgency_subtitle','urgency_link','urgency_hide',
+            'bc1_tag','bc1_name','bc1_desc','bc1_img','bc1_link',
+            'bc2_tag','bc2_name','bc2_desc','bc2_img','bc2_link',
+            'bc3_tag','bc3_name','bc3_desc','bc3_img','bc3_link',
+            'bc4_tag','bc4_name','bc4_desc','bc4_img','bc4_link'
         ];
 
         function switchTab(tab, el) {

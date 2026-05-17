@@ -684,6 +684,10 @@ try
         ["urgency_subtitle"] = "Profitez de nos meilleures réductions avant qu''il ne soit trop tard",
         ["urgency_link"] = "products.html",
         ["urgency_hide"] = "false",
+        ["bc1_tag"] = "Tendances", ["bc1_name"] = "Mode & Vêtements", ["bc1_desc"] = "Les dernières tendances africaines et internationales pour femme et homme.", ["bc1_img"] = "", ["bc1_link"] = "products.html?cat=mode",
+        ["bc2_tag"] = "High-Tech", ["bc2_name"] = "Électronique & Gadgets", ["bc2_desc"] = "Smartphones, accessoires et gadgets tech aux meilleurs prix d\'Abidjan.", ["bc2_img"] = "", ["bc2_link"] = "products.html?cat=elec",
+        ["bc3_tag"] = "Produits frais", ["bc3_name"] = "Alimentation & Épicerie", ["bc3_desc"] = "Épices, céréales, boissons — le meilleur du marché local livré chez vous.", ["bc3_img"] = "", ["bc3_link"] = "products.html?cat=alim",
+        ["bc4_tag"] = "Bien-être", ["bc4_name"] = "Beauté & Santé", ["bc4_desc"] = "Soins, parfums, cosmétiques et produits de santé pour toute la famille.", ["bc4_img"] = "", ["bc4_link"] = "products.html?cat=beau",
     };
     foreach (var (key, value) in defaults)
     {

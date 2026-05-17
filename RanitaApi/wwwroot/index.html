@@ -1659,26 +1659,26 @@
         }
         .big-cat-img {
             width: 100%;
-            height: 180px;
+            height: 240px;
             object-fit: cover;
             display: block;
             background: var(--lk3);
         }
         .big-cat-img-placeholder {
             width: 100%;
-            height: 180px;
+            height: 240px;
             background: linear-gradient(135deg, var(--lk3), var(--lk2));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 64px;
+            font-size: 80px;
         }
         .big-cat-body {
-            padding: 20px;
+            padding: 24px;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .big-cat-tag {
             font-size: 11px;
@@ -1688,37 +1688,37 @@
             color: var(--green-10b);
         }
         .big-cat-name {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--lk-text);
             line-height: 1.2;
         }
         .big-cat-desc {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--lk-text2);
-            line-height: 1.5;
+            line-height: 1.6;
             flex: 1;
         }
         .big-cat-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: var(--green-10b);
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 10px 18px;
-            font-size: 13px;
+            border-radius: 10px;
+            padding: 13px 24px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             text-decoration: none;
-            margin-top: 8px;
+            margin-top: 10px;
             transition: background .2s, transform .2s;
             width: fit-content;
         }
         .big-cat-btn:hover { background: var(--green-059); transform: translateX(3px); }
         @media(max-width:1024px) { .big-cats-grid { grid-template-columns: repeat(2,1fr); } }
-        @media(max-width:640px) { .big-cats-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .big-cat-img, .big-cat-img-placeholder { height: 130px; } }
+        @media(max-width:640px) { .big-cats-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .big-cat-img, .big-cat-img-placeholder { height: 160px; } }
     </style>
 </head>
 <body>
@@ -1954,42 +1954,46 @@
         <div class="big-cats-grid" id="bigCatsGrid">
             <!-- Card 1 — Mode -->
             <div class="big-cat-card">
-                <div class="big-cat-img-placeholder">👗</div>
+                <div class="big-cat-img-placeholder" id="bc1-img-ph" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">👗</div>
+                <img id="bc1-img" src="" alt="" class="big-cat-img" style="display:none;" onerror="this.style.display='none';document.getElementById('bc1-img-ph').style.display='flex'">
                 <div class="big-cat-body">
-                    <div class="big-cat-tag">Tendances</div>
-                    <div class="big-cat-name">Mode & Vêtements</div>
-                    <div class="big-cat-desc">Les dernières tendances africaines et internationales pour femme et homme.</div>
-                    <a href="products.html?cat=mode" class="big-cat-btn">Explorer →</a>
+                    <div class="big-cat-tag" id="bc1-tag">Tendances</div>
+                    <div class="big-cat-name" id="bc1-name">Mode & Vêtements</div>
+                    <div class="big-cat-desc" id="bc1-desc">Les dernières tendances africaines et internationales pour femme et homme.</div>
+                    <a href="products.html?cat=mode" class="big-cat-btn" id="bc1-btn">Explorer →</a>
                 </div>
             </div>
             <!-- Card 2 — Électronique -->
             <div class="big-cat-card">
-                <div class="big-cat-img-placeholder">📱</div>
+                <div class="big-cat-img-placeholder" id="bc2-img-ph" style="background:linear-gradient(135deg,#0a1628,#0d1f3c);">📱</div>
+                <img id="bc2-img" src="" alt="" class="big-cat-img" style="display:none;" onerror="this.style.display='none';document.getElementById('bc2-img-ph').style.display='flex'">
                 <div class="big-cat-body">
-                    <div class="big-cat-tag">High-Tech</div>
-                    <div class="big-cat-name">Électronique & Gadgets</div>
-                    <div class="big-cat-desc">Smartphones, accessoires et gadgets tech aux meilleurs prix d'Abidjan.</div>
-                    <a href="products.html?cat=elec" class="big-cat-btn" style="background:#3b82f6;">Explorer →</a>
+                    <div class="big-cat-tag" id="bc2-tag" style="color:#3b82f6;">High-Tech</div>
+                    <div class="big-cat-name" id="bc2-name">Électronique & Gadgets</div>
+                    <div class="big-cat-desc" id="bc2-desc">Smartphones, accessoires et gadgets tech aux meilleurs prix d'Abidjan.</div>
+                    <a href="products.html?cat=elec" class="big-cat-btn" id="bc2-btn" style="background:#3b82f6;">Explorer →</a>
                 </div>
             </div>
             <!-- Card 3 — Alimentation -->
             <div class="big-cat-card">
-                <div class="big-cat-img-placeholder">🥘</div>
+                <div class="big-cat-img-placeholder" id="bc3-img-ph" style="background:linear-gradient(135deg,#0a1a12,#0d2416);">🥘</div>
+                <img id="bc3-img" src="" alt="" class="big-cat-img" style="display:none;" onerror="this.style.display='none';document.getElementById('bc3-img-ph').style.display='flex'">
                 <div class="big-cat-body">
-                    <div class="big-cat-tag">Produits frais</div>
-                    <div class="big-cat-name">Alimentation & Épicerie</div>
-                    <div class="big-cat-desc">Épices, céréales, boissons — le meilleur du marché local livré chez vous.</div>
-                    <a href="products.html?cat=alim" class="big-cat-btn" style="background:#f59e0b;">Explorer →</a>
+                    <div class="big-cat-tag" id="bc3-tag" style="color:#f59e0b;">Produits frais</div>
+                    <div class="big-cat-name" id="bc3-name">Alimentation & Épicerie</div>
+                    <div class="big-cat-desc" id="bc3-desc">Épices, céréales, boissons — le meilleur du marché local livré chez vous.</div>
+                    <a href="products.html?cat=alim" class="big-cat-btn" id="bc3-btn" style="background:#f59e0b;">Explorer →</a>
                 </div>
             </div>
             <!-- Card 4 — Beauté -->
             <div class="big-cat-card">
-                <div class="big-cat-img-placeholder">💄</div>
+                <div class="big-cat-img-placeholder" id="bc4-img-ph" style="background:linear-gradient(135deg,#1a0a1a,#2d0d2d);">💄</div>
+                <img id="bc4-img" src="" alt="" class="big-cat-img" style="display:none;" onerror="this.style.display='none';document.getElementById('bc4-img-ph').style.display='flex'">
                 <div class="big-cat-body">
-                    <div class="big-cat-tag">Bien-être</div>
-                    <div class="big-cat-name">Beauté & Santé</div>
-                    <div class="big-cat-desc">Soins, parfums, cosmétiques et produits de santé pour toute la famille.</div>
-                    <a href="products.html?cat=beau" class="big-cat-btn" style="background:#ec4899;">Explorer →</a>
+                    <div class="big-cat-tag" id="bc4-tag" style="color:#ec4899;">Bien-être</div>
+                    <div class="big-cat-name" id="bc4-name">Beauté & Santé</div>
+                    <div class="big-cat-desc" id="bc4-desc">Soins, parfums, cosmétiques et produits de santé pour toute la famille.</div>
+                    <a href="products.html?cat=beau" class="big-cat-btn" id="bc4-btn" style="background:#ec4899;">Explorer →</a>
                 </div>
             </div>
         </div>
@@ -2219,6 +2223,25 @@
                 if (s.urgency_subtitle) { const el = document.getElementById('urgencySubtitle'); if(el) el.textContent = s.urgency_subtitle; }
                 if (s.urgency_link) { const el = document.getElementById('urgencyCta'); if(el) el.href = s.urgency_link; }
                 if (s.urgency_hide === 'true') { const el = document.getElementById('urgencyBanner'); if(el) el.style.display='none'; }
+
+                // ── 4 grandes cards
+                const bigCards = [
+                    {n:'bc1', tag:'bc1_tag', name:'bc1_name', desc:'bc1_desc', img:'bc1_img', link:'bc1_link', btn:'bc1_btn'},
+                    {n:'bc2', tag:'bc2_tag', name:'bc2_name', desc:'bc2_desc', img:'bc2_img', link:'bc2_link', btn:'bc2_btn'},
+                    {n:'bc3', tag:'bc3_tag', name:'bc3_name', desc:'bc3_desc', img:'bc3_img', link:'bc3_link', btn:'bc3_btn'},
+                    {n:'bc4', tag:'bc4_tag', name:'bc4_name', desc:'bc4_desc', img:'bc4_img', link:'bc4_link', btn:'bc4_btn'},
+                ];
+                bigCards.forEach(c => {
+                    if (s[c.tag]) { const el = document.getElementById(c.n+'-tag'); if(el) el.textContent = s[c.tag]; }
+                    if (s[c.name]) { const el = document.getElementById(c.n+'-name'); if(el) el.textContent = s[c.name]; }
+                    if (s[c.desc]) { const el = document.getElementById(c.n+'-desc'); if(el) el.textContent = s[c.desc]; }
+                    if (s[c.link]) { const el = document.getElementById(c.n+'-btn'); if(el) el.href = s[c.link]; }
+                    if (s[c.img]) {
+                        const img = document.getElementById(c.n+'-img');
+                        const ph = document.getElementById(c.n+'-img-ph');
+                        if(img && s[c.img]) { img.src = s[c.img]; img.style.display='block'; if(ph) ph.style.display='none'; }
+                    }
+                });
 
                 // ── Slider
                 const sliderFields = [
