@@ -539,10 +539,12 @@
         // ── Slides dynamiques
         let slideCount = 3;
         function slideCard(n) {
+            const canDelete = n >= 1;
+            const delBtn = canDelete ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : '';
             return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
                     <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n+1}</div>
-                    ${n >= 3 ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : ''}
+                    ${delBtn}
                 </div>
                 <div class="fields-grid">
                     <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style"></div>
