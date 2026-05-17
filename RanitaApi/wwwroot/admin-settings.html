@@ -69,10 +69,12 @@
 
         <div class="tabs">
             <div class="tab active" onclick="switchTab('hero',this)">🏠 Bannière hero</div>
+            <div class="tab" onclick="switchTab('slider',this)">🎠 Slider</div>
             <div class="tab" onclick="switchTab('cards',this)">📱 Cards hero</div>
             <div class="tab" onclick="switchTab('stats',this)">📊 Statistiques</div>
             <div class="tab" onclick="switchTab('promos',this)">🎁 Promos</div>
             <div class="tab" onclick="switchTab('referral',this)">📣 Parrainage</div>
+            <div class="tab" onclick="switchTab('banners',this)">⚡ Bannières</div>
         </div>
 
         <!-- HERO -->
@@ -112,6 +114,37 @@
                     <div class="preview-hero-title" id="prev-title">Mode & Style<br><span style="color:#10b981" id="prev-hl">Abidjan</span></div>
                     <div class="preview-hero-sub" id="prev-sub">Les meilleures marques africaines...</div>
                     <div class="preview-badge" id="prev-badge">-60%<br><small>mode</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDER -->
+        <div class="tab-panel" id="panel-slider">
+            <div class="section-card">
+                <div class="section-title">🎠 Slide 1 (Principal)</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre (HTML autorisé, ex: Mode &amp; Style&lt;br&gt;&lt;em&gt;Abidjan&lt;/em&gt;)</label><input type="text" id="slide0_title" placeholder="Mode & Style<br><em>Abidjan</em>"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="slide0_sub" placeholder="Les meilleures marques..."></div>
+                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide0_cta_text" placeholder="Voir les produits →"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide0_cta_link" placeholder="products.html"></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">🎠 Slide 2 (Électronique)</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="slide1_title" placeholder="Smartphones<br><em style='color:#60a5fa'>& Gadgets</em>"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="slide1_sub" placeholder="Tecno, Samsung, iPhone..."></div>
+                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide1_cta_text" placeholder="Découvrir →"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide1_cta_link" placeholder="products.html"></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">🎠 Slide 3 (Alimentation)</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="slide2_title" placeholder="Produits Frais<br><em>& Locaux</em>"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="slide2_sub" placeholder="Épices, céréales, boissons..."></div>
+                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide2_cta_text" placeholder="Commander →"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide2_cta_link" placeholder="products.html"></div>
                 </div>
             </div>
         </div>
@@ -201,6 +234,37 @@
             </div>
         </div>
 
+        <!-- BANNIÈRES -->
+        <div class="tab-panel" id="panel-banners">
+            <div class="section-card">
+                <div class="section-title">📢 Barre promo (haut de page)</div>
+                <div class="fields-grid">
+                    <div class="field full"><label>Texte affiché</label><input type="text" id="promo_bar_text" placeholder="Livraison gratuite dès 15 000 F · Paiement à la livraison disponible"></div>
+                    <div class="field"><label>Lien du bouton "Voir les offres"</label><input type="text" id="promo_bar_link" placeholder="products.html"></div>
+                    <div class="field"><label>Masquer cette barre ?</label>
+                        <select id="promo_bar_hide" style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;background:#f9fafb;outline:none;">
+                            <option value="false">Non — afficher la barre</option>
+                            <option value="true">Oui — masquer la barre</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">⚡ Bannière urgence (compte à rebours)</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="urgency_title" placeholder="Ventes Flash — Offres limitées !"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="urgency_subtitle" placeholder="Profitez de nos meilleures réductions..."></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="urgency_link" placeholder="products.html"></div>
+                    <div class="field"><label>Masquer cette bannière ?</label>
+                        <select id="urgency_hide" style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;background:#f9fafb;outline:none;">
+                            <option value="false">Non — afficher</option>
+                            <option value="true">Oui — masquer</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="save-bar">
             <div class="toast-ok" id="toastOk">✅ Modifications enregistrées avec succès !</div>
             <div class="save-info" id="saveInfo">Les modifications seront visibles sur le site immédiatement.</div>
@@ -217,12 +281,17 @@
         const API = 'https://ranitaapi-production.up.railway.app/api';
         const KEYS = [
             'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label','hero_btn_link',
+            'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link',
+            'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link',
+            'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link',
             'card1_title1','card1_title2','card1_subtitle','card1_link',
             'card2_title1','card2_title2','card2_subtitle','card2_link',
             'stat_vendors','stat_satisfaction','stat_delivery',
             'promo_referral_title','promo_referral_desc',
             'promo_delivery_title','promo_delivery_desc',
-            'referral_title','referral_desc'
+            'referral_title','referral_desc',
+            'promo_bar_text','promo_bar_link','promo_bar_hide',
+            'urgency_title','urgency_subtitle','urgency_link','urgency_hide'
         ];
 
         function switchTab(tab, el) {

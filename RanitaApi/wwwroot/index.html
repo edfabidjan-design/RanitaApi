@@ -1276,11 +1276,356 @@
                 gap: 8px;
             }
         }
+
+        /* ═══════════════════════════════════════════════
+           BANNIÈRE 5 — STICKY TOP PROMO BAR
+        ═══════════════════════════════════════════════ */
+        .promo-bar {
+            background: linear-gradient(90deg, #0D1117, #161B22);
+            color: #F0F6FC;
+            padding: 9px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            position: relative;
+            border-bottom: 1px solid rgba(34,197,94,0.2);
+        }
+        .promo-bar-text { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .promo-bar-pill {
+            background: rgba(34,197,94,0.15);
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #22C55E;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+        .promo-bar-close {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+        }
+        .promo-bar-close:hover { color: #F0F6FC; }
+
+        /* ═══════════════════════════════════════════════
+           BANNIÈRE 1 — SLIDER/CAROUSEL
+        ═══════════════════════════════════════════════ */
+        .hero-slider {
+            position: relative;
+            overflow: hidden;
+            background: var(--dk);
+        }
+        .slides-track {
+            display: flex;
+            transition: transform .5s cubic-bezier(.4,0,.2,1);
+        }
+        .slide {
+            min-width: 100%;
+            padding: 48px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .slide-inner {
+            max-width: 1280px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .slide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.25);
+            color: #22C55E;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+        }
+        .slide h2 {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--dk-text);
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+        .slide h2 em { font-style: normal; color: var(--green); }
+        .slide p {
+            font-size: 15px;
+            color: var(--dk-text2);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .slide-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+            padding: 13px 26px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: background .2s, transform .2s;
+        }
+        .slide-cta:hover { background: var(--green-d); transform: translateX(3px); }
+        .slide-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            height: 200px;
+        }
+        .slide-img img {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        .slide-discount {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #F59E0B;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            line-height: 1;
+        }
+        .slide-discount small { font-size: 9px; font-weight: 500; }
+        .slider-nav {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.3);
+            cursor: pointer;
+            transition: all .3s;
+        }
+        .slider-dot.active { background: var(--green); width: 24px; border-radius: 4px; }
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.12);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 18px;
+            transition: background .2s;
+        }
+        .slider-arrow:hover { background: rgba(255,255,255,.18); }
+        .slider-arrow.prev { left: 16px; }
+        .slider-arrow.next { right: 16px; }
+
+        /* ═══════════════════════════════════════════════
+           BANNIÈRE 2 — CATÉGORIES VISUELLES
+        ═══════════════════════════════════════════════ */
+        .visual-cats-section {
+            background: var(--lk2);
+            padding: 32px 20px;
+        }
+        .visual-cats-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 14px;
+        }
+        .visual-cat-card {
+            background: var(--lk);
+            border: 1px solid var(--lk-border);
+            border-radius: 14px;
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all .25s;
+            box-shadow: 0 1px 3px rgba(0,0,0,.05);
+            text-decoration: none;
+            display: block;
+        }
+        .visual-cat-card:hover {
+            border-color: var(--green-10b);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(16,185,129,.12);
+        }
+        .visual-cat-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+        .visual-cat-name { font-size: 13px; font-weight: 700; color: var(--lk-text); margin-bottom: 3px; }
+        .visual-cat-count { font-size: 11px; color: var(--lk-text3); }
+
+        /* ═══════════════════════════════════════════════
+           BANNIÈRE 3 — COMPTE À REBOURS URGENCE
+        ═══════════════════════════════════════════════ */
+        .urgency-banner {
+            background: linear-gradient(135deg, #1a0a00, #2d1200);
+            border-top: 2px solid #F59E0B;
+            border-bottom: 2px solid #F59E0B;
+            padding: 20px;
+        }
+        .urgency-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .urgency-left { display: flex; align-items: center; gap: 16px; }
+        .urgency-icon { font-size: 32px; }
+        .urgency-text h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #F59E0B;
+            margin-bottom: 2px;
+        }
+        .urgency-text p { font-size: 13px; color: rgba(255,255,255,.7); }
+        .urgency-timer { display: flex; align-items: center; gap: 6px; }
+        .urgency-block {
+            background: rgba(245,158,11,.15);
+            border: 1px solid rgba(245,158,11,.4);
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+            min-width: 52px;
+        }
+        .urgency-num { font-size: 22px; font-weight: 800; color: #F59E0B; display: block; line-height: 1; }
+        .urgency-lbl { font-size: 9px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .5px; }
+        .urgency-sep { font-size: 20px; font-weight: 800; color: #F59E0B; }
+        .urgency-cta {
+            background: #F59E0B;
+            color: #111827;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: all .2s;
+        }
+        .urgency-cta:hover { background: #d97706; }
+
+        /* ═══════════════════════════════════════════════
+           BANNIÈRE 4 — PERSONNALISÉE CLIENT CONNECTÉ
+        ═══════════════════════════════════════════════ */
+        .personal-banner {
+            background: var(--lk);
+            border-bottom: 1px solid var(--lk-border);
+            padding: 16px 20px;
+            display: none;
+        }
+        .personal-banner.show { display: block; }
+        .personal-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .personal-left { display: flex; align-items: center; gap: 12px; }
+        .personal-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .personal-greeting { font-size: 14px; font-weight: 700; color: var(--lk-text); }
+        .personal-sub { font-size: 12px; color: var(--lk-text2); margin-top: 2px; }
+        .personal-actions { display: flex; gap: 10px; align-items: center; }
+        .personal-btn {
+            background: var(--green-10b);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background .2s;
+        }
+        .personal-btn:hover { background: var(--green-059); }
+        .personal-btn.outline {
+            background: none;
+            border: 1px solid var(--lk-border);
+            color: var(--lk-text2);
+        }
+        .personal-btn.outline:hover { border-color: var(--green-10b); color: var(--green-10b); }
+
+        @media(max-width:640px) {
+            .slide-inner { grid-template-columns: 1fr; }
+            .slide-img { display: none; }
+            .slide h2 { font-size: 28px; }
+            .urgency-inner { justify-content: center; text-align: center; }
+            .visual-cats-grid { grid-template-columns: repeat(3,1fr); }
+        }
     </style>
 </head>
 <body>
 
 
+
+    <!-- ═══ BANNIÈRE 5 : STICKY PROMO BAR ═══ -->
+    <div class="promo-bar" id="promoBar">
+        <div class="promo-bar-text">
+            <span class="promo-bar-pill">🚚 LIVRAISON</span>
+            <span id="promoBarText">Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison disponible</span>
+            <a href="products.html" id="promoBarLink" style="color:#22C55E;font-weight:700;text-decoration:none;white-space:nowrap;">Voir les offres →</a>
+        </div>
+        <button class="promo-bar-close" onclick="document.getElementById('promoBar').style.display='none'" title="Fermer">×</button>
+    </div>
 
     <nav class="mob-header">
         <a href="index.html" class="mob-header-logo">🛒 Ranita Market</a>
@@ -1316,6 +1661,44 @@
         </nav>
     </header>
 
+    <!-- ═══ BANNIÈRE 4 : PERSONNALISÉE CLIENT CONNECTÉ ═══ -->
+    <div class="personal-banner" id="personalBanner">
+        <div class="personal-inner">
+            <div class="personal-left">
+                <div class="personal-avatar" id="personalAvatar">?</div>
+                <div>
+                    <div class="personal-greeting" id="personalGreeting">Bon retour !</div>
+                    <div class="personal-sub" id="personalSub">Continuez vos achats là où vous vous étiez arrêté</div>
+                </div>
+            </div>
+            <div class="personal-actions">
+                <a href="client-orders.html" class="personal-btn outline">📦 Mes commandes</a>
+                <a href="products.html" class="personal-btn">🛍️ Continuer mes achats</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ BANNIÈRE 3 : COMPTE À REBOURS URGENCE ═══ -->
+    <div class="urgency-banner" id="urgencyBanner">
+        <div class="urgency-inner">
+            <div class="urgency-left">
+                <div class="urgency-icon">⚡</div>
+                <div class="urgency-text">
+                    <h3 id="urgencyTitle">Ventes Flash — Offres limitées !</h3>
+                    <p id="urgencySubtitle">Profitez de nos meilleures réductions avant qu'il ne soit trop tard</p>
+                </div>
+            </div>
+            <div class="urgency-timer">
+                <div class="urgency-block"><span class="urgency-num" id="urg-h">02</span><span class="urgency-lbl">heures</span></div>
+                <span class="urgency-sep">:</span>
+                <div class="urgency-block"><span class="urgency-num" id="urg-m">45</span><span class="urgency-lbl">min</span></div>
+                <span class="urgency-sep">:</span>
+                <div class="urgency-block"><span class="urgency-num" id="urg-s">00</span><span class="urgency-lbl">sec</span></div>
+            </div>
+            <a href="products.html" id="urgencyCta" class="urgency-cta">Voir les offres →</a>
+        </div>
+    </div>
+
     <div class="cats-bar">
         <div class="cats-inner">
             <div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>
@@ -1330,9 +1713,62 @@
         </div>
     </div>
 
-    <div class="hero-zone">
-        <div class="hero-inner">
-            <div class="hero-main" onclick="location.href='products.html'">
+    <!-- ═══ BANNIÈRE 1 : SLIDER/CAROUSEL ═══ -->
+    <div class="hero-slider" id="heroSlider">
+        <div class="slides-track" id="slidesTrack">
+            <!-- Slide 1 (hero principal) -->
+            <div class="slide" style="background:var(--dk);" id="slide-0">
+                <div class="slide-inner">
+                    <div>
+                        <div class="slide-badge" id="slide0-badge">✦ Offres du moment</div>
+                        <h2 id="slide0-title">Mode & Style<br><em>Abidjan</em></h2>
+                        <p id="slide0-sub">Les meilleures marques africaines et internationales livrées directement chez vous en Côte d'Ivoire.</p>
+                        <a href="products.html" class="slide-cta" id="slide0-cta">Voir les produits →</a>
+                    </div>
+                    <div class="slide-img" id="slide0-img">🛍️</div>
+                </div>
+                <div class="slide-discount" id="slide0-discount">-20%<small>mode</small></div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="slide" style="background:linear-gradient(135deg,#0a1628,#0d1f3c);" id="slide-1">
+                <div class="slide-inner">
+                    <div>
+                        <div class="slide-badge" style="background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.3);color:#60a5fa;">📱 Électronique</div>
+                        <h2 id="slide1-title">Smartphones<br><em style="color:#60a5fa">& Gadgets</em></h2>
+                        <p id="slide1-sub">Tecno, Samsung, iPhone — les meilleures offres tech à Abidjan.</p>
+                        <a href="products.html" class="slide-cta" id="slide1-cta" style="background:#3b82f6;">Découvrir →</a>
+                    </div>
+                    <div class="slide-img" id="slide1-img">📱</div>
+                </div>
+                <div class="slide-discount" id="slide1-discount" style="background:#3b82f6;">-30%<small>tech</small></div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="slide" style="background:linear-gradient(135deg,#0a1a12,#0d2416);" id="slide-2">
+                <div class="slide-inner">
+                    <div>
+                        <div class="slide-badge" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:#10b981;">🛒 Alimentation</div>
+                        <h2 id="slide2-title">Produits Frais<br><em>& Locaux</em></h2>
+                        <p id="slide2-sub">Épices, céréales, boissons — le meilleur du marché livré chez vous.</p>
+                        <a href="products.html" class="slide-cta" id="slide2-cta">Commander →</a>
+                    </div>
+                    <div class="slide-img" id="slide2-img">🥘</div>
+                </div>
+                <div class="slide-discount" id="slide2-discount" style="background:#059669;">-15%<small>frais</small></div>
+            </div>
+        </div>
+        <div class="slider-arrow prev" onclick="sliderMove(-1)">‹</div>
+        <div class="slider-arrow next" onclick="sliderMove(1)">›</div>
+        <div class="slider-nav" id="sliderNav">
+            <div class="slider-dot active" onclick="sliderGo(0)"></div>
+            <div class="slider-dot" onclick="sliderGo(1)"></div>
+            <div class="slider-dot" onclick="sliderGo(2)"></div>
+        </div>
+    </div>
+
+    <!-- ANCIEN HERO (conservé pour les cards sub et side) -->
+    <div class="hero-zone" style="padding-top:0;">
+        <div class="hero-inner" style="grid-template-columns:1fr 250px;">
+            <div class="hero-main" style="display:none" onclick="location.href='products.html'">
                 <div class="hero-eyebrow">✦ Offres du moment</div>
                 <h1>Mode & Style<br><span>Abidjan</span></h1>
                 <p>Les meilleures marques africaines et internationales livrées directement chez vous en Côte d'Ivoire.</p>
@@ -1398,6 +1834,20 @@
             <div class="stat"><div class="stat-n">3 200+</div><div class="stat-l">Vendeurs vérifiés</div></div>
             <div class="stat"><div class="stat-n">98%</div><div class="stat-l">Clients satisfaits</div></div>
             <div class="stat"><div class="stat-n">24h</div><div class="stat-l">Livraison Abidjan</div></div>
+        </div>
+    </div>
+
+    <!-- ═══ BANNIÈRE 2 : CATÉGORIES VISUELLES ═══ -->
+    <div class="visual-cats-section">
+        <div class="visual-cats-grid" id="visualCatsGrid">
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">👗</span><div class="visual-cat-name">Mode femme</div><div class="visual-cat-count" id="vcat-0">— articles</div></a>
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">👔</span><div class="visual-cat-name">Mode homme</div><div class="visual-cat-count" id="vcat-1">— articles</div></a>
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">📱</span><div class="visual-cat-name">Électronique</div><div class="visual-cat-count" id="vcat-2">— articles</div></a>
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">🛒</span><div class="visual-cat-name">Alimentation</div><div class="visual-cat-count" id="vcat-3">— articles</div></a>
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">💄</span><div class="visual-cat-name">Beauté & Santé</div><div class="visual-cat-count" id="vcat-4">— articles</div></a>
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">🏡</span><div class="visual-cat-name">Maison & Déco</div><div class="visual-cat-count" id="vcat-5">— articles</div></a>
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">🧸</span><div class="visual-cat-name">Enfants</div><div class="visual-cat-count" id="vcat-6">— articles</div></a>
+            <a href="products.html" class="visual-cat-card"><span class="visual-cat-icon">⚽</span><div class="visual-cat-name">Sports</div><div class="visual-cat-count" id="vcat-7">— articles</div></a>
         </div>
     </div>
 
@@ -1616,6 +2066,35 @@
                     if (s.referral_desc) refText.querySelector('p').textContent = s.referral_desc;
                 }
 
+                // ── Promo bar
+                const promoBarText = document.getElementById('promoBarText');
+                const promoBarLink = document.getElementById('promoBarLink');
+                if (s.promo_bar_text && promoBarText) promoBarText.textContent = s.promo_bar_text;
+                if (s.promo_bar_link && promoBarLink) promoBarLink.href = s.promo_bar_link;
+                if (s.promo_bar_hide === 'true') { const pb = document.getElementById('promoBar'); if(pb) pb.style.display='none'; }
+
+                // ── Urgency banner
+                if (s.urgency_title) { const el = document.getElementById('urgencyTitle'); if(el) el.textContent = s.urgency_title; }
+                if (s.urgency_subtitle) { const el = document.getElementById('urgencySubtitle'); if(el) el.textContent = s.urgency_subtitle; }
+                if (s.urgency_link) { const el = document.getElementById('urgencyCta'); if(el) el.href = s.urgency_link; }
+                if (s.urgency_hide === 'true') { const el = document.getElementById('urgencyBanner'); if(el) el.style.display='none'; }
+
+                // ── Slider
+                const sliderFields = [
+                    ['slide0-title','slide0_title',true],['slide0-sub','slide0_sub',false],
+                    ['slide1-title','slide1_title',true],['slide1-sub','slide1_sub',false],
+                    ['slide2-title','slide2_title',true],['slide2-sub','slide2_sub',false],
+                ];
+                sliderFields.forEach(([elId, key, isHtml]) => {
+                    const el = document.getElementById(elId);
+                    if (el && s[key]) { if(isHtml) el.innerHTML = s[key]; else el.textContent = s[key]; }
+                });
+                ['slide0','slide1','slide2'].forEach(sid => {
+                    const ctaEl = document.getElementById(sid+'-cta');
+                    if (ctaEl && s[sid+'_cta_link']) ctaEl.href = s[sid+'_cta_link'];
+                    if (ctaEl && s[sid+'_cta_text']) ctaEl.textContent = s[sid+'_cta_text'];
+                });
+
             } catch (e) { console.log('Settings non chargés, valeurs par défaut utilisées.'); }
         }
         // Charger après que le DOM hero soit visible
@@ -1715,6 +2194,57 @@
             if (on) favs = favs.filter(x => x !== id); else if (!favs.includes(id)) favs.push(id);
             localStorage.setItem('wishlist', JSON.stringify(favs));
         }
+    </script>
+
+    <script>
+        // ── SLIDER ──────────────────────────────────────────────
+        let sliderIdx = 0, sliderTotal = 3, sliderTimer;
+        function sliderGo(idx) {
+            sliderIdx = (idx + sliderTotal) % sliderTotal;
+            document.getElementById('slidesTrack').style.transform = `translateX(-${sliderIdx * 100}%)`;
+            document.querySelectorAll('.slider-dot').forEach((d,i) => d.classList.toggle('active', i === sliderIdx));
+        }
+        function sliderMove(dir) { sliderGo(sliderIdx + dir); resetSliderTimer(); }
+        function resetSliderTimer() { clearInterval(sliderTimer); sliderTimer = setInterval(() => sliderMove(1), 5000); }
+        resetSliderTimer();
+
+        // ── URGENCY TIMER (synchro avec le flash timer) ──────────
+        (function() {
+            let urgTotal = 2 * 3600 + 45 * 60;
+            setInterval(() => {
+                if (urgTotal <= 0) urgTotal = 3 * 3600;
+                urgTotal--;
+                const h = Math.floor(urgTotal / 3600);
+                const m = Math.floor((urgTotal % 3600) / 60);
+                const s = urgTotal % 60;
+                const uh = document.getElementById('urg-h');
+                const um = document.getElementById('urg-m');
+                const us = document.getElementById('urg-s');
+                if (uh) uh.textContent = String(h).padStart(2,'0');
+                if (um) um.textContent = String(m).padStart(2,'0');
+                if (us) us.textContent = String(s).padStart(2,'0');
+            }, 1000);
+        })();
+
+        // ── BANNIÈRE PERSONNALISÉE CLIENT ─────────────────────────
+        (function() {
+            const client = JSON.parse(localStorage.getItem('client') || 'null');
+            if (client && client.name) {
+                const banner = document.getElementById('personalBanner');
+                const avatar = document.getElementById('personalAvatar');
+                const greeting = document.getElementById('personalGreeting');
+                const sub = document.getElementById('personalSub');
+                if (banner) {
+                    banner.classList.add('show');
+                    const initials = client.name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+                    if (avatar) avatar.textContent = initials;
+                    const hour = new Date().getHours();
+                    const hello = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
+                    if (greeting) greeting.textContent = `${hello} ${client.name.split(' ')[0]} ! 👋`;
+                    if (sub) sub.textContent = 'Continuez vos achats là où vous vous étiez arrêté';
+                }
+            }
+        })();
     </script>
 
     <script src="/install-prompt.js"></script>
