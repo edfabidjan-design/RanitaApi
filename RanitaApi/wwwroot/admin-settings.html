@@ -124,42 +124,11 @@
 
         <!-- SLIDER -->
         <div class="tab-panel" id="panel-slider">
-            <div class="section-card">
-                <div class="section-title">🎠 Slide 1 (Principal)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre (HTML autorisé, ex: Mode &amp; Style&lt;br&gt;&lt;em&gt;Abidjan&lt;/em&gt;)</label><input type="text" id="slide0_title" placeholder="Mode & Style<br><em>Abidjan</em>"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide0_sub" placeholder="Les meilleures marques..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide0_cta_text" placeholder="Voir les produits →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide0_cta_link" placeholder="products.html"></div>
-                    <div class="field full">
-                        <label>Image du slide</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="slide0_img" placeholder="https://...image.jpg" style="flex:1;">
-                            <label for="slide0_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="slide0_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(0, this)">
-                            <span id="slide0_upload_status" style="font-size:12px;color:#6b7280;"></span>
-                        </div>
-                    </div>
-                </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <p style="font-size:13px;color:#6b7280;">Gérez vos slides. Laissez le titre vide pour désactiver un slide.</p>
+                <button onclick="addSlide()" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">+ Ajouter un slide</button>
             </div>
-            <div class="section-card">
-                <div class="section-title">🎠 Slide 2 (Électronique)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="slide1_title" placeholder="Smartphones<br><em style='color:#60a5fa'>& Gadgets</em>"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide1_sub" placeholder="Tecno, Samsung, iPhone..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide1_cta_text" placeholder="Découvrir →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide1_cta_link" placeholder="products.html"></div>
-                </div>
-            </div>
-            <div class="section-card">
-                <div class="section-title">🎠 Slide 3 (Alimentation)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="slide2_title" placeholder="Produits Frais<br><em>& Locaux</em>"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide2_sub" placeholder="Épices, céréales, boissons..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide2_cta_text" placeholder="Commander →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide2_cta_link" placeholder="products.html"></div>
-                </div>
-            </div>
+            <div id="slidesContainer"></div>
         </div>
 
         <!-- CARDS -->
