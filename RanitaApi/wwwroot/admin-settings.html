@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,167 +7,52 @@
     <link rel="stylesheet" href="admin-style.css">
     <script src="admin-auth.js"></script>
     <style>
-        body {
-            background: #f1f5f9;
-        }
-
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media(max-width:768px) {
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .settings-card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 4px rgba(0,0,0,.06);
-            border: 1px solid #e5e7eb;
-        }
-
-            .settings-card h3 {
-                font-size: 14px;
-                font-weight: 700;
-                color: #111827;
-                margin-bottom: 16px;
-                padding-bottom: 10px;
-                border-bottom: 2px solid #10b981;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-
-        .field {
-            margin-bottom: 14px;
-        }
-
-            .field label {
-                display: block;
-                font-size: 12px;
-                font-weight: 600;
-                color: #6b7280;
-                margin-bottom: 5px;
-                text-transform: uppercase;
-                letter-spacing: .4px;
-            }
-
-            .field input, .field textarea {
-                width: 100%;
-                padding: 10px 12px;
-                border: 1px solid #e5e7eb;
-                border-radius: 8px;
-                font-size: 14px;
-                font-family: Arial, sans-serif;
-                outline: none;
-                transition: border-color .2s;
-                background: #f9fafb;
-            }
-
-                .field input:focus, .field textarea:focus {
-                    border-color: #10b981;
-                    background: white;
-                }
-
-            .field textarea {
-                resize: vertical;
-                min-height: 70px;
-            }
-
-        .save-bar {
-            position: sticky;
-            bottom: 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-top: 24px;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 -4px 12px rgba(0,0,0,.06);
-        }
-
-        .btn-save {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background .2s;
-        }
-
-            .btn-save:hover {
-                background: #059669;
-            }
-
-            .btn-save:disabled {
-                background: #d1d5db;
-                cursor: not-allowed;
-            }
-
-        .toast-msg {
-            font-size: 13px;
-            font-weight: 600;
-            color: #059669;
-            display: none;
-        }
-
-        .preview-hero {
-            background: #0D1117;
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 20px;
-            color: white;
-        }
-
-            .preview-hero h4 {
-                font-size: 11px;
-                color: #6b7280;
-                margin-bottom: 12px;
-                text-transform: uppercase;
-                letter-spacing: .5px;
-            }
-
-        .preview-title {
-            font-size: 28px;
-            font-weight: 800;
-            line-height: 1.2;
-        }
-
-            .preview-title span {
-                color: #10b981;
-            }
-
-        .preview-sub {
-            font-size: 13px;
-            color: #8B949E;
-            margin-top: 8px;
-            line-height: 1.6;
-        }
-
-        .preview-badge {
-            display: inline-block;
-            background: #F59E0B;
-            color: white;
-            font-size: 18px;
-            font-weight: 800;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 56px;
-            margin-top: 10px;
-        }
+        body { background: #f1f5f9; }
+        .page-title { font-size: 22px; font-weight: 800; color: #111827; margin-bottom: 4px; }
+        .page-sub { font-size: 13px; color: #6b7280; margin-bottom: 24px; }
+        .tabs { display: flex; gap: 0; border-bottom: 2px solid #e5e7eb; margin-bottom: 28px; overflow-x: auto; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab { padding: 10px 20px; font-size: 13px; font-weight: 700; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all .2s; }
+        .tab:hover { color: #111827; }
+        .tab.active { color: #10b981; border-bottom-color: #10b981; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .section-card { background: white; border-radius: 14px; border: 1px solid #e5e7eb; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+        .section-title { font-size: 15px; font-weight: 800; color: #111827; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 8px; }
+        .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .fields-grid.one { grid-template-columns: 1fr; }
+        .fields-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+        @media(max-width:700px) { .fields-grid, .fields-grid.three { grid-template-columns: 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field.full { grid-column: 1 / -1; }
+        .field label { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: .6px; }
+        .field input, .field textarea { padding: 10px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: Arial, sans-serif; color: #111827; background: #f9fafb; outline: none; transition: border-color .2s, background .2s; }
+        .field input:focus, .field textarea:focus { border-color: #10b981; background: white; }
+        .field textarea { resize: vertical; min-height: 80px; }
+        .field .hint { font-size: 11px; color: #9ca3af; }
+        .preview-box { background: #0D1117; border-radius: 12px; padding: 28px; margin-top: 20px; }
+        .preview-label { font-size: 10px; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+        .preview-hero-title { font-size: 32px; font-weight: 800; color: #F0F6FC; line-height: 1.15; }
+        .preview-hero-sub { font-size: 13px; color: #8B949E; margin-top: 10px; line-height: 1.6; max-width: 380px; }
+        .preview-badge { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: #F59E0B; color: white; font-size: 16px; font-weight: 800; margin-top: 14px; line-height: 1.1; }
+        .preview-badge small { font-size: 9px; font-weight: 500; }
+        .stats-preview { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; background: linear-gradient(135deg,#10b981,#059669); border-radius: 10px; padding: 20px; margin-top: 16px; }
+        .stat-prev { text-align: center; }
+        .stat-prev-n { font-size: 22px; font-weight: 800; color: white; }
+        .stat-prev-l { font-size: 11px; color: rgba(255,255,255,.8); margin-top: 2px; }
+        .cards-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+        .card-prev { background: #161B22; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 16px; }
+        .card-prev-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+        .card-prev-title { font-size: 16px; font-weight: 700; color: #F0F6FC; line-height: 1.25; }
+        .card-prev-sub { font-size: 11px; color: #8B949E; margin-top: 4px; }
+        .save-bar { position: sticky; bottom: 0; background: white; border-top: 1px solid #e5e7eb; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; box-shadow: 0 -4px 16px rgba(0,0,0,.06); z-index: 10; }
+        .save-info { font-size: 13px; color: #6b7280; }
+        .btn-save { background: #10b981; color: white; border: none; padding: 12px 32px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: background .2s, transform .1s; }
+        .btn-save:hover { background: #059669; }
+        .btn-save:active { transform: scale(.98); }
+        .btn-save:disabled { background: #d1d5db; cursor: not-allowed; }
+        .toast-ok { display: none; font-size: 13px; font-weight: 700; color: #059669; }
+        .toast-ok.show { display: flex; align-items: center; gap: 6px; }
     </style>
 </head>
 <body>
@@ -175,124 +60,155 @@
         <div class="logo" onclick="location.href='admin-dashboard.html'">🛒 Ranita Admin</div>
         <nav id="adminNav"></nav>
         <button class="btn-logout" onclick="adminLogout()">Déconnexion</button>
-        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()">
-            <span></span><span></span><span></span>
-        </button>
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     </header>
 
     <div class="admin-container">
-        <div style="margin-bottom:20px;">
-            <h1 style="font-size:20px;font-weight:800;color:#111827;">⚙️ Paramètres du site</h1>
-            <p style="font-size:13px;color:#6b7280;margin-top:4px;">Modifiez les textes et contenus affichés sur la page d'accueil.</p>
+        <p class="page-title">⚙️ Paramètres du site</p>
+        <p class="page-sub">Modifiez les textes et contenus affichés sur la page d'accueil sans toucher au code.</p>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('hero',this)">🏠 Bannière hero</div>
+            <div class="tab" onclick="switchTab('cards',this)">📱 Cards hero</div>
+            <div class="tab" onclick="switchTab('stats',this)">📊 Statistiques</div>
+            <div class="tab" onclick="switchTab('promos',this)">🎁 Promos</div>
+            <div class="tab" onclick="switchTab('referral',this)">📣 Parrainage</div>
         </div>
 
-        <div class="settings-grid">
-
-            <!-- HERO -->
-            <div class="settings-card">
-                <h3>🏠 Section Hero (bannière principale)</h3>
-                <div class="field">
-                    <label>Titre ligne 1</label>
-                    <input type="text" id="hero_title" placeholder="Mode & Style">
+        <!-- HERO -->
+        <div class="tab-panel active" id="panel-hero">
+            <div class="section-card">
+                <div class="section-title">🏠 Bannière principale</div>
+                <div class="fields-grid">
+                    <div class="field">
+                        <label>Titre ligne 1</label>
+                        <input type="text" id="hero_title" placeholder="Mode & Style">
+                    </div>
+                    <div class="field">
+                        <label>Titre ligne 2 (vert)</label>
+                        <input type="text" id="hero_title_highlight" placeholder="Abidjan">
+                    </div>
+                    <div class="field full">
+                        <label>Sous-titre</label>
+                        <textarea id="hero_subtitle" placeholder="Les meilleures marques africaines..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Badge promo</label>
+                        <input type="text" id="hero_badge" placeholder="-60%">
+                        <span class="hint">Ex : -20%, SOLDES, PROMO</span>
+                    </div>
+                    <div class="field">
+                        <label>Label du badge</label>
+                        <input type="text" id="hero_badge_label" placeholder="mode">
+                        <span class="hint">Texte sous le badge</span>
+                    </div>
+                    <div class="field full">
+                        <label>Lien bouton "Voir les produits"</label>
+                        <input type="text" id="hero_btn_link" placeholder="products.html">
+                    </div>
                 </div>
-                <div class="field">
-                    <label>Titre ligne 2 (en vert)</label>
-                    <input type="text" id="hero_title_highlight" placeholder="Abidjan">
-                </div>
-                <div class="field">
-                    <label>Sous-titre</label>
-                    <textarea id="hero_subtitle" placeholder="Les meilleures marques..."></textarea>
-                </div>
-                <div class="field">
-                    <label>Badge promo (ex: -60%)</label>
-                    <input type="text" id="hero_badge" placeholder="-60%">
-                </div>
-                <div class="field">
-                    <label>Label du badge (ex: mode)</label>
-                    <input type="text" id="hero_badge_label" placeholder="mode">
-                </div>
-                <div class="field">
-                    <label>Lien du bouton "Voir les produits"</label>
-                    <input type="text" id="hero_btn_link" placeholder="products.html">
-                </div>
-
-                <!-- Aperçu live -->
-                <div class="preview-hero">
-                    <h4>👁 Aperçu live</h4>
-                    <div class="preview-title" id="prev-title">Mode & Style<br><span id="prev-highlight">Abidjan</span></div>
-                    <div class="preview-sub" id="prev-sub">Les meilleures marques africaines...</div>
-                    <div class="preview-badge" id="prev-badge">-60%<br><small style="font-size:9px">mode</small></div>
+                <div class="preview-box">
+                    <div class="preview-label">👁 Aperçu live</div>
+                    <div class="preview-hero-title" id="prev-title">Mode & Style<br><span style="color:#10b981" id="prev-hl">Abidjan</span></div>
+                    <div class="preview-hero-sub" id="prev-sub">Les meilleures marques africaines...</div>
+                    <div class="preview-badge" id="prev-badge">-60%<br><small>mode</small></div>
                 </div>
             </div>
+        </div>
 
-            <!-- STATS + PROMOS -->
-            <div>
-                <div class="settings-card" style="margin-bottom:20px;">
-                    <h3>📊 Statistiques (bande verte)</h3>
-                    <div class="field">
-                        <label>Nombre de vendeurs</label>
-                        <input type="text" id="stat_vendors" placeholder="3 200+">
-                    </div>
-                    <div class="field">
-                        <label>Taux de satisfaction</label>
-                        <input type="text" id="stat_satisfaction" placeholder="98%">
-                    </div>
-                    <div class="field">
-                        <label>Délai livraison</label>
-                        <input type="text" id="stat_delivery" placeholder="24h">
+        <!-- CARDS -->
+        <div class="tab-panel" id="panel-cards">
+            <div class="section-card">
+                <div class="section-title">📱 Card Électronique</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre ligne 1</label><input type="text" id="card1_title1" placeholder="Smartphones"></div>
+                    <div class="field"><label>Titre ligne 2</label><input type="text" id="card1_title2" placeholder="& Gadgets"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="card1_subtitle" placeholder="Tecno, Samsung, iPhone…"></div>
+                    <div class="field"><label>Lien de la card</label><input type="text" id="card1_link" placeholder="products.html"></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">🛒 Card Alimentation</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre ligne 1</label><input type="text" id="card2_title1" placeholder="Produits Frais"></div>
+                    <div class="field"><label>Titre ligne 2</label><input type="text" id="card2_title2" placeholder="& Locaux"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="card2_subtitle" placeholder="Épices, céréales, boissons"></div>
+                    <div class="field"><label>Lien de la card</label><input type="text" id="card2_link" placeholder="products.html"></div>
+                </div>
+                <div class="preview-box" style="margin-top:20px;">
+                    <div class="preview-label">👁 Aperçu live</div>
+                    <div class="cards-preview">
+                        <div class="card-prev">
+                            <div class="card-prev-tag" style="color:#F59E0B;">📱 Électronique</div>
+                            <div class="card-prev-title" id="prev-c1-title">Smartphones<br>& Gadgets</div>
+                            <div class="card-prev-sub" id="prev-c1-sub">Tecno, Samsung, iPhone…</div>
+                        </div>
+                        <div class="card-prev">
+                            <div class="card-prev-tag" style="color:#10b981;">🛒 Alimentation</div>
+                            <div class="card-prev-title" id="prev-c2-title">Produits Frais<br>& Locaux</div>
+                            <div class="card-prev-sub" id="prev-c2-sub">Épices, céréales, boissons</div>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="settings-card" style="margin-bottom:20px;">
-                    <h3>🎁 Card Parrainage</h3>
-                    <div class="field">
-                        <label>Titre</label>
-                        <input type="text" id="promo_referral_title" placeholder="Invitez un ami, gagnez 2 500 F">
-                    </div>
-                    <div class="field">
-                        <label>Description</label>
-                        <textarea id="promo_referral_desc" placeholder="Pour chaque ami..."></textarea>
-                    </div>
+        <!-- STATS -->
+        <div class="tab-panel" id="panel-stats">
+            <div class="section-card">
+                <div class="section-title">📊 Bande statistiques (fond vert)</div>
+                <div class="fields-grid three">
+                    <div class="field"><label>Vendeurs vérifiés</label><input type="text" id="stat_vendors" placeholder="3 200+"></div>
+                    <div class="field"><label>Clients satisfaits</label><input type="text" id="stat_satisfaction" placeholder="98%"></div>
+                    <div class="field"><label>Délai livraison</label><input type="text" id="stat_delivery" placeholder="24h"></div>
                 </div>
-
-                <div class="settings-card" style="margin-bottom:20px;">
-                    <h3>📦 Card Livraison offerte</h3>
-                    <div class="field">
-                        <label>Titre</label>
-                        <input type="text" id="promo_delivery_title" placeholder="Gratuite dès 15 000 F">
-                    </div>
-                    <div class="field">
-                        <label>Description</label>
-                        <textarea id="promo_delivery_desc" placeholder="Abidjan & banlieue..."></textarea>
-                    </div>
+                <div class="stats-preview">
+                    <div class="stat-prev"><div class="stat-prev-n">—</div><div class="stat-prev-l">Produits disponibles</div></div>
+                    <div class="stat-prev"><div class="stat-prev-n" id="prev-vendors">3 200+</div><div class="stat-prev-l">Vendeurs vérifiés</div></div>
+                    <div class="stat-prev"><div class="stat-prev-n" id="prev-satis">98%</div><div class="stat-prev-l">Clients satisfaits</div></div>
+                    <div class="stat-prev"><div class="stat-prev-n" id="prev-deliv">24h</div><div class="stat-prev-l">Livraison Abidjan</div></div>
                 </div>
+                <p style="font-size:11px;color:#9ca3af;margin-top:8px;">* "Produits disponibles" est calculé automatiquement depuis votre catalogue.</p>
+            </div>
+        </div>
 
-                <div class="settings-card">
-                    <h3>🎁 Bannière parrainage (bas de page)</h3>
-                    <div class="field">
-                        <label>Titre</label>
-                        <input type="text" id="referral_title" placeholder="🎁 Invitez un ami, gagnez 2 500 F CFA">
-                    </div>
-                    <div class="field">
-                        <label>Description</label>
-                        <textarea id="referral_desc" placeholder="Pour chaque ami..."></textarea>
-                    </div>
+        <!-- PROMOS -->
+        <div class="tab-panel" id="panel-promos">
+            <div class="section-card">
+                <div class="section-title">🎁 Card Parrainage (hero)</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="promo_referral_title" placeholder="Invitez un ami, gagnez 2 500 F"></div>
+                    <div class="field"><label>Description</label><textarea id="promo_referral_desc" placeholder="Pour chaque ami..."></textarea></div>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">📦 Card Livraison offerte (hero)</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="promo_delivery_title" placeholder="Gratuite dès 15 000 F"></div>
+                    <div class="field"><label>Description</label><textarea id="promo_delivery_desc" placeholder="Abidjan & banlieue..."></textarea></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFERRAL -->
+        <div class="tab-panel" id="panel-referral">
+            <div class="section-card">
+                <div class="section-title">📣 Bannière parrainage (bas de page)</div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="referral_title" placeholder="🎁 Invitez un ami, gagnez 2 500 F CFA"></div>
+                    <div class="field"><label>Description</label><textarea id="referral_desc" placeholder="Pour chaque ami qui effectue son premier achat..."></textarea></div>
                 </div>
             </div>
         </div>
 
         <div class="save-bar">
-            <span class="toast-msg" id="toastMsg">✅ Modifications enregistrées !</span>
-            <button class="btn-save" id="btnSave" onclick="saveSettings()">💾 Enregistrer les modifications</button>
+            <div class="toast-ok" id="toastOk">✅ Modifications enregistrées avec succès !</div>
+            <div class="save-info" id="saveInfo">Les modifications seront visibles sur le site immédiatement.</div>
+            <button class="btn-save" id="btnSave" onclick="saveSettings()">💾 Enregistrer</button>
         </div>
     </div>
 
-    <div id="mobileNav">
-        <div id="mobileNavLinks"></div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
-            <button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button>
-        </div>
-    </div>
+    <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
 
     <script>
         checkPageAccess('settings');
@@ -300,81 +216,62 @@
 
         const API = 'https://ranitaapi-production.up.railway.app/api';
         const KEYS = [
-            'hero_title', 'hero_title_highlight', 'hero_subtitle', 'hero_badge', 'hero_badge_label', 'hero_btn_link',
-            'stat_vendors', 'stat_satisfaction', 'stat_delivery',
-            'card1_title1', 'card1_title2', 'card1_subtitle', 'card1_link',
-            'card2_title1', 'card2_title2', 'card2_subtitle', 'card2_link',
-            'promo_referral_title', 'promo_referral_desc',
-            'promo_delivery_title', 'promo_delivery_desc',
-            'referral_title', 'referral_desc'
+            'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label','hero_btn_link',
+            'card1_title1','card1_title2','card1_subtitle','card1_link',
+            'card2_title1','card2_title2','card2_subtitle','card2_link',
+            'stat_vendors','stat_satisfaction','stat_delivery',
+            'promo_referral_title','promo_referral_desc',
+            'promo_delivery_title','promo_delivery_desc',
+            'referral_title','referral_desc'
         ];
 
-        // Charger les settings depuis l'API
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        function updatePreview() {
+            const g = id => (document.getElementById(id) || {}).value || '';
+            document.getElementById('prev-title').innerHTML = (g('hero_title')||'Mode & Style') + '<br><span style="color:#10b981">' + (g('hero_title_highlight')||'Abidjan') + '</span>';
+            document.getElementById('prev-sub').textContent = g('hero_subtitle');
+            document.getElementById('prev-badge').innerHTML = (g('hero_badge')||'-60%') + '<br><small>' + (g('hero_badge_label')||'mode') + '</small>';
+            document.getElementById('prev-c1-title').innerHTML = (g('card1_title1')||'Smartphones') + '<br>' + (g('card1_title2')||'& Gadgets');
+            document.getElementById('prev-c1-sub').textContent = g('card1_subtitle') || 'Tecno, Samsung, iPhone…';
+            document.getElementById('prev-c2-title').innerHTML = (g('card2_title1')||'Produits Frais') + '<br>' + (g('card2_title2')||'& Locaux');
+            document.getElementById('prev-c2-sub').textContent = g('card2_subtitle') || 'Épices, céréales, boissons';
+            document.getElementById('prev-vendors').textContent = g('stat_vendors') || '3 200+';
+            document.getElementById('prev-satis').textContent = g('stat_satisfaction') || '98%';
+            document.getElementById('prev-deliv').textContent = g('stat_delivery') || '24h';
+        }
+
+        KEYS.forEach(k => { const el = document.getElementById(k); if (el) el.addEventListener('input', updatePreview); });
+
         async function loadSettings() {
             try {
                 const res = await fetch(`${API}/site-settings`);
                 const data = await res.json();
-                KEYS.forEach(key => {
-                    const el = document.getElementById(key);
-                    if (el && data[key]) el.value = data[key];
-                });
+                KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
                 updatePreview();
-            } catch (e) {
-                console.error('Erreur chargement settings:', e);
-            }
+            } catch(e) { console.error('Erreur chargement:', e); }
         }
 
-        // Aperçu live du hero
-        function updatePreview() {
-            document.getElementById('prev-title').innerHTML =
-                (document.getElementById('hero_title').value || 'Mode & Style') +
-                '<br><span id="prev-highlight" style="color:#10b981">' +
-                (document.getElementById('hero_title_highlight').value || 'Abidjan') + '</span>';
-            document.getElementById('prev-sub').textContent =
-                document.getElementById('hero_subtitle').value || '';
-            const badge = document.getElementById('hero_badge').value || '-60%';
-            const label = document.getElementById('hero_badge_label').value || 'mode';
-            document.getElementById('prev-badge').innerHTML =
-                badge + '<br><small style="font-size:9px">' + label + '</small>';
-        }
-
-        ['hero_title', 'hero_title_highlight', 'hero_subtitle', 'hero_badge', 'hero_badge_label']
-            .forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('input', updatePreview);
-            });
-
-        // Sauvegarder
         async function saveSettings() {
             const btn = document.getElementById('btnSave');
-            btn.disabled = true;
-            btn.textContent = '⏳ Enregistrement...';
-
+            btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
+            document.getElementById('toastOk').classList.remove('show');
+            document.getElementById('saveInfo').style.display = 'none';
             const updates = {};
-            KEYS.forEach(key => {
-                const el = document.getElementById(key);
-                if (el) updates[key] = el.value;
-            });
-
+            KEYS.forEach(key => { const el = document.getElementById(key); if (el) updates[key] = el.value; });
             try {
-                const res = await fetch(`${API}/site-settings`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updates)
-                });
+                const res = await fetch(`${API}/site-settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) });
                 if (res.ok) {
-                    const msg = document.getElementById('toastMsg');
-                    msg.style.display = 'block';
-                    setTimeout(() => msg.style.display = 'none', 3000);
-                } else {
-                    alert('Erreur lors de la sauvegarde.');
-                }
-            } catch (e) {
-                alert('Erreur réseau.');
-            }
-
-            btn.disabled = false;
-            btn.textContent = '💾 Enregistrer les modifications';
+                    document.getElementById('toastOk').classList.add('show');
+                    setTimeout(() => { document.getElementById('toastOk').classList.remove('show'); document.getElementById('saveInfo').style.display = ''; }, 4000);
+                } else { alert('Erreur sauvegarde.'); }
+            } catch(e) { alert('Erreur réseau.'); }
+            btn.disabled = false; btn.textContent = '💾 Enregistrer';
         }
 
         loadSettings();
