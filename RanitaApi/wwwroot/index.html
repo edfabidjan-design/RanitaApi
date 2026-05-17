@@ -2469,14 +2469,31 @@
             resetSliderTimer();
         }
 
+        // ── SLIDER INFINI ────────────────────────────────────────────
+        let sliderIdx = 0, sliderTotal = 0, sliderTimer;
+
         function sliderGo(idx) {
             if (sliderTotal === 0) return;
+            // Boucle infinie : revient au début après le dernier
             sliderIdx = ((idx % sliderTotal) + sliderTotal) % sliderTotal;
             document.getElementById('slidesTrack').style.transform = `translateX(-${sliderIdx * 100}%)`;
-            document.querySelectorAll('.slider-dot').forEach((d,i) => d.classList.toggle('active', i === sliderIdx));
+            document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === sliderIdx));
         }
-        function sliderMove(dir) { sliderGo(sliderIdx + dir); resetSliderTimer(); }
-        function resetSliderTimer() { clearInterval(sliderTimer); if(sliderTotal > 1) sliderTimer = setInterval(() => sliderMove(1), 4000); }
+
+        function sliderMove(dir) {
+            sliderGo(sliderIdx + dir);
+            resetSliderTimer();
+        }
+
+        function resetSliderTimer() {
+            clearInterval(sliderTimer);
+            if (sliderTotal > 1) {
+                sliderTimer = setInterval(() => {
+                    // Après le dernier slide → retour au premier (idx 0)
+                    sliderGo((sliderIdx + 1) % sliderTotal);
+                }, 4000);
+            }
+        }
 
         // ── URGENCY TIMER (synchro avec le flash timer) ──────────
         (function() {
