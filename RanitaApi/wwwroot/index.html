@@ -1556,10 +1556,15 @@
         .personal-banner {
             background: var(--lk);
             border-bottom: 1px solid var(--lk-border);
-            padding: 10px 20px;
+            padding: 8px 20px;
             display: none;
         }
-        .personal-banner.show { display: block; }
+        .personal-banner.show { display: flex; align-items: center; }
+        @media(min-width:768px) {
+            .personal-banner.show {
+                display: flex;
+            }
+        }
         .personal-inner {
             max-width: 1280px;
             margin: 0 auto;
@@ -1808,10 +1813,12 @@
         </div>
     </div>
 
-    <div class="cats-bar">
-        <div class="cats-inner" id="catsBarInner">
+    <div class="cats-bar" style="position:relative;">
+        <button onclick="scrollCats(-1)" style="position:absolute;left:0;top:0;bottom:0;width:32px;background:linear-gradient(to right,var(--dk2),transparent);border:none;color:var(--dk-text2);font-size:18px;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;">‹</button>
+        <div class="cats-inner" id="catsBarInner" style="padding:0 36px;">
             <div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>
         </div>
+        <button onclick="scrollCats(1)" style="position:absolute;right:0;top:0;bottom:0;width:32px;background:linear-gradient(to left,var(--dk2),transparent);border:none;color:var(--dk-text2);font-size:18px;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;">›</button>
     </div>
 
     <!-- ═══ BANNIÈRE 1 : SLIDER/CAROUSEL ═══ -->
@@ -2438,6 +2445,12 @@
     </script>
 
     <script>
+        // ── SCROLL CATS BAR ─────────────────────────────────────
+        function scrollCats(dir) {
+            const bar = document.getElementById('catsBarInner');
+            if (bar) bar.scrollBy({ left: dir * 200, behavior: 'smooth' });
+        }
+
         // ── SLIDER ──────────────────────────────────────────────
         let sliderIdx = 0, sliderTotal = 3, sliderTimer;
         function sliderGo(idx) {
