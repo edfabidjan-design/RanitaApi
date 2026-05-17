@@ -2405,7 +2405,7 @@
         ];
 
         // ── SLIDER INFINI SANS SAUT ──────────────────────────────
-        let sliderIdx = 0, sliderTotal = 0, sliderTimer;
+       
 
         function buildSlider(settings) {
             const track = document.getElementById('slidesTrack');
@@ -2531,6 +2531,8 @@
                 sliderTimer = setInterval(() => sliderGo(1), 4000);
             }
         }
+
+
         // ── URGENCY TIMER (synchro avec le flash timer) ──────────
         (function() {
             let urgTotal = 2 * 3600 + 45 * 60;
