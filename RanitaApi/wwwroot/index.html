@@ -2404,6 +2404,9 @@
             { bg:'linear-gradient(135deg,#1a1000,#2d1e00)', badge:'🏡 Maison', badgeColor:'rgba(245,158,11,.12)', badgeBorder:'rgba(245,158,11,.3)', badgeText:'#f59e0b', icon:'🏡', btnBg:'#f59e0b', discountBg:'#f59e0b' },
         ];
 
+        // ── SLIDER INFINI SANS SAUT ──────────────────────────────
+        let sliderIdx = 0, sliderTotal = 0, sliderTimer;
+
         function buildSlider(settings) {
             const track = document.getElementById('slidesTrack');
             const nav = document.getElementById('sliderNav');
@@ -2412,89 +2415,122 @@
             nav.innerHTML = '';
             sliderTotal = 0;
 
-            // Construire les slides depuis les settings
+            // Collecter les slides valides
+            const slides = [];
             let n = 0;
-            while (settings['slide'+n+'_title'] || n < 3) {
-                const def = SLIDE_DEFAULTS[n] || SLIDE_DEFAULTS[0];
-                const titleRaw = settings['slide'+n+'_title'] || '';
-                const defaults = ['Mode & Style<br><em>Abidjan</em>','Smartphones<br><em style="color:#60a5fa">& Gadgets</em>','Produits Frais<br><em>& Locaux</em>'];
-                // Si titre vide et n >= 1, ignorer ce slide
+            while (n < 10) {
+                const titleRaw = settings['slide' + n + '_title'] || '';
                 if (!titleRaw && n >= 1) break;
-                const title = titleRaw || defaults[n] || '';
+                const def = SLIDE_DEFAULTS[n] || SLIDE_DEFAULTS[0];
+                const title = titleRaw || ['Mode & Style<br><em>Abidjan</em>', 'Smartphones<br><em style="color:#60a5fa">& Gadgets</em>', 'Produits Frais<br><em>& Locaux</em>'][n] || '';
                 if (!title) break;
-                const sub = settings['slide'+n+'_sub'] || '';
-                const ctaText = settings['slide'+n+'_cta_text'] || 'Explorer →';
-                const ctaLink = settings['slide'+n+'_cta_link'] || 'products.html';
-                const img = settings['slide'+n+'_img'] || '';
-                const badgeLabel = settings['slide' + n + '_badge'] || def.badge;
-                const discount = settings['slide' + n + '_discount'] || '';
-                const discountLabel = settings['slide' + n + '_discount_label'] || '';
-
-                const slide = document.createElement('div');
-                slide.className = 'slide';
-                slide.style.background = def.bg;
-
-                const imgHtml = img
-                    ? `<img src="${img}" alt="" style="max-height:220px;max-width:360px;object-fit:contain;border-radius:12px;">`
-                    : `<div class="slide-img">${def.icon}</div>`;
-
-                const discHtml = discount
-                    ? `<div class="slide-discount" style="background:${def.discountBg}">${discount}<small>${discountLabel}</small></div>`
-                    : '';
-
-                slide.innerHTML = `
-                    <div class="slide-inner">
-                        <div>
-                            <div class="slide-badge" style="background:${def.badgeColor};border-color:${def.badgeBorder};color:${def.badgeText};">${badgeLabel}</div>
-                            <h2>${title}</h2>
-                            <p>${sub}</p>
-                            <a href="${ctaLink}" class="slide-cta" style="background:${def.btnBg};">${ctaText}</a>
-                        </div>
-                        ${imgHtml}
-                    </div>
-                    ${discHtml}`;
-
-                track.appendChild(slide);
-
-                const dot = document.createElement('div');
-                dot.className = 'slider-dot' + (n === 0 ? ' active' : '');
-                const idx = n;
-                dot.onclick = () => sliderGo(idx);
-                nav.appendChild(dot);
-
-                sliderTotal++;
+                slides.push({
+                    def,
+                    title,
+                    sub: settings['slide' + n + '_sub'] || '',
+                    ctaText: settings['slide' + n + '_cta_text'] || 'Explorer →',
+                    ctaLink: settings['slide' + n + '_cta_link'] || 'products.html',
+                    img: settings['slide' + n + '_img'] || '',
+                    badgeLabel: settings['slide' + n + '_badge'] || def.badge,
+                    discount: settings['slide' + n + '_discount'] || '',
+                    discountLabel: settings['slide' + n + '_discount_label'] || '',
+                });
                 n++;
             }
-            sliderIdx = 0;
+
+            sliderTotal = slides.length;
+            if (sliderTotal === 0) return;
+
+            // ✅ CLONER : dernier slide au début, premier slide à la fin
+            const allSlides = [slides[sliderTotal - 1], ...slides, slides[0]];
+
+            function makeSlide(s) {
+                const { def, title, sub, ctaText, ctaLink, img, badgeLabel, discount, discountLabel } = s;
+                const el = document.createElement('div');
+                el.className = 'slide';
+                el.style.background = def.bg;
+                const imgHtml = img ? `<img src="${img}" alt="" style="max-height:220px;max-width:360px;object-fit:contain;border-radius:12px;">` : `<div class="slide-img">${def.icon}</div>`;
+                const discHtml = discount ? `<div class="slide-discount" style="background:${def.discountBg}">${discount}<small>${discountLabel}</small></div>` : '';
+                el.innerHTML = `
+            <div class="slide-inner">
+                <div>
+                    <div class="slide-badge" style="background:${def.badgeColor};border:1px solid ${def.badgeBorder};color:${def.badgeText};">${badgeLabel}</div>
+                    <h2>${title}</h2>
+                    <p>${sub}</p>
+                    <a href="${ctaLink}" class="slide-cta" style="background:${def.btnBg};">${ctaText}</a>
+                </div>
+                ${imgHtml}
+            </div>
+            ${discHtml}`;
+                return el;
+            }
+
+            allSlides.forEach(s => track.appendChild(makeSlide(s)));
+
+            // Points de navigation (seulement pour les vrais slides)
+            slides.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => sliderGoReal(i);
+                nav.appendChild(dot);
+            });
+
+            // Position initiale = slide 1 (index 1 dans allSlides, car 0 = clone du dernier)
+            sliderIdx = 1;
+            track.style.transition = 'none';
+            track.style.transform = `translateX(-${sliderIdx * 100}%)`;
+
             resetSliderTimer();
         }
 
-        // ── SLIDER INFINI ────────────────────────────────────────────
-     
+        function sliderGoReal(realIdx) {
+            // realIdx = 0..sliderTotal-1, on ajoute 1 car le clone du dernier est en position 0
+            sliderIdx = realIdx + 1;
+            const track = document.getElementById('slidesTrack');
+            track.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
+            track.style.transform = `translateX(-${sliderIdx * 100}%)`;
+            document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === realIdx));
+        }
 
-        function sliderGo(idx) {
-            if (sliderTotal === 0) return;
-            // Boucle infinie : revient au début après le dernier
-            sliderIdx = ((idx % sliderTotal) + sliderTotal) % sliderTotal;
-            document.getElementById('slidesTrack').style.transform = `translateX(-${sliderIdx * 100}%)`;
-            document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === sliderIdx));
+        function sliderGo(dir) {
+            // dir = +1 ou -1
+            sliderIdx += dir;
+            const track = document.getElementById('slidesTrack');
+            track.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
+            track.style.transform = `translateX(-${sliderIdx * 100}%)`;
+
+            // Mettre à jour les dots
+            const realIdx = ((sliderIdx - 1) % sliderTotal + sliderTotal) % sliderTotal;
+            document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === realIdx));
+
+            // ✅ Après la transition : sauter sans animation si on est sur un clone
+            track.addEventListener('transitionend', function onEnd() {
+                track.removeEventListener('transitionend', onEnd);
+                if (sliderIdx === 0) {
+                    // On était sur le clone du dernier → sauter au vrai dernier
+                    sliderIdx = sliderTotal;
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(-${sliderIdx * 100}%)`;
+                } else if (sliderIdx === sliderTotal + 1) {
+                    // On était sur le clone du premier → sauter au vrai premier
+                    sliderIdx = 1;
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(-${sliderIdx * 100}%)`;
+                }
+            }, { once: true });
         }
 
         function sliderMove(dir) {
-            sliderGo(sliderIdx + dir);
+            sliderGo(dir);
             resetSliderTimer();
         }
 
         function resetSliderTimer() {
             clearInterval(sliderTimer);
             if (sliderTotal > 1) {
-                sliderTimer = setInterval(() => {
-                    // Après le dernier slide → retour au premier (idx 0)
-                    sliderGo((sliderIdx + 1) % sliderTotal);
-                }, 4000);
+                sliderTimer = setInterval(() => sliderGo(1), 4000);
             }
         }
-
         // ── URGENCY TIMER (synchro avec le flash timer) ──────────
         (function() {
             let urgTotal = 2 * 3600 + 45 * 60;
