@@ -1,8 +1,8 @@
-const CACHE_NAME = "ranita-v30";
-const URLS = ["/index.html", "/products.html", "/cart.html", "/products.css", "/header.css"];
+const CACHE_NAME = "ranita-v50";
+const STATIC = ["/products.css", "/header.css", "/cart-badge.js"];
 
 self.addEventListener("install", e => {
-    e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(URLS)));
+    e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(STATIC)));
     self.skipWaiting();
 });
 
@@ -16,19 +16,24 @@ self.addEventListener("activate", e => {
 });
 
 self.addEventListener("fetch", e => {
-    // Ne jamais mettre en cache product-details.html
-    if (e.request.url.includes("product-details.html")) {
+    const url = e.request.url;
+    // Ne JAMAIS mettre en cache les HTML — toujours depuis le réseau
+    if (e.request.mode === "navigate" || url.endsWith(".html")) {
+        e.respondWith(
+            fetch(e.request).catch(() => caches.match("/index.html"))
+        );
+        return;
+    }
+    // Ne jamais mettre en cache les appels API
+    if (url.includes("/api/")) {
         e.respondWith(fetch(e.request));
         return;
     }
-    if (e.request.mode === "navigate") {
-        e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-        return;
-    }
+    // CSS/JS depuis cache
     e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
 });
 
-self.addEventListener('push', function (e) {
+self.addEventListener('push', function(e) {
     const data = e.data ? e.data.json() : {};
     self.registration.showNotification(data.title || '🛒 Ranita', {
         body: data.body || 'Nouvelle notification',
