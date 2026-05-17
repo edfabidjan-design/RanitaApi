@@ -2426,8 +2426,9 @@
                 const ctaText = settings['slide'+n+'_cta_text'] || 'Explorer →';
                 const ctaLink = settings['slide'+n+'_cta_link'] || 'products.html';
                 const img = settings['slide'+n+'_img'] || '';
-                const discount = settings['slide'+n+'_discount'] || ['-20%','-30%','-15%','','' ][n] || '';
-                const discountLabel = settings['slide'+n+'_discount_label'] || ['mode','tech','frais','',''][n] || '';
+                const badgeLabel = settings['slide' + n + '_badge'] || def.badge;
+                const discount = settings['slide' + n + '_discount'] || '';
+                const discountLabel = settings['slide' + n + '_discount_label'] || '';
 
                 const slide = document.createElement('div');
                 slide.className = 'slide';
@@ -2444,7 +2445,7 @@
                 slide.innerHTML = `
                     <div class="slide-inner">
                         <div>
-                            <div class="slide-badge" style="background:${def.badgeColor};border-color:${def.badgeBorder};color:${def.badgeText};">${def.badge}</div>
+                            <div class="slide-badge" style="background:${def.badgeColor};border-color:${def.badgeBorder};color:${def.badgeText};">${badgeLabel}</div>
                             <h2>${title}</h2>
                             <p>${sub}</p>
                             <a href="${ctaLink}" class="slide-cta" style="background:${def.btnBg};">${ctaText}</a>
