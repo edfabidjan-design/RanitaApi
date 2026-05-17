@@ -2529,6 +2529,13 @@
     </script>
 
     <script src="/cart-badge.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', e => {
+                if (e.data === 'reload') location.reload(true);
+            });
+        }
+    </script>
 </body>
 
 </html>
