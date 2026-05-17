@@ -247,7 +247,15 @@
                         <div class="field"><label>Tag</label><input type="text" id="bc1_tag" placeholder="Tendances" oninput="previewCard(1)"></div>
                         <div class="field"><label>Titre</label><input type="text" id="bc1_name" placeholder="Mode & Vêtements" oninput="previewCard(1)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc1_desc" placeholder="Les dernières tendances..." oninput="previewCard(1)" style="min-height:60px;"></textarea></div>
-                        <div class="field full"><label>URL Image</label><input type="text" id="bc1_img" placeholder="https://...image.jpg" oninput="previewCard(1)"></div>
+                        <div class="field full">
+                        <label>Image</label>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" id="bc1_img" placeholder="https://...image.jpg" oninput="previewCard(1)" style="flex:1;">
+                            <label for="bc1_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                            <input type="file" id="bc1_file" accept="image/*" style="display:none;" onchange="uploadImage(1, this)">
+                            <span id="bc1_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                        </div>
+                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc1_link" placeholder="products.html?cat=mode"></div>
                     </div>
                 </div>
@@ -270,7 +278,15 @@
                         <div class="field"><label>Tag</label><input type="text" id="bc2_tag" placeholder="High-Tech" oninput="previewCard(2)"></div>
                         <div class="field"><label>Titre</label><input type="text" id="bc2_name" placeholder="Électronique & Gadgets" oninput="previewCard(2)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc2_desc" placeholder="Smartphones, accessoires..." oninput="previewCard(2)" style="min-height:60px;"></textarea></div>
-                        <div class="field full"><label>URL Image</label><input type="text" id="bc2_img" placeholder="https://...image.jpg" oninput="previewCard(2)"></div>
+                        <div class="field full">
+                        <label>Image</label>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" id="bc2_img" placeholder="https://...image.jpg" oninput="previewCard(2)" style="flex:1;">
+                            <label for="bc2_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                            <input type="file" id="bc2_file" accept="image/*" style="display:none;" onchange="uploadImage(2, this)">
+                            <span id="bc2_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                        </div>
+                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc2_link" placeholder="products.html?cat=elec"></div>
                     </div>
                 </div>
@@ -293,7 +309,15 @@
                         <div class="field"><label>Tag</label><input type="text" id="bc3_tag" placeholder="Produits frais" oninput="previewCard(3)"></div>
                         <div class="field"><label>Titre</label><input type="text" id="bc3_name" placeholder="Alimentation & Épicerie" oninput="previewCard(3)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc3_desc" placeholder="Épices, céréales..." oninput="previewCard(3)" style="min-height:60px;"></textarea></div>
-                        <div class="field full"><label>URL Image</label><input type="text" id="bc3_img" placeholder="https://...image.jpg" oninput="previewCard(3)"></div>
+                        <div class="field full">
+                        <label>Image</label>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" id="bc3_img" placeholder="https://...image.jpg" oninput="previewCard(3)" style="flex:1;">
+                            <label for="bc3_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                            <input type="file" id="bc3_file" accept="image/*" style="display:none;" onchange="uploadImage(3, this)">
+                            <span id="bc3_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                        </div>
+                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc3_link" placeholder="products.html?cat=alim"></div>
                     </div>
                 </div>
@@ -316,7 +340,15 @@
                         <div class="field"><label>Tag</label><input type="text" id="bc4_tag" placeholder="Bien-être" oninput="previewCard(4)"></div>
                         <div class="field"><label>Titre</label><input type="text" id="bc4_name" placeholder="Beauté & Santé" oninput="previewCard(4)"></div>
                         <div class="field full"><label>Description</label><textarea id="bc4_desc" placeholder="Soins, parfums..." oninput="previewCard(4)" style="min-height:60px;"></textarea></div>
-                        <div class="field full"><label>URL Image</label><input type="text" id="bc4_img" placeholder="https://...image.jpg" oninput="previewCard(4)"></div>
+                        <div class="field full">
+                        <label>Image</label>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" id="bc4_img" placeholder="https://...image.jpg" oninput="previewCard(4)" style="flex:1;">
+                            <label for="bc4_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                            <input type="file" id="bc4_file" accept="image/*" style="display:none;" onchange="uploadImage(4, this)">
+                            <span id="bc4_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                        </div>
+                    </div>
                         <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc4_link" placeholder="products.html?cat=beau"></div>
                     </div>
                 </div>
@@ -395,6 +427,33 @@
             'bc3_tag','bc3_name','bc3_desc','bc3_img','bc3_link',
             'bc4_tag','bc4_name','bc4_desc','bc4_img','bc4_link'
         ];
+
+        async function uploadImage(n, input) {
+            const file = input.files[0];
+            if (!file) return;
+            const status = document.getElementById('bc'+n+'_upload_status');
+            status.textContent = '⏳ Upload en cours...';
+            status.style.color = '#6b7280';
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.url) {
+                    document.getElementById('bc'+n+'_img').value = data.url;
+                    previewCard(n);
+                    status.textContent = '✅ Uploadée !';
+                    status.style.color = '#059669';
+                    setTimeout(() => status.textContent = '', 3000);
+                } else {
+                    status.textContent = '❌ Erreur upload';
+                    status.style.color = '#ef4444';
+                }
+            } catch(e) {
+                status.textContent = '❌ Erreur réseau';
+                status.style.color = '#ef4444';
+            }
+        }
 
         function previewCard(n) {
             const tag = (document.getElementById('bc'+n+'_tag')||{}).value || '';
