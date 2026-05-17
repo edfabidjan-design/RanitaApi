@@ -538,30 +538,65 @@
 
         // ── Slides dynamiques
         let slideCount = 3;
+        const SLIDE_BG = ['#0D1117','linear-gradient(135deg,#0a1628,#0d1f3c)','linear-gradient(135deg,#0a1a12,#0d2416)','linear-gradient(135deg,#1a0828,#2d0f3c)','linear-gradient(135deg,#1a1000,#2d1e00)'];
+        const SLIDE_ICONS = ['🛍️','📱','🥘','💄','🏡'];
+
         function slideCard(n) {
             const canDelete = n >= 1;
             const delBtn = canDelete ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : '';
-            return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
-                    <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n+1}</div>
-                    ${delBtn}
-                </div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..."></div>
-                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →"></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
-                    <div class="field full">
-                        <label>Image</label>
-                        <div style="display:flex;gap:10px;align-items:center;">
-                            <input type="text" id="slide${n}_img" placeholder="https://...image.jpg" style="flex:1;">
-                            <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
-                            <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n}, this)">
-                            <span id="slide${n}_upload_status" style="font-size:12px;color:#6b7280;"></span>
+            const bg = SLIDE_BG[n] || SLIDE_BG[0];
+            const icon = SLIDE_ICONS[n] || '🛍️';
+            return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;">
+                <div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
+                        <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n+1}</div>
+                        ${delBtn}
+                    </div>
+                    <div class="fields-grid">
+                        <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style" oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..." oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Texte du bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →" oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Lien du bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
+                        <div class="field full">
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="slide${n}_img" placeholder="https://...image.jpg" style="flex:1;" oninput="previewSlide(${n})">
+                                <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                                <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImgAndPreview(${n}, this)">
+                                <span id="slide${n}_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div id="prev-slide-${n}" style="border-radius:12px;overflow:hidden;background:${bg};margin-top:36px;">
+                    <div id="prev-slide-${n}-img" style="height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;background:${bg};">${icon}</div>
+                    <div style="padding:14px;">
+                        <div id="prev-slide-${n}-title" style="font-size:18px;font-weight:800;color:#F0F6FC;line-height:1.2;margin-bottom:6px;">Slide ${n+1}</div>
+                        <div id="prev-slide-${n}-sub" style="font-size:11px;color:#8B949E;margin-bottom:10px;"></div>
+                        <div id="prev-slide-${n}-btn" style="background:#10b981;color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;display:inline-block;">Explorer →</div>
+                    </div>
+                </div>
             </div>`;
+        }
+
+        function previewSlide(n) {
+            const title = (document.getElementById('slide'+n+'_title')||{}).value || '';
+            const sub = (document.getElementById('slide'+n+'_sub')||{}).value || '';
+            const btn = (document.getElementById('slide'+n+'_cta_text')||{}).value || 'Explorer →';
+            const img = (document.getElementById('slide'+n+'_img')||{}).value || '';
+            const pTitle = document.getElementById('prev-slide-'+n+'-title');
+            const pSub = document.getElementById('prev-slide-'+n+'-sub');
+            const pBtn = document.getElementById('prev-slide-'+n+'-btn');
+            const pImg = document.getElementById('prev-slide-'+n+'-img');
+            if (pTitle) pTitle.innerHTML = title || 'Slide '+(n+1);
+            if (pSub) pSub.textContent = sub;
+            if (pBtn) pBtn.textContent = btn;
+            if (pImg && img) pImg.innerHTML = '<img src="'+img+'" style="width:100%;height:120px;object-fit:cover;" onerror="this.parentElement.innerHTML=\''+SLIDE_ICONS[n]+'\'">';
+        }
+
+        async function uploadSlideImgAndPreview(n, input) {
+            await uploadSlideImg(n, input);
+            previewSlide(n);
         }
 
         function buildSlidesUI() {
