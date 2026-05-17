@@ -423,6 +423,8 @@
             'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link','slide0_img',
             'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link','slide1_img',
             'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link','slide2_img',
+            'slide3_title','slide3_sub','slide3_cta_text','slide3_cta_link','slide3_img',
+            'slide4_title','slide4_sub','slide4_cta_text','slide4_cta_link','slide4_img',
             'card1_title1','card1_title2','card1_subtitle','card1_link',
             'card2_title1','card2_title2','card2_subtitle','card2_link',
             'stat_vendors','stat_satisfaction','stat_delivery',
@@ -529,8 +531,19 @@
                 const data = await res.json();
                 KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
                 updatePreview();
-                // Previews des big cards
                 [1,2,3,4].forEach(n => previewCard(n));
+                // Remplir les slides
+                buildSlidesUI();
+                let sn = 0;
+                while (data['slide'+sn+'_title'] !== undefined || sn < 3) {
+                    if (sn >= slideCount && data['slide'+sn+'_title']) { addSlide(); }
+                    ['title','sub','cta_text','cta_link','img'].forEach(k => {
+                        const el = document.getElementById('slide'+sn+'_'+k);
+                        if (el && data['slide'+sn+'_'+k] !== undefined) el.value = data['slide'+sn+'_'+k];
+                    });
+                    sn++;
+                    if (sn > 10) break;
+                }
             } catch(e) { console.error('Erreur chargement:', e); }
         }
 
@@ -550,6 +563,73 @@
             } catch(e) { alert('Erreur réseau.'); }
             btn.disabled = false; btn.textContent = '💾 Enregistrer';
         }
+
+        // ── Slides dynamiques
+        let slideCount = 3;
+        function slideCard(n) {
+            return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
+                    <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n+1}</div>
+                    ${n >= 3 ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : ''}
+                </div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style"></div>
+                    <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..."></div>
+                    <div class="field"><label>Texte du bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →"></div>
+                    <div class="field"><label>Lien du bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
+                    <div class="field full">
+                        <label>Image</label>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" id="slide${n}_img" placeholder="https://...image.jpg" style="flex:1;">
+                            <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                            <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n}, this)">
+                            <span id="slide${n}_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function buildSlidesUI() {
+            const container = document.getElementById('slidesContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < slideCount; i++) {
+                container.insertAdjacentHTML('beforeend', slideCard(i));
+            }
+        }
+
+        function addSlide() {
+            if (slideCount >= 5) { alert('Maximum 5 slides.'); return; }
+            const container = document.getElementById('slidesContainer');
+            container.insertAdjacentHTML('beforeend', slideCard(slideCount));
+            slideCount++;
+        }
+
+        function removeSlide(n) {
+            const el = document.getElementById('slide-card-'+n);
+            if (el) el.remove();
+            // Vider les valeurs dans les KEYS
+            ['title','sub','cta_text','cta_link','img'].forEach(k => {
+                const inp = document.getElementById('slide'+n+'_'+k);
+                if (inp) inp.value = '';
+            });
+        }
+
+        // Initialiser les slides
+        buildSlidesUI();
+
+        // Mettre à jour les KEYS dynamiquement avant save
+        const origSave = saveSettings;
+        saveSettings = async function() {
+            // Ajouter les clés slides dynamiques
+            for (let i = 0; i < slideCount; i++) {
+                ['title','sub','cta_text','cta_link','img'].forEach(k => {
+                    if (!KEYS.includes('slide'+i+'_'+k)) KEYS.push('slide'+i+'_'+k);
+                });
+            }
+            await origSave();
+        };
 
         loadSettings();
     </script>
