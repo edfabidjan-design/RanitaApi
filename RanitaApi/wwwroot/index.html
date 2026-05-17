@@ -2319,22 +2319,58 @@
         function buildCatsBar(products) {
             const bar = document.getElementById('catsBarInner');
             if (!bar) return;
-            const cats = {};
-            products.forEach(p => {
+            // Charger les catégories parentes depuis l'API
+            fetch('/api/categories').then(r => r.json()).then(cats => {
+                // Garder seulement les catégories parentes (sans ParentId)
+                const parents = cats.filter(c => !c.parentId);
+                bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>';
+                parents.forEach(cat => {
+                    const icon = getCatIcon(cat.name);
+                    const tab = document.createElement('div');
+                    tab.className = 'cat-tab';
+                    tab.textContent = icon + ' ' + cat.name;
+                    const catName = cat.name.toLowerCase();
+                    tab.onclick = function() { filterCatByParent(this, cat.id, catName); };
+                    bar.appendChild(tab);
+                });
+            }).catch(() => {
+                // Fallback : utiliser les catégories des produits
+                const cats = {};
+                products.forEach(p => {
+                    const cat = p.category;
+                    if (cat && cat.name && !cats[cat.name]) cats[cat.name] = { name: cat.name, count: 0 };
+                    if (cat && cat.name) cats[cat.name].count++;
+                });
+                bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,'all')">🏠 Tout</div>';
+                Object.values(cats).sort((a,b) => b.count - a.count).forEach(cat => {
+                    const icon = getCatIcon(cat.name);
+                    const tab = document.createElement('div');
+                    tab.className = 'cat-tab';
+                    tab.textContent = icon + ' ' + cat.name;
+                    const catName = cat.name.toLowerCase();
+                    tab.onclick = function() { filterCat(this, catName); };
+                    bar.appendChild(tab);
+                });
+            });
+        }
+
+        function filterCatByParent(el, parentId, catName) {
+            document.querySelectorAll('.cat-tab').forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
+            const active = allProducts.filter(p => p.isActive !== false);
+            // Filtrer par catégorie parente ou sous-catégories
+            const filtered = active.filter(p => {
                 const cat = p.category;
-                if (cat && cat.name && !cats[cat.name]) cats[cat.name] = { name: cat.name, count: 0 };
-                if (cat && cat.name) cats[cat.name].count++;
+                if (!cat) return false;
+                return cat.parentId === parentId || cat.id === parentId || 
+                       (cat.name || '').toLowerCase().includes(catName.slice(0,4));
             });
-            bar.innerHTML = '<div class="cat-tab active" onclick="filterCat(this,\'all\')">🏠 Tout</div>';
-            Object.values(cats).sort((a,b) => b.count - a.count).forEach(cat => {
-                const icon = getCatIcon(cat.name);
-                const tab = document.createElement('div');
-                tab.className = 'cat-tab';
-                tab.textContent = icon + ' ' + cat.name;
-                const catName = cat.name.toLowerCase();
-                tab.onclick = function() { filterCat(this, catName); };
-                bar.appendChild(tab);
-            });
+            const flash = filtered.filter(p => p.oldPrice && p.oldPrice > p.price).slice(0, 6);
+            const flashFill = flash.length ? flash : filtered.slice(0, 6);
+            const flashIds = new Set(flashFill.map(p => p.id));
+            const best = filtered.filter(p => !flashIds.has(p.id)).slice(0, 4);
+            document.getElementById('flash-grid').innerHTML = flashFill.length ? flashFill.map(buildCard).join('') : '<p style="grid-column:1/-1;text-align:center;color:var(--lk-text3);padding:40px">Aucun produit dans cette catégorie.</p>';
+            document.getElementById('bestsellers-grid').innerHTML = best.length ? best.map(buildCard).join('') : '<p style="grid-column:1/-1;text-align:center;color:var(--lk-text3);padding:40px">—</p>';
         }
 
         function updateCatCounts(products) {
