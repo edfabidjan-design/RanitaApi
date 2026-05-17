@@ -1337,7 +1337,7 @@
                 <h1>Mode & Style<br><span>Abidjan</span></h1>
                 <p>Les meilleures marques africaines et internationales livrées directement chez vous en Côte d'Ivoire.</p>
                 <a href="products.html" class="hero-btn">Voir les produits <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg></a>
-                <div class="hero-discount">-60%<small>mode</small></div>
+                <div class="hero-discount">-20%<small>mode</small></div>
             </div>
             <div class="hero-sub">
                 <div class="hero-card-sm" onclick="location.href='products.html'">
@@ -1541,6 +1541,62 @@
 
     <script>
         const API = '/api/products';
+
+        // ── CHARGEMENT SETTINGS SITE ───────────────────────────────────────────
+        async function loadSiteSettings() {
+            try {
+                const res = await fetch('/api/site-settings');
+                if (!res.ok) return;
+                const s = await res.json();
+
+                // Hero
+                const h1 = document.querySelector('.hero-main h1');
+                if (h1 && s.hero_title && s.hero_title_highlight)
+                    h1.innerHTML = s.hero_title + '<br><span>' + s.hero_title_highlight + '</span>';
+
+                const heroP = document.querySelector('.hero-main p');
+                if (heroP && s.hero_subtitle) heroP.textContent = s.hero_subtitle;
+
+                const disc = document.querySelector('.hero-discount');
+                if (disc && s.hero_badge && s.hero_badge_label)
+                    disc.innerHTML = s.hero_badge + '<small>' + s.hero_badge_label + '</small>';
+
+                // Stats
+                if (s.stat_vendors) {
+                    const statEls = document.querySelectorAll('.stat-n');
+                    if (statEls[1]) statEls[1].textContent = s.stat_vendors;
+                }
+                if (s.stat_satisfaction) {
+                    const statEls = document.querySelectorAll('.stat-n');
+                    if (statEls[2]) statEls[2].textContent = s.stat_satisfaction;
+                }
+                if (s.stat_delivery) {
+                    const statEls = document.querySelectorAll('.stat-n');
+                    if (statEls[3]) statEls[3].textContent = s.stat_delivery;
+                }
+
+                // Cards promo hero-side
+                const promoCards = document.querySelectorAll('.promo-card');
+                if (promoCards[0]) {
+                    if (s.promo_referral_title) promoCards[0].querySelector('h4').textContent = s.promo_referral_title;
+                    if (s.promo_referral_desc) promoCards[0].querySelector('p').textContent = s.promo_referral_desc;
+                }
+                if (promoCards[1]) {
+                    if (s.promo_delivery_title) promoCards[1].querySelector('h4').textContent = s.promo_delivery_title;
+                    if (s.promo_delivery_desc) promoCards[1].querySelector('p').textContent = s.promo_delivery_desc;
+                }
+
+                // Bannière parrainage bas de page
+                const refText = document.querySelector('.ref-text');
+                if (refText) {
+                    if (s.referral_title) refText.querySelector('h2').textContent = s.referral_title;
+                    if (s.referral_desc) refText.querySelector('p').textContent = s.referral_desc;
+                }
+
+            } catch (e) { console.log('Settings non chargés, valeurs par défaut utilisées.'); }
+        }
+        // Charger après que le DOM hero soit visible
+        document.addEventListener('DOMContentLoaded', loadSiteSettings);
         let allProducts = [];
         let currentCat = 'all';
         function fmtPrice(p) { return Number(p).toLocaleString('fr-FR') + ' FCFA'; }
