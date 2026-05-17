@@ -128,6 +128,15 @@
                     <div class="field"><label>Sous-titre</label><input type="text" id="slide0_sub" placeholder="Les meilleures marques..."></div>
                     <div class="field"><label>Texte du bouton</label><input type="text" id="slide0_cta_text" placeholder="Voir les produits →"></div>
                     <div class="field"><label>Lien du bouton</label><input type="text" id="slide0_cta_link" placeholder="products.html"></div>
+                    <div class="field full">
+                        <label>Image du slide</label>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" id="slide0_img" placeholder="https://...image.jpg" style="flex:1;">
+                            <label for="slide0_file" style="background:#10b981;color:white;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;">📁 Choisir</label>
+                            <input type="file" id="slide0_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(0, this)">
+                            <span id="slide0_upload_status" style="font-size:12px;color:#6b7280;"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="section-card">
@@ -411,9 +420,9 @@
         const API = 'https://ranitaapi-production.up.railway.app/api';
         const KEYS = [
             'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label','hero_btn_link',
-            'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link',
-            'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link',
-            'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link',
+            'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link','slide0_img',
+            'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link','slide1_img',
+            'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link','slide2_img',
             'card1_title1','card1_title2','card1_subtitle','card1_link',
             'card2_title1','card2_title2','card2_subtitle','card2_link',
             'stat_vendors','stat_satisfaction','stat_delivery',
@@ -427,6 +436,25 @@
             'bc3_tag','bc3_name','bc3_desc','bc3_img','bc3_link',
             'bc4_tag','bc4_name','bc4_desc','bc4_img','bc4_link'
         ];
+
+        async function uploadSlideImg(n, input) {
+            const file = input.files[0];
+            if (!file) return;
+            const status = document.getElementById('slide'+n+'_upload_status');
+            status.textContent = '⏳ Upload...';
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.url) {
+                    document.getElementById('slide'+n+'_img').value = data.url;
+                    status.textContent = '✅ OK';
+                    status.style.color = '#059669';
+                    setTimeout(() => status.textContent = '', 3000);
+                }
+            } catch(e) { status.textContent = '❌ Erreur'; }
+        }
 
         async function uploadImage(n, input) {
             const file = input.files[0];

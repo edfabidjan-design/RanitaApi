@@ -1833,7 +1833,8 @@
                         <p id="slide0-sub">Les meilleures marques africaines et internationales livrées directement chez vous en Côte d'Ivoire.</p>
                         <a href="products.html" class="slide-cta" id="slide0-cta">Voir les produits →</a>
                     </div>
-                    <div class="slide-img" id="slide0-img">🛍️</div>
+                    <div class="slide-img" id="slide0-img-ph">🛍️</div>
+                    <img id="slide0-img" src="" alt="" style="display:none;max-height:220px;max-width:360px;object-fit:contain;border-radius:12px;" onerror="this.style.display='none';document.getElementById('slide0-img-ph').style.display='flex'">
                 </div>
                 <div class="slide-discount" id="slide0-discount">-20%<small>mode</small></div>
             </div>
@@ -1846,7 +1847,8 @@
                         <p id="slide1-sub">Tecno, Samsung, iPhone — les meilleures offres tech à Abidjan.</p>
                         <a href="products.html" class="slide-cta" id="slide1-cta" style="background:#3b82f6;">Découvrir →</a>
                     </div>
-                    <div class="slide-img" id="slide1-img">📱</div>
+                    <div class="slide-img" id="slide1-img-ph">📱</div>
+                    <img id="slide1-img" src="" alt="" style="display:none;max-height:220px;max-width:360px;object-fit:contain;border-radius:12px;" onerror="this.style.display='none';document.getElementById('slide1-img-ph').style.display='flex'">
                 </div>
                 <div class="slide-discount" id="slide1-discount" style="background:#3b82f6;">-30%<small>tech</small></div>
             </div>
@@ -1859,7 +1861,8 @@
                         <p id="slide2-sub">Épices, céréales, boissons — le meilleur du marché livré chez vous.</p>
                         <a href="products.html" class="slide-cta" id="slide2-cta">Commander →</a>
                     </div>
-                    <div class="slide-img" id="slide2-img">🥘</div>
+                    <div class="slide-img" id="slide2-img-ph">🥘</div>
+                    <img id="slide2-img" src="" alt="" style="display:none;max-height:220px;max-width:360px;object-fit:contain;border-radius:12px;" onerror="this.style.display='none';document.getElementById('slide2-img-ph').style.display='flex'">
                 </div>
                 <div class="slide-discount" id="slide2-discount" style="background:#059669;">-15%<small>frais</small></div>
             </div>
@@ -2257,6 +2260,11 @@
                     const ctaEl = document.getElementById(sid+'-cta');
                     if (ctaEl && s[sid+'_cta_link']) ctaEl.href = s[sid+'_cta_link'];
                     if (ctaEl && s[sid+'_cta_text']) ctaEl.textContent = s[sid+'_cta_text'];
+                    if (s[sid+'_img']) {
+                        const img = document.getElementById(sid+'-img');
+                        const ph = document.getElementById(sid+'-img-ph');
+                        if (img && s[sid+'_img']) { img.src = s[sid+'_img']; img.style.display='block'; if(ph) ph.style.display='none'; }
+                    }
                 });
 
             } catch (e) { console.log('Settings non chargés, valeurs par défaut utilisées.'); }
@@ -2454,12 +2462,15 @@
         // ── SLIDER ──────────────────────────────────────────────
         let sliderIdx = 0, sliderTotal = 3, sliderTimer;
         function sliderGo(idx) {
-            sliderIdx = (idx + sliderTotal) % sliderTotal;
+            sliderIdx = ((idx % sliderTotal) + sliderTotal) % sliderTotal;
             document.getElementById('slidesTrack').style.transform = `translateX(-${sliderIdx * 100}%)`;
             document.querySelectorAll('.slider-dot').forEach((d,i) => d.classList.toggle('active', i === sliderIdx));
         }
-        function sliderMove(dir) { sliderGo(sliderIdx + dir); resetSliderTimer(); }
-        function resetSliderTimer() { clearInterval(sliderTimer); sliderTimer = setInterval(() => sliderMove(1), 5000); }
+        function sliderMove(dir) {
+            sliderGo(sliderIdx + dir);
+            resetSliderTimer();
+        }
+        function resetSliderTimer() { clearInterval(sliderTimer); sliderTimer = setInterval(() => sliderMove(1), 4000); }
         resetSliderTimer();
 
         // ── URGENCY TIMER (synchro avec le flash timer) ──────────
