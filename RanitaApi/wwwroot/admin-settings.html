@@ -392,9 +392,9 @@
         const API = 'https://ranitaapi-production.up.railway.app/api';
         const KEYS = [
             'hero_title','hero_title_highlight','hero_subtitle','hero_badge','hero_badge_label','hero_btn_link',
-            'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link','slide0_img',
-            'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link','slide1_img',
-            'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link','slide2_img',
+            'slide0_title','slide0_sub','slide0_cta_text','slide0_cta_link','slide0_img','slide0_discount','slide0_discount_label',
+            'slide1_title','slide1_sub','slide1_cta_text','slide1_cta_link','slide1_img','slide1_discount','slide1_discount_label',
+            'slide2_title','slide2_sub','slide2_cta_text','slide2_cta_link','slide2_img','slide2_discount','slide2_discount_label',
             'slide3_title','slide3_sub','slide3_cta_text','slide3_cta_link','slide3_img',
             'slide4_title','slide4_sub','slide4_cta_text','slide4_cta_link','slide4_img',
             'card1_title1','card1_title2','card1_subtitle','card1_link',
@@ -569,6 +569,8 @@
                         <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..." oninput="previewSlide(${n})"></div>
                         <div class="field"><label>Texte du bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →" oninput="previewSlide(${n})"></div>
                         <div class="field"><label>Lien du bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
+                        <div class="field"><label>Badge promo (ex: -30%)</label><input type="text" id="slide${n}_discount" placeholder="-30%" oninput="previewSlide(${n})"></div>
+                        <div class="field"><label>Label du badge (ex: tech)</label><input type="text" id="slide${n}_discount_label" placeholder="tech" oninput="previewSlide(${n})"></div>
                         <div class="field full">
                             <label>Image</label>
                             <div style="display:flex;gap:10px;align-items:center;">
@@ -583,7 +585,10 @@
                 <div id="prev-slide-${n}" style="border-radius:12px;overflow:hidden;background:${bg};margin-top:36px;">
                     <div id="prev-slide-${n}-img" style="height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;background:${bg};">${icon}</div>
                     <div style="padding:14px;">
-                        <div id="prev-slide-${n}-title" style="font-size:18px;font-weight:800;color:#F0F6FC;line-height:1.2;margin-bottom:6px;">Slide ${n+1}</div>
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                            <div id="prev-slide-${n}-title" style="font-size:18px;font-weight:800;color:#F0F6FC;line-height:1.2;margin-bottom:6px;">Slide ${n+1}</div>
+                            <div id="prev-slide-${n}-disc" style="display:none;background:#F59E0B;color:white;font-weight:800;font-size:12px;padding:4px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;"></div>
+                        </div>
                         <div id="prev-slide-${n}-sub" style="font-size:11px;color:#8B949E;margin-bottom:10px;"></div>
                         <div id="prev-slide-${n}-btn" style="background:#10b981;color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;display:inline-block;">Explorer →</div>
                     </div>
@@ -596,6 +601,8 @@
             const sub = (document.getElementById('slide'+n+'_sub')||{}).value || '';
             const btn = (document.getElementById('slide'+n+'_cta_text')||{}).value || 'Explorer →';
             const img = (document.getElementById('slide'+n+'_img')||{}).value || '';
+            const disc = (document.getElementById('slide'+n+'_discount')||{}).value || '';
+            const discLabel = (document.getElementById('slide'+n+'_discount_label')||{}).value || '';
             const pTitle = document.getElementById('prev-slide-'+n+'-title');
             const pSub = document.getElementById('prev-slide-'+n+'-sub');
             const pBtn = document.getElementById('prev-slide-'+n+'-btn');
@@ -604,6 +611,9 @@
             if (pSub) pSub.textContent = sub;
             if (pBtn) pBtn.textContent = btn;
             if (pImg && img) pImg.innerHTML = '<img src="'+img+'" style="width:100%;height:120px;object-fit:cover;" onerror="this.parentElement.innerHTML=\''+SLIDE_ICONS[n]+'\'">';
+            // Badge promo
+            const pDisc = document.getElementById('prev-slide-'+n+'-disc');
+            if (pDisc) { pDisc.textContent = disc ? disc+(discLabel?' '+discLabel:'') : ''; pDisc.style.display = disc ? 'block' : 'none'; }
         }
 
         async function uploadSlideImgAndPreview(n, input) {
