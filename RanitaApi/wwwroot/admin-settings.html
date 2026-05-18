@@ -724,7 +724,7 @@
     <script>
         checkPageAccess('settings');
         buildAdminNav('settings');
-        const API = 'https://ranitaapi-production.up.railway.app/api';
+        const API = '/api';
 
         const BASE_KEYS = [
             'bc1_tag', 'bc1_name', 'bc1_desc', 'bc1_img', 'bc1_link',
@@ -734,7 +734,7 @@
             'promo_bar_text', 'promo_bar_link', 'promo_bar_hide',
             'referral_title', 'referral_desc',
             'featured_title', 'featured_subtitle', 'featured_product_ids',
-            'free_shipping_threshold', 'shipping_fee'
+            'free_shipping_threshold'
         ];
         function slideKeys(n) { return ['slide' + n + '_title', 'slide' + n + '_sub', 'slide' + n + '_cta_text', 'slide' + n + '_cta_link', 'slide' + n + '_img', 'slide' + n + '_badge', 'slide' + n + '_discount', 'slide' + n + '_discount_label']; }
 

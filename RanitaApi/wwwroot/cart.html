@@ -263,16 +263,12 @@
             font-size: 14px;
         }
 
-        /* Livraison gratuite banner */
         .shipping-banner {
             background: #f0fdf4;
             border: 1px solid #a7f3d0;
             border-radius: 10px;
-            padding: 10px 16px;
+            padding: 12px 16px;
             margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-size: 13px;
             font-weight: 600;
             color: #065f46;
@@ -282,7 +278,7 @@
             background: #e5e7eb;
             border-radius: 999px;
             height: 6px;
-            margin-top: 6px;
+            margin-top: 8px;
             overflow: hidden;
         }
 
@@ -297,7 +293,7 @@
             background: #fefce8;
             border: 1px solid #fde047;
             border-radius: 10px;
-            padding: 10px 16px;
+            padding: 12px 16px;
             margin-bottom: 16px;
             font-size: 13px;
             font-weight: 600;
@@ -333,16 +329,13 @@
 
     <script>
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let freeShippingThreshold = 15000; // valeur par défaut
-        let shippingFee = 1000; // valeur par défaut
+        let freeShippingThreshold = 15000;
 
-        // Charger les paramètres de livraison depuis l'API
         async function loadShippingSettings() {
             try {
                 var res = await fetch('/api/site-settings');
                 var s = await res.json();
                 if (s.free_shipping_threshold) freeShippingThreshold = parseInt(s.free_shipping_threshold) || 15000;
-                if (s.shipping_fee) shippingFee = parseInt(s.shipping_fee) || 1000;
             } catch (e) { }
             renderCart();
         }
@@ -390,14 +383,10 @@
                         </div>`;
             }).join('');
 
-            // Calcul livraison
             const isFreeShipping = total >= freeShippingThreshold;
-            const shipping = isFreeShipping ? 0 : shippingFee;
-            const grandTotal = total + shipping;
             const remaining = freeShippingThreshold - total;
             const progress = Math.min((total / freeShippingThreshold) * 100, 100);
 
-            // Bannière livraison
             let shippingBanner = '';
             if (isFreeShipping) {
                 shippingBanner = `<div class="shipping-banner">🎉 Livraison gratuite offerte ! Vous avez dépassé ${Number(freeShippingThreshold).toLocaleString()} F CFA</div>`;
@@ -416,23 +405,22 @@
                             <span>${Number(total).toLocaleString()} F</span>
                         </div>
                         <div class="summary-row">
-                            <span>Livraison</span>
-                            <span style="color:${isFreeShipping ? '#10b981' : '#111827'};font-weight:${isFreeShipping ? '700' : '400'}">
-                                ${isFreeShipping ? '🎉 Gratuite' : Number(shipping).toLocaleString() + ' F'}
+                            <span>🚚 Livraison</span>
+                            <span style="color:${isFreeShipping ? '#10b981' : '#6b7280'};font-weight:${isFreeShipping ? '700' : '400'}">
+                                ${isFreeShipping ? '🎉 Gratuite' : 'Calculée selon votre zone'}
                             </span>
                         </div>
                         <div class="summary-total">
-                            <span>Total</span>
-                            <span>${Number(grandTotal).toLocaleString()} F</span>
+                            <span>Sous-total</span>
+                            <span>${Number(total).toLocaleString()} F</span>
                         </div>
                         <a href="checkout.html" class="btn-checkout">✅ Passer la commande</a>
                         <button onclick="clearCart()" class="btn-clear">🗑 Vider le panier</button>
                         <a href="products.html" class="btn-continue">← Continuer les achats</a>
                     </div>`;
 
-            // Sauvegarder les frais de livraison pour checkout
-            localStorage.setItem('shippingFee', shipping);
             localStorage.setItem('cartTotal', total);
+            localStorage.setItem('freeShipping', isFreeShipping ? '1' : '0');
         }
 
         function changeQty(cartKey, delta) {
