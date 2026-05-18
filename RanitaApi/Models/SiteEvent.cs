@@ -1,4 +1,6 @@
-﻿namespace RanitaApi.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace RanitaApi.Models
 {
     public class SiteEvent
     {
@@ -17,7 +19,7 @@
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Propriété calculée — non stockée en BDD
+        [NotMapped]
         public bool IsCurrentlyActive =>
             IsActive &&
             (StartDate == null || StartDate.Value.Date <= DateTime.UtcNow.Date) &&
