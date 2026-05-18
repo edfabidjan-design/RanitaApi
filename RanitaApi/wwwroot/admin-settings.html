@@ -41,7 +41,7 @@
             }
 
         .tab {
-            padding: 10px 20px;
+            padding: 10px 18px;
             font-size: 13px;
             font-weight: 700;
             color: #6b7280;
@@ -151,118 +151,6 @@
                 color: #9ca3af;
             }
 
-        .preview-box {
-            background: #0D1117;
-            border-radius: 12px;
-            padding: 28px;
-            margin-top: 20px;
-        }
-
-        .preview-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: #4b5563;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 14px;
-        }
-
-        .preview-hero-title {
-            font-size: 32px;
-            font-weight: 800;
-            color: #F0F6FC;
-            line-height: 1.15;
-        }
-
-        .preview-hero-sub {
-            font-size: 13px;
-            color: #8B949E;
-            margin-top: 10px;
-            line-height: 1.6;
-            max-width: 380px;
-        }
-
-        .preview-badge {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #F59E0B;
-            color: white;
-            font-size: 16px;
-            font-weight: 800;
-            margin-top: 14px;
-            line-height: 1.1;
-        }
-
-            .preview-badge small {
-                font-size: 9px;
-                font-weight: 500;
-            }
-
-        .stats-preview {
-            display: grid;
-            grid-template-columns: repeat(4,1fr);
-            gap: 12px;
-            background: linear-gradient(135deg,#10b981,#059669);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 16px;
-        }
-
-        .stat-prev {
-            text-align: center;
-        }
-
-        .stat-prev-n {
-            font-size: 22px;
-            font-weight: 800;
-            color: white;
-        }
-
-        .stat-prev-l {
-            font-size: 11px;
-            color: rgba(255,255,255,.8);
-            margin-top: 2px;
-        }
-
-        .cards-preview {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .card-prev {
-            background: #161B22;
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 10px;
-            padding: 16px;
-        }
-
-        .card-prev-tag {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .card-prev-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #F0F6FC;
-            line-height: 1.25;
-        }
-
-        .card-prev-sub {
-            font-size: 11px;
-            color: #8B949E;
-            margin-top: 4px;
-        }
-
         .save-bar {
             position: sticky;
             bottom: 0;
@@ -291,7 +179,7 @@
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
-            transition: background .2s, transform .1s;
+            transition: background .2s;
         }
 
             .btn-save:hover {
@@ -316,17 +204,149 @@
                 gap: 6px;
             }
 
-        .fix-badge {
-            background: #fef3c7;
-            border: 1px solid #fbbf24;
+        .info-box {
             border-radius: 8px;
             padding: 10px 14px;
             font-size: 12px;
-            color: #92400e;
             margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .info-yellow {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            color: #92400e;
+        }
+
+        .info-blue {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .info-green {
+            background: #f0fdf4;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        /* Événement preview */
+        .event-preview {
+            background: #0D1117;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .event-preview-bar {
+            border-radius: 8px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .event-preview-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+
+        .event-status-on {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-status-off {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .color-picker-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .color-chip {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all .2s;
+        }
+
+            .color-chip.active {
+                border-color: #111827;
+                transform: scale(1.15);
+            }
+
+        /* Slides */
+        .slide-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .slide-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .slide-card-body {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 24px;
+            padding: 20px;
+            align-items: start;
+        }
+
+        @media(max-width:800px) {
+            .slide-card-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Big cats */
+        .bc-grid {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media(max-width:800px) {
+            .bc-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -337,251 +357,76 @@
         <button class="btn-logout" onclick="adminLogout()">Déconnexion</button>
         <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     </header>
+
     <input type="hidden" id="featured_product_ids">
+
     <div class="admin-container">
         <p class="page-title">⚙️ Paramètres du site</p>
-        <p class="page-sub">Modifiez les textes et contenus affichés sur la page d'accueil sans toucher au code.</p>
+        <p class="page-sub">Gérez tous les contenus affichés sur la page d'accueil de Ranita Market.</p>
 
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('hero',this)">🏠 Bannière hero</div>
-            <div class="tab" onclick="switchTab('slider',this)">🎠 Slider</div>
-            <div class="tab" onclick="switchTab('cards',this)">📱 Cards hero</div>
-            <div class="tab" onclick="switchTab('stats',this)">📊 Statistiques</div>
-            <div class="tab" onclick="switchTab('promos',this)">🎁 Promos</div>
-            <div class="tab" onclick="switchTab('referral',this)">📣 Parrainage</div>
-            <div class="tab" onclick="switchTab('bigcards',this)">🖼️ Cards phares</div>
-            <div class="tab" onclick="switchTab('banners',this)">⚡ Bannières</div>
+            <div class="tab active" onclick="switchTab('slider',this)">🎠 Slider</div>
             <div class="tab" onclick="switchTab('featured',this)">⭐ Produits phares</div>
+            <div class="tab" onclick="switchTab('bigcards',this)">🖼️ Catégories</div>
+            <div class="tab" onclick="switchTab('promo',this)">📢 Barre promo</div>
+            <div class="tab" onclick="switchTab('referral',this)">🎁 Parrainage</div>
+            <div class="tab" onclick="switchTab('event',this)">🎉 Événement</div>
         </div>
 
-        <!-- HERO -->
-        <div class="tab-panel active" id="panel-hero">
-            <div class="section-card">
-                <div class="section-title">🏠 Bannière principale</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre ligne 1</label><input type="text" id="hero_title" placeholder="Mode & Style"></div>
-                    <div class="field"><label>Titre ligne 2 (vert)</label><input type="text" id="hero_title_highlight" placeholder="Abidjan"></div>
-                    <div class="field full"><label>Sous-titre</label><textarea id="hero_subtitle" placeholder="Les meilleures marques africaines..."></textarea></div>
-                    <div class="field"><label>Badge promo</label><input type="text" id="hero_badge" placeholder="-60%"><span class="hint">Ex : -20%, SOLDES</span></div>
-                    <div class="field"><label>Label du badge</label><input type="text" id="hero_badge_label" placeholder="mode"><span class="hint">Texte sous le badge</span></div>
-                    <div class="field full"><label>Lien bouton "Voir les produits"</label><input type="text" id="hero_btn_link" placeholder="products.html"></div>
-                </div>
-                <div class="preview-box">
-                    <div class="preview-label">👁 Aperçu live</div>
-                    <div class="preview-hero-title" id="prev-title">Mode & Style<br><span style="color:#10b981">Abidjan</span></div>
-                    <div class="preview-hero-sub" id="prev-sub">Les meilleures marques africaines...</div>
-                    <div class="preview-badge" id="prev-badge">-60%<br><small>mode</small></div>
-                </div>
+        <!-- ══ SLIDER ══════════════════════════════════════════════ -->
+        <div class="tab-panel active" id="panel-slider">
+            <div class="info-box info-yellow">
+                💡 <strong>Conseil :</strong> Laissez le titre vide pour désactiver un slide. Maximum 5 slides.
             </div>
-        </div>
-
-        <!-- SLIDER -->
-        <div class="tab-panel" id="panel-slider">
-            <div class="fix-badge">💡 <strong>Nouveau :</strong> Chaque slide a son badge catégorie et remise — éditables ci-dessous.</div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                <p style="font-size:13px;color:#6b7280;">Gérez vos slides. Laissez le titre vide pour désactiver.</p>
+                <p style="font-size:13px;color:#6b7280;">Chaque slide a son badge catégorie et remise personnalisables.</p>
                 <button onclick="addSlide()" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">+ Ajouter un slide</button>
             </div>
             <div id="slidesContainer"></div>
         </div>
 
-        <!-- CARDS -->
-        <div class="tab-panel" id="panel-cards">
-            <div class="section-card">
-                <div class="section-title">📱 Card Électronique</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre ligne 1</label><input type="text" id="card1_title1" placeholder="Smartphones"></div>
-                    <div class="field"><label>Titre ligne 2</label><input type="text" id="card1_title2" placeholder="& Gadgets"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="card1_subtitle" placeholder="Tecno, Samsung, iPhone…"></div>
-                    <div class="field"><label>Lien</label><input type="text" id="card1_link" placeholder="products.html"></div>
-                </div>
-            </div>
-            <div class="section-card">
-                <div class="section-title">🛒 Card Alimentation</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre ligne 1</label><input type="text" id="card2_title1" placeholder="Produits Frais"></div>
-                    <div class="field"><label>Titre ligne 2</label><input type="text" id="card2_title2" placeholder="& Locaux"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="card2_subtitle" placeholder="Épices, céréales, boissons"></div>
-                    <div class="field"><label>Lien</label><input type="text" id="card2_link" placeholder="products.html"></div>
-                </div>
-                <div class="preview-box" style="margin-top:20px;">
-                    <div class="preview-label">👁 Aperçu live</div>
-                    <div class="cards-preview">
-                        <div class="card-prev"><div class="card-prev-tag" style="color:#F59E0B;">📱 Électronique</div><div class="card-prev-title" id="prev-c1-title">Smartphones<br>& Gadgets</div><div class="card-prev-sub" id="prev-c1-sub">Tecno, Samsung, iPhone…</div></div>
-                        <div class="card-prev"><div class="card-prev-tag" style="color:#10b981;">🛒 Alimentation</div><div class="card-prev-title" id="prev-c2-title">Produits Frais<br>& Locaux</div><div class="card-prev-sub" id="prev-c2-sub">Épices, céréales, boissons</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- STATS -->
-        <div class="tab-panel" id="panel-stats">
-            <div class="section-card">
-                <div class="section-title">📊 Bande statistiques</div>
-                <div class="fields-grid three">
-                    <div class="field"><label>Vendeurs vérifiés</label><input type="text" id="stat_vendors" placeholder="3 200+"></div>
-                    <div class="field"><label>Clients satisfaits</label><input type="text" id="stat_satisfaction" placeholder="98%"></div>
-                    <div class="field"><label>Délai livraison</label><input type="text" id="stat_delivery" placeholder="24h"></div>
-                </div>
-                <div class="stats-preview">
-                    <div class="stat-prev"><div class="stat-prev-n">—</div><div class="stat-prev-l">Produits disponibles</div></div>
-                    <div class="stat-prev"><div class="stat-prev-n" id="prev-vendors">3 200+</div><div class="stat-prev-l">Vendeurs vérifiés</div></div>
-                    <div class="stat-prev"><div class="stat-prev-n" id="prev-satis">98%</div><div class="stat-prev-l">Clients satisfaits</div></div>
-                    <div class="stat-prev"><div class="stat-prev-n" id="prev-deliv">24h</div><div class="stat-prev-l">Livraison Abidjan</div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PROMOS -->
-        <div class="tab-panel" id="panel-promos">
-            <div class="section-card">
-                <div class="section-title">🎁 Card Parrainage (hero)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="promo_referral_title" placeholder="Invitez un ami, gagnez 2 500 F"></div>
-                    <div class="field"><label>Description</label><textarea id="promo_referral_desc" placeholder="Pour chaque ami..."></textarea></div>
-                </div>
-            </div>
-            <div class="section-card">
-                <div class="section-title">📦 Card Livraison offerte</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="promo_delivery_title" placeholder="Gratuite dès 15 000 F"></div>
-                    <div class="field"><label>Description</label><textarea id="promo_delivery_desc" placeholder="Abidjan & banlieue..."></textarea></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- REFERRAL -->
-        <div class="tab-panel" id="panel-referral">
-            <div class="section-card">
-                <div class="section-title">📣 Bannière parrainage (bas de page)</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="referral_title" placeholder="🎁 Invitez un ami, gagnez 2 500 F CFA"></div>
-                    <div class="field"><label>Description</label><textarea id="referral_desc" placeholder="Pour chaque ami qui effectue son premier achat..."></textarea></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- BIG CARDS -->
-        <div class="tab-panel" id="panel-bigcards">
-            <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">Modifiez chaque card — aperçu live à droite.</p>
-            <!-- CARD 1 -->
-            <div class="section-card" style="display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start;">
-                <div>
-                    <div class="section-title">Card 1</div><div class="fields-grid">
-                        <div class="field"><label>Tag</label><input type="text" id="bc1_tag" placeholder="Tendances" oninput="previewCard(1)"></div>
-                        <div class="field"><label>Titre</label><input type="text" id="bc1_name" placeholder="Mode & Vêtements" oninput="previewCard(1)"></div>
-                        <div class="field full"><label>Description</label><textarea id="bc1_desc" oninput="previewCard(1)" style="min-height:60px;" placeholder="Les dernières tendances..."></textarea></div>
-                        <div class="field full"><label>Image</label><div style="display:flex;gap:10px;align-items:center;"><input type="text" id="bc1_img" placeholder="https://...jpg" oninput="previewCard(1)" style="flex:1;"><label for="bc1_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁</label><input type="file" id="bc1_file" accept="image/*" style="display:none;" onchange="uploadImage(1,this)"><span id="bc1_upload_status" style="font-size:11px;color:#6b7280;"></span></div></div>
-                        <div class="field full"><label>Lien "Explorer"</label><input type="text" id="bc1_link" placeholder="products.html?cat=mode"></div>
-                    </div>
-                </div>
-                <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
-                    <div id="prev-bc1-img" style="height:130px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:40px;">👗</div>
-                    <div style="padding:12px;"><div id="prev-bc1-tag" style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;margin-bottom:3px;">Tendances</div><div id="prev-bc1-name" style="font-size:15px;font-weight:800;color:#111827;margin-bottom:3px;">Mode & Vêtements</div><div id="prev-bc1-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Les dernières tendances...</div><div style="background:#10b981;color:white;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div></div>
-                </div>
-            </div>
-            <!-- CARD 2 -->
-            <div class="section-card" style="display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start;">
-                <div>
-                    <div class="section-title">Card 2</div><div class="fields-grid">
-                        <div class="field"><label>Tag</label><input type="text" id="bc2_tag" placeholder="High-Tech" oninput="previewCard(2)"></div>
-                        <div class="field"><label>Titre</label><input type="text" id="bc2_name" placeholder="Électronique & Gadgets" oninput="previewCard(2)"></div>
-                        <div class="field full"><label>Description</label><textarea id="bc2_desc" oninput="previewCard(2)" style="min-height:60px;" placeholder="Smartphones, accessoires..."></textarea></div>
-                        <div class="field full"><label>Image</label><div style="display:flex;gap:10px;align-items:center;"><input type="text" id="bc2_img" placeholder="https://...jpg" oninput="previewCard(2)" style="flex:1;"><label for="bc2_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁</label><input type="file" id="bc2_file" accept="image/*" style="display:none;" onchange="uploadImage(2,this)"><span id="bc2_upload_status" style="font-size:11px;color:#6b7280;"></span></div></div>
-                        <div class="field full"><label>Lien "Explorer"</label><input type="text" id="bc2_link" placeholder="products.html?cat=elec"></div>
-                    </div>
-                </div>
-                <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
-                    <div id="prev-bc2-img" style="height:130px;background:linear-gradient(135deg,#0a1628,#0d1f3c);display:flex;align-items:center;justify-content:center;font-size:40px;">📱</div>
-                    <div style="padding:12px;"><div id="prev-bc2-tag" style="font-size:10px;font-weight:700;color:#3b82f6;text-transform:uppercase;margin-bottom:3px;">High-Tech</div><div id="prev-bc2-name" style="font-size:15px;font-weight:800;color:#111827;margin-bottom:3px;">Électronique & Gadgets</div><div id="prev-bc2-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Smartphones, accessoires...</div><div style="background:#3b82f6;color:white;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div></div>
-                </div>
-            </div>
-            <!-- CARD 3 -->
-            <div class="section-card" style="display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start;">
-                <div>
-                    <div class="section-title">Card 3</div><div class="fields-grid">
-                        <div class="field"><label>Tag</label><input type="text" id="bc3_tag" placeholder="Produits frais" oninput="previewCard(3)"></div>
-                        <div class="field"><label>Titre</label><input type="text" id="bc3_name" placeholder="Alimentation & Épicerie" oninput="previewCard(3)"></div>
-                        <div class="field full"><label>Description</label><textarea id="bc3_desc" oninput="previewCard(3)" style="min-height:60px;" placeholder="Épices, céréales..."></textarea></div>
-                        <div class="field full"><label>Image</label><div style="display:flex;gap:10px;align-items:center;"><input type="text" id="bc3_img" placeholder="https://...jpg" oninput="previewCard(3)" style="flex:1;"><label for="bc3_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁</label><input type="file" id="bc3_file" accept="image/*" style="display:none;" onchange="uploadImage(3,this)"><span id="bc3_upload_status" style="font-size:11px;color:#6b7280;"></span></div></div>
-                        <div class="field full"><label>Lien "Explorer"</label><input type="text" id="bc3_link" placeholder="products.html?cat=alim"></div>
-                    </div>
-                </div>
-                <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
-                    <div id="prev-bc3-img" style="height:130px;background:linear-gradient(135deg,#0a1a12,#0d2416);display:flex;align-items:center;justify-content:center;font-size:40px;">🥘</div>
-                    <div style="padding:12px;"><div id="prev-bc3-tag" style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;margin-bottom:3px;">Produits frais</div><div id="prev-bc3-name" style="font-size:15px;font-weight:800;color:#111827;margin-bottom:3px;">Alimentation & Épicerie</div><div id="prev-bc3-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Épices, céréales...</div><div style="background:#f59e0b;color:white;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div></div>
-                </div>
-            </div>
-            <!-- CARD 4 -->
-            <div class="section-card" style="display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start;">
-                <div>
-                    <div class="section-title">Card 4</div><div class="fields-grid">
-                        <div class="field"><label>Tag</label><input type="text" id="bc4_tag" placeholder="Bien-être" oninput="previewCard(4)"></div>
-                        <div class="field"><label>Titre</label><input type="text" id="bc4_name" placeholder="Beauté & Santé" oninput="previewCard(4)"></div>
-                        <div class="field full"><label>Description</label><textarea id="bc4_desc" oninput="previewCard(4)" style="min-height:60px;" placeholder="Soins, parfums..."></textarea></div>
-                        <div class="field full"><label>Image</label><div style="display:flex;gap:10px;align-items:center;"><input type="text" id="bc4_img" placeholder="https://...jpg" oninput="previewCard(4)" style="flex:1;"><label for="bc4_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁</label><input type="file" id="bc4_file" accept="image/*" style="display:none;" onchange="uploadImage(4,this)"><span id="bc4_upload_status" style="font-size:11px;color:#6b7280;"></span></div></div>
-                        <div class="field full"><label>Lien "Explorer"</label><input type="text" id="bc4_link" placeholder="products.html?cat=beau"></div>
-                    </div>
-                </div>
-                <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:36px;">
-                    <div id="prev-bc4-img" style="height:130px;background:linear-gradient(135deg,#1a0a1a,#2d0d2d);display:flex;align-items:center;justify-content:center;font-size:40px;">💄</div>
-                    <div style="padding:12px;"><div id="prev-bc4-tag" style="font-size:10px;font-weight:700;color:#ec4899;text-transform:uppercase;margin-bottom:3px;">Bien-être</div><div id="prev-bc4-name" style="font-size:15px;font-weight:800;color:#111827;margin-bottom:3px;">Beauté & Santé</div><div id="prev-bc4-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Soins, parfums...</div><div style="background:#ec4899;color:white;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- BANNIÈRES -->
-        <div class="tab-panel" id="panel-banners">
-            <div class="section-card">
-                <div class="section-title">📢 Barre promo (haut de page)</div>
-                <div class="fields-grid">
-                    <div class="field full"><label>Texte affiché</label><input type="text" id="promo_bar_text" placeholder="Livraison gratuite dès 15 000 F · Paiement à la livraison disponible"></div>
-                    <div class="field"><label>Lien "Voir les offres"</label><input type="text" id="promo_bar_link" placeholder="products.html"></div>
-                    <div class="field"><label>Masquer cette barre ?</label><select id="promo_bar_hide"><option value="false">Non — afficher</option><option value="true">Oui — masquer</option></select></div>
-                </div>
-            </div>
-            <div class="section-card">
-                <div class="section-title">⚡ Bannière urgence</div>
-                <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="urgency_title" placeholder="Ventes Flash — Offres limitées !"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="urgency_subtitle" placeholder="Profitez de nos meilleures réductions..."></div>
-                    <div class="field"><label>Lien du bouton</label><input type="text" id="urgency_link" placeholder="products.html"></div>
-                    <div class="field"><label>Masquer ?</label><select id="urgency_hide"><option value="false">Non — afficher</option><option value="true">Oui — masquer</option></select></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUITS PHARES -->
+        <!-- ══ PRODUITS PHARES ══════════════════════════════════════ -->
         <div class="tab-panel" id="panel-featured">
-            <div class="fix-badge">💡 Sélectionnez jusqu'à <strong>20 produits vendeurs</strong> à mettre en avant sur la page d'accueil.</div>
+            <div class="info-box info-blue">
+                💡 Sélectionnez jusqu'à <strong>20 produits vendeurs</strong> à mettre en avant dans la section "Sélection Ranita".
+            </div>
+
             <div class="section-card">
                 <div class="section-title">✏️ Texte de la section</div>
                 <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="featured_title" placeholder="⭐ Sélection Ranita"></div>
-                    <div class="field"><label>Sous-titre</label><input type="text" id="featured_subtitle" placeholder="Les meilleurs produits de nos vendeurs"></div>
+                    <div class="field">
+                        <label>Titre de la section</label>
+                        <input type="text" id="featured_title" placeholder="⭐ Sélection Ranita">
+                    </div>
+                    <div class="field">
+                        <label>Sous-titre</label>
+                        <input type="text" id="featured_subtitle" placeholder="Les meilleurs produits de nos vendeurs">
+                    </div>
                 </div>
             </div>
-            <div style="display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;">
-                <!-- Boutiques -->
+
+            <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start;">
                 <div class="section-card" style="padding:20px;">
                     <div class="section-title" style="margin-bottom:12px;">🏪 Boutiques</div>
                     <div id="featuredSellerList" style="display:flex;flex-direction:column;gap:8px;">
-                        <div style="color:#9ca3af;font-size:13px;">⏳ Chargement...</div>
+                        <div style="color:#9ca3af;font-size:13px;text-align:center;padding:20px;">⏳ Chargement...</div>
                     </div>
                 </div>
-                <!-- Produits -->
                 <div class="section-card" style="padding:20px;">
                     <div class="section-title" id="featuredShopTitle" style="margin-bottom:12px;">📦 Sélectionnez une boutique</div>
-                    <input type="text" id="featuredSearch" placeholder="🔍 Rechercher..." oninput="featuredFilter()" style="width:100%;padding:9px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;margin-bottom:14px;">
-                    <div id="featuredProductsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;max-height:480px;overflow-y:auto;">
+                    <input type="text" id="featuredSearch" placeholder="🔍 Rechercher un produit..." oninput="featuredFilter()" style="width:100%;padding:9px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;margin-bottom:14px;">
+                    <div id="featuredProductsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;max-height:460px;overflow-y:auto;">
                         <div style="color:#9ca3af;font-size:13px;grid-column:1/-1;text-align:center;padding:30px;">👈 Choisissez une boutique</div>
                     </div>
                 </div>
             </div>
-            <!-- Sélectionnés -->
+
             <div class="section-card" style="margin-top:16px;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-                    <div style="font-size:14px;font-weight:700;color:#111827;">Produits sélectionnés <span id="featuredCount" style="background:#10b981;color:white;border-radius:999px;padding:2px 10px;font-size:12px;margin-left:6px;">0</span>/20</div>
+                    <div style="font-size:14px;font-weight:700;color:#111827;">
+                        Produits sélectionnés
+                        <span id="featuredCount" style="background:#10b981;color:white;border-radius:999px;padding:2px 10px;font-size:12px;margin-left:6px;">0</span>/20
+                    </div>
                     <button onclick="featuredClearAll()" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✕ Tout effacer</button>
                 </div>
                 <div id="featuredSelectedGrid" style="display:flex;flex-wrap:wrap;gap:8px;min-height:50px;">
@@ -590,10 +435,300 @@
             </div>
         </div>
 
+        <!-- ══ CATÉGORIES PHARES ════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-bigcards">
+            <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">Ces 4 cards apparaissent en bas de la page d'accueil pour orienter les clients vers vos catégories principales.</p>
+
+            <!-- CARD 1 -->
+            <div class="section-card">
+                <div class="section-title">Card 1 — Mode</div>
+                <div class="bc-grid">
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc1_tag" placeholder="Tendances" oninput="previewCard(1)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc1_name" placeholder="Mode & Vêtements" oninput="previewCard(1)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc1_desc" oninput="previewCard(1)" style="min-height:60px;" placeholder="Les dernières tendances..."></textarea></div>
+                        <div class="field full">
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc1_img" placeholder="https://...jpg" oninput="previewCard(1)" style="flex:1;">
+                                <label for="bc1_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁 Choisir</label>
+                                <input type="file" id="bc1_file" accept="image/*" style="display:none;" onchange="uploadImage(1,this)">
+                                <span id="bc1_upload_status" style="font-size:11px;color:#6b7280;"></span>
+                            </div>
+                        </div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc1_link" placeholder="products.html?cat=mode"></div>
+                    </div>
+                    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                        <div id="prev-bc1-img" style="height:120px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:36px;">👗</div>
+                        <div style="padding:12px;">
+                            <div id="prev-bc1-tag" style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;margin-bottom:3px;">Tendances</div>
+                            <div id="prev-bc1-name" style="font-size:14px;font-weight:800;color:#111827;margin-bottom:3px;">Mode & Vêtements</div>
+                            <div id="prev-bc1-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Les dernières tendances...</div>
+                            <div style="background:#10b981;color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="section-card">
+                <div class="section-title">Card 2 — Électronique</div>
+                <div class="bc-grid">
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc2_tag" placeholder="High-Tech" oninput="previewCard(2)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc2_name" placeholder="Électronique & Gadgets" oninput="previewCard(2)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc2_desc" oninput="previewCard(2)" style="min-height:60px;" placeholder="Smartphones, accessoires..."></textarea></div>
+                        <div class="field full">
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc2_img" placeholder="https://...jpg" oninput="previewCard(2)" style="flex:1;">
+                                <label for="bc2_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁 Choisir</label>
+                                <input type="file" id="bc2_file" accept="image/*" style="display:none;" onchange="uploadImage(2,this)">
+                                <span id="bc2_upload_status" style="font-size:11px;color:#6b7280;"></span>
+                            </div>
+                        </div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc2_link" placeholder="products.html?cat=elec"></div>
+                    </div>
+                    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                        <div id="prev-bc2-img" style="height:120px;background:linear-gradient(135deg,#0a1628,#0d1f3c);display:flex;align-items:center;justify-content:center;font-size:36px;">📱</div>
+                        <div style="padding:12px;">
+                            <div id="prev-bc2-tag" style="font-size:10px;font-weight:700;color:#3b82f6;text-transform:uppercase;margin-bottom:3px;">High-Tech</div>
+                            <div id="prev-bc2-name" style="font-size:14px;font-weight:800;color:#111827;margin-bottom:3px;">Électronique & Gadgets</div>
+                            <div id="prev-bc2-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Smartphones, accessoires...</div>
+                            <div style="background:#3b82f6;color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="section-card">
+                <div class="section-title">Card 3 — Alimentation</div>
+                <div class="bc-grid">
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc3_tag" placeholder="Produits frais" oninput="previewCard(3)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc3_name" placeholder="Alimentation & Épicerie" oninput="previewCard(3)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc3_desc" oninput="previewCard(3)" style="min-height:60px;" placeholder="Épices, céréales..."></textarea></div>
+                        <div class="field full">
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc3_img" placeholder="https://...jpg" oninput="previewCard(3)" style="flex:1;">
+                                <label for="bc3_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁 Choisir</label>
+                                <input type="file" id="bc3_file" accept="image/*" style="display:none;" onchange="uploadImage(3,this)">
+                                <span id="bc3_upload_status" style="font-size:11px;color:#6b7280;"></span>
+                            </div>
+                        </div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc3_link" placeholder="products.html?cat=alim"></div>
+                    </div>
+                    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                        <div id="prev-bc3-img" style="height:120px;background:linear-gradient(135deg,#0a1a12,#0d2416);display:flex;align-items:center;justify-content:center;font-size:36px;">🥘</div>
+                        <div style="padding:12px;">
+                            <div id="prev-bc3-tag" style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;margin-bottom:3px;">Produits frais</div>
+                            <div id="prev-bc3-name" style="font-size:14px;font-weight:800;color:#111827;margin-bottom:3px;">Alimentation & Épicerie</div>
+                            <div id="prev-bc3-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Épices, céréales...</div>
+                            <div style="background:#f59e0b;color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 4 -->
+            <div class="section-card">
+                <div class="section-title">Card 4 — Beauté</div>
+                <div class="bc-grid">
+                    <div class="fields-grid">
+                        <div class="field"><label>Tag</label><input type="text" id="bc4_tag" placeholder="Bien-être" oninput="previewCard(4)"></div>
+                        <div class="field"><label>Titre</label><input type="text" id="bc4_name" placeholder="Beauté & Santé" oninput="previewCard(4)"></div>
+                        <div class="field full"><label>Description</label><textarea id="bc4_desc" oninput="previewCard(4)" style="min-height:60px;" placeholder="Soins, parfums..."></textarea></div>
+                        <div class="field full">
+                            <label>Image</label>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="bc4_img" placeholder="https://...jpg" oninput="previewCard(4)" style="flex:1;">
+                                <label for="bc4_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁 Choisir</label>
+                                <input type="file" id="bc4_file" accept="image/*" style="display:none;" onchange="uploadImage(4,this)">
+                                <span id="bc4_upload_status" style="font-size:11px;color:#6b7280;"></span>
+                            </div>
+                        </div>
+                        <div class="field full"><label>Lien bouton "Explorer"</label><input type="text" id="bc4_link" placeholder="products.html?cat=beau"></div>
+                    </div>
+                    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                        <div id="prev-bc4-img" style="height:120px;background:linear-gradient(135deg,#1a0a1a,#2d0d2d);display:flex;align-items:center;justify-content:center;font-size:36px;">💄</div>
+                        <div style="padding:12px;">
+                            <div id="prev-bc4-tag" style="font-size:10px;font-weight:700;color:#ec4899;text-transform:uppercase;margin-bottom:3px;">Bien-être</div>
+                            <div id="prev-bc4-name" style="font-size:14px;font-weight:800;color:#111827;margin-bottom:3px;">Beauté & Santé</div>
+                            <div id="prev-bc4-desc" style="font-size:11px;color:#6b7280;margin-bottom:8px;">Soins, parfums...</div>
+                            <div style="background:#ec4899;color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ BARRE PROMO ═══════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-promo">
+            <div class="section-card">
+                <div class="section-title">📢 Barre promo (haut de page)</div>
+                <div class="info-box info-blue" style="margin-bottom:20px;">
+                    💡 Cette barre apparaît tout en haut de la page d'accueil. Utilisez-la pour les offres importantes.
+                </div>
+                <div class="fields-grid">
+                    <div class="field full"><label>Texte affiché</label><input type="text" id="promo_bar_text" placeholder="Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison"></div>
+                    <div class="field"><label>Lien "Voir les offres"</label><input type="text" id="promo_bar_link" placeholder="products.html"></div>
+                    <div class="field">
+                        <label>Masquer cette barre ?</label>
+                        <select id="promo_bar_hide">
+                            <option value="false">Non — afficher</option>
+                            <option value="true">Oui — masquer</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ PARRAINAGE ═══════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-referral">
+            <div class="section-card">
+                <div class="section-title">🎁 Section parrainage (bas de page)</div>
+                <div class="info-box info-green" style="margin-bottom:20px;">
+                    ✅ Cette section apparaît juste avant le footer pour encourager le bouche-à-oreille.
+                </div>
+                <div class="fields-grid">
+                    <div class="field"><label>Titre</label><input type="text" id="referral_title" placeholder="Invitez un ami, gagnez 2 500 F CFA"></div>
+                    <div class="field"><label>Description</label><textarea id="referral_desc" placeholder="Pour chaque ami qui effectue son premier achat sur Ranita Market..."></textarea></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ ÉVÉNEMENT ════════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-event">
+            <div class="info-box info-yellow">
+                🎉 Activez un événement pour modifier la barre promo et ajouter un slide dédié automatiquement.
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">🎉 Événement en cours</div>
+
+                <div class="fields-grid">
+                    <div class="field">
+                        <label>Activer l'événement ?</label>
+                        <select id="event_active" onchange="updateEventPreview()">
+                            <option value="false">Non — désactivé</option>
+                            <option value="true">Oui — activer</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Nom de l'événement</label>
+                        <input type="text" id="event_name" placeholder="Ex: Fête des Mères 🌸" oninput="updateEventPreview()">
+                        <span class="hint">Affiché dans la barre promo</span>
+                    </div>
+                    <div class="field">
+                        <label>Date de début</label>
+                        <input type="date" id="event_start">
+                    </div>
+                    <div class="field">
+                        <label>Date de fin</label>
+                        <input type="date" id="event_end">
+                    </div>
+                    <div class="field full">
+                        <label>Message barre promo</label>
+                        <input type="text" id="event_promo_text" placeholder="🌸 Fête des Mères · Offres spéciales jusqu'au 26 mai !" oninput="updateEventPreview()">
+                        <span class="hint">Remplace le texte de la barre promo quand l'événement est actif</span>
+                    </div>
+                    <div class="field full">
+                        <label>Titre du slide événement</label>
+                        <input type="text" id="event_slide_title" placeholder="🌸 Fête des Mères" oninput="updateEventPreview()">
+                        <span class="hint">Un slide dédié sera automatiquement ajouté au slider</span>
+                    </div>
+                    <div class="field full">
+                        <label>Sous-titre du slide</label>
+                        <input type="text" id="event_slide_sub" placeholder="Des cadeaux parfaits pour honorer les mamans de Côte d'Ivoire" oninput="updateEventPreview()">
+                    </div>
+                    <div class="field">
+                        <label>Texte bouton slide</label>
+                        <input type="text" id="event_slide_cta" placeholder="Voir les offres →">
+                    </div>
+                    <div class="field">
+                        <label>Lien bouton slide</label>
+                        <input type="text" id="event_slide_link" placeholder="products.html">
+                    </div>
+                    <div class="field">
+                        <label>Badge slide (ex: -30%)</label>
+                        <input type="text" id="event_slide_disc" placeholder="-30%">
+                    </div>
+                    <div class="field">
+                        <label>Image slide (URL)</label>
+                        <input type="text" id="event_slide_img" placeholder="https://...image.jpg">
+                    </div>
+                    <div class="field full">
+                        <label>Couleur thème</label>
+                        <span class="hint" style="margin-bottom:6px;">Choisissez la couleur principale de l'événement</span>
+                        <div class="color-picker-row" id="colorPicker">
+                            <div class="color-chip active" style="background:#10b981;" data-color="#10b981" onclick="selectColor(this)"></div>
+                            <div class="color-chip" style="background:#ec4899;" data-color="#ec4899" onclick="selectColor(this)"></div>
+                            <div class="color-chip" style="background:#f59e0b;" data-color="#f59e0b" onclick="selectColor(this)"></div>
+                            <div class="color-chip" style="background:#3b82f6;" data-color="#3b82f6" onclick="selectColor(this)"></div>
+                            <div class="color-chip" style="background:#8b5cf6;" data-color="#8b5cf6" onclick="selectColor(this)"></div>
+                            <div class="color-chip" style="background:#ef4444;" data-color="#ef4444" onclick="selectColor(this)"></div>
+                            <div class="color-chip" style="background:#f97316;" data-color="#f97316" onclick="selectColor(this)"></div>
+                        </div>
+                        <input type="hidden" id="event_color" value="#10b981">
+                    </div>
+                </div>
+
+                <!-- Aperçu -->
+                <div class="event-preview" id="eventPreview">
+                    <div style="font-size:10px;font-weight:700;color:#4b5563;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">👁 Aperçu barre promo</div>
+                    <div class="event-preview-bar" id="eventPreviewBar" style="background:#1C2330;">
+                        <span class="event-preview-badge" id="eventPreviewBadge" style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:#10b981;">🎉 ÉVÉNEMENT</span>
+                        <span id="eventPreviewText" style="color:#F0F6FC;">Configurez votre événement ci-dessus</span>
+                    </div>
+                    <div style="margin-top:14px;font-size:10px;font-weight:700;color:#4b5563;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">👁 Statut</div>
+                    <div id="eventStatusDisplay" class="event-status-off">⏸ Événement désactivé</div>
+                </div>
+            </div>
+
+            <!-- Événements prédéfinis -->
+            <div class="section-card">
+                <div class="section-title">📅 Événements rapides</div>
+                <p style="font-size:13px;color:#6b7280;margin-bottom:16px;">Cliquez pour pré-remplir les champs avec un événement typique.</p>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;">
+                    <button onclick="loadPreset('fetes_meres')" style="background:#fdf2f8;border:1px solid #f9a8d4;border-radius:10px;padding:14px;cursor:pointer;text-align:left;transition:all .2s;" onmouseover="this.style.background='#fce7f3'" onmouseout="this.style.background='#fdf2f8'">
+                        <div style="font-size:22px;margin-bottom:6px;">🌸</div>
+                        <div style="font-size:13px;font-weight:700;color:#9d174d;">Fête des Mères</div>
+                        <div style="font-size:11px;color:#be185d;">26 mai</div>
+                    </button>
+                    <button onclick="loadPreset('noel')" style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;cursor:pointer;text-align:left;transition:all .2s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+                        <div style="font-size:22px;margin-bottom:6px;">🎄</div>
+                        <div style="font-size:13px;font-weight:700;color:#14532d;">Noël</div>
+                        <div style="font-size:11px;color:#166534;">25 décembre</div>
+                    </button>
+                    <button onclick="loadPreset('ramadan')" style="background:#fefce8;border:1px solid #fde047;border-radius:10px;padding:14px;cursor:pointer;text-align:left;transition:all .2s;" onmouseover="this.style.background='#fef9c3'" onmouseout="this.style.background='#fefce8'">
+                        <div style="font-size:22px;margin-bottom:6px;">🌙</div>
+                        <div style="font-size:13px;font-weight:700;color:#713f12;">Ramadan</div>
+                        <div style="font-size:11px;color:#854d0e;">Dates variables</div>
+                    </button>
+                    <button onclick="loadPreset('rentree')" style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:14px;cursor:pointer;text-align:left;transition:all .2s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">
+                        <div style="font-size:22px;margin-bottom:6px;">📚</div>
+                        <div style="font-size:13px;font-weight:700;color:#1e3a8a;">Rentrée scolaire</div>
+                        <div style="font-size:11px;color:#1d4ed8;">Septembre</div>
+                    </button>
+                    <button onclick="loadPreset('independence')" style="background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:14px;cursor:pointer;text-align:left;transition:all .2s;" onmouseover="this.style.background='#ffedd5'" onmouseout="this.style.background='#fff7ed'">
+                        <div style="font-size:22px;margin-bottom:6px;">🇨🇮</div>
+                        <div style="font-size:13px;font-weight:700;color:#7c2d12;">Fête Nationale CI</div>
+                        <div style="font-size:11px;color:#9a3412;">7 août</div>
+                    </button>
+                    <button onclick="loadPreset('soldes')" style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:14px;cursor:pointer;text-align:left;transition:all .2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">
+                        <div style="font-size:22px;margin-bottom:6px;">🏷️</div>
+                        <div style="font-size:13px;font-weight:700;color:#7f1d1d;">Soldes</div>
+                        <div style="font-size:11px;color:#991b1b;">Personnalisé</div>
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class="save-bar">
             <div class="toast-ok" id="toastOk">✅ Modifications enregistrées !</div>
-            <div class="save-info" id="saveInfo">Les modifications seront visibles immédiatement.</div>
+            <div class="save-info" id="saveInfo">Les modifications seront visibles immédiatement sur le site.</div>
             <button class="btn-save" id="btnSave" onclick="saveSettings()">💾 Enregistrer</button>
         </div>
     </div>
@@ -611,21 +746,19 @@
 
         const API = 'https://ranitaapi-production.up.railway.app/api';
 
+        // ── CLÉS DE BASE ─────────────────────────────────────────────
         const BASE_KEYS = [
-            'hero_title', 'hero_title_highlight', 'hero_subtitle', 'hero_badge', 'hero_badge_label', 'hero_btn_link',
-            'card1_title1', 'card1_title2', 'card1_subtitle', 'card1_link',
-            'card2_title1', 'card2_title2', 'card2_subtitle', 'card2_link',
-            'stat_vendors', 'stat_satisfaction', 'stat_delivery',
-            'promo_referral_title', 'promo_referral_desc',
-            'promo_delivery_title', 'promo_delivery_desc',
-            'referral_title', 'referral_desc',
-            'promo_bar_text', 'promo_bar_link', 'promo_bar_hide',
-            'urgency_title', 'urgency_subtitle', 'urgency_link', 'urgency_hide',
             'bc1_tag', 'bc1_name', 'bc1_desc', 'bc1_img', 'bc1_link',
             'bc2_tag', 'bc2_name', 'bc2_desc', 'bc2_img', 'bc2_link',
             'bc3_tag', 'bc3_name', 'bc3_desc', 'bc3_img', 'bc3_link',
             'bc4_tag', 'bc4_name', 'bc4_desc', 'bc4_img', 'bc4_link',
-            'featured_title', 'featured_subtitle', 'featured_product_ids'
+            'promo_bar_text', 'promo_bar_link', 'promo_bar_hide',
+            'referral_title', 'referral_desc',
+            'featured_title', 'featured_subtitle', 'featured_product_ids',
+            'event_active', 'event_name', 'event_color',
+            'event_start', 'event_end',
+            'event_promo_text',
+            'event_slide_title', 'event_slide_sub', 'event_slide_cta', 'event_slide_link', 'event_slide_disc', 'event_slide_img'
         ];
 
         function slideKeys(n) {
@@ -633,10 +766,21 @@
             'slide' + n + '_img', 'slide' + n + '_badge', 'slide' + n + '_discount', 'slide' + n + '_discount_label'];
         }
 
+        // ── TABS ─────────────────────────────────────────────────────
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+            if (tab === 'featured' && !document.getElementById('featuredSellerList').querySelector('[id^="fsel-"]')) {
+                featuredLoadSellers();
+            }
+        }
+
+        // ── UPLOADS ──────────────────────────────────────────────────
         async function uploadSlideImg(n, input) {
             const file = input.files[0]; if (!file) return;
-            const st = document.getElementById('slide' + n + '_upload_status');
-            st.textContent = '⏳';
+            const st = document.getElementById('slide' + n + '_upload_status'); st.textContent = '⏳';
             const fd = new FormData(); fd.append('file', file);
             try {
                 const r = await fetch(`${API}/upload`, { method: 'POST', body: fd });
@@ -647,8 +791,7 @@
 
         async function uploadImage(n, input) {
             const file = input.files[0]; if (!file) return;
-            const st = document.getElementById('bc' + n + '_upload_status');
-            st.textContent = '⏳';
+            const st = document.getElementById('bc' + n + '_upload_status'); st.textContent = '⏳';
             const fd = new FormData(); fd.append('file', file);
             try {
                 const r = await fetch(`${API}/upload`, { method: 'POST', body: fd });
@@ -658,93 +801,75 @@
             } catch (e) { st.textContent = '❌'; st.style.color = '#ef4444'; }
         }
 
+        // ── PREVIEW CARDS ─────────────────────────────────────────────
         function previewCard(n) {
             const v = k => (document.getElementById(k) || {}).value || '';
             if (document.getElementById('prev-bc' + n + '-tag')) document.getElementById('prev-bc' + n + '-tag').textContent = v('bc' + n + '_tag');
             if (document.getElementById('prev-bc' + n + '-name')) document.getElementById('prev-bc' + n + '-name').textContent = v('bc' + n + '_name');
             if (document.getElementById('prev-bc' + n + '-desc')) document.getElementById('prev-bc' + n + '-desc').textContent = v('bc' + n + '_desc');
             const img = v('bc' + n + '_img'); const pImg = document.getElementById('prev-bc' + n + '-img');
-            if (pImg && img) pImg.innerHTML = '<img src="' + img + '" style="width:100%;height:130px;object-fit:cover;">';
+            if (pImg && img) pImg.innerHTML = '<img src="' + img + '" style="width:100%;height:120px;object-fit:cover;">';
         }
 
+        // ── SLIDES ────────────────────────────────────────────────────
         const SLIDE_BG = ['#0D1117', 'linear-gradient(135deg,#0a1628,#0d1f3c)', 'linear-gradient(135deg,#0a1a12,#0d2416)', 'linear-gradient(135deg,#1a0828,#2d0f3c)', 'linear-gradient(135deg,#1a1000,#2d1e00)'];
         const SLIDE_ICONS = ['🛍️', '📱', '🥘', '💄', '🏡'];
         const SLIDE_BADGE_DEF = ['✦ Offres du moment', '📱 Électronique', '🛒 Alimentation', '💄 Beauté', '🏡 Maison'];
+        let slideCount = 3;
 
         function previewSlide(n) {
             const v = k => (document.getElementById(k) || {}).value || '';
-            const pTitle = document.getElementById('prev-slide-' + n + '-title');
-            const pSub = document.getElementById('prev-slide-' + n + '-sub');
-            const pBtn = document.getElementById('prev-slide-' + n + '-btn');
-            const pImg = document.getElementById('prev-slide-' + n + '-img');
-            const pDisc = document.getElementById('prev-slide-' + n + '-disc');
-            const pBadge = document.getElementById('prev-slide-' + n + '-badge');
-            if (pTitle) pTitle.innerHTML = v('slide' + n + '_title') || ('Slide ' + (n + 1));
-            if (pSub) pSub.textContent = v('slide' + n + '_sub');
-            if (pBtn) pBtn.textContent = v('slide' + n + '_cta_text') || 'Explorer →';
-            if (pBadge) pBadge.textContent = v('slide' + n + '_badge') || SLIDE_BADGE_DEF[n];
+            const pts = ['title', 'sub', 'btn', 'img', 'disc', 'badge'].reduce((acc, k) => { acc[k] = document.getElementById('prev-slide-' + n + '-' + k); return acc; }, {});
+            if (pts.title) pts.title.innerHTML = v('slide' + n + '_title') || ('Slide ' + (n + 1));
+            if (pts.sub) pts.sub.textContent = v('slide' + n + '_sub');
+            if (pts.btn) pts.btn.textContent = v('slide' + n + '_cta_text') || 'Explorer →';
+            if (pts.badge) pts.badge.textContent = v('slide' + n + '_badge') || SLIDE_BADGE_DEF[n];
             const img = v('slide' + n + '_img');
-            if (pImg && img) pImg.innerHTML = '<img src="' + img + '" style="width:100%;height:110px;object-fit:cover;">';
+            if (pts.img && img) pts.img.innerHTML = '<img src="' + img + '" style="width:100%;height:110px;object-fit:cover;">';
             const disc = v('slide' + n + '_discount'), discL = v('slide' + n + '_discount_label');
-            if (pDisc) { pDisc.textContent = disc ? (disc + (discL ? ' ' + discL : '')) : ''; pDisc.style.display = disc ? 'block' : 'none'; }
+            if (pts.disc) { pts.disc.textContent = disc ? (disc + (discL ? ' ' + discL : '')) : ''; pts.disc.style.display = disc ? 'block' : 'none'; }
         }
-
-        function switchTab(tab, el) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('panel-' + tab).classList.add('active');
-        }
-
-        function updatePreview() {
-            const g = id => (document.getElementById(id) || {}).value || '';
-            document.getElementById('prev-title').innerHTML = (g('hero_title') || 'Mode & Style') + '<br><span style="color:#10b981">' + (g('hero_title_highlight') || 'Abidjan') + '</span>';
-            document.getElementById('prev-sub').textContent = g('hero_subtitle');
-            document.getElementById('prev-badge').innerHTML = (g('hero_badge') || '-60%') + '<br><small>' + (g('hero_badge_label') || 'mode') + '</small>';
-            document.getElementById('prev-c1-title').innerHTML = (g('card1_title1') || 'Smartphones') + '<br>' + (g('card1_title2') || '& Gadgets');
-            document.getElementById('prev-c1-sub').textContent = g('card1_subtitle') || 'Tecno, Samsung, iPhone…';
-            document.getElementById('prev-c2-title').innerHTML = (g('card2_title1') || 'Produits Frais') + '<br>' + (g('card2_title2') || '& Locaux');
-            document.getElementById('prev-c2-sub').textContent = g('card2_subtitle') || 'Épices, céréales, boissons';
-            document.getElementById('prev-vendors').textContent = g('stat_vendors') || '3 200+';
-            document.getElementById('prev-satis').textContent = g('stat_satisfaction') || '98%';
-            document.getElementById('prev-deliv').textContent = g('stat_delivery') || '24h';
-        }
-        BASE_KEYS.forEach(k => { const el = document.getElementById(k); if (el) el.addEventListener('input', updatePreview); });
-
-        let slideCount = 3;
 
         function slideCard(n) {
-            const bg = SLIDE_BG[n] || SLIDE_BG[0], icon = SLIDE_ICONS[n] || '🛍️', badgeDef = SLIDE_BADGE_DEF[n] || '✦ Offres';
-            const delBtn = n >= 1 ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : '';
-            return `<div class="section-card" id="slide-card-${n}" style="margin-bottom:16px;display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;">
-                        <div>
-                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f3f4f6;">
-                                <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n + 1}</div>${delBtn}
-                            </div>
-                            <div class="fields-grid">
-                                <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style" oninput="previewSlide(${n})"></div>
-                                <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..." oninput="previewSlide(${n})"></div>
-                                <div class="field"><label>Texte bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Explorer →" oninput="previewSlide(${n})"></div>
-                                <div class="field"><label>Lien bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
-                                <div class="field"><label>🏷️ Badge catégorie</label><input type="text" id="slide${n}_badge" placeholder="${badgeDef}" oninput="previewSlide(${n})"><span class="hint">Ex: 💄 BEAUTÉ</span></div>
-                                <div class="field"><label>🔴 Badge remise</label><input type="text" id="slide${n}_discount" placeholder="-${(n + 1) * 10}%" oninput="previewSlide(${n})"><span class="hint">Vide = pas de badge</span></div>
-                                <div class="field"><label>Label remise</label><input type="text" id="slide${n}_discount_label" placeholder="remise" oninput="previewSlide(${n})"><span class="hint">Ex: beauté, tech</span></div>
-                                <div class="field full"><label>Image</label><div style="display:flex;gap:10px;align-items:center;"><input type="text" id="slide${n}_img" placeholder="https://...jpg" style="flex:1;" oninput="previewSlide(${n})"><label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁</label><input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n},this)"><span id="slide${n}_upload_status" style="font-size:11px;color:#6b7280;"></span></div></div>
+            const bg = SLIDE_BG[n] || SLIDE_BG[0], icon = SLIDE_ICONS[n] || '🛍️', bd = SLIDE_BADGE_DEF[n] || '✦ Offres';
+            const del = n >= 1 ? `<button onclick="removeSlide(${n})" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">✕ Supprimer</button>` : '';
+            return `<div class="slide-card" id="slide-card-${n}">
+                    <div class="slide-card-header">
+                        <div class="section-title" style="margin:0;padding:0;border:none;">🎠 Slide ${n + 1}</div>
+                        ${del}
+                    </div>
+                    <div class="slide-card-body">
+                        <div class="fields-grid">
+                            <div class="field"><label>Titre</label><input type="text" id="slide${n}_title" placeholder="Mode & Style" oninput="previewSlide(${n})"></div>
+                            <div class="field"><label>Sous-titre</label><input type="text" id="slide${n}_sub" placeholder="Les meilleures offres..." oninput="previewSlide(${n})"></div>
+                            <div class="field"><label>Texte bouton</label><input type="text" id="slide${n}_cta_text" placeholder="Voir les produits →" oninput="previewSlide(${n})"></div>
+                            <div class="field"><label>Lien bouton</label><input type="text" id="slide${n}_cta_link" placeholder="products.html"></div>
+                            <div class="field"><label>🏷️ Badge catégorie</label><input type="text" id="slide${n}_badge" placeholder="${bd}" oninput="previewSlide(${n})"><span class="hint">Ex: 💄 BEAUTÉ</span></div>
+                            <div class="field"><label>🔴 Badge remise</label><input type="text" id="slide${n}_discount" placeholder="-${(n + 1) * 10}%" oninput="previewSlide(${n})"><span class="hint">Vide = pas de badge</span></div>
+                            <div class="field"><label>Label remise</label><input type="text" id="slide${n}_discount_label" placeholder="mode" oninput="previewSlide(${n})"></div>
+                            <div class="field full"><label>Image</label>
+                                <div style="display:flex;gap:10px;align-items:center;">
+                                    <input type="text" id="slide${n}_img" placeholder="https://...jpg" style="flex:1;" oninput="previewSlide(${n})">
+                                    <label for="slide${n}_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁 Choisir</label>
+                                    <input type="file" id="slide${n}_file" accept="image/*" style="display:none;" onchange="uploadSlideImg(${n},this)">
+                                    <span id="slide${n}_upload_status" style="font-size:11px;color:#6b7280;"></span>
+                                </div>
                             </div>
                         </div>
-                        <div style="border-radius:12px;overflow:hidden;background:${bg};margin-top:36px;">
-                            <div id="prev-slide-${n}-img" style="height:110px;display:flex;align-items:center;justify-content:center;font-size:40px;">${icon}</div>
+                        <div style="border-radius:12px;overflow:hidden;background:${bg};">
+                            <div id="prev-slide-${n}-img" style="height:110px;display:flex;align-items:center;justify-content:center;font-size:36px;">${icon}</div>
                             <div style="padding:12px;">
-                                <div id="prev-slide-${n}-badge" style="font-size:10px;font-weight:700;color:#22C55E;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:7px;">${badgeDef}</div>
+                                <div id="prev-slide-${n}-badge" style="font-size:10px;font-weight:700;color:#22C55E;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:7px;">${bd}</div>
                                 <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;">
-                                    <div id="prev-slide-${n}-title" style="font-size:15px;font-weight:800;color:#F0F6FC;line-height:1.2;">Slide ${n + 1}</div>
+                                    <div id="prev-slide-${n}-title" style="font-size:14px;font-weight:800;color:#F0F6FC;line-height:1.2;">Slide ${n + 1}</div>
                                     <div id="prev-slide-${n}-disc" style="display:none;background:#F59E0B;color:white;font-weight:800;font-size:10px;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;"></div>
                                 </div>
                                 <div id="prev-slide-${n}-sub" style="font-size:11px;color:#8B949E;margin:4px 0 7px;"></div>
                                 <div id="prev-slide-${n}-btn" style="background:#10b981;color:white;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;display:inline-block;">Explorer →</div>
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                </div>`;
         }
 
         function buildSlidesUI() {
@@ -761,8 +886,7 @@
 
         async function removeSlide(n) {
             if (!confirm('Supprimer le Slide ' + (n + 1) + ' ?')) return;
-            const updates = {};
-            slideKeys(n).forEach(k => updates[k] = '');
+            const updates = {}; slideKeys(n).forEach(k => updates[k] = '');
             try {
                 const r = await fetch(`${API}/site-settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) });
                 if (r.ok) { const el = document.getElementById('slide-card-' + n); if (el) el.remove(); slideCount = Math.max(slideCount - 1, 1); }
@@ -772,44 +896,127 @@
 
         buildSlidesUI();
 
-        async function loadSettings() {
-            try {
-                const res = await fetch(`${API}/site-settings`);
-                const data = await res.json();
-                BASE_KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
-                let realCount = 0;
-                for (let i = 0; i < 5; i++) { if (data['slide' + i + '_title'] || i === 0) realCount = i + 1; else break; }
-                slideCount = Math.max(realCount, 1);
-                buildSlidesUI();
-                for (let sn = 0; sn < slideCount; sn++) {
-                    slideKeys(sn).forEach(k => { const el = document.getElementById(k); if (el && data[k] !== undefined) el.value = data[k]; });
-                    previewSlide(sn);
-                }
-                updatePreview();
-                [1, 2, 3, 4].forEach(n => previewCard(n));
-            } catch (e) { console.error('Erreur chargement:', e); }
+        // ── ÉVÉNEMENT ─────────────────────────────────────────────────
+        function selectColor(chip) {
+            document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            document.getElementById('event_color').value = chip.dataset.color;
+            updateEventPreview();
         }
 
-        async function saveSettings() {
-            const btn = document.getElementById('btnSave');
-            btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
-            document.getElementById('toastOk').classList.remove('show');
-            document.getElementById('saveInfo').style.display = 'none';
-            const updates = {};
-            BASE_KEYS.forEach(key => { const el = document.getElementById(key); if (el) updates[key] = el.value; });
-            for (let i = 0; i < slideCount; i++) { slideKeys(i).forEach(k => { const el = document.getElementById(k); if (el) updates[k] = el.value; }); }
-            try {
-                const res = await fetch(`${API}/site-settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) });
-                if (res.ok) {
-                    document.getElementById('toastOk').classList.add('show');
-                    setTimeout(() => { document.getElementById('toastOk').classList.remove('show'); document.getElementById('saveInfo').style.display = ''; }, 4000);
-                } else alert('Erreur sauvegarde.');
-            } catch (e) { alert('Erreur réseau.'); }
-            btn.disabled = false; btn.textContent = '💾 Enregistrer';
+        function updateEventPreview() {
+            const name = document.getElementById('event_name').value || 'Événement';
+            const text = document.getElementById('event_promo_text').value || 'Configurez votre événement ci-dessus';
+            const active = document.getElementById('event_active').value === 'true';
+            const color = document.getElementById('event_color').value || '#10b981';
+
+            document.getElementById('eventPreviewBadge').style.background = color + '26';
+            document.getElementById('eventPreviewBadge').style.borderColor = color + '66';
+            document.getElementById('eventPreviewBadge').style.color = color;
+            document.getElementById('eventPreviewBadge').textContent = '🎉 ' + name.toUpperCase();
+            document.getElementById('eventPreviewText').textContent = text;
+
+            const statusEl = document.getElementById('eventStatusDisplay');
+            if (active) {
+                statusEl.className = 'event-status-on';
+                statusEl.innerHTML = '✅ Événement actif — visible sur le site';
+                statusEl.style.borderColor = color;
+                statusEl.style.color = color;
+                statusEl.style.background = color + '15';
+            } else {
+                statusEl.className = 'event-status-off';
+                statusEl.innerHTML = '⏸ Événement désactivé';
+                statusEl.style.cssText = '';
+            }
+
+            // Sync color chips
+            document.querySelectorAll('.color-chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.color === color);
+            });
         }
 
+        const PRESETS = {
+            fetes_meres: {
+                event_name: 'Fête des Mères 🌸',
+                event_promo_text: '🌸 Fête des Mères · Offres spéciales jusqu\'au 26 mai · Livraison gratuite !',
+                event_slide_title: '🌸 Fête des Mères',
+                event_slide_sub: 'Des cadeaux parfaits pour honorer les mamans de Côte d\'Ivoire',
+                event_slide_cta: 'Voir les idées cadeaux →',
+                event_slide_link: 'products.html',
+                event_slide_disc: '-20%',
+                event_color: '#ec4899',
+                event_active: 'true'
+            },
+            noel: {
+                event_name: 'Noël 🎄',
+                event_promo_text: '🎄 Noël · Offres spéciales jusqu\'au 25 décembre · Livraison express !',
+                event_slide_title: '🎄 Joyeux Noël',
+                event_slide_sub: 'Les meilleurs cadeaux de Noël livrés rapidement à Abidjan',
+                event_slide_cta: 'Voir les cadeaux →',
+                event_slide_link: 'products.html',
+                event_slide_disc: '-30%',
+                event_color: '#10b981',
+                event_active: 'true'
+            },
+            ramadan: {
+                event_name: 'Ramadan Moubarak 🌙',
+                event_promo_text: '🌙 Ramadan Moubarak · Offres spéciales · Livraison rapide à Abidjan',
+                event_slide_title: '🌙 Ramadan Moubarak',
+                event_slide_sub: 'Profitez de nos offres exclusives pour le mois sacré',
+                event_slide_cta: 'Voir les offres →',
+                event_slide_link: 'products.html',
+                event_slide_disc: '-25%',
+                event_color: '#f59e0b',
+                event_active: 'true'
+            },
+            rentree: {
+                event_name: 'Rentrée Scolaire 📚',
+                event_promo_text: '📚 Rentrée scolaire · Tout le nécessaire pour bien démarrer l\'année !',
+                event_slide_title: '📚 Rentrée Scolaire',
+                event_slide_sub: 'Fournitures, vêtements et accessoires pour la rentrée',
+                event_slide_cta: 'Préparer la rentrée →',
+                event_slide_link: 'products.html',
+                event_slide_disc: '-15%',
+                event_color: '#3b82f6',
+                event_active: 'true'
+            },
+            independence: {
+                event_name: 'Fête Nationale CI 🇨🇮',
+                event_promo_text: '🇨🇮 Fête Nationale · Célébrons ensemble ! Offres spéciales 7 août',
+                event_slide_title: '🇨🇮 Fête Nationale',
+                event_slide_sub: 'Célébrons l\'indépendance avec les meilleurs prix du marché',
+                event_slide_cta: 'Voir les offres →',
+                event_slide_link: 'products.html',
+                event_slide_disc: '-20%',
+                event_color: '#f97316',
+                event_active: 'true'
+            },
+            soldes: {
+                event_name: 'Soldes 🏷️',
+                event_promo_text: '🏷️ Soldes en cours · Jusqu\'à -50% sur des milliers de produits !',
+                event_slide_title: '🏷️ Grands Soldes',
+                event_slide_sub: 'Des prix imbattables sur tous vos produits préférés',
+                event_slide_cta: 'Voir les soldes →',
+                event_slide_link: 'products.html',
+                event_slide_disc: '-50%',
+                event_color: '#ef4444',
+                event_active: 'true'
+            }
+        };
 
-        // ── PRODUITS PHARES ──────────────────────────────────────────────
+        function loadPreset(key) {
+            const p = PRESETS[key]; if (!p) return;
+            Object.entries(p).forEach(([k, v]) => {
+                const el = document.getElementById(k);
+                if (el) el.value = v;
+            });
+            // Couleur
+            const colorChips = document.querySelectorAll('.color-chip');
+            colorChips.forEach(c => c.classList.toggle('active', c.dataset.color === p.event_color));
+            updateEventPreview();
+        }
+
+        // ── PRODUITS PHARES ───────────────────────────────────────────
         let featuredAllProds = [], featuredSelIds = [], featuredSelData = {};
 
         async function featuredLoadSellers() {
@@ -817,32 +1024,31 @@
                 const res = await fetch(`${API}/featured-products/sellers`);
                 const sellers = await res.json();
                 const list = document.getElementById('featuredSellerList');
-                if (!sellers.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:13px;">Aucune boutique approuvée</div>'; return; }
+                if (!sellers.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:20px;">Aucune boutique approuvée</div>'; return; }
                 list.innerHTML = sellers.map(s => `
-                <div id="fsel-${s.id}" onclick="featuredSelectSeller(${s.id},'${s.shopName.replace(/'/g, "\\'")}')
+                        <div id="fsel-${s.id}" onclick="featuredSelectSeller(${s.id},'${s.shopName.replace(/'/g, "\\'")}')
 " style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;cursor:pointer;transition:all .2s;">
-                    <div style="width:36px;height:36px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden;">
-                        ${s.shopLogoUrl ? `<img src="${s.shopLogoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">` : '🏪'}
-                    </div>
-                    <div>
-                        <div style="font-size:13px;font-weight:700;color:#111827;">${s.shopName}</div>
-                        <div style="font-size:11px;color:#6b7280;">${s.productCount} produit${s.productCount > 1 ? 's' : ''}</div>
-                    </div>
-                </div>`).join('');
+                            <div style="width:34px;height:34px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;">
+                                ${s.shopLogoUrl ? `<img src="${s.shopLogoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">` : '🏪'}
+                            </div>
+                            <div>
+                                <div style="font-size:13px;font-weight:700;color:#111827;">${s.shopName}</div>
+                                <div style="font-size:11px;color:#6b7280;">${s.productCount} produit${s.productCount > 1 ? 's' : ''}</div>
+                            </div>
+                        </div>`).join('');
             } catch (e) { console.error(e); }
         }
 
         async function featuredSelectSeller(id, name) {
             document.querySelectorAll('[id^="fsel-"]').forEach(el => el.style.borderColor = '#e5e7eb');
-            const el = document.getElementById('fsel-' + id);
-            if (el) el.style.borderColor = '#10b981';
+            const el = document.getElementById('fsel-' + id); if (el) el.style.borderColor = '#10b981';
             document.getElementById('featuredShopTitle').textContent = '📦 ' + name;
             document.getElementById('featuredProductsList').innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">⏳ Chargement...</div>';
             try {
                 const res = await fetch(`${API}/featured-products/sellers/${id}/products`);
                 featuredAllProds = await res.json();
                 featuredRenderProds(featuredAllProds);
-            } catch (e) { document.getElementById('featuredProductsList').innerHTML = '<div style="color:#ef4444;font-size:13px;">❌ Erreur</div>'; }
+            } catch (e) { document.getElementById('featuredProductsList').innerHTML = '<div style="color:#ef4444;">❌ Erreur</div>'; }
         }
 
         function featuredFilter() {
@@ -856,33 +1062,26 @@
 
         function featuredRenderProds(prods) {
             const grid = document.getElementById('featuredProductsList');
-            if (!prods.length) {
-                grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">Aucun produit</div>';
-                return;
-            }
+            if (!prods.length) { grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">Aucun produit</div>'; return; }
             grid.innerHTML = prods.map(p => {
                 const img = featuredParseImgs(p.images)[0] || '';
                 const sel = featuredSelIds.includes(p.id);
-                // ✅ Plus de données dans onclick — juste l'ID
-                return `<div id="fprod-${p.id}" data-pid="${p.id}" onclick="featuredToggleById(${p.id})" 
-            style="border:2px solid ${sel ? '#10b981' : '#e5e7eb'};background:${sel ? '#f0fdf4' : 'white'};border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;">
-            ${sel ? '<div class="fcheck" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;">✓</div>' : ''}
-            <div style="height:100px;background:#f9fafb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:contain;padding:4px;" onerror="this.style.display='none'">` : ' <span style="font-size:32px">📦</span>'}
-            </div>
-            <div style="padding:8px;">
-                <div style="font-size:11px;font-weight:600;color:#111827;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;">${p.name}</div>
-                <div style="font-size:12px;font-weight:700;color:#10b981;">${Number(p.price).toLocaleString('fr-FR')} F</div>
-            </div>
-        </div>`;
+                return `<div id="fprod-${p.id}" onclick="featuredToggleById(${p.id})"
+                        style="border:2px solid ${sel ? '#10b981' : '#e5e7eb'};background:${sel ? '#f0fdf4' : 'white'};border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;">
+                        ${sel ? '<div class="fcheck" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;">✓</div>' : ''}
+                        <div style="height:95px;background:#f9fafb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                            ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:contain;padding:4px;" onerror="this.style.display='none'">` : ' <span style="font-size:28px">📦</span>'}
+                        </div>
+                        <div style="padding:8px;">
+                            <div style="font-size:11px;font-weight:600;color:#111827;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;">${p.name}</div>
+                            <div style="font-size:12px;font-weight:700;color:#10b981;">${Number(p.price).toLocaleString('fr-FR')} F</div>
+                        </div>
+                    </div>`;
             }).join('');
         }
 
         function featuredToggleById(id) {
-            // Données récupérées depuis le tableau — pas depuis onclick
-            const prod = featuredAllProds.find(p => p.id === id);
-            if (!prod) return;
-
+            const prod = featuredAllProds.find(p => p.id === id); if (!prod) return;
             if (featuredSelIds.includes(id)) {
                 featuredSelIds = featuredSelIds.filter(x => x !== id);
                 delete featuredSelData[id];
@@ -892,29 +1091,20 @@
                 const img = featuredParseImgs(prod.images)[0] || '';
                 featuredSelData[id] = { id, name: prod.name, price: prod.price, img };
             }
-
-            // Mettre à jour la card sans re-render complet
             const card = document.getElementById('fprod-' + id);
             if (card) {
                 const sel = featuredSelIds.includes(id);
                 card.style.borderColor = sel ? '#10b981' : '#e5e7eb';
                 card.style.background = sel ? '#f0fdf4' : 'white';
-                const existing = card.querySelector('.fcheck');
-                if (sel && !existing) {
-                    const check = document.createElement('div');
-                    check.className = 'fcheck';
-                    check.style.cssText = 'position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
-                    check.textContent = '✓';
-                    card.appendChild(check);
-                } else if (!sel && existing) {
-                    existing.remove();
-                }
+                const ex = card.querySelector('.fcheck');
+                if (sel && !ex) {
+                    const c = document.createElement('div'); c.className = 'fcheck';
+                    c.style.cssText = 'position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
+                    c.textContent = '✓'; card.appendChild(c);
+                } else if (!sel && ex) { ex.remove(); }
             }
-
-            // Mettre à jour l'input hidden pour la sauvegarde
-            const hiddenEl = document.getElementById('featured_product_ids');
-            if (hiddenEl) hiddenEl.value = featuredSelIds.join(',');
-
+            const hid = document.getElementById('featured_product_ids');
+            if (hid) hid.value = featuredSelIds.join(',');
             featuredRenderSelected();
         }
 
@@ -926,51 +1116,90 @@
                 const p = featuredSelData[id]; if (!p) return '';
                 const name = p.name.length > 20 ? p.name.slice(0, 20) + '…' : p.name;
                 return `<div style="display:flex;align-items:center;gap:6px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:600;color:#065f46;">
-                ${p.img ? `<img src="${p.img}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;">` : '<span>📦</span>'}
-                <span>${name}</span>
-                <span onclick="featuredToggle(${id},'','','')" style="cursor:pointer;color:#6b7280;font-size:14px;margin-left:2px;" title="Retirer">×</span>
-            </div>`;
+                        ${p.img ? `<img src="${p.img}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;">` : '<span>📦</span>'}
+                        <span>${name}</span>
+                        <span onclick="featuredToggleById(${id})" style="cursor:pointer;color:#6b7280;font-size:14px;margin-left:2px;" title="Retirer">×</span>
+                    </div>`;
             }).join('');
-            // Mettre à jour la clé featured_product_ids pour la sauvegarde
-            const hiddenEl = document.getElementById('featured_product_ids');
-            if (hiddenEl) hiddenEl.value = featuredSelIds.join(',');
+            const hid = document.getElementById('featured_product_ids');
+            if (hid) hid.value = featuredSelIds.join(',');
         }
 
         function featuredClearAll() {
-            if (!confirm('Effacer tous les produits sélectionnés ?')) return;
+            if (!confirm('Effacer tous les produits ?')) return;
             featuredSelIds = []; featuredSelData = {};
             featuredRenderProds(featuredAllProds);
             featuredRenderSelected();
         }
 
-        // Initialiser l'onglet quand on clique dessus
-        const origSwitchTab = switchTab;
-        switchTab = function (tab, el) {
-            origSwitchTab(tab, el);
-            if (tab === 'featured' && !document.getElementById('featuredSellerList').querySelector('[id^="fsel-"]')) {
-                featuredLoadSellers();
-            }
-        };
+        // ── CHARGEMENT ────────────────────────────────────────────────
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API}/site-settings`);
+                const data = await res.json();
 
-        // Charger les IDs sauvegardés dans featuredSelIds après loadSettings
-        const origLoad = loadSettings;
-        loadSettings = async function () {
-            await origLoad();
-            const idsEl = document.getElementById('featured_product_ids');
-            if (idsEl && idsEl.value) {
-                featuredSelIds = idsEl.value.split(',').map(x => parseInt(x)).filter(x => !isNaN(x) && x > 0);
-                // Charger les données pour l'affichage
-                try {
-                    const res = await fetch(`${API}/featured-products`);
-                    const prods = await res.json();
-                    prods.forEach(p => {
-                        const img = featuredParseImgs(p.images)[0] || '';
-                        featuredSelData[p.id] = { id: p.id, name: p.name, price: p.price, img };
-                    });
-                    featuredRenderSelected();
-                } catch (e) { }
+                BASE_KEYS.forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el && data[key] !== undefined) el.value = data[key];
+                });
+
+                // Slides
+                let realCount = 0;
+                for (let i = 0; i < 5; i++) { if (data['slide' + i + '_title'] || i === 0) realCount = i + 1; else break; }
+                slideCount = Math.max(realCount, 1);
+                buildSlidesUI();
+                for (let sn = 0; sn < slideCount; sn++) {
+                    slideKeys(sn).forEach(k => { const el = document.getElementById(k); if (el && data[k] !== undefined) el.value = data[k]; });
+                    previewSlide(sn);
+                }
+
+                // Big cats preview
+                [1, 2, 3, 4].forEach(n => previewCard(n));
+
+                // Événement — sync couleur chip
+                if (data.event_color) {
+                    document.querySelectorAll('.color-chip').forEach(c => c.classList.toggle('active', c.dataset.color === data.event_color));
+                }
+                updateEventPreview();
+
+                // Produits phares
+                const idsEl = document.getElementById('featured_product_ids');
+                if (idsEl && idsEl.value) {
+                    featuredSelIds = idsEl.value.split(',').map(x => parseInt(x)).filter(x => !isNaN(x) && x > 0);
+                    try {
+                        const r = await fetch(`${API}/featured-products`);
+                        const prods = await r.json();
+                        prods.forEach(p => { const img = featuredParseImgs(p.images)[0] || ''; featuredSelData[p.id] = { id: p.id, name: p.name, price: p.price, img }; });
+                        featuredRenderSelected();
+                    } catch (e) { }
+                }
+
+            } catch (e) { console.error('Erreur chargement:', e); }
+        }
+
+        // ── SAUVEGARDE ────────────────────────────────────────────────
+        async function saveSettings() {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
+            document.getElementById('toastOk').classList.remove('show');
+            document.getElementById('saveInfo').style.display = 'none';
+
+            const updates = {};
+            BASE_KEYS.forEach(key => { const el = document.getElementById(key); if (el) updates[key] = el.value; });
+            for (let i = 0; i < slideCount; i++) {
+                slideKeys(i).forEach(k => { const el = document.getElementById(k); if (el) updates[k] = el.value; });
             }
-        };
+
+            try {
+                const res = await fetch(`${API}/site-settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) });
+                if (res.ok) {
+                    document.getElementById('toastOk').classList.add('show');
+                    setTimeout(() => { document.getElementById('toastOk').classList.remove('show'); document.getElementById('saveInfo').style.display = ''; }, 4000);
+                } else alert('Erreur sauvegarde.');
+            } catch (e) { alert('Erreur réseau.'); }
+
+            btn.disabled = false; btn.textContent = '💾 Enregistrer';
+        }
 
         loadSettings();
     </script>
