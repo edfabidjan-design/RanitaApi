@@ -2045,15 +2045,15 @@
                         var pb = document.getElementById('promoBarText');
                         if (pb) pb.textContent = s.event_promo_text;
                     }
-                    // Injecter slide événement
+                    // Injecter slide événement au début
                     if (s.event_slide_title) {
-                        s['slide99_title'] = s.event_slide_title;
-                        s['slide99_sub'] = s.event_slide_sub || '';
-                        s['slide99_cta_text'] = s.event_slide_cta || 'Voir les offres →';
-                        s['slide99_cta_link'] = s.event_slide_link || 'products.html';
-                        s['slide99_img'] = s.event_slide_img || '';
-                        s['slide99_discount'] = s.event_slide_disc || '';
-                        s['slide99_badge'] = '🎉 ' + (s.event_name || 'Événement');
+                        s['slide0_title'] = s.event_slide_title;
+                        s['slide0_sub'] = s.event_slide_sub || '';
+                        s['slide0_cta_text'] = s.event_slide_cta || 'Voir les offres →';
+                        s['slide0_cta_link'] = s.event_slide_link || 'products.html';
+                        s['slide0_img'] = s.event_slide_img || '';
+                        s['slide0_discount'] = s.event_slide_disc || '';
+                        s['slide0_badge'] = '🎉 ' + (s.event_name || 'Événement');
                     }
                 }
                 buildSlider(s);
