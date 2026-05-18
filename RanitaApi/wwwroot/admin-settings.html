@@ -510,6 +510,7 @@
             <div class="tab" onclick="switchTab('promo',this)">📢 Barre promo</div>
             <div class="tab" onclick="switchTab('referral',this)">🎁 Parrainage</div>
             <div class="tab" onclick="switchTab('event',this)">🎉 Événements</div>
+            <div class="tab" onclick="switchTab('livraison',this)">🚚 Livraison</div>
         </div>
 
         <!-- ══ SLIDER ══════════════════════════════════════════════ -->
@@ -618,10 +619,6 @@
                         <button class="preset-chip" onclick="evPreset('rentree')"><div style="font-size:18px;margin-bottom:3px;">📚</div><div style="font-size:11px;font-weight:700;color:#111827;">Rentrée</div><div style="font-size:10px;color:#6b7280;">Septembre</div></button>
                         <button class="preset-chip" onclick="evPreset('independence')"><div style="font-size:18px;margin-bottom:3px;">🇨🇮</div><div style="font-size:11px;font-weight:700;color:#111827;">Fête Nationale</div><div style="font-size:10px;color:#6b7280;">7 août</div></button>
                         <button class="preset-chip" onclick="evPreset('soldes')"><div style="font-size:18px;margin-bottom:3px;">🏷️</div><div style="font-size:11px;font-weight:700;color:#111827;">Soldes</div><div style="font-size:10px;color:#6b7280;">Libre</div></button>
-                        <button class="preset-chip" onclick="evPreset('st_valentin')"><div style="font-size:18px;margin-bottom:3px;">💝</div><div style="font-size:11px;font-weight:700;color:#111827;">St Valentin</div><div style="font-size:10px;color:#6b7280;">14 fév</div></button>
-                        <button class="preset-chip" onclick="evPreset('tabaski')"><div style="font-size:18px;margin-bottom:3px;">🐑</div><div style="font-size:11px;font-weight:700;color:#111827;">Tabaski</div><div style="font-size:10px;color:#6b7280;">Variable</div></button>
-                        <button class="preset-chip" onclick="evPreset('paques')"><div style="font-size:18px;margin-bottom:3px;">🐣</div><div style="font-size:11px;font-weight:700;color:#111827;">Pâques</div><div style="font-size:10px;color:#6b7280;">Variable</div></button>
-                        <button class="preset-chip" onclick="evPreset('fetes_peres')"><div style="font-size:18px;margin-bottom:3px;">👔</div><div style="font-size:11px;font-weight:700;color:#111827;">Fête des Pères</div><div style="font-size:10px;color:#6b7280;">Juin</div></button>
                     </div>
                 </div>
 
@@ -689,7 +686,7 @@
             <div id="evList"><div style="text-align:center;padding:40px;color:#9ca3af;font-size:13px;">⏳ Chargement...</div></div>
         </div>
 
-        <div class="save-bar" id="mainSaveBar">
+        <div class="save-bar">
             <div class="toast-ok" id="toastOk">✅ Modifications enregistrées !</div>
             <div class="save-info" id="saveInfo">Les modifications seront visibles immédiatement sur le site.</div>
             <button class="btn-save" id="btnSave" onclick="saveSettings()">💾 Enregistrer</button>
@@ -701,7 +698,7 @@
     <script>
         checkPageAccess('settings');
         buildAdminNav('settings');
-        const API = '/api';
+        const API = 'https://ranitaapi-production.up.railway.app/api';
 
         const BASE_KEYS = [
             'bc1_tag', 'bc1_name', 'bc1_desc', 'bc1_img', 'bc1_link',
@@ -717,7 +714,6 @@
         function switchTab(tab, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('mainSaveBar').style.display = tab === 'event' ? 'none' : 'flex';
             el.classList.add('active'); document.getElementById('panel-' + tab).classList.add('active');
             if (tab === 'featured' && !document.getElementById('featuredSellerList').querySelector('[id^="fsel-"]')) featuredLoadSellers();
             if (tab === 'event') evLoadList();
@@ -748,10 +744,6 @@
             ramadan: { name: 'Ramadan Moubarak 🌙', color: '#f59e0b', promoText: '🌙 Ramadan Moubarak · Offres spéciales · Livraison rapide à Abidjan', slideTitle: '🌙 Ramadan Moubarak', slideSub: 'Profitez de nos offres exclusives pour le mois sacré', slideCta: 'Voir les offres →', slideLink: 'products.html', slideDisc: '-25%', startDate: '', endDate: '' },
             rentree: { name: 'Rentrée Scolaire 📚', color: '#3b82f6', promoText: "📚 Rentrée scolaire · Tout le nécessaire pour bien démarrer l'année !", slideTitle: '📚 Rentrée Scolaire', slideSub: 'Fournitures, vêtements et accessoires pour la rentrée', slideCta: 'Préparer la rentrée →', slideLink: 'products.html', slideDisc: '-15%', startDate: '2026-09-01', endDate: '2026-09-15' },
             independence: { name: 'Fête Nationale CI 🇨🇮', color: '#f97316', promoText: '🇨🇮 Fête Nationale · Célébrons ensemble ! Offres spéciales 7 août', slideTitle: '🇨🇮 Fête Nationale', slideSub: "Célébrons l'indépendance avec les meilleurs prix du marché", slideCta: 'Voir les offres →', slideLink: 'products.html', slideDisc: '-20%', startDate: '2026-08-01', endDate: '2026-08-07' },
-            st_valentin: { name: 'Saint-Valentin 💝', color: '#ef4444', promoText: "💝 Saint-Valentin · Offrez l'amour avec nos cadeaux spéciaux !", slideTitle: '💝 Saint-Valentin', slideSub: "Surprenez vos proches avec les plus beaux cadeaux d'amour", slideCta: 'Voir les cadeaux →', slideLink: 'products.html', slideDisc: '-15%', startDate: '2027-02-10', endDate: '2027-02-14' },
-            tabaski: { name: 'Tabaski 🐑', color: '#10b981', promoText: "🐑 Tabaski Moubarak · Offres spéciales pour la fête du sacrifice !", slideTitle: '🐑 Tabaski Moubarak', slideSub: 'Profitez de nos offres exclusives pour célébrer la fête', slideCta: 'Voir les offres →', slideLink: 'products.html', slideDisc: '-20%', startDate: '', endDate: '' },
-            paques: { name: 'Pâques 🐣', color: '#f59e0b', promoText: "🐣 Joyeuses Pâques · Offres spéciales pour toute la famille !", slideTitle: '🐣 Joyeuses Pâques', slideSub: 'Célébrez Pâques avec les meilleures offres de Ranita Market', slideCta: 'Découvrir →', slideLink: 'products.html', slideDisc: '-15%', startDate: '', endDate: '' },
-            fetes_peres: { name: 'Fête des Pères 👔', color: '#3b82f6', promoText: "👔 Fête des Pères · Les meilleurs cadeaux pour papa !", slideTitle: '👔 Fête des Pères', slideSub: "Offrez à papa le cadeau parfait pour lui dire merci", slideCta: 'Voir les cadeaux →', slideLink: 'products.html', slideDisc: '-15%', startDate: '2027-06-15', endDate: '2027-06-22' },
             soldes: { name: 'Soldes 🏷️', color: '#ef4444', promoText: "🏷️ Soldes en cours · Jusqu'à -50% sur des milliers de produits !", slideTitle: '🏷️ Grands Soldes', slideSub: 'Des prix imbattables sur tous vos produits préférés', slideCta: 'Voir les soldes →', slideLink: 'products.html', slideDisc: '-50%', startDate: '', endDate: '' },
         };
 
