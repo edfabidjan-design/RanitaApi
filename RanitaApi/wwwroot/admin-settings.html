@@ -284,6 +284,7 @@
             }
         }
 
+        /* ── ÉVÉNEMENTS MULTI ── */
         .ev-card {
             background: white;
             border-radius: 12px;
@@ -591,6 +592,7 @@
             <div class="info-box info-yellow">
                 🎉 Planifiez plusieurs événements avec des dates différentes. Le système affiche automatiquement l'événement actif aujourd'hui sur la home.
             </div>
+
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;">● Actif</span>
@@ -601,21 +603,19 @@
                 <button onclick="evOpenForm()" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">+ Nouvel événement</button>
             </div>
 
+            <!-- Formulaire inline -->
             <div class="ev-form" id="evForm">
                 <div class="ev-form-title">
                     <span id="evFormTitle">🎉 Nouvel événement</span>
                     <button onclick="evCloseForm()" style="background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:#6b7280;display:flex;align-items:center;justify-content:center;">×</button>
                 </div>
+
                 <div style="margin-bottom:16px;">
                     <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">⚡ Événements rapides</div>
                     <div class="presets-row">
                         <button class="preset-chip" onclick="evPreset('fetes_meres')"><div style="font-size:18px;margin-bottom:3px;">🌸</div><div style="font-size:11px;font-weight:700;color:#111827;">Fête des Mères</div><div style="font-size:10px;color:#6b7280;">26 mai</div></button>
-                        <button class="preset-chip" onclick="evPreset('tabaski')"><div style="font-size:18px;margin-bottom:3px;">🐑</div><div style="font-size:11px;font-weight:700;color:#111827;">Tabaski</div><div style="font-size:10px;color:#6b7280;">Variable</div></button>
                         <button class="preset-chip" onclick="evPreset('noel')"><div style="font-size:18px;margin-bottom:3px;">🎄</div><div style="font-size:11px;font-weight:700;color:#111827;">Noël</div><div style="font-size:10px;color:#6b7280;">25 déc</div></button>
                         <button class="preset-chip" onclick="evPreset('ramadan')"><div style="font-size:18px;margin-bottom:3px;">🌙</div><div style="font-size:11px;font-weight:700;color:#111827;">Ramadan</div><div style="font-size:10px;color:#6b7280;">Variable</div></button>
-                        <button class="preset-chip" onclick="evPreset('paques')"><div style="font-size:18px;margin-bottom:3px;">🐣</div><div style="font-size:11px;font-weight:700;color:#111827;">Pâques</div><div style="font-size:10px;color:#6b7280;">Variable</div></button>
-                        <button class="preset-chip" onclick="evPreset('saint_valentin')"><div style="font-size:18px;margin-bottom:3px;">💝</div><div style="font-size:11px;font-weight:700;color:#111827;">St Valentin</div><div style="font-size:10px;color:#6b7280;">14 fév</div></button>
-                        <button class="preset-chip" onclick="evPreset('fetes_peres')"><div style="font-size:18px;margin-bottom:3px;">👨</div><div style="font-size:11px;font-weight:700;color:#111827;">Fête des Pères</div><div style="font-size:10px;color:#6b7280;">Juin</div></button>
                         <button class="preset-chip" onclick="evPreset('rentree')"><div style="font-size:18px;margin-bottom:3px;">📚</div><div style="font-size:11px;font-weight:700;color:#111827;">Rentrée</div><div style="font-size:10px;color:#6b7280;">Septembre</div></button>
                         <button class="preset-chip" onclick="evPreset('independence')"><div style="font-size:18px;margin-bottom:3px;">🇨🇮</div><div style="font-size:11px;font-weight:700;color:#111827;">Fête Nationale</div><div style="font-size:10px;color:#6b7280;">7 août</div></button>
                         <button class="preset-chip" onclick="evPreset('soldes')"><div style="font-size:18px;margin-bottom:3px;">🏷️</div><div style="font-size:11px;font-weight:700;color:#111827;">Soldes</div><div style="font-size:10px;color:#6b7280;">Libre</div></button>
@@ -658,6 +658,7 @@
                     <div class="field"><label>Statut</label><select id="ev_active"><option value="true">✅ Activé</option><option value="false">⏸ Désactivé</option></select></div>
                 </div>
 
+                <!-- Preview -->
                 <div style="margin-top:16px;">
                     <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">👁 Aperçu bannière</div>
                     <div class="ev-preview-banner" id="evPreviewBanner" style="background:linear-gradient(135deg,#10b981,#10b981cc);">
@@ -681,6 +682,7 @@
                 </div>
             </div>
 
+            <!-- Liste -->
             <div id="evList"><div style="text-align:center;padding:40px;color:#9ca3af;font-size:13px;">⏳ Chargement...</div></div>
         </div>
 
@@ -692,16 +694,16 @@
                     💡 Ces paramètres s'appliquent automatiquement dans le panier du client.
                 </div>
                 <div class="fields-grid">
-                    <!-- ✅ Seulement le seuil — shipping_fee supprimé -->
                     <div class="field">
                         <label>Seuil livraison gratuite (F CFA)</label>
                         <input type="number" id="free_shipping_threshold" placeholder="15000" oninput="updateShippingPreview()">
-                        <span class="hint">Commandes au-dessus de ce montant = livraison gratuite automatique</span>
+                        <span class="hint">Commandes au-dessus de ce montant = livraison gratuite</span>
                     </div>
+
                 </div>
                 <div style="margin-top:20px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:16px;">
                     <div style="font-size:12px;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">👁 Aperçu dans le panier client</div>
-                    <div id="shippingPreview" style="font-size:13px;color:#374151;">Remplissez le seuil ci-dessus pour voir l'aperçu</div>
+                    <div id="shippingPreview" style="font-size:13px;color:#374151;">Remplissez les champs ci-dessus pour voir l'aperçu</div>
                 </div>
             </div>
         </div>
@@ -720,7 +722,6 @@
         buildAdminNav('settings');
         const API = '/api';
 
-        // ✅ shipping_fee retiré de BASE_KEYS
         const BASE_KEYS = [
             'bc1_tag', 'bc1_name', 'bc1_desc', 'bc1_img', 'bc1_link',
             'bc2_tag', 'bc2_name', 'bc2_desc', 'bc2_img', 'bc2_link',
@@ -731,7 +732,6 @@
             'featured_title', 'featured_subtitle', 'featured_product_ids',
             'free_shipping_threshold'
         ];
-
         function slideKeys(n) { return ['slide' + n + '_title', 'slide' + n + '_sub', 'slide' + n + '_cta_text', 'slide' + n + '_cta_link', 'slide' + n + '_img', 'slide' + n + '_badge', 'slide' + n + '_discount', 'slide' + n + '_discount_label']; }
 
         function switchTab(tab, el) {
@@ -744,23 +744,24 @@
             if (tab === 'livraison') updateShippingPreview();
         }
 
-        // ✅ updateShippingPreview sans shipping_fee — affiche frais par zone au checkout
         function updateShippingPreview() {
             var threshold = parseInt(document.getElementById('free_shipping_threshold').value) || 15000;
+            
             var preview = document.getElementById('shippingPreview');
             if (!preview) return;
             preview.innerHTML =
                 '<div style="display:flex;flex-direction:column;gap:10px;">' +
                 '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff7ed;border-radius:8px;">' +
-                '<span>🛒 Panier &lt; <strong>' + Number(threshold).toLocaleString() + ' F</strong></span>' +
+                '<span>🛒 Panier = <strong>10 000 F</strong></span>' +
                 '<span style="margin-left:auto;">Livraison : <strong style="color:#374151;">selon votre zone</strong></span>' +
                 '</div>' +
                 '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f0fdf4;border-radius:8px;">' +
-                '<span>🛒 Panier ≥ <strong>' + Number(threshold).toLocaleString() + ' F</strong></span>' +
+                '<span>🛒 Panier = <strong>' + Number(threshold).toLocaleString() + ' F</strong></span>' +
                 '<span style="margin-left:auto;">Livraison : <strong style="color:#10b981;">🎉 Gratuite !</strong></span>' +
                 '</div>' +
-                '<div style="margin-top:4px;padding:8px 12px;background:#eff6ff;border-radius:8px;font-size:11px;color:#1e40af;">' +
-                '💡 Les frais exacts (Plateau, Cocody, Yopougon…) sont calculés au checkout selon la zone choisie.' +
+                '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f0fdf4;border-radius:8px;">' +
+                '<span>🛒 Panier = <strong>' + Number(threshold + 5000).toLocaleString() + ' F</strong></span>' +
+                '<span style="margin-left:auto;">Livraison : <strong style="color:#10b981;">🎉 Gratuite !</strong></span>' +
                 '</div>' +
                 '</div>';
         }
@@ -786,12 +787,8 @@
 
         const EV_PRESETS = {
             fetes_meres: { name: 'Fête des Mères 🌸', color: '#ec4899', promoText: "🌸 Fête des Mères · Offres spéciales jusqu'au 26 mai · Livraison gratuite !", slideTitle: '🌸 Fête des Mères', slideSub: "Des cadeaux parfaits pour honorer les mamans de Côte d'Ivoire", slideCta: 'Voir les idées cadeaux →', slideLink: 'products.html', slideDisc: '-20%', startDate: '2026-05-20', endDate: '2026-05-26' },
-            tabaski: { name: 'Tabaski 🐑', color: '#10b981', promoText: "🐑 Tabaski Moubarak · Offres spéciales · Livraison rapide à Abidjan !", slideTitle: '🐑 Tabaski Moubarak', slideSub: "Célébrez la fête du sacrifice avec les meilleures offres", slideCta: 'Voir les offres →', slideLink: 'products.html', slideDisc: '-25%', startDate: '', endDate: '' },
             noel: { name: 'Noël 🎄', color: '#10b981', promoText: "🎄 Noël · Offres spéciales jusqu'au 25 décembre · Livraison express !", slideTitle: '🎄 Joyeux Noël', slideSub: 'Les meilleurs cadeaux de Noël livrés rapidement à Abidjan', slideCta: 'Voir les cadeaux →', slideLink: 'products.html', slideDisc: '-30%', startDate: '2026-12-15', endDate: '2026-12-25' },
             ramadan: { name: 'Ramadan Moubarak 🌙', color: '#f59e0b', promoText: '🌙 Ramadan Moubarak · Offres spéciales · Livraison rapide à Abidjan', slideTitle: '🌙 Ramadan Moubarak', slideSub: 'Profitez de nos offres exclusives pour le mois sacré', slideCta: 'Voir les offres →', slideLink: 'products.html', slideDisc: '-25%', startDate: '', endDate: '' },
-            paques: { name: 'Pâques 🐣', color: '#f59e0b', promoText: "🐣 Joyeuses Pâques · Offres de saison sur Ranita Market !", slideTitle: '🐣 Joyeuses Pâques', slideSub: 'Les meilleures offres pour célébrer Pâques en famille', slideCta: 'Découvrir les offres →', slideLink: 'products.html', slideDisc: '-15%', startDate: '', endDate: '' },
-            saint_valentin: { name: 'Saint-Valentin 💝', color: '#ef4444', promoText: "💝 Saint-Valentin · Offres romantiques · Livraison surprise disponible !", slideTitle: '💝 Saint-Valentin', slideSub: "Offrez le meilleur à celle ou celui que vous aimez", slideCta: 'Voir les cadeaux →', slideLink: 'products.html', slideDisc: '-20%', startDate: '2027-02-10', endDate: '2027-02-14' },
-            fetes_peres: { name: 'Fête des Pères 👨', color: '#3b82f6', promoText: "👨 Fête des Pères · Surprenez papa avec les meilleures offres !", slideTitle: '👨 Fête des Pères', slideSub: "Trouvez le cadeau idéal pour honorer votre papa", slideCta: 'Voir les idées cadeaux →', slideLink: 'products.html', slideDisc: '-20%', startDate: '', endDate: '' },
             rentree: { name: 'Rentrée Scolaire 📚', color: '#3b82f6', promoText: "📚 Rentrée scolaire · Tout le nécessaire pour bien démarrer l'année !", slideTitle: '📚 Rentrée Scolaire', slideSub: 'Fournitures, vêtements et accessoires pour la rentrée', slideCta: 'Préparer la rentrée →', slideLink: 'products.html', slideDisc: '-15%', startDate: '2026-09-01', endDate: '2026-09-15' },
             independence: { name: 'Fête Nationale CI 🇨🇮', color: '#f97316', promoText: '🇨🇮 Fête Nationale · Célébrons ensemble ! Offres spéciales 7 août', slideTitle: '🇨🇮 Fête Nationale', slideSub: "Célébrons l'indépendance avec les meilleurs prix du marché", slideCta: 'Voir les offres →', slideLink: 'products.html', slideDisc: '-20%', startDate: '2026-08-01', endDate: '2026-08-07' },
             soldes: { name: 'Soldes 🏷️', color: '#ef4444', promoText: "🏷️ Soldes en cours · Jusqu'à -50% sur des milliers de produits !", slideTitle: '🏷️ Grands Soldes', slideSub: 'Des prix imbattables sur tous vos produits préférés', slideCta: 'Voir les soldes →', slideLink: 'products.html', slideDisc: '-50%', startDate: '', endDate: '' },
@@ -800,22 +797,111 @@
         function evPreset(key) { const p = EV_PRESETS[key]; if (!p) return; document.getElementById('ev_name').value = p.name || ''; document.getElementById('ev_promo').value = p.promoText || ''; document.getElementById('ev_title').value = p.slideTitle || ''; document.getElementById('ev_sub').value = p.slideSub || ''; document.getElementById('ev_cta').value = p.slideCta || ''; document.getElementById('ev_link').value = p.slideLink || ''; document.getElementById('ev_disc').value = p.slideDisc || ''; document.getElementById('ev_start').value = p.startDate || ''; document.getElementById('ev_end').value = p.endDate || ''; document.getElementById('ev_color').value = p.color || '#10b981'; document.querySelectorAll('#evColorRow .color-chip').forEach(c => c.classList.toggle('active', c.dataset.c === p.color)); evUpdatePreview(); }
         function evPickColor(chip) { document.querySelectorAll('#evColorRow .color-chip').forEach(c => c.classList.remove('active')); chip.classList.add('active'); document.getElementById('ev_color').value = chip.dataset.c; evUpdatePreview(); }
 
-        function evUpdatePreview() { const color = document.getElementById('ev_color').value || '#10b981'; const name = document.getElementById('ev_name').value || 'Événement'; const title = document.getElementById('ev_title').value || 'Titre'; const sub = document.getElementById('ev_sub').value || ''; const cta = document.getElementById('ev_cta').value || 'Voir les offres →'; const disc = document.getElementById('ev_disc').value; const img = document.getElementById('ev_img').value; document.getElementById('evPreviewBanner').style.background = 'linear-gradient(135deg,' + color + ',' + color + 'cc)'; document.getElementById('evPrevBadge').textContent = '🎉 ' + name.toUpperCase(); document.getElementById('evPrevTitle').textContent = title; document.getElementById('evPrevSub').textContent = sub; document.getElementById('evPrevCta').textContent = cta; const discEl = document.getElementById('evPrevDisc'); if (disc) { discEl.textContent = 'JUSQU\'À ' + disc; discEl.style.display = 'block'; } else { discEl.style.display = 'none'; } const imgEl = document.getElementById('evPrevImg'); const iconEl = document.getElementById('evPrevIcon'); if (img) { imgEl.src = img; imgEl.style.display = 'block'; iconEl.style.display = 'none'; } else { imgEl.style.display = 'none'; iconEl.style.display = 'block'; } }
+        function evUpdatePreview() {
+            const color = document.getElementById('ev_color').value || '#10b981';
+            const name = document.getElementById('ev_name').value || 'Événement';
+            const title = document.getElementById('ev_title').value || 'Titre';
+            const sub = document.getElementById('ev_sub').value || '';
+            const cta = document.getElementById('ev_cta').value || 'Voir les offres →';
+            const disc = document.getElementById('ev_disc').value;
+            const img = document.getElementById('ev_img').value;
+            document.getElementById('evPreviewBanner').style.background = 'linear-gradient(135deg,' + color + ',' + color + 'cc)';
+            document.getElementById('evPrevBadge').textContent = '🎉 ' + name.toUpperCase();
+            document.getElementById('evPrevTitle').textContent = title;
+            document.getElementById('evPrevSub').textContent = sub;
+            document.getElementById('evPrevCta').textContent = cta;
+            const discEl = document.getElementById('evPrevDisc');
+            if (disc) { discEl.textContent = 'JUSQU\'À ' + disc; discEl.style.display = 'block'; } else { discEl.style.display = 'none'; }
+            const imgEl = document.getElementById('evPrevImg'); const iconEl = document.getElementById('evPrevIcon');
+            if (img) { imgEl.src = img; imgEl.style.display = 'block'; iconEl.style.display = 'none'; } else { imgEl.style.display = 'none'; iconEl.style.display = 'block'; }
+        }
 
         async function evUploadImg(input) { const file = input.files[0]; if (!file) return; const st = document.getElementById('ev_img_status'); st.textContent = '⏳'; const fd = new FormData(); fd.append('file', file); try { const r = await fetch(`${API}/upload`, { method: 'POST', body: fd }); const d = await r.json(); if (d.url) { document.getElementById('ev_img').value = d.url; evUpdatePreview(); st.textContent = '✅'; st.style.color = '#059669'; setTimeout(() => st.textContent = '', 3000); } else { st.textContent = '❌'; } } catch (e) { st.textContent = '❌'; } }
 
-        function evOpenForm() { document.getElementById('ev_id').value = ''; document.getElementById('evFormTitle').textContent = '🎉 Nouvel événement';['ev_name', 'ev_promo', 'ev_title', 'ev_sub', 'ev_cta', 'ev_link', 'ev_disc', 'ev_img', 'ev_start', 'ev_end'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; }); document.getElementById('ev_cta').value = 'Voir les offres →'; document.getElementById('ev_link').value = 'products.html'; document.getElementById('ev_active').value = 'true'; document.getElementById('ev_color').value = '#10b981'; document.querySelectorAll('#evColorRow .color-chip').forEach(c => c.classList.toggle('active', c.dataset.c === '#10b981')); evUpdatePreview(); document.getElementById('evForm').classList.add('open'); document.getElementById('evForm').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-        function evOpenEdit(id) { const ev = evEvents.find(e => e.id === id); if (!ev) return; document.getElementById('ev_id').value = id; document.getElementById('evFormTitle').textContent = '✏️ Modifier l\'événement'; document.getElementById('ev_name').value = ev.name || ''; document.getElementById('ev_promo').value = ev.promoText || ''; document.getElementById('ev_title').value = ev.slideTitle || ''; document.getElementById('ev_sub').value = ev.slideSub || ''; document.getElementById('ev_cta').value = ev.slideCta || ''; document.getElementById('ev_link').value = ev.slideLink || ''; document.getElementById('ev_disc').value = ev.slideDisc || ''; document.getElementById('ev_img').value = ev.slideImg || ''; document.getElementById('ev_start').value = ev.startDate ? ev.startDate.substring(0, 10) : ''; document.getElementById('ev_end').value = ev.endDate ? ev.endDate.substring(0, 10) : ''; document.getElementById('ev_active').value = ev.isActive ? 'true' : 'false'; document.getElementById('ev_color').value = ev.color || '#10b981'; document.querySelectorAll('#evColorRow .color-chip').forEach(c => c.classList.toggle('active', c.dataset.c === ev.color)); evUpdatePreview(); document.getElementById('evForm').classList.add('open'); document.getElementById('evForm').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        function evOpenForm() {
+            document.getElementById('ev_id').value = '';
+            document.getElementById('evFormTitle').textContent = '🎉 Nouvel événement';
+            ['ev_name', 'ev_promo', 'ev_title', 'ev_sub', 'ev_cta', 'ev_link', 'ev_disc', 'ev_img', 'ev_start', 'ev_end'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            document.getElementById('ev_cta').value = 'Voir les offres →';
+            document.getElementById('ev_link').value = 'products.html';
+            document.getElementById('ev_active').value = 'true';
+            document.getElementById('ev_color').value = '#10b981';
+            document.querySelectorAll('#evColorRow .color-chip').forEach(c => c.classList.toggle('active', c.dataset.c === '#10b981'));
+            evUpdatePreview();
+            document.getElementById('evForm').classList.add('open');
+            document.getElementById('evForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function evOpenEdit(id) {
+            const ev = evEvents.find(e => e.id === id); if (!ev) return;
+            document.getElementById('ev_id').value = id;
+            document.getElementById('evFormTitle').textContent = '✏️ Modifier l\'événement';
+            document.getElementById('ev_name').value = ev.name || '';
+            document.getElementById('ev_promo').value = ev.promoText || '';
+            document.getElementById('ev_title').value = ev.slideTitle || '';
+            document.getElementById('ev_sub').value = ev.slideSub || '';
+            document.getElementById('ev_cta').value = ev.slideCta || '';
+            document.getElementById('ev_link').value = ev.slideLink || '';
+            document.getElementById('ev_disc').value = ev.slideDisc || '';
+            document.getElementById('ev_img').value = ev.slideImg || '';
+            document.getElementById('ev_start').value = ev.startDate ? ev.startDate.substring(0, 10) : '';
+            document.getElementById('ev_end').value = ev.endDate ? ev.endDate.substring(0, 10) : '';
+            document.getElementById('ev_active').value = ev.isActive ? 'true' : 'false';
+            document.getElementById('ev_color').value = ev.color || '#10b981';
+            document.querySelectorAll('#evColorRow .color-chip').forEach(c => c.classList.toggle('active', c.dataset.c === ev.color));
+            evUpdatePreview();
+            document.getElementById('evForm').classList.add('open');
+            document.getElementById('evForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         function evCloseForm() { document.getElementById('evForm').classList.remove('open'); }
 
-        async function evSave() { const btn = document.getElementById('evBtnSave'); btn.disabled = true; btn.textContent = '⏳...'; const id = document.getElementById('ev_id').value; const payload = { name: document.getElementById('ev_name').value, color: document.getElementById('ev_color').value, startDate: document.getElementById('ev_start').value || null, endDate: document.getElementById('ev_end').value || null, promoText: document.getElementById('ev_promo').value, slideTitle: document.getElementById('ev_title').value, slideSub: document.getElementById('ev_sub').value, slideCta: document.getElementById('ev_cta').value, slideLink: document.getElementById('ev_link').value, slideDisc: document.getElementById('ev_disc').value, slideImg: document.getElementById('ev_img').value, isActive: document.getElementById('ev_active').value === 'true' }; try { const url = id ? `${API}/events/${id}` : `${API}/events`; const method = id ? 'PUT' : 'POST'; const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (r.ok) { evCloseForm(); await evLoadList(); } else alert('Erreur sauvegarde.'); } catch (e) { alert('Erreur réseau.'); } btn.disabled = false; btn.textContent = '💾 Enregistrer'; }
+        async function evSave() {
+            const btn = document.getElementById('evBtnSave'); btn.disabled = true; btn.textContent = '⏳...';
+            const id = document.getElementById('ev_id').value;
+            const payload = { name: document.getElementById('ev_name').value, color: document.getElementById('ev_color').value, startDate: document.getElementById('ev_start').value || null, endDate: document.getElementById('ev_end').value || null, promoText: document.getElementById('ev_promo').value, slideTitle: document.getElementById('ev_title').value, slideSub: document.getElementById('ev_sub').value, slideCta: document.getElementById('ev_cta').value, slideLink: document.getElementById('ev_link').value, slideDisc: document.getElementById('ev_disc').value, slideImg: document.getElementById('ev_img').value, isActive: document.getElementById('ev_active').value === 'true' };
+            try { const url = id ? `${API}/events/${id}` : `${API}/events`; const method = id ? 'PUT' : 'POST'; const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (r.ok) { evCloseForm(); await evLoadList(); } else alert('Erreur sauvegarde.'); } catch (e) { alert('Erreur réseau.'); }
+            btn.disabled = false; btn.textContent = '💾 Enregistrer';
+        }
 
-        async function evLoadList() { try { const res = await fetch(`${API}/events`); evEvents = await res.json(); evRenderList(); } catch (e) { document.getElementById('evList').innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444;font-size:13px;">❌ Erreur de chargement</div>'; } }
+        async function evLoadList() {
+            try { const res = await fetch(`${API}/events`); evEvents = await res.json(); evRenderList(); }
+            catch (e) { document.getElementById('evList').innerHTML = '<div style="text-align:center;padding:40px;color:#ef4444;font-size:13px;">❌ Erreur de chargement</div>'; }
+        }
 
-        function evGetStatus(ev) { if (!ev.isActive) return { label: 'Désactivé', bg: '#fee2e2', color: '#991b1b', cardBg: '#f9fafb' }; const today = new Date(); today.setHours(0, 0, 0, 0); const start = ev.startDate ? new Date(ev.startDate) : null; const end = ev.endDate ? new Date(ev.endDate) : null; if (start) start.setHours(0, 0, 0, 0); if (end) end.setHours(0, 0, 0, 0); if (start && today < start) return { label: 'À venir', bg: '#eff6ff', color: '#1e40af', cardBg: '#f9fafb' }; if (end && today > end) return { label: 'Passé', bg: '#f3f4f6', color: '#6b7280', cardBg: '#f9fafb' }; return { label: '● Actif', bg: 'rgba(255,255,255,.25)', color: 'white', cardBg: null }; }
+        function evGetStatus(ev) {
+            if (!ev.isActive) return { label: 'Désactivé', bg: '#fee2e2', color: '#991b1b', cardBg: '#f9fafb' };
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const start = ev.startDate ? new Date(ev.startDate) : null; const end = ev.endDate ? new Date(ev.endDate) : null;
+            if (start) start.setHours(0, 0, 0, 0); if (end) end.setHours(0, 0, 0, 0);
+            if (start && today < start) return { label: 'À venir', bg: '#eff6ff', color: '#1e40af', cardBg: '#f9fafb' };
+            if (end && today > end) return { label: 'Passé', bg: '#f3f4f6', color: '#6b7280', cardBg: '#f9fafb' };
+            return { label: '● Actif', bg: 'rgba(255,255,255,.25)', color: 'white', cardBg: null };
+        }
+
         function evFmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
 
-        function evRenderList() { const list = document.getElementById('evList'); if (!evEvents.length) { list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#9ca3af;"><div style="font-size:40px;margin-bottom:10px;">🎉</div><div style="font-size:15px;font-weight:600;color:#374151;margin-bottom:4px;">Aucun événement planifié</div><div style="font-size:13px;">Créez votre premier événement pour animer la home</div></div>'; return; } list.innerHTML = evEvents.map(ev => { const st = evGetStatus(ev); const color = ev.color || '#10b981'; const headBg = st.cardBg ? ('#f3f4f6') : ('linear-gradient(135deg,' + color + ',' + color + 'cc)'); const titleColor = st.cardBg ? '#111827' : 'white'; const dateColor = st.cardBg ? '#6b7280' : 'rgba(255,255,255,.8)'; return `<div class="ev-card"><div class="ev-card-head" style="background:${headBg};"><div><div class="ev-card-title" style="color:${titleColor};">${ev.name}</div><div class="ev-card-dates" style="color:${dateColor};">${evFmtDate(ev.startDate)} → ${evFmtDate(ev.endDate)}</div></div><span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;background:${st.bg};color:${st.color};">${st.label}</span></div><div class="ev-card-body">"${ev.promoText || '—'}"${ev.slideDisc ? ` <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:8px;">JUSQU'À ${ev.slideDisc}</span>` : ''}</div><div class="ev-card-actions"><button class="ev-btn ev-btn-edit" onclick="evOpenEdit(${ev.id})">✏️ Modifier</button><button class="ev-btn ${ev.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="evToggle(${ev.id},${!ev.isActive})">${ev.isActive ? '✅ Actif' : '⏸ Inactif'}</button><button class="ev-btn ev-btn-del" onclick="evDelete(${ev.id})">🗑</button></div></div>`; }).join(''); }
+        function evRenderList() {
+            const list = document.getElementById('evList');
+            if (!evEvents.length) { list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#9ca3af;"><div style="font-size:40px;margin-bottom:10px;">🎉</div><div style="font-size:15px;font-weight:600;color:#374151;margin-bottom:4px;">Aucun événement planifié</div><div style="font-size:13px;">Créez votre premier événement pour animer la home</div></div>'; return; }
+            list.innerHTML = evEvents.map(ev => {
+                const st = evGetStatus(ev); const color = ev.color || '#10b981';
+                const headBg = st.cardBg ? ('#f3f4f6') : ('linear-gradient(135deg,' + color + ',' + color + 'cc)');
+                const titleColor = st.cardBg ? '#111827' : 'white'; const dateColor = st.cardBg ? '#6b7280' : 'rgba(255,255,255,.8)';
+                return `<div class="ev-card">
+                        <div class="ev-card-head" style="background:${headBg};">
+                            <div><div class="ev-card-title" style="color:${titleColor};">${ev.name}</div><div class="ev-card-dates" style="color:${dateColor};">${evFmtDate(ev.startDate)} → ${evFmtDate(ev.endDate)}</div></div>
+                            <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;background:${st.bg};color:${st.color};">${st.label}</span>
+                        </div>
+                        <div class="ev-card-body">"${ev.promoText || '—'}"${ev.slideDisc ? ` <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:8px;">JUSQU'À ${ev.slideDisc}</span>` : ''}</div>
+                        <div class="ev-card-actions">
+                            <button class="ev-btn ev-btn-edit" onclick="evOpenEdit(${ev.id})">✏️ Modifier</button>
+                            <button class="ev-btn ${ev.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="evToggle(${ev.id},${!ev.isActive})">${ev.isActive ? '✅ Actif' : '⏸ Inactif'}</button>
+                            <button class="ev-btn ev-btn-del" onclick="evDelete(${ev.id})">🗑</button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
 
         async function evToggle(id, newState) { const ev = evEvents.find(e => e.id === id); if (!ev) return; try { const r = await fetch(`${API}/events/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...ev, isActive: newState }) }); if (r.ok) await evLoadList(); } catch (e) { alert('Erreur réseau.'); } }
         async function evDelete(id) { if (!confirm('Supprimer cet événement définitivement ?')) return; try { const r = await fetch(`${API}/events/${id}`, { method: 'DELETE' }); if (r.ok) await evLoadList(); else alert('Erreur suppression.'); } catch (e) { alert('Erreur réseau.'); } }
@@ -826,6 +912,32 @@
         async function featuredSelectSeller(id, name) { document.querySelectorAll('[id^="fsel-"]').forEach(el => el.style.borderColor = '#e5e7eb'); const el = document.getElementById('fsel-' + id); if (el) el.style.borderColor = '#10b981'; document.getElementById('featuredShopTitle').textContent = '📦 ' + name; document.getElementById('featuredProductsList').innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">⏳ Chargement...</div>'; try { const res = await fetch(`${API}/featured-products/sellers/${id}/products`); featuredAllProds = await res.json(); featuredRenderProds(featuredAllProds); } catch (e) { document.getElementById('featuredProductsList').innerHTML = '<div style="color:#ef4444;">❌ Erreur</div>'; } }
         function featuredFilter() { const q = document.getElementById('featuredSearch').value.toLowerCase(); featuredRenderProds(featuredAllProds.filter(p => p.name.toLowerCase().includes(q))); }
         function featuredParseImgs(images) { try { const a = JSON.parse(images || '[]'); return Array.isArray(a) ? a : []; } catch { return images ? [images] : []; } }
-        function featuredRenderProds(prods) {
-            const grid = document.getElementById('featuredProductsList'); if (!prods.length) { grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">Aucun produit</div>'; return; } grid.innerHTML = prods.map(p => {
-                const img = featuredParseImgs(p.images)[0] || ''; const sel = featuredSelIds.includes(p.id); return `<div id="fprod-${p.id}" onclick="featuredToggleById(${p.id})" style="border:2px solid ${sel ? '#10b981' : '#e5e7eb'};background:${sel ? '#f0fdf4' : 'white'};border-radius:10px;overflow:hidden;cursor:poin
+        function featuredRenderProds(prods) { const grid = document.getElementById('featuredProductsList'); if (!prods.length) { grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;text-align:center;padding:30px;grid-column:1/-1;">Aucun produit</div>'; return; } grid.innerHTML = prods.map(p => { const img = featuredParseImgs(p.images)[0] || ''; const sel = featuredSelIds.includes(p.id); return `<div id="fprod-${p.id}" onclick="featuredToggleById(${p.id})" style="border:2px solid ${sel ? '#10b981' : '#e5e7eb'};background:${sel ? '#f0fdf4' : 'white'};border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;">${sel ? '<div class="fcheck" style="position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;">✓</div>' : ''}<div style="height:95px;background:#f9fafb;display:flex;align-items:center;justify-content:center;overflow:hidden;">${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:contain;padding:4px;" onerror="this.style.display='none'">` : '<span style="font-size:28px">📦</span>'}</div><div style="padding:8px;"><div style="font-size:11px;font-weight:600;color:#111827;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;">${p.name}</div><div style="font-size:12px;font-weight:700;color:#10b981;">${Number(p.price).toLocaleString('fr-FR')} F</div></div></div>`; }).join(''); }
+        function featuredToggleById(id) { const prod = featuredAllProds.find(p => p.id === id); if (!prod) return; if (featuredSelIds.includes(id)) { featuredSelIds = featuredSelIds.filter(x => x !== id); delete featuredSelData[id]; } else { if (featuredSelIds.length >= 20) { alert('Maximum 20 produits.'); return; } featuredSelIds.push(id); const img = featuredParseImgs(prod.images)[0] || ''; featuredSelData[id] = { id, name: prod.name, price: prod.price, img }; } const card = document.getElementById('fprod-' + id); if (card) { const sel = featuredSelIds.includes(id); card.style.borderColor = sel ? '#10b981' : '#e5e7eb'; card.style.background = sel ? '#f0fdf4' : 'white'; const ex = card.querySelector('.fcheck'); if (sel && !ex) { const c = document.createElement('div'); c.className = 'fcheck'; c.style.cssText = 'position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#10b981;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;'; c.textContent = '✓'; card.appendChild(c); } else if (!sel && ex) { ex.remove(); } } const hid = document.getElementById('featured_product_ids'); if (hid) hid.value = featuredSelIds.join(','); featuredRenderSelected(); }
+        function featuredRenderSelected() { document.getElementById('featuredCount').textContent = featuredSelIds.length; const grid = document.getElementById('featuredSelectedGrid'); if (!featuredSelIds.length) { grid.innerHTML = '<span style="color:#9ca3af;font-size:13px;font-style:italic;">Aucun produit sélectionné</span>'; return; } grid.innerHTML = featuredSelIds.map(id => { const p = featuredSelData[id]; if (!p) return ''; const name = p.name.length > 20 ? p.name.slice(0, 20) + '…' : p.name; return `<div style="display:flex;align-items:center;gap:6px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:600;color:#065f46;">${p.img ? `<img src="${p.img}" style="width:24px;height:24px;object-fit:cover;border-radius:4px;">` : '<span>📦</span>'}<span>${name}</span><span onclick="featuredToggleById(${id})" style="cursor:pointer;color:#6b7280;font-size:14px;margin-left:2px;" title="Retirer">×</span></div>`; }).join(''); const hid = document.getElementById('featured_product_ids'); if (hid) hid.value = featuredSelIds.join(','); }
+        function featuredClearAll() { if (!confirm('Effacer tous les produits ?')) return; featuredSelIds = []; featuredSelData = {}; featuredRenderProds(featuredAllProds); featuredRenderSelected(); }
+
+        // ── CHARGEMENT + SAUVEGARDE SETTINGS ─────────────────────────
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API}/site-settings`); const data = await res.json();
+                BASE_KEYS.forEach(key => { const el = document.getElementById(key); if (el && data[key] !== undefined) el.value = data[key]; });
+                let realCount = 0; for (let i = 0; i < 5; i++) { if (data['slide' + i + '_title'] || i === 0) realCount = i + 1; else break; } slideCount = Math.max(realCount, 1); buildSlidesUI();
+                for (let sn = 0; sn < slideCount; sn++) { slideKeys(sn).forEach(k => { const el = document.getElementById(k); if (el && data[k] !== undefined) el.value = data[k]; }); previewSlide(sn); }
+                [1, 2, 3, 4].forEach(n => previewCard(n));
+                const idsEl = document.getElementById('featured_product_ids');
+                if (idsEl && idsEl.value) { featuredSelIds = idsEl.value.split(',').map(x => parseInt(x)).filter(x => !isNaN(x) && x > 0); try { const r = await fetch(`${API}/featured-products`); const prods = await r.json(); prods.forEach(p => { const img = featuredParseImgs(p.images)[0] || ''; featuredSelData[p.id] = { id: p.id, name: p.name, price: p.price, img }; }); featuredRenderSelected(); } catch (e) { } }
+            } catch (e) { console.error('Erreur chargement:', e); }
+        }
+        async function saveSettings() {
+            const btn = document.getElementById('btnSave'); btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
+            document.getElementById('toastOk').classList.remove('show'); document.getElementById('saveInfo').style.display = 'none';
+            const updates = {}; BASE_KEYS.forEach(key => { const el = document.getElementById(key); if (el) updates[key] = el.value; });
+            for (let i = 0; i < slideCount; i++) { slideKeys(i).forEach(k => { const el = document.getElementById(k); if (el) updates[k] = el.value; }); }
+            try { const res = await fetch(`${API}/site-settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates) }); if (res.ok) { document.getElementById('toastOk').classList.add('show'); setTimeout(() => { document.getElementById('toastOk').classList.remove('show'); document.getElementById('saveInfo').style.display = ''; }, 4000); } else alert('Erreur sauvegarde.'); } catch (e) { alert('Erreur réseau.'); }
+            btn.disabled = false; btn.textContent = '💾 Enregistrer';
+        }
+        loadSettings();
+    </script>
+</body>
+</html>
