@@ -2060,34 +2060,45 @@
                         if (img && s[c.img]) { img.src = s[c.img]; img.style.display = 'block'; if (ph) ph.style.display = 'none'; }
                     }
                 });
-                // Événement actif
-                if (s.event_active === 'true') {
-                    if (s.event_promo_text) {
-                        var pb = document.getElementById('promoBarText');
-                        if (pb) pb.textContent = s.event_promo_text;
-                    }
-
-                    // Bannière événement
-                    var banner = document.getElementById('eventBanner');
-                    var card = document.getElementById('eventBannerCard');
-                    if (banner && s.event_active === 'true') {
-                        var color = s.event_color || '#10b981';
-                        if (card) card.style.background = 'linear-gradient(135deg,' + color + ',' + color + 'cc)';
-                        var t = document.getElementById('eventBannerTitle'); if (t) t.textContent = s.event_slide_title || '';
-                        var sb = document.getElementById('eventBannerSub'); if (sb) sb.textContent = s.event_slide_sub || '';
-                        var bd = document.getElementById('eventBannerBadge'); if (bd) bd.textContent = '🎉 ' + (s.event_name || '');
-                        var ct = document.getElementById('eventBannerCta'); if (ct) { ct.textContent = (s.event_slide_cta || 'Voir les offres →'); ct.href = s.event_slide_link || 'products.html'; }
-                        var img = document.getElementById('eventBannerImg'); if (img && s.event_slide_img) img.src = s.event_slide_img;
-                        var disc = document.getElementById('eventBannerDisc'); if (disc) disc.textContent = s.event_slide_disc ? 'JUSQU\'À ' + s.event_slide_disc : '';
-                        banner.style.display = 'block';
-                    }
-
-
-                }
                 buildSlider(s);
+                // Charger l'événement actif depuis la nouvelle API
+                loadCurrentEvent();
+
             } catch (e) { buildSlider({}); }
         }
         document.addEventListener('DOMContentLoaded', function () { loadSiteSettings(); loadProducts(); });
+
+
+        async function loadCurrentEvent() {
+            try {
+                var res = await fetch('/api/events/current');
+                var ev = await res.json();
+                if (!ev || !ev.id) return;
+
+                // Barre promo
+                if (ev.promoText) {
+                    var pb = document.getElementById('promoBarText');
+                    if (pb) pb.textContent = ev.promoText;
+                }
+
+                // Bannière
+                var banner = document.getElementById('eventBanner');
+                var card = document.getElementById('eventBannerCard');
+                if (banner) {
+                    var color = ev.color || '#10b981';
+                    if (card) card.style.background = 'linear-gradient(135deg,' + color + ',' + color + 'cc)';
+                    var t = document.getElementById('eventBannerTitle'); if (t) t.textContent = ev.slideTitle || '';
+                    var sb = document.getElementById('eventBannerSub'); if (sb) sb.textContent = ev.slideSub || '';
+                    var bd = document.getElementById('eventBannerBadge'); if (bd) bd.textContent = '🎉 ' + (ev.name || '');
+                    var ct = document.getElementById('eventBannerCta'); if (ct) { ct.textContent = ev.slideCta || 'Voir les offres →'; ct.href = ev.slideLink || 'products.html'; }
+                    var img = document.getElementById('eventBannerImg'); if (img && ev.slideImg) img.src = ev.slideImg;
+                    var disc = document.getElementById('eventBannerDisc'); if (disc) disc.textContent = ev.slideDisc ? 'JUSQU\'À ' + ev.slideDisc : '';
+                    banner.style.display = 'block';
+                }
+            } catch (e) { console.log('Event non chargé:', e); }
+        }
+
+
     </script>
 
     <!-- Panier + wishlist -->
