@@ -1688,6 +1688,27 @@
         </div>
     </div>
 
+
+    <!-- ══ BANNIÈRE ÉVÉNEMENT ══════════════════════════════════ -->
+    <div id="eventBanner" style="display:none;">
+        <div style="max-width:1280px;margin:0 auto;padding:20px 20px 0;">
+            <div id="eventBannerCard" style="border-radius:16px;overflow:hidden;position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:220px;cursor:pointer;">
+                <div id="eventBannerLeft" style="padding:36px 40px;display:flex;flex-direction:column;justify-content:center;gap:12px;">
+                    <div id="eventBannerBadge" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;width:fit-content;text-transform:uppercase;"></div>
+                    <div id="eventBannerTitle" style="font-size:38px;font-weight:800;color:white;line-height:1.1;"></div>
+                    <div id="eventBannerSub" style="font-size:15px;color:rgba(255,255,255,.85);line-height:1.5;max-width:380px;"></div>
+                    <a id="eventBannerCta" href="products.html" style="display:inline-flex;align-items:center;gap:8px;background:white;color:#111827;font-weight:700;font-size:14px;padding:12px 24px;border-radius:10px;width:fit-content;margin-top:4px;">Voir les offres →</a>
+                </div>
+                <div style="position:relative;overflow:hidden;min-height:220px;">
+                    <img id="eventBannerImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+                    <div id="eventBannerDisc" style="position:absolute;bottom:20px;left:20px;background:white;color:#111827;font-size:22px;font-weight:800;padding:10px 20px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.2);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- ══ 3. SÉLECTION RANITA (produits phares) ════════════════ -->
     <section class="featured-section" id="featuredSection" style="display:none;">
         <div class="featured-wrap">
@@ -2045,6 +2066,22 @@
                         var pb = document.getElementById('promoBarText');
                         if (pb) pb.textContent = s.event_promo_text;
                     }
+
+                    // Bannière événement
+                    var banner = document.getElementById('eventBanner');
+                    var card = document.getElementById('eventBannerCard');
+                    if (banner && s.event_active === 'true') {
+                        var color = s.event_color || '#10b981';
+                        if (card) card.style.background = 'linear-gradient(135deg,' + color + ',' + color + 'cc)';
+                        var t = document.getElementById('eventBannerTitle'); if (t) t.textContent = s.event_slide_title || '';
+                        var sb = document.getElementById('eventBannerSub'); if (sb) sb.textContent = s.event_slide_sub || '';
+                        var bd = document.getElementById('eventBannerBadge'); if (bd) bd.textContent = '🎉 ' + (s.event_name || '');
+                        var ct = document.getElementById('eventBannerCta'); if (ct) { ct.textContent = (s.event_slide_cta || 'Voir les offres →'); ct.href = s.event_slide_link || 'products.html'; }
+                        var img = document.getElementById('eventBannerImg'); if (img && s.event_slide_img) img.src = s.event_slide_img;
+                        var disc = document.getElementById('eventBannerDisc'); if (disc) disc.textContent = s.event_slide_disc ? 'JUSQU\'À ' + s.event_slide_disc : '';
+                        banner.style.display = 'block';
+                    }
+
                     // Injecter slide événement au début
                     if (s.event_slide_title) {
                         s['slide0_title'] = s.event_slide_title;
