@@ -2072,30 +2072,39 @@
         async function loadCurrentEvent() {
             try {
                 var res = await fetch('/api/events/current');
-                var ev = await res.json();
-                if (!ev || !ev.id) return;
+                var events = await res.json();
+                if (!events || !events.length) return;
 
-                // Barre promo
-                if (ev.promoText) {
-                    var pb = document.getElementById('promoBarText');
-                    if (pb) pb.textContent = ev.promoText;
-                }
+                var container = document.getElementById('eventBanner');
+                if (!container) return;
 
-                // Bannière
-                var banner = document.getElementById('eventBanner');
-                var card = document.getElementById('eventBannerCard');
-                if (banner) {
+                container.innerHTML = '';
+                container.style.display = 'block';
+
+                events.forEach(function (ev) {
                     var color = ev.color || '#10b981';
-                    if (card) card.style.background = 'linear-gradient(135deg,' + color + ',' + color + 'cc)';
-                    var t = document.getElementById('eventBannerTitle'); if (t) t.textContent = ev.slideTitle || '';
-                    var sb = document.getElementById('eventBannerSub'); if (sb) sb.textContent = ev.slideSub || '';
-                    var bd = document.getElementById('eventBannerBadge'); if (bd) bd.textContent = '🎉 ' + (ev.name || '');
-                    var ct = document.getElementById('eventBannerCta'); if (ct) { ct.textContent = ev.slideCta || 'Voir les offres →'; ct.href = ev.slideLink || 'products.html'; }
-                    var img = document.getElementById('eventBannerImg'); if (img && ev.slideImg) img.src = ev.slideImg;
-                    var disc = document.getElementById('eventBannerDisc'); if (disc) disc.textContent = ev.slideDisc ? 'JUSQU\'À ' + ev.slideDisc : '';
-                    banner.style.display = 'block';
-                }
-            } catch (e) { console.log('Event non chargé:', e); }
+                    var disc = ev.slideDisc ? 'JUSQU\'À ' + ev.slideDisc : '';
+                    var imgHtml = ev.slideImg ?
+                        '<img src="' + ev.slideImg + '" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">' :
+                        '<span style="font-size:48px;">🎉</span>';
+
+                    var card = document.createElement('div');
+                    card.style.cssText = 'max-width:1280px;margin:0 auto;padding:20px 20px 0;';
+                    card.innerHTML = '<div style="border-radius:16px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;min-height:340px;cursor:pointer;background:linear-gradient(135deg,' + color + ',' + color + 'cc);" onclick="location.href=\'' + (ev.slideLink || 'products.html') + '\'">' +
+                        '<div style="padding:36px 40px;display:flex;flex-direction:column;justify-content:center;gap:12px;">' +
+                        '<div style="display:inline-flex;align-items:center;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;width:fit-content;text-transform:uppercase;">🎉 ' + (ev.name || '') + '</div>' +
+                        '<div style="font-size:38px;font-weight:800;color:white;line-height:1.1;">' + (ev.slideTitle || '') + '</div>' +
+                        '<div style="font-size:15px;color:rgba(255,255,255,.85);line-height:1.5;max-width:380px;">' + (ev.slideSub || '') + '</div>' +
+                        '<a href="' + (ev.slideLink || 'products.html') + '" style="display:inline-flex;align-items:center;background:white;color:#111827;font-weight:700;font-size:14px;padding:12px 24px;border-radius:10px;width:fit-content;text-decoration:none;">' + (ev.slideCta || 'Voir les offres →') + '</a>' +
+                        '</div>' +
+                        '<div style="position:relative;overflow:hidden;min-height:340px;display:flex;align-items:center;justify-content:center;">' +
+                        imgHtml +
+                        (disc ? '<div style="position:absolute;bottom:20px;left:20px;background:white;color:#111827;font-size:22px;font-weight:800;padding:10px 20px;border-radius:999px;">' + disc + '</div>' : '') +
+                        '</div>' +
+                        '</div>';
+                    container.appendChild(card);
+                });
+            } catch (e) { console.log('Events non chargés:', e); }
         }
 
 

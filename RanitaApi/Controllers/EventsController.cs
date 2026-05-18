@@ -27,15 +27,13 @@ namespace RanitaApi.Controllers
         public async Task<IActionResult> GetCurrent()
         {
             var today = DateTime.UtcNow.Date;
-            var ev = await _db.SiteEvents
+            var events = await _db.SiteEvents
                 .Where(e => e.IsActive &&
                     (e.StartDate == null || e.StartDate.Value.Date <= today) &&
                     (e.EndDate == null || e.EndDate.Value.Date >= today))
-                    .OrderByDescending(e => e.CreatedAt)
-                    .FirstOrDefaultAsync();
-
-            if (ev == null) return Ok(null);
-            return Ok(ev);
+                .OrderByDescending(e => e.CreatedAt)
+                .ToListAsync();
+            return Ok(events);
         }
 
         // POST /api/events — créer un événement
