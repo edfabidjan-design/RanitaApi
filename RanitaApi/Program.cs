@@ -704,4 +704,41 @@ try
 }
 catch (Exception ex) { Console.WriteLine("SiteSettings error: " + ex.Message); }
 
+
+
+
+// ════════════════════════════════════════════════════
+// FICHIER 2 : Program.cs
+// Ajoute ce bloc avant app.Run() :
+// ════════════════════════════════════════════════════
+
+// ── SiteEvents table ───────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""SiteEvents"" (
+            ""Id""         SERIAL PRIMARY KEY,
+            ""Name""       TEXT NOT NULL DEFAULT '',
+            ""Color""      TEXT NOT NULL DEFAULT '#10b981',
+            ""StartDate""  TIMESTAMP NULL,
+            ""EndDate""    TIMESTAMP NULL,
+            ""PromoText""  TEXT NOT NULL DEFAULT '',
+            ""SlideTitle"" TEXT NOT NULL DEFAULT '',
+            ""SlideSub""   TEXT NOT NULL DEFAULT '',
+            ""SlideCta""   TEXT NOT NULL DEFAULT 'Voir les offres →',
+            ""SlideLink""  TEXT NOT NULL DEFAULT 'products.html',
+            ""SlideDisc""  TEXT NOT NULL DEFAULT '',
+            ""SlideImg""   TEXT NOT NULL DEFAULT '',
+            ""IsActive""   BOOLEAN NOT NULL DEFAULT TRUE,
+            ""CreatedAt""  TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+    Console.WriteLine("SiteEvents OK");
+}
+catch (Exception ex) { Console.WriteLine("SiteEvents error: " + ex.Message); }
+
+
+
 app.Run();
