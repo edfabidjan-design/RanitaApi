@@ -31,8 +31,8 @@ namespace RanitaApi.Controllers
                 .Where(e => e.IsActive &&
                     (e.StartDate == null || e.StartDate.Value.Date <= today) &&
                     (e.EndDate == null || e.EndDate.Value.Date >= today))
-                .OrderBy(e => e.StartDate)
-                .FirstOrDefaultAsync();
+                    .OrderByDescending(e => e.CreatedAt)
+                    .FirstOrDefaultAsync();
 
             if (ev == null) return Ok(null);
             return Ok(ev);
