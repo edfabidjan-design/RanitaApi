@@ -39,26 +39,28 @@ namespace RanitaApi.Controllers
         }
 
         // POST /api/events — créer un événement
+        // POST
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SiteEvent ev)
         {
             ev.CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+            if (ev.StartDate.HasValue) ev.StartDate = DateTime.SpecifyKind(ev.StartDate.Value, DateTimeKind.Utc);
+            if (ev.EndDate.HasValue) ev.EndDate = DateTime.SpecifyKind(ev.EndDate.Value, DateTimeKind.Utc);
             _db.SiteEvents.Add(ev);
             await _db.SaveChangesAsync();
             return Ok(ev);
         }
 
-        // PUT /api/events/{id} — modifier un événement
+        // PUT
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] SiteEvent updated)
         {
             var ev = await _db.SiteEvents.FindAsync(id);
             if (ev == null) return NotFound();
-
             ev.Name = updated.Name;
             ev.Color = updated.Color;
-            ev.StartDate = updated.StartDate;
-            ev.EndDate = updated.EndDate;
+            ev.StartDate = updated.StartDate.HasValue ? DateTime.SpecifyKind(updated.StartDate.Value, DateTimeKind.Utc) : null;
+            ev.EndDate = updated.EndDate.HasValue ? DateTime.SpecifyKind(updated.EndDate.Value, DateTimeKind.Utc) : null;
             ev.PromoText = updated.PromoText;
             ev.SlideTitle = updated.SlideTitle;
             ev.SlideSub = updated.SlideSub;
@@ -67,7 +69,6 @@ namespace RanitaApi.Controllers
             ev.SlideDisc = updated.SlideDisc;
             ev.SlideImg = updated.SlideImg;
             ev.IsActive = updated.IsActive;
-
             await _db.SaveChangesAsync();
             return Ok(ev);
         }
