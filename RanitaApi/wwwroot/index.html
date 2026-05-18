@@ -54,7 +54,6 @@
             background: var(--w2);
             color: var(--t);
             overflow-x: hidden;
-            padding-top: 58px;
         }
 
         h1, h2, h3, h4 {
@@ -80,8 +79,9 @@
             gap: 12px;
             font-size: 12px;
             font-weight: 600;
-            position: relative;
-            z-index: 1;
+            position: sticky;
+            top: 0;
+            z-index: 600;
             border-bottom: 1px solid rgba(16,185,129,.2);
         }
 
@@ -114,12 +114,12 @@
 
         /* ── HEADER DESKTOP ────────────────────────────────────── */
         .site-header {
-            position: fixed;
-            top: 0;
+            position: sticky;
+            top: 36px;
             left: 0;
             right: 0;
             z-index: 500;
-            background: rgba(13,17,23,.95);
+            background: rgba(13,17,23,.97);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--dkb);
             display: flex;
@@ -342,7 +342,7 @@
             background: var(--dk2);
             border-bottom: 1px solid var(--dkb);
             position: sticky;
-            top: 58px;
+            top: 94px;
             z-index: 200;
         }
 
@@ -412,8 +412,7 @@
             position: relative;
             overflow: hidden;
             background: var(--dk);
-            margin-top: 16px;
-
+            margin-top: 0;
         }
 
         .slides-track {
@@ -1507,7 +1506,7 @@
             }
 
             .hero-slider {
-                margin-top: 54px;
+                margin-top: 0;
             }
 
             .cats-bar {
@@ -1621,28 +1620,12 @@
                 display: none;
             }
         }
-
-
-        #cMenu {
-            position: fixed !important;
-            top: 68px !important;
-            right: 20px !important;
-            z-index: 99999 !important;
-            background: #ffffff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 12px !important;
-            box-shadow: 0 8px 24px rgba(0,0,0,.15) !important;
-            min-width: 200px !important;
-            overflow: hidden !important;
-        }
-
-
     </style>
 </head>
 <body>
 
     <!-- ══ BARRE PROMO ══════════════════════════════════════════ -->
-    <div class="promo-bar" id="promoBar" style="display:flex;">
+    <div class="promo-bar" id="promoBar">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
             <span class="promo-bar-pill">🚚 LIVRAISON</span>
             <span id="promoBarText">Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison</span>
@@ -1694,7 +1677,7 @@
     </div>
 
     <!-- ══ 2. BARRE CATÉGORIES ══════════════════════════════════ -->
-    <div class="cats-bar" style="position:sticky;top:58px;z-index:200;">
+    <div class="cats-bar">
         <div style="max-width:1280px;margin:0 auto;position:relative;">
             <button class="cats-btn l" onclick="scrollCats(-1)">‹</button>
             <div class="cats-inner" id="catsBarInner">
@@ -1918,7 +1901,7 @@
             var nav = document.getElementById('authNav');
             if (!nav) return;
             if (client) {
-                nav.innerHTML = '<div style="position:relative;display:inline-block;"><button onclick="toggleMenu()" style="background:var(--g);color:#fff;border:none;padding:7px 14px;border-radius:var(--rsm);font-weight:700;cursor:pointer;font-size:13px;">👤 ' + (client.name ? client.name.split(' ')[0] : 'Mon compte') + ' ▾</button><div id="cMenu" style="display:none;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);min-width:200px;overflow:hidden;""><a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#111827;text-decoration:none;font-weight:600;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a><div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#EF4444;font-weight:600;cursor:pointer;">🚪 Déconnexion</div></div></div>';
+                nav.innerHTML = '<div style="position:relative;display:inline-block;"><button onclick="toggleMenu()" style="background:#10b981;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">👤 ' + (client.name ? client.name.split(' ')[0] : 'Mon compte') + ' ▾</button><div id="cMenu" style="display:none;position:absolute;right:0;top:46px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:200px;z-index:99999;overflow:hidden;"><a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">📦 Mes commandes</a><div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">🚪 Déconnexion</div></div></div>';
             } else {
                 nav.innerHTML = '<a href="login.html" style="color:var(--g);font-weight:700;" class="btn-outline">Connexion</a><a href="register.html" class="btn-primary" style="margin-left:6px;">Inscription</a>';
             }
