@@ -657,7 +657,12 @@
                     </div>
                     <div class="field">
                         <label>Image slide (URL)</label>
-                        <input type="text" id="event_slide_img" placeholder="https://...image.jpg">
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" id="event_slide_img" placeholder="https://...image.jpg" style="flex:1;">
+                            <label for="event_slide_img_file" style="background:#10b981;color:white;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">📁 Choisir</label>
+                            <input type="file" id="event_slide_img_file" accept="image/*" style="display:none;" onchange="uploadEventImg(this)">
+                            <span id="event_slide_img_status" style="font-size:11px;color:#6b7280;"></span>
+                        </div>
                     </div>
                     <div class="field full">
                         <label>Couleur thème</label>
@@ -775,6 +780,17 @@
             if (tab === 'featured' && !document.getElementById('featuredSellerList').querySelector('[id^="fsel-"]')) {
                 featuredLoadSellers();
             }
+        }
+
+        async function uploadEventImg(input) {
+            const file = input.files[0]; if (!file) return;
+            const st = document.getElementById('event_slide_img_status'); st.textContent = '⏳';
+            const fd = new FormData(); fd.append('file', file);
+            try {
+                const r = await fetch(`${API}/upload`, { method: 'POST', body: fd });
+                const d = await r.json();
+                if (d.url) { document.getElementById('event_slide_img').value = d.url; st.textContent = '✅'; st.style.color = '#059669'; setTimeout(() => st.textContent = '', 3000); }
+            } catch (e) { st.textContent = '❌'; }
         }
 
         // ── UPLOADS ──────────────────────────────────────────────────
