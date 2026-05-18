@@ -42,7 +42,7 @@ namespace RanitaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SiteEvent ev)
         {
-            ev.CreatedAt = DateTime.UtcNow;
+            ev.CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
             _db.SiteEvents.Add(ev);
             await _db.SaveChangesAsync();
             return Ok(ev);

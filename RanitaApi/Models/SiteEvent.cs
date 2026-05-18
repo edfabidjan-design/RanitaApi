@@ -17,7 +17,7 @@ namespace RanitaApi.Models
         public string SlideDisc { get; set; } = "";
         public string SlideImg { get; set; } = "";
         public bool IsActive { get; set; } = true;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
 
         [NotMapped]
         public bool IsCurrentlyActive =>
