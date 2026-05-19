@@ -592,8 +592,16 @@
                 <div class="section-title">🎁 Section parrainage (bas de page)</div>
                 <div class="info-box info-green" style="margin-bottom:20px;">✅ Cette section apparaît juste avant le footer.</div>
                 <div class="fields-grid">
-                    <div class="field"><label>Titre</label><input type="text" id="referral_title" placeholder="Invitez un ami, gagnez 2 500 F CFA"></div>
+                    <div class="field"><label>Titre</label><input type="text" id="referral_title" placeholder="Invitez un ami, gagnez X% sur son achat"></div>
                     <div class="field"><label>Description</label><textarea id="referral_desc" placeholder="Pour chaque ami qui effectue son premier achat..."></textarea></div>
+                    <div class="field">
+                        <label>Taux commission parrainage (%)</label>
+                        <input type="number" id="referral_rate" placeholder="5" min="1" max="50" oninput="updateReferralPreview()">
+                        <span class="hint">Ex: 5 = 5% du montant reversé au parrain</span>
+                    </div>
+                    <div class="field full">
+                        <div id="referralRatePreview" style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:14px;font-size:13px;color:#065f46;display:none;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -742,7 +750,7 @@
             'referral_title', 'referral_desc',
             'featured_title', 'featured_subtitle', 'featured_product_ids',
             'free_shipping_threshold',
-            'promo_bar_start', 'promo_bar_end'
+            'promo_bar_start', 'promo_bar_end', 'referral_rate'
         ];
         function slideKeys(n) { return ['slide' + n + '_title', 'slide' + n + '_sub', 'slide' + n + '_cta_text', 'slide' + n + '_cta_link', 'slide' + n + '_img', 'slide' + n + '_badge', 'slide' + n + '_discount', 'slide' + n + '_discount_label']; }
 
@@ -755,7 +763,20 @@
             if (tab === 'event') evLoadList();
             if (tab === 'livraison') updateShippingPreview();
             if (tab === 'promo') updatePromoPreview();
+            if (tab === 'referral') updateReferralPreview();
         }
+
+        function updateReferralPreview() {
+            var rate = parseFloat(document.getElementById('referral_rate').value) || 5;
+            var box = document.getElementById('referralRatePreview');
+            if (!box) return;
+            box.style.display = 'block';
+            box.innerHTML = '<strong>👁 Aperçu :</strong><br><br>' +
+                '🛒 Ami achète <strong>15 000 F</strong> → parrain reçoit <strong style="color:#10b981;">' + Math.round(15000 * rate / 100).toLocaleString() + ' F</strong><br>' +
+                '🛒 Ami achète <strong>50 000 F</strong> → parrain reçoit <strong style="color:#10b981;">' + Math.round(50000 * rate / 100).toLocaleString() + ' F</strong><br>' +
+                '🛒 Ami achète <strong>100 000 F</strong> → parrain reçoit <strong style="color:#10b981;">' + Math.round(100000 * rate / 100).toLocaleString() + ' F</strong>';
+        }
+
 
 
         function updatePromoPreview() {

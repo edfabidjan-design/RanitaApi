@@ -152,7 +152,14 @@ namespace RanitaApi.Controllers
                             var parrain = await _context.Clients.FindAsync(acheteur.ReferredById.Value);
                             if (parrain != null)
                             {
-                                parrain.ReferralCredits += 2500;
+                                var subtotal = order.Items.Sum(i => i.Price * i.Quantity);
+                                var rateSetting = await _context.SiteSettings
+                                    .FirstOrDefaultAsync(s => s.Key == "referral_rate");
+                                var rate = decimal.TryParse(rateSetting?.Value, out var r) ? r / 100m : 0.05m;
+                                var credit = (int)Math.Round(subtotal * rate);
+                                parrain.ReferralCredits += credit;
+
+
                                 parrain.ReferralCount += 1;
                                 await _context.SaveChangesAsync();
                                 Console.WriteLine($"Parrainage : +2500F crédités à {parrain.FullName} (id={parrain.Id})");
