@@ -496,7 +496,7 @@
     </div>
 
     <script>
-        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+        const API_BASE = "/api";
         let SHIPPING_FEE = 0;
 
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -586,20 +586,43 @@
         });
 
 
-        function updateTotals() {
-            const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
-            const grandTotal = subtotal + SHIPPING_FEE;
-            document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
-            document.getElementById("shippingDisplay").textContent = Number(SHIPPING_FEE).toLocaleString() + " FCFA";
-            document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
+        let FREE_SHIPPING_THRESHOLD = 15000; // chargé depuis l'API
+
+        async function loadShippingThreshold() {
+            try {
+                var res = await fetch('/api/site-settings');
+                var s = await res.json();
+                if (s.free_shipping_threshold) FREE_SHIPPING_THRESHOLD = parseInt(s.free_shipping_threshold) || 15000;
+            } catch (e) { }
+            updateTotals();
         }
-        updateTotals();
+
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => {
+                const price = parseFloat(item.price) || 0;
+                const qty = parseInt(item.quantity || item.qty || 1) || 1;
+                return sum + price * qty;
+            }, 0);
+
+            const isFree = subtotal >= FREE_SHIPPING_THRESHOLD;
+            const shipping = isFree ? 0 : SHIPPING_FEE;
+            const grandTotal = subtotal + shipping;
+            document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
+            document.getElementById("shippingDisplay").textContent = isFree
+                ? '🎉 Gratuite !'
+                : (SHIPPING_FEE > 0 ? Number(SHIPPING_FEE).toLocaleString() + " FCFA" : "Choisir zone");
+            document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
+            // Pour la commande
+            window._finalShippingFee = shipping;
+        }
+        loadShippingThreshold();
 
         document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
             if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
-            if (SHIPPING_FEE === 0) { alert("Veuillez choisir votre zone de livraison."); return; }
+            const zoneChosen = document.getElementById("customerZone").value;
+            if (!zoneChosen) { alert("Veuillez choisir votre zone de livraison."); return; }
 
             const zoneValue = document.getElementById("customerZone").value;
             const zoneName = zoneValue ? zoneValue.split("|")[0] : "";
@@ -611,7 +634,7 @@
                 customerPhone: document.getElementById("customerPhone").value,
                 customerAddress: zoneName + " — " + document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
-                shippingFee: SHIPPING_FEE,
+                shippingFee: window._finalShippingFee || SHIPPING_FEE,
                 items: cart.map(item => ({
                     productId: item.id,
                     quantity: item.quantity,
