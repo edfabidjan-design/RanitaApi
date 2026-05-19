@@ -307,7 +307,7 @@
             document.getElementById('statCredits').textContent = Number(data.referralCredits).toLocaleString('fr-FR');
 
             const msg = encodeURIComponent(
-                `🛒 Découvrez Ranita Market — la boutique en ligne d'Abidjan !\nLivraison rapide, meilleurs prix. Créez votre compte ici : ${referralLink}`
+                `🛒 Découvrez Ranita Market — la boutique en ligne d'Abidjan ! Livraison rapide, meilleurs prix. Créez votre compte ici : ${referralLink}`
             );
             document.getElementById('whatsappBtn').href = `https://wa.me/?text=${msg}`;
         } catch(e) {
