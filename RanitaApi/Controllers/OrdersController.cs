@@ -94,7 +94,6 @@ namespace RanitaApi.Controllers
             };
 
             decimal total = 0;
-            // APRÈS
             foreach (var item in dto.Items)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
@@ -118,23 +117,17 @@ namespace RanitaApi.Controllers
                     if (variant != null)
                     {
                         variant.Stock = Math.Max(0, variant.Stock - item.Quantity);
-
-                        // ✅ Déduire aussi dans SellerProduct
                         var sp = await _context.SellerProducts
                             .FirstOrDefaultAsync(x => x.ProductId == product.Id && x.ApprovalStatus == "Approved");
-                        if (sp != null)
-                            sp.Stock = Math.Max(0, sp.Stock - item.Quantity);
+                        if (sp != null) sp.Stock = Math.Max(0, sp.Stock - item.Quantity);
                     }
                 }
                 else
                 {
                     product.Stock = Math.Max(0, product.Stock - item.Quantity);
-
-                    // ✅ Déduire aussi dans SellerProduct
                     var sp = await _context.SellerProducts
                         .FirstOrDefaultAsync(x => x.ProductId == product.Id && x.ApprovalStatus == "Approved");
-                    if (sp != null)
-                        sp.Stock = product.Stock;
+                    if (sp != null) sp.Stock = product.Stock;
                 }
             }
 
@@ -142,6 +135,50 @@ namespace RanitaApi.Controllers
             order.Total = total;
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+
+            // ── PARRAINAGE : crédit à la première commande ─────────────────
+            if (dto.ClientId.HasValue)
+            {
+                try
+                {
+                    var ordersCount = await _context.Orders
+                        .CountAsync(o => o.ClientId == dto.ClientId.Value);
+
+                    if (ordersCount == 1) // C'est bien la toute première commande
+                    {
+                        var acheteur = await _context.Clients.FindAsync(dto.ClientId.Value);
+                        if (acheteur?.ReferredById != null)
+                        {
+                            var parrain = await _context.Clients.FindAsync(acheteur.ReferredById.Value);
+                            if (parrain != null)
+                            {
+                                parrain.ReferralCredits += 2500;
+                                parrain.ReferralCount += 1;
+                                await _context.SaveChangesAsync();
+                                Console.WriteLine($"Parrainage : +2500F crédités à {parrain.FullName} (id={parrain.Id})");
+
+                                // Email au parrain
+                                try
+                                {
+                                    if (!string.IsNullOrEmpty(parrain.Email))
+                                        await _emailService.SendReferralCreditNotificationAsync(
+                                            parrain.Email, parrain.FullName,
+                                            acheteur.FullName, 2500);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("EMAIL PARRAIN ERROR: " + ex.Message);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("PARRAINAGE ERROR: " + ex.Message);
+                }
+            }
+            // ── FIN PARRAINAGE ─────────────────────────────────────────────
 
             var orderId = order.Id;
             var customerName = order.CustomerName;
@@ -204,7 +241,6 @@ namespace RanitaApi.Controllers
                         }
                         catch (Exception ex) { Console.WriteLine("PUSH CLIENT NEW ORDER ERROR: " + ex.Message); }
 
-                        // Email confirmation client
                         try
                         {
                             using var scope = _scopeFactory.CreateScope();
@@ -222,8 +258,6 @@ namespace RanitaApi.Controllers
                     {
                         using var scopeVendor = _scopeFactory.CreateScope();
                         var dbVendor = scopeVendor.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                        // Grouper par vendeur pour n'envoyer qu'un email par vendeur
                         var notifiedSellerIds = new HashSet<int>();
 
                         foreach (var item in orderItems)
@@ -235,7 +269,6 @@ namespace RanitaApi.Controllers
 
                             if (sellerProduct?.Seller == null) continue;
 
-                            // ── Push vendeur ──
                             var vendorSubs = await dbVendor.SellerPushSubscriptions
                                 .Where(s => s.SellerId == sellerProduct.SellerId).ToListAsync();
                             var pushVendor = new WebPushClient();
@@ -251,14 +284,12 @@ namespace RanitaApi.Controllers
                                 catch { }
                             }
 
-                            // ── Email vendeur (1 seul par vendeur) ──
                             if (!notifiedSellerIds.Contains(sellerProduct.SellerId))
                             {
                                 notifiedSellerIds.Add(sellerProduct.SellerId);
                                 var sellerEmail = sellerProduct.Seller.Client?.Email;
                                 if (!string.IsNullOrEmpty(sellerEmail))
                                 {
-                                    // Récupérer tous les items de CE vendeur dans la commande
                                     var allSellerProductIds = await dbVendor.SellerProducts
                                         .Where(sp => sp.SellerId == sellerProduct.SellerId && sp.ApprovalStatus == "Approved" && sp.ProductId != null)
                                         .Select(sp => sp.ProductId!.Value)
@@ -266,7 +297,6 @@ namespace RanitaApi.Controllers
                                     var sellerItems = orderItems.Where(i => allSellerProductIds.Contains(i.ProductId)).ToList();
                                     var grossTotal = sellerItems.Sum(i => i.Price * i.Quantity);
                                     var sellerNet = Math.Round(grossTotal * (1 - sellerProduct.Seller.CommissionRate), 0);
-
                                     try
                                     {
                                         await _emailService.SendNewOrderToSellerAsync(
@@ -333,7 +363,6 @@ namespace RanitaApi.Controllers
 
             await _context.SaveChangesAsync();
 
-            // Échec livraison — remettre le stock + annuler payout
             if (dto.Status == "Échec livraison" && ancienStatut != "Échec livraison")
             {
                 foreach (var item in order.Items)
@@ -355,7 +384,6 @@ namespace RanitaApi.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Payout automatique quand commande Livrée
             if (dto.Status == "Livrée" && ancienStatut != "Livrée")
             {
                 foreach (var item in order.Items)
@@ -393,7 +421,6 @@ namespace RanitaApi.Controllers
             {
                 try
                 {
-                    // ── Email + Push CLIENT ──
                     if (clientId.HasValue)
                     {
                         using var scope = _scopeFactory.CreateScope();
@@ -434,7 +461,6 @@ namespace RanitaApi.Controllers
                 catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
             });
 
-            // ── Push + Email VENDEUR quand commande livrée ──
             if (newStatus == "Livrée")
             {
                 try
@@ -443,8 +469,7 @@ namespace RanitaApi.Controllers
                     var dbV = scopeV.ServiceProvider.GetRequiredService<AppDbContext>();
                     var sellerProductIds = orderItems.Select(i => i.ProductId).ToList();
                     var sellerProducts = await dbV.SellerProducts
-                        .Include(sp => sp.Seller)
-                            .ThenInclude(s => s.Client)
+                        .Include(sp => sp.Seller).ThenInclude(s => s.Client)
                         .Where(sp => sellerProductIds.Contains(sp.ProductId ?? 0) && sp.ApprovalStatus == "Approved")
                         .ToListAsync();
 
@@ -454,7 +479,6 @@ namespace RanitaApi.Controllers
                         if (sp.Seller == null || notifiedSellers.Contains(sp.SellerId)) continue;
                         notifiedSellers.Add(sp.SellerId);
 
-                        // Push vendeur
                         var vendorSubs = await dbV.SellerPushSubscriptions
                             .Where(s => s.SellerId == sp.SellerId).ToListAsync();
                         var pushV = new WebPushClient();
@@ -470,7 +494,6 @@ namespace RanitaApi.Controllers
                             catch { }
                         }
 
-                        // ✅ Email vendeur — commande livrée
                         var sellerEmail = sp.Seller.Client?.Email;
                         if (!string.IsNullOrEmpty(sellerEmail))
                         {
@@ -567,9 +590,6 @@ namespace RanitaApi.Controllers
             return Ok("Remboursement rejeté.");
         }
 
-
-
-        // PUT /api/orders/{id}/vendor-confirm
         [HttpPut("{id}/vendor-confirm")]
         public async Task<IActionResult> VendorConfirm(int id, [FromBody] VendorConfirmDto dto)
         {
@@ -578,18 +598,12 @@ namespace RanitaApi.Controllers
             if (order.Status != "En attente")
                 return BadRequest(new { message = "Seules les commandes en attente peuvent être confirmées" });
 
-            
-
-
             order.Status = dto.Available ? "Confirmée par vendeur" : "Indisponible vendeur";
-
-            // ✅ AJOUTER CETTE LIGNE
             if (!dto.Available && !string.IsNullOrEmpty(dto.Motif))
                 order.RefundMotif = $"🏪 Vendeur : {dto.Motif}";
 
             await _context.SaveChangesAsync();
 
-            // Push admin
             _ = Task.Run(async () =>
             {
                 try
@@ -642,7 +656,6 @@ namespace RanitaApi.Controllers
     {
         public string Status { get; set; } = "";
     }
-
 
     public class VendorConfirmDto
     {

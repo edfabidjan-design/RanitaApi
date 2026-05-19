@@ -47,12 +47,9 @@ namespace RanitaApi.Services
     {FOOTER}
   </div>
 </div>"
-
             };
             await SendBrevoEmail(payload);
         }
-
-
 
         // ✅ Nouvelle commande → vendeur
         public async Task SendNewOrderToSellerAsync(string sellerEmail, string shopName, int orderId, List<OrderItem> items, decimal sellerTotal)
@@ -328,6 +325,39 @@ namespace RanitaApi.Services
       Voir mes commandes
     </a>
     {avisSection}
+    {FOOTER}
+  </div>
+</div>"
+            };
+            await SendBrevoEmail(payload);
+        }
+
+        // ✅ NOUVEAU — Crédit parrainage → parrain
+        public async Task SendReferralCreditNotificationAsync(
+            string parrainEmail, string parrainName,
+            string friendName, int creditAmount)
+        {
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = parrainEmail } },
+                subject = $"🎁 +{creditAmount.ToString("N0")} F CFA crédités — Parrainage Ranita Market",
+                htmlContent = $@"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
+    <h2 style='color:#10b981;margin:0 0 8px'>🎉 Bonne nouvelle !</h2>
+    <p>Bonjour <strong>{parrainName}</strong>,</p>
+    <p>Votre ami <strong>{friendName}</strong> vient d'effectuer son premier achat sur Ranita Market grâce à votre lien de parrainage.</p>
+    <div style='background:#f0fdf4;border-radius:12px;padding:24px;margin:20px 0;text-align:center;border:1px solid #a7f3d0;'>
+        <div style='font-size:14px;color:#6b7280;margin-bottom:6px;'>Crédit ajouté à votre compte</div>
+        <div style='font-size:42px;font-weight:800;color:#10b981;'>+{creditAmount.ToString("N0")} F</div>
+        <div style='font-size:12px;color:#6b7280;margin-top:4px;'>CFA</div>
+    </div>
+    <p style='color:#6b7280;font-size:14px;'>Continuez à parrainer vos amis pour gagner encore plus ! Chaque ami qui passe sa première commande vous rapporte <strong>{creditAmount.ToString("N0")} F CFA</strong>.</p>
+    <a href='https://www.ranita-shop.com/referral.html'
+       style='display:inline-block;margin-top:16px;background:#10b981;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
+      Voir mes gains de parrainage
+    </a>
     {FOOTER}
   </div>
 </div>"
