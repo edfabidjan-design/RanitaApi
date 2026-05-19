@@ -17,5 +17,6 @@
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public List<OrderItem> Items { get; set; } = new();
+        public decimal ShippingFee { get; set; } = 0;
     }
 }

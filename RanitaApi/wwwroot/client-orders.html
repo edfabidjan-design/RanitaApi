@@ -433,8 +433,8 @@
             if (!o) return;
 
             const subtotal = o.items.reduce((s, i) => s + i.price * i.quantity, 0);
-            const shipping = Math.max(0, o.total - subtotal);
-            const referralDiscount = subtotal + shipping - o.total > 0 ? subtotal + shipping - o.total : 0;
+            const shipping = o.shippingFee || 0;
+            const referralDiscount = Math.max(0, subtotal + shipping - o.total);
 
             document.getElementById("modalContent").innerHTML = `
                     <h3>Commande #${o.id}</h3>

@@ -47,6 +47,7 @@ namespace RanitaApi.Controllers
                 o.CreatedAt,
                 o.RefundMotif,
                 o.ClientId,
+                o.ShippingFee,
                 Client = o.Client == null ? null : new { o.Client.Id, o.Client.FullName, o.Client.Email },
                 Items = o.Items.Select(i => new { i.Id, i.ProductId, i.ProductName, i.Price, i.Quantity, i.ImageUrl, i.VariantId, i.VariantName })
             });
@@ -134,8 +135,8 @@ namespace RanitaApi.Controllers
             total += dto.ShippingFee;
             var creditUsed = Math.Min(dto.ReferralCreditUsed, total);
             total = Math.Max(0, total - creditUsed);
-            order.Total = total;
-
+            order.ShippingFee = dto.ShippingFee;
+            order.ShippingFee = dto.ShippingFee;
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
