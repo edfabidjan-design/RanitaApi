@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ranita - Checkout v3</title>
     <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
     <style>
-
         .payment-options {
             overflow: hidden !important;
             width: 100% !important;
@@ -44,13 +46,6 @@
             overflow-x: hidden !important;
         }
 
-        .checkout-wrapper {
-            width: 100vw !important;
-            max-width: 100vw !important;
-            overflow-x: hidden !important;
-        }
-
-
         html, body {
             overflow-x: hidden !important;
             width: 100% !important;
@@ -64,6 +59,7 @@
             max-width: 100%;
             padding: 20px 16px 50px;
             box-sizing: border-box;
+            padding-top: 80px !important;
         }
 
         .checkout-card {
@@ -72,7 +68,7 @@
             background: white;
             padding: 28px 24px;
             border-radius: 22px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, .10);
+            box-shadow: 0 18px 45px rgba(15,23,42,.10);
             margin: 0 auto;
             box-sizing: border-box !important;
         }
@@ -144,7 +140,7 @@
         }
 
         .btn-login-modal {
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg,#10b981,#059669);
             color: white;
             border: none;
             padding: 14px;
@@ -278,8 +274,7 @@
             display: block;
         }
 
-        .checkout-card form input,
-        .checkout-card form select {
+        .checkout-card form input, .checkout-card form select {
             width: 100%;
             height: 50px;
             display: block;
@@ -314,9 +309,51 @@
             box-sizing: border-box;
         }
 
+        .referral-credit-banner {
+            background: linear-gradient(135deg,#10b981,#059669);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            color: white;
+            display: none;
+        }
+
+            .referral-credit-banner .rc-title {
+                font-size: 12px;
+                font-weight: 600;
+                opacity: .85;
+                margin-bottom: 4px;
+            }
+
+            .referral-credit-banner .rc-amount {
+                font-size: 22px;
+                font-weight: 800;
+            }
+
+            .referral-credit-banner .rc-sub {
+                font-size: 11px;
+                opacity: .8;
+                margin-top: 3px;
+            }
+
+        .summary-line.credit {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .site-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            z-index: 9999 !important;
+        }
+
         @media (max-width: 768px) {
             .checkout-wrapper {
                 padding: 12px 12px 50px !important;
+                padding-top: 80px !important;
             }
 
             .checkout-card {
@@ -350,8 +387,7 @@
                     font-size: 18px !important;
                 }
 
-            .checkout-card form input,
-            .checkout-card form select {
+            .checkout-card form input, .checkout-card form select {
                 height: 46px !important;
                 font-size: 14px !important;
             }
@@ -375,8 +411,6 @@
                     overflow: hidden !important;
                 }
         }
-
-
     </style>
 </head>
 <body>
@@ -393,7 +427,7 @@
         <div class="auth-modal">
             <div class="lock-icon">🔒</div>
             <h2>Connexion requise</h2>
-            <p>Vous devez être connecté pour finaliser votre commande. Connectez-vous ou créez un compte gratuitement.</p>
+            <p>Vous devez être connecté pour finaliser votre commande.</p>
             <div class="auth-modal-actions">
                 <a href="login.html?redirect=checkout.html" class="btn-login-modal">Se connecter</a>
                 <a href="register.html?redirect=checkout.html" class="btn-register-modal">Créer un compte</a>
@@ -405,16 +439,31 @@
     <div class="checkout-wrapper">
         <div class="checkout-card">
             <h1>Finaliser la commande</h1>
-            <p style="color:#6b7280; font-size:14px; margin-bottom:20px; text-align:center;">Vérifiez vos informations de livraison.</p>
+            <p style="color:#6b7280;font-size:14px;margin-bottom:20px;text-align:center;">Vérifiez vos informations de livraison.</p>
 
             <div class="client-info-bar" id="clientInfoBar" style="display:none;">
                 ✅ <span id="clientInfoText"></span>
             </div>
 
+            <!-- Bannière crédit parrainage -->
+            <div class="referral-credit-banner" id="referralCreditBanner">
+                <div class="rc-title">🎁 Crédit parrainage disponible</div>
+                <div class="rc-amount" id="referralCreditAmount">0 F</div>
+                <div class="rc-sub">Ce montant sera automatiquement déduit de votre commande</div>
+            </div>
+
             <form id="checkoutForm">
                 <input type="text" id="customerName" placeholder="Nom complet" required>
                 <input type="tel" id="customerPhone" placeholder="Téléphone" required>
-                <input type="text" id="customerAddress" placeholder="Adresse de livraison" required>
+
+                <div style="position:relative;margin-bottom:14px;">
+                    <input type="text" id="customerZoneInput" placeholder="🔍 Rechercher votre ville ou quartier..."
+                           autocomplete="off" oninput="filterZones()" onfocus="filterZones()" required
+                           style="width:100%;height:50px;padding:0 14px;border:1px solid #d1d5db;border-radius:12px;background:#f9fafb;font-size:15px;box-sizing:border-box;">
+                    <input type="hidden" id="customerZone">
+                    <div id="zoneDropdown" style="display:none;position:absolute;top:52px;left:0;right:0;background:white;border:1px solid #d1d5db;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);z-index:999;max-height:250px;overflow-y:auto;"></div>
+                </div>
+                <input type="text" id="customerAddress" placeholder="Adresse précise (rue, numéro...)" required>
 
                 <span class="payment-label">Mode de paiement</span>
                 <div class="payment-options" style="width:100%;box-sizing:border-box;overflow:hidden;">
@@ -446,7 +495,12 @@
                     </div>
                     <div class="summary-line">
                         <span>🚚 Frais de livraison</span>
-                        <span id="shippingDisplay">1 500 FCFA</span>
+                        <span id="shippingDisplay">Choisir zone</span>
+                    </div>
+                    <!-- Ligne crédit parrainage — cachée si 0 -->
+                    <div class="summary-line credit" id="referralCreditLine" style="display:none;">
+                        <span>🎁 Crédit parrainage</span>
+                        <span id="referralCreditDisplay"></span>
                     </div>
                     <div class="summary-line total">
                         <span>Total à payer</span>
@@ -454,18 +508,21 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-buy" style="width:100%; height:50px; font-size:16px; border:none; cursor:pointer; border-radius:14px;">
+                <button type="submit" class="btn-buy" style="width:100%;height:50px;font-size:16px;border:none;cursor:pointer;border-radius:14px;">
                     ✅ Confirmer la commande
                 </button>
             </form>
 
-            <a href="cart.html" class="secondary-link" style="display:block; text-align:center; margin-top:16px;">← Retour au panier</a>
+            <a href="cart.html" class="secondary-link" style="display:block;text-align:center;margin-top:16px;">← Retour au panier</a>
         </div>
     </div>
 
     <script>
-        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-        const SHIPPING_FEE = 1500;
+        const API_BASE = "/api";
+        let SHIPPING_FEE = 0;
+        let FREE_SHIPPING_THRESHOLD = 15000;
+        let REFERRAL_CREDIT = 0;
+
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const client = JSON.parse(localStorage.getItem("client")) || null;
 
@@ -479,29 +536,138 @@
             if (client.address) document.getElementById("customerAddress").value = client.address;
         }
 
-        function updateTotals() {
-            const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
-            const grandTotal = subtotal + SHIPPING_FEE;
-            document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
-            document.getElementById("shippingDisplay").textContent = Number(SHIPPING_FEE).toLocaleString() + " FCFA";
-            document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
+        const zones = [
+            { name: "Plateau", fee: 1000 }, { name: "Cocody", fee: 1500 },
+            { name: "Marcory", fee: 1500 }, { name: "Treichville", fee: 1000 },
+            { name: "Adjamé", fee: 1000 }, { name: "Yopougon", fee: 2000 },
+            { name: "Abobo", fee: 2500 }, { name: "Koumassi", fee: 1500 },
+            { name: "Port-Bouët", fee: 2000 }, { name: "Bingerville", fee: 2500 },
+            { name: "Riviera", fee: 1500 }, { name: "Angré", fee: 2000 },
+            { name: "Songon", fee: 3000 }, { name: "Anyama", fee: 3000 },
+            { name: "Bouaké", fee: 5000 }, { name: "Yamoussoukro", fee: 5000 },
+            { name: "San Pedro", fee: 7000 }, { name: "Daloa", fee: 6000 },
+            { name: "Korhogo", fee: 7000 }, { name: "Man", fee: 7000 },
+            { name: "Abengourou", fee: 5000 }, { name: "Divo", fee: 5000 },
+            { name: "Gagnoa", fee: 6000 },
+        ];
+
+        function filterZones() {
+            const input = document.getElementById("customerZoneInput").value.toLowerCase();
+            const dropdown = document.getElementById("zoneDropdown");
+            const filtered = zones.filter(z => z.name.toLowerCase().includes(input));
+            if (!filtered.length) { dropdown.style.display = "none"; return; }
+            dropdown.innerHTML = filtered.map(z => `
+                    <div onclick="selectZone('${z.name}',${z.fee})"
+                         style="padding:12px 16px;cursor:pointer;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center;"
+                         onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                        <span style="font-weight:600;color:#111827;">${z.name}</span>
+                        <span style="font-size:12px;color:#10b981;font-weight:700;">${z.fee.toLocaleString()} FCFA</span>
+                    </div>`).join("");
+            dropdown.style.display = "block";
         }
-        updateTotals();
+
+        function selectZone(name, fee) {
+            document.getElementById("customerZoneInput").value = name;
+            document.getElementById("customerZone").value = name + "|" + fee;
+            document.getElementById("zoneDropdown").style.display = "none";
+            SHIPPING_FEE = fee;
+            updateTotals();
+        }
+
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest("#customerZoneInput") && !e.target.closest("#zoneDropdown"))
+                document.getElementById("zoneDropdown").style.display = "none";
+        });
+
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => {
+                const price = parseFloat(item.price) || 0;
+                const qty = parseInt(item.quantity || item.qty || 1) || 1;
+                return sum + price * qty;
+            }, 0);
+            const isFree = subtotal >= FREE_SHIPPING_THRESHOLD;
+            const shipping = isFree ? 0 : SHIPPING_FEE;
+
+            // Crédit parrainage — ne dépasse pas le total
+            const creditUsed = Math.min(REFERRAL_CREDIT, subtotal + shipping);
+            const grandTotal = Math.max(0, subtotal + shipping - creditUsed);
+
+            document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString() + " FCFA";
+            document.getElementById("shippingDisplay").textContent = isFree
+                ? '🎉 Gratuite !'
+                : (SHIPPING_FEE > 0 ? Number(SHIPPING_FEE).toLocaleString() + " FCFA" : "Choisir zone");
+
+            // Ligne crédit
+            const creditLine = document.getElementById("referralCreditLine");
+            const creditDisplay = document.getElementById("referralCreditDisplay");
+            if (creditUsed > 0) {
+                creditLine.style.display = "flex";
+                creditDisplay.textContent = "- " + Number(creditUsed).toLocaleString() + " FCFA";
+            } else {
+                creditLine.style.display = "none";
+            }
+
+            document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString() + " FCFA";
+            window._finalShippingFee = shipping;
+            window._referralCreditUsed = creditUsed;
+        }
+
+        async function loadShippingThreshold() {
+            try {
+                var res = await fetch('/api/site-settings');
+                var s = await res.json();
+                if (s.free_shipping_threshold) FREE_SHIPPING_THRESHOLD = parseInt(s.free_shipping_threshold) || 15000;
+            } catch (e) { }
+            updateTotals();
+        }
+
+        async function loadReferralCredit() {
+            if (!client) return;
+            try {
+                const res = await fetch(`/api/client-auth/referral/${client.id}`);
+                const data = await res.json();
+                REFERRAL_CREDIT = data.referralCredits || 0;
+
+                // Bannière crédit
+                const banner = document.getElementById("referralCreditBanner");
+                if (REFERRAL_CREDIT > 0) {
+                    document.getElementById("referralCreditAmount").textContent =
+                        Number(REFERRAL_CREDIT).toLocaleString('fr-FR') + ' F CFA';
+                    banner.style.display = "block";
+                } else {
+                    banner.style.display = "none";
+                }
+                updateTotals();
+            } catch (e) { }
+        }
+
+        loadShippingThreshold();
+        loadReferralCredit();
 
         document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             if (!client) { document.getElementById("authModal").style.display = "flex"; return; }
             if (cart.length === 0) { alert("Votre panier est vide."); window.location.href = "products.html"; return; }
+            const zoneChosen = document.getElementById("customerZone").value;
+            if (!zoneChosen) { alert("Veuillez choisir votre zone de livraison."); return; }
 
+            const zoneName = zoneChosen.split("|")[0];
             const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+
             const order = {
                 clientId: client.id || null,
                 customerName: document.getElementById("customerName").value,
                 customerPhone: document.getElementById("customerPhone").value,
-                customerAddress: document.getElementById("customerAddress").value,
+                customerAddress: zoneName + " — " + document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
-                shippingFee: SHIPPING_FEE,
-                items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
+                shippingFee: window._finalShippingFee || SHIPPING_FEE,
+                referralCreditUsed: window._referralCreditUsed || 0,
+                items: cart.map(item => ({
+                    productId: item.id,
+                    quantity: item.quantity,
+                    variantId: item.variantId || null,
+                    variantName: item.variant || null
+                }))
             };
 
             const btn = e.target.querySelector("button[type='submit']");
@@ -528,5 +694,7 @@
             }
         });
     </script>
+
+    <script src="/install-prompt.js"></script>
 </body>
 </html>
