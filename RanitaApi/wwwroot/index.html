@@ -1632,7 +1632,7 @@
             <span id="promoBarText">Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison</span>
             <a href="products.html" id="promoBarLink" style="color:var(--g);font-weight:700;white-space:nowrap;">Voir les offres →</a>
         </div>
-        <button class="promo-bar-close" onclick="document.getElementById('promoBar').style.display='none'">×</button>
+       
     </div>
 
     <!-- ══ HEADER DESKTOP ═══════════════════════════════════════ -->
@@ -2078,6 +2078,10 @@
             } catch (e) { buildSlider({}); }
         }
         document.addEventListener('DOMContentLoaded', function () { loadSiteSettings(); loadProducts(); });
+        // Fix slider vide au retour arrière
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) { loadSiteSettings(); }
+        });
 
 
         async function loadCurrentEvent() {
