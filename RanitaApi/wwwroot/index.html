@@ -2366,8 +2366,8 @@
 
     <script>
         (function () {
-            // Ne montrer qu'une fois par session
-            if (sessionStorage.getItem('referralToastShown')) return;
+          
+          
 
             var client = JSON.parse(localStorage.getItem('client') || 'null');
             if (!client) return;
@@ -2385,7 +2385,7 @@
                     setTimeout(function () {
                         var toast = document.getElementById('referralToast');
                         if (toast) toast.style.right = '20px';
-                        sessionStorage.setItem('referralToastShown', '1');
+                      
 
                         // Masquer automatiquement après 8 secondes
                         setTimeout(function () {
