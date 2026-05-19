@@ -135,7 +135,7 @@ namespace RanitaApi.Controllers
             total += dto.ShippingFee;
             var creditUsed = Math.Min(dto.ReferralCreditUsed, total);
             total = Math.Max(0, total - creditUsed);
-            order.ShippingFee = dto.ShippingFee;
+            order.Total = total;
             order.ShippingFee = dto.ShippingFee;
 
             _context.Orders.Add(order);
