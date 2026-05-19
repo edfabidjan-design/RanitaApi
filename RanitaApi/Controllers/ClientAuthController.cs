@@ -27,12 +27,21 @@ public class ClientAuthController : ControllerBase
         var hash = sha.ComputeHash(bytes);
         return Convert.ToBase64String(hash);
     }
+
     string GenerateCode()
     {
         var rnd = new Random();
         return rnd.Next(100000, 999999).ToString();
     }
 
+    // Génère un code parrainage unique ex: KALIM4821
+    string GenerateReferralCode(string fullName)
+    {
+        var first = fullName.Split(' ')[0].ToUpper();
+        if (first.Length > 6) first = first.Substring(0, 6);
+        var rnd = new Random();
+        return first + rnd.Next(1000, 9999).ToString();
+    }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(ClientRegisterDto dto)
@@ -45,8 +54,18 @@ public class ClientAuthController : ControllerBase
             FullName = dto.FullName,
             Email = dto.Email,
             Phone = dto.Phone,
-            PasswordHash = HashPassword(dto.Password)
+            PasswordHash = HashPassword(dto.Password),
+            ReferralCode = GenerateReferralCode(dto.FullName)
         };
+
+        // Gérer le parrainage si un code est fourni
+        if (!string.IsNullOrEmpty(dto.ReferralCode))
+        {
+            var parrain = await _context.Clients
+                .FirstOrDefaultAsync(c => c.ReferralCode == dto.ReferralCode.ToUpper());
+            if (parrain != null)
+                client.ReferredById = parrain.Id;
+        }
 
         _context.Clients.Add(client);
         await _context.SaveChangesAsync();
@@ -58,8 +77,6 @@ public class ClientAuthController : ControllerBase
                 client.FullName, client.Email, client.Phone);
         }
         catch (Exception ex) { Console.WriteLine("EMAIL ERROR: " + ex.Message); }
-
-
 
         return Ok(new { message = "Compte créé" });
     }
@@ -79,7 +96,11 @@ public class ClientAuthController : ControllerBase
         {
             id = client.Id,
             name = client.FullName,
-            email = client.Email
+            email = client.Email,
+            phone = client.Phone,
+            referralCode = client.ReferralCode,
+            referralCredits = client.ReferralCredits,
+            referralCount = client.ReferralCount
         });
     }
 
@@ -99,10 +120,8 @@ public class ClientAuthController : ControllerBase
         }
 
         var code = GenerateCode();
-
         client.ResetCode = code;
         client.ResetCodeExpiresAt = DateTime.UtcNow.AddMinutes(10);
-
         await _context.SaveChangesAsync();
 
         try
@@ -124,22 +143,32 @@ public class ClientAuthController : ControllerBase
         var client = await _context.Clients
             .FirstOrDefaultAsync(x => x.Email == dto.Email);
 
-        if (client == null)
-            return BadRequest("Compte introuvable");
-
-        if (client.ResetCode != dto.Code)
-            return BadRequest("Code invalide");
-
-        if (client.ResetCodeExpiresAt < DateTime.UtcNow)
-            return BadRequest("Code expiré");
+        if (client == null) return BadRequest("Compte introuvable");
+        if (client.ResetCode != dto.Code) return BadRequest("Code invalide");
+        if (client.ResetCodeExpiresAt < DateTime.UtcNow) return BadRequest("Code expiré");
 
         client.PasswordHash = HashPassword(dto.NewPassword);
         client.ResetCode = null;
         client.ResetCodeExpiresAt = null;
-
         await _context.SaveChangesAsync();
 
         return Ok("Mot de passe réinitialisé");
+    }
+
+    // ── PARRAINAGE : infos du client ──────────────────────────
+    [HttpGet("referral/{clientId}")]
+    public async Task<IActionResult> GetReferral(int clientId)
+    {
+        var client = await _context.Clients.FindAsync(clientId);
+        if (client == null) return NotFound();
+
+        return Ok(new
+        {
+            referralCode = client.ReferralCode,
+            referralCount = client.ReferralCount,
+            referralCredits = client.ReferralCredits,
+            referralLink = $"https://www.ranita-shop.com/register.html?ref={client.ReferralCode}"
+        });
     }
 
     [HttpGet("orders/{clientId}")]
@@ -184,7 +213,10 @@ public class ClientAuthController : ControllerBase
                 c.FullName,
                 c.Email,
                 c.Phone,
-                c.CreatedAt
+                c.CreatedAt,
+                c.ReferralCode,
+                c.ReferralCount,
+                c.ReferralCredits
             })
             .ToListAsync();
 

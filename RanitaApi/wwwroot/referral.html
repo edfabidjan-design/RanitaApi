@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parrainage - Ranita Market</title>
+    <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+        }
+
+        .site-header {
+            background: #111827;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            color: white;
+        }
+
+        .site-header nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .page {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px 60px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 20px;
+            padding: 36px;
+            text-align: center;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+            .hero-card .icon {
+                font-size: 56px;
+                margin-bottom: 12px;
+            }
+
+            .hero-card h1 {
+                font-size: 26px;
+                font-weight: 800;
+                margin-bottom: 8px;
+            }
+
+            .hero-card p {
+                font-size: 14px;
+                color: rgba(255,255,255,.85);
+                line-height: 1.6;
+            }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        }
+
+        .stat-num {
+            font-size: 32px;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .link-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.06);
+            margin-bottom: 16px;
+        }
+
+            .link-card h3 {
+                font-size: 15px;
+                font-weight: 800;
+                color: #111827;
+                margin-bottom: 16px;
+            }
+
+        .link-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #f0fdf4;
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            word-break: break-all;
+        }
+
+            .link-box span {
+                font-size: 13px;
+                color: #065f46;
+                font-weight: 600;
+                flex: 1;
+            }
+
+        .btn-copy {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+            .btn-copy:hover {
+                background: #059669;
+            }
+
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #25D366;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .btn-whatsapp:hover {
+                background: #128C7E;
+            }
+
+        .how-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        }
+
+            .how-card h3 {
+                font-size: 15px;
+                font-weight: 800;
+                color: #111827;
+                margin-bottom: 16px;
+            }
+
+        .step {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+            padding-top: 5px;
+        }
+
+            .step-text strong {
+                color: #111827;
+            }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
+        <nav>
+            <a href="products.html">Produits</a>
+            <a href="cart.html">Panier</a>
+            <a href="client-orders.html">Mes commandes</a>
+        </nav>
+    </header>
+
+    <div class="page" style="padding-top: 90px;">
+
+        <div class="hero-card">
+            <div class="icon">🎁</div>
+            <h1>Invitez et gagnez !</h1>
+            <p>Pour chaque ami qui effectue son premier achat sur Ranita Market grâce à votre lien, vous recevez <strong>2 500 F CFA</strong> sur votre compte.</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num" id="statCount">—</div>
+                <div class="stat-label">Amis parrainés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="statCredits">—</div>
+                <div class="stat-label">F CFA gagnés</div>
+            </div>
+        </div>
+
+        <div class="link-card">
+            <h3>🔗 Votre lien de parrainage</h3>
+            <div class="link-box">
+                <span id="referralLink">Chargement...</span>
+                <button class="btn-copy" onclick="copyLink()">Copier</button>
+            </div>
+            <a id="whatsappBtn" href="#" class="btn-whatsapp" target="_blank">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
+                Partager sur WhatsApp
+            </a>
+        </div>
+
+        <div class="how-card">
+            <h3>Comment ça marche ?</h3>
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text"><strong>Partagez votre lien</strong> avec vos amis via WhatsApp, SMS ou réseaux sociaux.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text"><strong>Votre ami crée un compte</strong> en cliquant sur votre lien et s'inscrit sur Ranita Market.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text"><strong>Il passe sa première commande</strong> — dès lors, <strong>2 500 F CFA</strong> sont crédités sur votre compte automatiquement.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-text"><strong>Pas de limite !</strong> Chaque ami parrainé vous rapporte 2 500 F. Plus vous parrainez, plus vous gagnez.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    const API = '/api/client-auth';
+    const client = JSON.parse(localStorage.getItem('client'));
+
+    if (!client) {
+        window.location.href = 'login.html?redirect=referral.html';
+    }
+
+    let referralLink = '';
+
+    async function loadReferral() {
+        try {
+            const res = await fetch(`${API}/referral/${client.id}`);
+            const data = await res.json();
+
+            referralLink = data.referralLink;
+            document.getElementById('referralLink').textContent = referralLink;
+            document.getElementById('statCount').textContent = data.referralCount;
+            document.getElementById('statCredits').textContent = Number(data.referralCredits).toLocaleString('fr-FR');
+
+            const msg = encodeURIComponent(
+                `🛒 Découvrez Ranita Market — la boutique en ligne d'Abidjan !\nLivraison rapide, meilleurs prix. Créez votre compte ici : ${referralLink}`
+            );
+            document.getElementById('whatsappBtn').href = `https://wa.me/?text=${msg}`;
+        } catch(e) {
+            document.getElementById('referralLink').textContent = 'Erreur de chargement';
+        }
+    }
+
+    function copyLink() {
+        navigator.clipboard.writeText(referralLink).then(() => {
+            const btn = document.querySelector('.btn-copy');
+            btn.textContent = '✅ Copié !';
+            btn.style.background = '#059669';
+            setTimeout(() => { btn.textContent = 'Copier'; btn.style.background = ''; }, 2000);
+        });
+    }
+
+    loadReferral();
+    </script>
+
+</body>
+</html>

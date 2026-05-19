@@ -3,59 +3,82 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer un compte</title>
+    <title>Créer un compte - Ranita Market</title>
     <link rel="stylesheet" href="auth.css">
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
+    <style>
+        .referral-badge {
+            background: #f0fdf4;
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #065f46;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
 
-
+            .referral-badge.show {
+                display: flex;
+            }
+    </style>
 </head>
 <body>
 
     <div class="auth-card">
-
-        <div class="auth-logo" onclick="location.href='index.html'">
-            🛒 Ranita Market
-        </div>
-
+        <div class="auth-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
         <h2>Créer un compte</h2>
+
+        <!-- Badge parrainage si ?ref= présent -->
+        <div class="referral-badge" id="referralBadge">
+            🎁 <span id="referralBadgeText"></span>
+        </div>
 
         <form id="registerForm">
             <input type="text" id="name" placeholder="Nom complet" required>
             <input type="email" id="email" placeholder="Email" required>
             <input type="tel" id="phone" placeholder="Téléphone">
             <input type="password" id="password" placeholder="Mot de passe" required>
-
             <button type="submit">Créer mon compte</button>
         </form>
 
         <div class="auth-links">
             <a href="login.html">Déjà un compte ? Se connecter</a>
         </div>
-
     </div>
 
     <script>
-        const API = "https://ranitaapi-production.up.railway.app/api/client-auth";
+        const API = "/api/client-auth";
 
-        const registerForm = document.getElementById("registerForm");
-        const nameInput = document.getElementById("name");
-        const emailInput = document.getElementById("email");
-        const phoneInput = document.getElementById("phone");
-        const passwordInput = document.getElementById("password");
+        // Lire le code parrainage depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
 
-        registerForm.addEventListener("submit", async e => {
+        if (refCode) {
+            const badge = document.getElementById('referralBadge');
+            document.getElementById('referralBadgeText').textContent =
+                'Vous avez été invité avec le code ' + refCode + ' — votre ami recevra 2 500 F à votre premier achat !';
+            badge.classList.add('show');
+        }
+
+        document.getElementById("registerForm").addEventListener("submit", async e => {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.disabled = true; btn.textContent = 'Création...';
 
             const res = await fetch(`${API}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    FullName: nameInput.value.trim(),
-                    Email: emailInput.value.trim(),
-                    Phone: phoneInput.value.trim(),
-                    Password: passwordInput.value.trim()
+                    FullName: document.getElementById("name").value.trim(),
+                    Email: document.getElementById("email").value.trim(),
+                    Phone: document.getElementById("phone").value.trim(),
+                    Password: document.getElementById("password").value.trim(),
+                    ReferralCode: refCode || ""
                 })
             });
 
@@ -63,14 +86,14 @@
 
             if (!res.ok) {
                 alert(text);
+                btn.disabled = false; btn.textContent = 'Créer mon compte';
                 return;
             }
 
-            alert("Compte créé !");
-            const redirect = new URLSearchParams(window.location.search).get("redirect");
+            alert("✅ Compte créé avec succès !");
+            const redirect = urlParams.get("redirect");
             window.location.href = "login.html" + (redirect ? `?redirect=${redirect}` : "");
         });
     </script>
-
 </body>
 </html>

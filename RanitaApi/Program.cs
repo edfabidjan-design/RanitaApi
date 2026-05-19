@@ -741,4 +741,20 @@ catch (Exception ex) { Console.WriteLine("SiteEvents error: " + ex.Message); }
 
 
 
+
+// ── Clients — colonnes parrainage ─────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""ReferralCode"" TEXT NOT NULL DEFAULT '';");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""ReferredById"" INT NULL;");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""ReferralCredits"" INT NOT NULL DEFAULT 0;");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""ReferralCount"" INT NOT NULL DEFAULT 0;");
+    Console.WriteLine("Clients referral columns OK");
+}
+catch (Exception ex) { Console.WriteLine("Clients referral error: " + ex.Message); }
+
+
+
 app.Run();
