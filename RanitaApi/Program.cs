@@ -757,4 +757,27 @@ catch (Exception ex) { Console.WriteLine("Clients referral error: " + ex.Message
 
 
 
+
+// Générer ReferralCode pour les clients existants qui n'en ont pas
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var clients = db.Clients.Where(c => c.ReferralCode == "").ToList();
+    var rnd = new Random();
+    foreach (var c in clients)
+    {
+        var first = c.FullName.Split(' ')[0].ToUpper();
+        if (first.Length > 6) first = first.Substring(0, 6);
+        c.ReferralCode = first + rnd.Next(1000, 9999).ToString();
+    }
+    db.SaveChanges();
+    Console.WriteLine($"ReferralCode généré pour {clients.Count} clients existants");
+}
+catch (Exception ex) { Console.WriteLine("ReferralCode seed error: " + ex.Message); }
+
+
+
+
+
 app.Run();
