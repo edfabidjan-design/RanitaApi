@@ -664,24 +664,24 @@
                     : '';
 
                 return `
-                            <div class="product-card" onclick="openProductDetails(${p.id})">
-                              <div class="product-img-list">
-                                ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
-                                ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-                              </div>
-                              <div class="product-info">
-                                <span class="product-category">${p.category?.name || ''}</span>
-                                <h3 class="product-name">${p.name}</h3>
-                                ${starsHtml}
-                                <div class="product-prices">
-                                  <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
-                                  ${oldPriceHtml}
-                                  ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
-                                </div>
-                                ${stockHtml}
-                                ${btnHtml}
-                              </div>
-                            </div>`;
+                                <div class="product-card" onclick="openProductDetails(${p.id})">
+                                  <div class="product-img-list">
+                                    ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
+                                    ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                                  </div>
+                                  <div class="product-info">
+                                    <span class="product-category">${p.category?.name || ''}</span>
+                                    <h3 class="product-name">${p.name}</h3>
+                                    ${starsHtml}
+                                    <div class="product-prices">
+                                      <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
+                                      ${oldPriceHtml}
+                                      ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                                    </div>
+                                    ${stockHtml}
+                                    ${btnHtml}
+                                  </div>
+                                </div>`;
             }).join('');
         }
 
@@ -692,38 +692,62 @@
         updateCartCount();
     </script>
 
+
+
+
+
+
     <script src="/install-prompt.js"></script>
     <script src="/cart-badge.js"></script>
 
 
 
+    <!-- ── TOAST CRÉDIT PARRAINAGE ── -->
+    <div id="referralToast" style="
+        position:fixed;bottom:90px;right:-340px;width:320px;
+        background:linear-gradient(135deg,#10b981,#059669);
+        color:white;border-radius:16px;padding:18px 20px;
+        box-shadow:0 8px 32px rgba(16,185,129,.35);z-index:9999;
+        transition:right .5s cubic-bezier(.4,0,.2,1);">
+        <button onclick="closeReferralToast()" style="
+            position:absolute;top:10px;right:12px;
+            background:rgba(255,255,255,.2);border:none;
+            color:white;width:24px;height:24px;border-radius:50%;
+            cursor:pointer;font-size:14px;display:flex;
+            align-items:center;justify-content:center;">
+            ×
+        </button>
+        <div style="font-size:11px;font-weight:600;opacity:.85;margin-bottom:6px;">
+            🎁 Crédit parrainage disponible
+        </div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px;" id="toastCreditAmount">
+            0 F CFA
+        </div>
+        <div style="font-size:12px;opacity:.85;margin-bottom:14px;line-height:1.4;">
+            Sera déduit automatiquement de votre prochaine commande !
+        </div>
+        <a href="cart.html" style="
+            display:inline-block;background:white;color:#059669;
+            padding:9px 18px;border-radius:8px;font-weight:700;
+            font-size:13px;text-decoration:none;">
+            🛒 Commander maintenant →
+        </a>
+    </div>
+
     <script>
         (function () {
-         
-           
-
             var client = JSON.parse(localStorage.getItem('client') || 'null');
             if (!client) return;
-
             fetch('/api/client-auth/referral/' + client.id)
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (!data.referralCredits || data.referralCredits <= 0) return;
-
-                    // Mettre à jour le montant
                     var el = document.getElementById('toastCreditAmount');
                     if (el) el.textContent = Number(data.referralCredits).toLocaleString('fr-FR') + ' F CFA';
-
-                    // Afficher après 3 secondes
                     setTimeout(function () {
                         var toast = document.getElementById('referralToast');
                         if (toast) toast.style.right = '20px';
-                  
-
-                        // Masquer automatiquement après 8 secondes
-                        setTimeout(function () {
-                            closeReferralToast();
-                        }, 60000);
+                        setTimeout(function () { closeReferralToast(); }, 60000);
                     }, 3000);
                 })
                 .catch(function () { });
@@ -734,7 +758,6 @@
             if (toast) toast.style.right = '-340px';
         }
     </script>
-
 
 </body>
 </html>
