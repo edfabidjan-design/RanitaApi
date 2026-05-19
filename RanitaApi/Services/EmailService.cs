@@ -365,6 +365,9 @@ namespace RanitaApi.Services
             await SendBrevoEmail(payload);
         }
 
+
+
+
         // ✅ MÉTHODE PRIVÉE — Brevo API
         private async Task SendBrevoEmail(object payload)
         {
