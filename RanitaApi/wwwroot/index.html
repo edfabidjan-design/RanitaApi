@@ -2041,7 +2041,18 @@
                 var s = await res.json();
                 if (s.promo_bar_text) { var e = document.getElementById('promoBarText'); if (e) e.textContent = s.promo_bar_text; }
                 if (s.promo_bar_link) { var e = document.getElementById('promoBarLink'); if (e) e.href = s.promo_bar_link; }
-                if (s.promo_bar_hide === 'true') { var e = document.getElementById('promoBar'); if (e) e.style.display = 'none'; }
+                // Gestion dates barre promo
+                var promoEl = document.getElementById('promoBar');
+                if (promoEl) {
+                    var hide = s.promo_bar_hide === 'true';
+                    var today = new Date(); today.setHours(0, 0, 0, 0);
+                    var ps = s.promo_bar_start ? new Date(s.promo_bar_start) : null;
+                    var pe = s.promo_bar_end ? new Date(s.promo_bar_end) : null;
+                    var notStarted = ps && today < ps;
+                    var expired = pe && today > pe;
+                    if (hide || notStarted || expired) promoEl.style.display = 'none';
+                }
+
                 if (s.referral_title) { var e = document.getElementById('refTitle'); if (e) e.textContent = s.referral_title; }
                 if (s.referral_desc) { var e = document.getElementById('refDesc'); if (e) e.textContent = s.referral_desc; }
                 // Big cats

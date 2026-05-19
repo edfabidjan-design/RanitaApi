@@ -566,12 +566,23 @@
         <div class="tab-panel" id="panel-promo">
             <div class="section-card">
                 <div class="section-title">📢 Barre promo (haut de page)</div>
-                <div class="info-box info-blue" style="margin-bottom:20px;">💡 Cette barre apparaît tout en haut de la page d'accueil.</div>
+                <div class="info-box info-blue" style="margin-bottom:20px;">💡 Cette barre s'affiche automatiquement entre les dates définies. Sans dates = toujours visible.</div>
                 <div class="fields-grid">
-                    <div class="field full"><label>Texte affiché</label><input type="text" id="promo_bar_text" placeholder="Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison"></div>
+                    <div class="field full"><label>Texte affiché</label><input type="text" id="promo_bar_text" placeholder="Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison" oninput="updatePromoPreview()"></div>
                     <div class="field"><label>Lien "Voir les offres"</label><input type="text" id="promo_bar_link" placeholder="products.html"></div>
-                    <div class="field"><label>Masquer cette barre ?</label><select id="promo_bar_hide"><option value="false">Non — afficher</option><option value="true">Oui — masquer</option></select></div>
+                    <div class="field"><label>Masquer manuellement ?</label><select id="promo_bar_hide" onchange="updatePromoPreview()"><option value="false">Non — afficher</option><option value="true">Oui — masquer</option></select></div>
+                    <div class="field">
+                        <label>Date de début (optionnel)</label>
+                        <input type="date" id="promo_bar_start" oninput="updatePromoPreview()">
+                        <span class="hint">Laisser vide = affichage immédiat</span>
+                    </div>
+                    <div class="field">
+                        <label>Date de fin (optionnel)</label>
+                        <input type="date" id="promo_bar_end" oninput="updatePromoPreview()">
+                        <span class="hint">Laisser vide = pas d'expiration</span>
+                    </div>
                 </div>
+                <div id="promoStatusBox" style="margin-top:20px;padding:14px 18px;border-radius:10px;font-size:13px;font-weight:600;display:none;"></div>
             </div>
         </div>
 
@@ -730,7 +741,8 @@
             'promo_bar_text', 'promo_bar_link', 'promo_bar_hide',
             'referral_title', 'referral_desc',
             'featured_title', 'featured_subtitle', 'featured_product_ids',
-            'free_shipping_threshold'
+            'free_shipping_threshold',
+            'promo_bar_start', 'promo_bar_end'
         ];
         function slideKeys(n) { return ['slide' + n + '_title', 'slide' + n + '_sub', 'slide' + n + '_cta_text', 'slide' + n + '_cta_link', 'slide' + n + '_img', 'slide' + n + '_badge', 'slide' + n + '_discount', 'slide' + n + '_discount_label']; }
 
@@ -742,7 +754,44 @@
             if (tab === 'featured' && !document.getElementById('featuredSellerList').querySelector('[id^="fsel-"]')) featuredLoadSellers();
             if (tab === 'event') evLoadList();
             if (tab === 'livraison') updateShippingPreview();
+            if (tab === 'promo') updatePromoPreview();
         }
+
+
+        function updatePromoPreview() {
+            var hide = document.getElementById('promo_bar_hide').value === 'true';
+            var start = document.getElementById('promo_bar_start').value;
+            var end = document.getElementById('promo_bar_end').value;
+            var box = document.getElementById('promoStatusBox');
+            if (!box) return;
+            var today = new Date(); today.setHours(0, 0, 0, 0);
+            var s = start ? new Date(start) : null;
+            var e = end ? new Date(end) : null;
+            var status, bg, color;
+            if (hide) {
+                status = '⏸ Masquée manuellement — non visible sur le site';
+                bg = '#fee2e2'; color = '#991b1b';
+            } else if (s && today < s) {
+                status = '🕐 Programmée — s\'affichera le ' + s.toLocaleDateString('fr-FR');
+                bg = '#eff6ff'; color = '#1e40af';
+            } else if (e && today > e) {
+                status = '⏰ Expirée le ' + e.toLocaleDateString('fr-FR') + ' — non visible';
+                bg = '#f3f4f6'; color = '#6b7280';
+            } else if (s && e) {
+                var diff = Math.ceil((e - today) / (1000 * 60 * 60 * 24));
+                status = '✅ Active — expire dans ' + diff + ' jour' + (diff > 1 ? 's' : '') + ' (' + e.toLocaleDateString('fr-FR') + ')';
+                bg = '#f0fdf4'; color = '#065f46';
+            } else {
+                status = '✅ Active en permanence (aucune date définie)';
+                bg = '#f0fdf4'; color = '#065f46';
+            }
+            box.style.display = 'block';
+            box.style.background = bg;
+            box.style.color = color;
+            box.style.border = '1px solid ' + color + '33';
+            box.textContent = status;
+        }
+
 
         function updateShippingPreview() {
             var threshold = parseInt(document.getElementById('free_shipping_threshold').value) || 15000;
