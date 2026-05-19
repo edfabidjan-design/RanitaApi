@@ -132,9 +132,26 @@ namespace RanitaApi.Controllers
             }
 
             total += dto.ShippingFee;
+            var creditUsed = Math.Min(dto.ReferralCreditUsed, total);
+            total = Math.Max(0, total - creditUsed);
             order.Total = total;
+
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+
+
+            // ── Déduire le crédit parrainage utilisé ──
+            if (dto.ClientId.HasValue && creditUsed > 0)
+            {
+                var acheteurCredit = await _context.Clients.FindAsync(dto.ClientId.Value);
+                if (acheteurCredit != null)
+                {
+                    acheteurCredit.ReferralCredits = Math.Max(0, acheteurCredit.ReferralCredits - (int)creditUsed);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
 
             // ── PARRAINAGE : crédit à la première commande ─────────────────
             if (dto.ClientId.HasValue)
@@ -649,6 +666,7 @@ namespace RanitaApi.Controllers
         public int? ClientId { get; set; }
         public decimal ShippingFee { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();
+        public decimal ReferralCreditUsed { get; set; } = 0;
     }
 
     public class OrderItemDto
