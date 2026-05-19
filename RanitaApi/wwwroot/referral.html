@@ -306,9 +306,7 @@
             document.getElementById('statCount').textContent = data.referralCount;
             document.getElementById('statCredits').textContent = Number(data.referralCredits).toLocaleString('fr-FR');
 
-            const msg = encodeURIComponent(
-                `🛒 Découvrez Ranita Market — la boutique en ligne d'Abidjan ! Livraison rapide, meilleurs prix. Créez votre compte ici : ${referralLink}`
-            );
+            const msg = encodeURIComponent(`Rejoins Ranita Market 🛒 ${referralLink}`);
             document.getElementById('whatsappBtn').href = `https://wa.me/?text=${msg}`;
         } catch(e) {
             document.getElementById('referralLink').textContent = 'Erreur de chargement';
