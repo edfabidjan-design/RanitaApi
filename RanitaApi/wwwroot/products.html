@@ -499,7 +499,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
             <input type="text" id="mobSearchInput" placeholder="Rechercher..." onkeydown="if(event.key==='Enter'){document.getElementById('searchInput').value=this.value;renderProducts();}">
         </div>
-        <a href="cart.html" class="mob-icon-btn" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg><span id="mobCartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#10b981;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span></a>
+        <a href="cart.html" class="mob-icon-btn" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg><span id="mobCartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#10b981;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span></a>
         <script>(function () { var c = JSON.parse(localStorage.getItem('cart') || '[]'); var t = c.reduce(function (s, i) { return s + (i.qty || i.quantity || 1); }, 0); var b = document.getElementById('mobCartBadge'); if (t > 0) { b.textContent = t; b.style.display = 'flex'; } })()</script>
     </nav>
 
@@ -664,24 +664,24 @@
                     : '';
 
                 return `
-                        <div class="product-card" onclick="openProductDetails(${p.id})">
-                          <div class="product-img-list">
-                            ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
-                            ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-                          </div>
-                          <div class="product-info">
-                            <span class="product-category">${p.category?.name || ''}</span>
-                            <h3 class="product-name">${p.name}</h3>
-                            ${starsHtml}
-                            <div class="product-prices">
-                              <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
-                              ${oldPriceHtml}
-                              ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
-                            </div>
-                            ${stockHtml}
-                            ${btnHtml}
-                          </div>
-                        </div>`;
+                            <div class="product-card" onclick="openProductDetails(${p.id})">
+                              <div class="product-img-list">
+                                ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
+                                ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                              </div>
+                              <div class="product-info">
+                                <span class="product-category">${p.category?.name || ''}</span>
+                                <h3 class="product-name">${p.name}</h3>
+                                ${starsHtml}
+                                <div class="product-prices">
+                                  <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
+                                  ${oldPriceHtml}
+                                  ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                                </div>
+                                ${stockHtml}
+                                ${btnHtml}
+                              </div>
+                            </div>`;
             }).join('');
         }
 
@@ -694,5 +694,47 @@
 
     <script src="/install-prompt.js"></script>
     <script src="/cart-badge.js"></script>
+
+
+
+    <script>
+        (function () {
+            // Ne montrer qu'une fois par session
+            if (sessionStorage.getItem('referralToastShown')) return;
+
+            var client = JSON.parse(localStorage.getItem('client') || 'null');
+            if (!client) return;
+
+            fetch('/api/client-auth/referral/' + client.id)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (!data.referralCredits || data.referralCredits <= 0) return;
+
+                    // Mettre à jour le montant
+                    var el = document.getElementById('toastCreditAmount');
+                    if (el) el.textContent = Number(data.referralCredits).toLocaleString('fr-FR') + ' F CFA';
+
+                    // Afficher après 3 secondes
+                    setTimeout(function () {
+                        var toast = document.getElementById('referralToast');
+                        if (toast) toast.style.right = '20px';
+                        sessionStorage.setItem('referralToastShown', '1');
+
+                        // Masquer automatiquement après 8 secondes
+                        setTimeout(function () {
+                            closeReferralToast();
+                        }, 60000);
+                    }, 3000);
+                })
+                .catch(function () { });
+        })();
+
+        function closeReferralToast() {
+            var toast = document.getElementById('referralToast');
+            if (toast) toast.style.right = '-340px';
+        }
+    </script>
+
+
 </body>
 </html>
