@@ -246,4 +246,10 @@ public class ClientAuthController : ControllerBase
         public int ClientId { get; set; }
         public string ReferralCode { get; set; } = "";
     }
+
+    [HttpGet("/ref/{code}")]
+    public IActionResult RedirectReferral(string code)
+    {
+        return Redirect($"/register.html?ref={code}");
+    }
 }

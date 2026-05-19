@@ -301,7 +301,7 @@
             const res = await fetch(`${API}/referral/${client.id}`);
             const data = await res.json();
 
-            referralLink = data.referralLink;
+            referralLink = `https://www.ranita-shop.com/ref/${data.referralCode}`;
             document.getElementById('referralLink').textContent = referralLink;
             document.getElementById('statCount').textContent = data.referralCount;
             document.getElementById('statCredits').textContent = Number(data.referralCredits).toLocaleString('fr-FR');
