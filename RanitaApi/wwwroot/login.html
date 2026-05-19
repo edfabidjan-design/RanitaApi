@@ -5,62 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Client - Ranita</title>
     <link rel="stylesheet" href="auth.css">
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
-
-
 </head>
 <body>
 
     <div class="auth-card">
-
-        <div class="auth-logo" onclick="location.href='index.html'">
-            🛒 Ranita Market
-        </div>
-
+        <div class="auth-logo" onclick="location.href='index.html'">🛒 Ranita Market</div>
         <h2>Connexion</h2>
 
         <form id="loginForm">
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Mot de passe" required>
-
             <button type="submit">Se connecter</button>
         </form>
 
         <div class="auth-links">
             <a href="forgot-password.html">Mot de passe oublié ?</a><br>
-            <a href="javascript:void(0)" onclick="const r=new URLSearchParams(window.location.search).get('redirect');window.location.href='register.html'+(r?'?redirect='+r:'');">Créer un compte</a>
+            <a id="registerLink" href="register.html">Créer un compte</a>
         </div>
-
     </div>
 
     <script>
-        const API = "https://ranitaapi-production.up.railway.app/api/client-auth";
+        const API = "/api/client-auth";
 
+        // ── Transmettre le code parrainage vers register.html ──
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        const redirect = urlParams.get('redirect');
+
+        const registerLink = document.getElementById('registerLink');
+        let registerHref = 'register.html';
+        if (refCode) registerHref += '?ref=' + refCode;
+        if (redirect) registerHref += (refCode ? '&' : '?') + 'redirect=' + redirect;
+        registerLink.href = registerHref;
 
         async function registerClientPush(clientId) {
             if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
             try {
                 const reg = await navigator.serviceWorker.register('/sw-client.js');
-
-                // Demander permission seulement si pas encore accordée
                 if (Notification.permission === 'default') {
                     const permission = await Notification.requestPermission();
                     if (permission !== 'granted') return;
                 }
                 if (Notification.permission !== 'granted') return;
-
-                // Forcer re-enregistrement
                 const existing = await reg.pushManager.getSubscription();
                 if (existing) await existing.unsubscribe();
-
                 const sub = await reg.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: 'BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY'
                 });
-
-                await fetch('https://ranitaapi-production.up.railway.app/api/notifications/subscribe-client', {
+                await fetch('/api/notifications/subscribe-client', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -70,23 +65,20 @@
                         auth: btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth'))))
                     })
                 });
-                console.log('Push client enregistré !');
-            } catch (e) {
-                console.error('Push error:', e);
-            }
+            } catch (e) { console.error('Push error:', e); }
         }
-
-
 
         document.getElementById("loginForm").addEventListener("submit", async e => {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.disabled = true; btn.textContent = 'Connexion...';
 
             const res = await fetch(`${API}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: email.value,
-                    password: password.value
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value
                 })
             });
 
@@ -94,17 +86,26 @@
 
             if (!res.ok) {
                 alert(data.message || data);
+                btn.disabled = false; btn.textContent = 'Se connecter';
                 return;
             }
 
             localStorage.setItem("client", JSON.stringify(data));
 
-            // Enregistrer push PUIS rediriger
+            // ── Appliquer le parrainage si code présent et pas encore parrainé ──
+            if (refCode && !data.referredById) {
+                try {
+                    await fetch(`${API}/apply-referral`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ clientId: data.id, referralCode: refCode })
+                    });
+                } catch (e) { console.log('Referral apply error:', e); }
+            }
+
             await registerClientPush(data.id);
-            const redirect = new URLSearchParams(window.location.search).get("redirect");
             window.location.href = redirect || "products.html";
         });
     </script>
-
 </body>
 </html>

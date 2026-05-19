@@ -47,7 +47,11 @@
         </form>
 
         <div class="auth-links">
-            <a href="login.html">Déjà un compte ? Se connecter</a>
+            <a id="loginLink" href="login.html">Déjà un compte ? Se connecter</a>
+            <script>
+                const ref = new URLSearchParams(window.location.search).get('ref');
+                if (ref) document.getElementById('loginLink').href = 'login.html?ref=' + ref;
+            </script>
         </div>
     </div>
 
@@ -92,7 +96,12 @@
 
             alert("✅ Compte créé avec succès !");
             const redirect = urlParams.get("redirect");
-            window.location.href = "login.html" + (redirect ? `?redirect=${redirect}` : "");
+            let loginUrl = "login.html";
+            const params = [];
+            if (refCode) params.push("ref=" + refCode);
+            if (redirect) params.push("redirect=" + redirect);
+            if (params.length) loginUrl += "?" + params.join("&");
+            window.location.href = loginUrl;
         });
     </script>
 </body>

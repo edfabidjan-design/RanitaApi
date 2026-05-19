@@ -222,4 +222,28 @@ public class ClientAuthController : ControllerBase
 
         return Ok(clients);
     }
+
+
+
+    [HttpPost("apply-referral")]
+    public async Task<IActionResult> ApplyReferral([FromBody] ApplyReferralDto dto)
+    {
+        var client = await _context.Clients.FindAsync(dto.ClientId);
+        if (client == null) return NotFound();
+        if (client.ReferredById != null) return Ok("Déjà parrainé");
+
+        var parrain = await _context.Clients
+            .FirstOrDefaultAsync(c => c.ReferralCode == dto.ReferralCode.ToUpper());
+        if (parrain == null || parrain.Id == client.Id) return Ok("Code invalide");
+
+        client.ReferredById = parrain.Id;
+        await _context.SaveChangesAsync();
+        return Ok("Parrainage appliqué");
+    }
+
+    public class ApplyReferralDto
+    {
+        public int ClientId { get; set; }
+        public string ReferralCode { get; set; } = "";
+    }
 }
