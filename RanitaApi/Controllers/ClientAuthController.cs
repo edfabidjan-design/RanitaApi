@@ -188,6 +188,7 @@ public class ClientAuthController : ControllerBase
             o.CustomerAddress,
             o.PaymentMethod,
             o.Total,
+            o.ShippingFee,
             o.Status,
             o.CreatedAt,
             Items = o.Items.Select(i => new
