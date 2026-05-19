@@ -1632,7 +1632,7 @@
             <span id="promoBarText">Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison</span>
             <a href="products.html" id="promoBarLink" style="color:var(--g);font-weight:700;white-space:nowrap;">Voir les offres →</a>
         </div>
-       
+
     </div>
 
     <!-- ══ HEADER DESKTOP ═══════════════════════════════════════ -->
@@ -2323,5 +2323,84 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"Ranita Market","url":"https://www.ranita-shop.com","description":"Boutique en ligne en Côte d'Ivoire","address":{"@type":"PostalAddress","addressLocality":"Abidjan","addressCountry":"CI"},"openingHours":"Mo-Su 08:00-20:00"}</script>
     <script src="/cart-badge.js"></script>
     <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.addEventListener('message', function (e) { if (e.data === 'reload') location.reload(true); }); }</script>
+
+
+    <!-- ── TOAST CRÉDIT PARRAINAGE ──────────────────────────── -->
+    <div id="referralToast" style="
+    position:fixed;
+    bottom:90px;
+    right:-340px;
+    width:320px;
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:white;
+    border-radius:16px;
+    padding:18px 20px;
+    box-shadow:0 8px 32px rgba(16,185,129,.35);
+    z-index:9999;
+    transition:right .5s cubic-bezier(.4,0,.2,1);
+    ">
+        <button onclick="closeReferralToast()" style="
+        position:absolute;top:10px;right:12px;
+        background:rgba(255,255,255,.2);border:none;
+        color:white;width:24px;height:24px;border-radius:50%;
+        cursor:pointer;font-size:14px;display:flex;
+        align-items:center;justify-content:center;">
+            ×
+        </button>
+        <div style="font-size:11px;font-weight:600;opacity:.85;margin-bottom:6px;">
+            🎁 Crédit parrainage disponible
+        </div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px;" id="toastCreditAmount">
+            900 F CFA
+        </div>
+        <div style="font-size:12px;opacity:.85;margin-bottom:14px;line-height:1.4;">
+            Sera déduit automatiquement de votre prochaine commande !
+        </div>
+        <a href="products.html" style="
+        display:inline-block;background:white;color:#059669;
+        padding:9px 18px;border-radius:8px;font-weight:700;
+        font-size:13px;text-decoration:none;">
+            🛒 Commander maintenant →
+        </a>
+    </div>
+
+    <script>
+        (function () {
+            // Ne montrer qu'une fois par session
+            if (sessionStorage.getItem('referralToastShown')) return;
+
+            var client = JSON.parse(localStorage.getItem('client') || 'null');
+            if (!client) return;
+
+            fetch('/api/client-auth/referral/' + client.id)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (!data.referralCredits || data.referralCredits <= 0) return;
+
+                    // Mettre à jour le montant
+                    var el = document.getElementById('toastCreditAmount');
+                    if (el) el.textContent = Number(data.referralCredits).toLocaleString('fr-FR') + ' F CFA';
+
+                    // Afficher après 3 secondes
+                    setTimeout(function () {
+                        var toast = document.getElementById('referralToast');
+                        if (toast) toast.style.right = '20px';
+                        sessionStorage.setItem('referralToastShown', '1');
+
+                        // Masquer automatiquement après 8 secondes
+                        setTimeout(function () {
+                            closeReferralToast();
+                        }, 8000);
+                    }, 3000);
+                })
+                .catch(function () { });
+        })();
+
+        function closeReferralToast() {
+            var toast = document.getElementById('referralToast');
+            if (toast) toast.style.right = '-340px';
+        }
+    </script>
+
 </body>
 </html>
