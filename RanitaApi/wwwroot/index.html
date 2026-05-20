@@ -1941,16 +1941,26 @@
 
     <!-- Timer flash -->
     <script>
-        (function () {
-            var t = 2 * 3600 + 45 * 60 + 18;
-            setInterval(function () {
-                if (t <= 0) { t = 3 * 3600; return; } t--;
-                var h = document.getElementById('t-h'), m = document.getElementById('t-m'), s = document.getElementById('t-s');
-                if (h) h.textContent = String(Math.floor(t / 3600)).padStart(2, '0');
-                if (m) m.textContent = String(Math.floor((t % 3600) / 60)).padStart(2, '0');
-                if (s) s.textContent = String(t % 60).padStart(2, '0');
+
+
+        var flashTimerInterval = null;
+        function startFlashTimer(endDate) {
+            if (flashTimerInterval) clearInterval(flashTimerInterval);
+            flashTimerInterval = setInterval(function () {
+                var now = new Date();
+                var end = new Date(endDate);
+                var diff = Math.max(0, Math.floor((end - now) / 1000));
+                var h = document.getElementById('t-h');
+                var m = document.getElementById('t-m');
+                var s = document.getElementById('t-s');
+                if (h) h.textContent = String(Math.floor(diff / 3600)).padStart(2, '0');
+                if (m) m.textContent = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+                if (s) s.textContent = String(diff % 60).padStart(2, '0');
+                if (diff <= 0) { clearInterval(flashTimerInterval); loadFlashSales(); }
             }, 1000);
-        })();
+        }
+
+
     </script>
 
     <!-- Produits + settings -->
@@ -1988,9 +1998,9 @@
                 allProducts = await res.json();
                 var active = allProducts.filter(function (p) { return p.isActive !== false; });
                 buildCatsBar(active);
-                var flash = active.filter(function (p) { return p.oldPrice && p.oldPrice > p.price; }).sort(function (a, b) { return pct(b.price, b.oldPrice) - pct(a.price, a.oldPrice); }).slice(0, 6);
-                var fill = flash.length < 4 ? [...flash, ...active.filter(function (p) { return !flash.includes(p); }).slice(0, 6 - flash.length)] : flash;
-                document.getElementById('flash-grid').innerHTML = fill.length ? fill.map(buildCard).join('') : errH();
+                // APRÈS — ne plus gérer le flash ici, loadFlashSales() s'en charge
+                loadFlashSales();
+
                 var ids = new Set(fill.map(function (p) { return p.id; }));
                 var best = active.filter(function (p) { return !ids.has(p.id); }).slice(0, 4);
                 document.getElementById('bestsellers-grid').innerHTML = best.length ? best.map(buildCard).join('') : errH();
@@ -2016,6 +2026,64 @@
                 });
             }).catch(function () { });
         }
+
+
+        async function loadFlashSales() {
+            var grid = document.getElementById('flash-grid');
+            var flashSection = document.querySelector('.flash-section');
+            try {
+                var res = await fetch('/api/flash-sales/active');
+                if (!res.ok) throw new Error();
+                var sales = await res.json();
+
+                if (!sales || !sales.length) {
+                    // Pas de vente flash active — afficher produits avec oldPrice à la place
+                    if (flashSection) flashSection.style.display = 'none';
+                    return;
+                }
+
+                if (flashSection) flashSection.style.display = 'block';
+
+                // Démarrer le timer sur la première vente flash (la plus proche de la fin)
+                startFlashTimer(sales[0].endDate);
+
+                // Afficher les produits flash
+                grid.innerHTML = sales.map(function (s) {
+                    var p = s.product;
+                    var imgs = (function () { try { return JSON.parse(p.images || '[]'); } catch { return p.imageUrl ? [p.imageUrl] : []; } })();
+                    var img = imgs[0] || p.imageUrl || '';
+                    var stockLeft = s.stockLeft;
+                    var oos = stockLeft <= 0;
+                    var progressPct = Math.round(((s.flashStock - stockLeft) / s.flashStock) * 100);
+
+                    return '<div class="p-card" onclick="location.href=\'product-details.html?id=' + p.id + '\'">' +
+                        '<div class="p-img">' +
+                        (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
+                        '<span class="bdg bdg-r">-' + s.discount + '%</span>' +
+                        (oos ? '' : '<button class="w-btn" onclick="event.stopPropagation();wsh(this,' + p.id + ')">♡</button>') +
+                        '</div>' +
+                        '<div class="p-info">' +
+                        '<div class="p-cat">⚡ Vente Flash</div>' +
+                        '<div class="p-name">' + p.name + '</div>' +
+                        '<div class="p-stock ' + (oos ? 'out' : stockLeft <= 3 ? 'low' : 'ok') + '">' +
+                        (oos ? 'Épuisé' : stockLeft <= 3 ? '⚠ Plus que ' + stockLeft : stockLeft + ' restants') + '</div>' +
+                        // Barre de progression stock
+                        '<div style="background:#f3f4f6;border-radius:999px;height:4px;margin-bottom:8px;overflow:hidden;">' +
+                        '<div style="background:#f97316;height:100%;width:' + progressPct + '%;border-radius:999px;"></div></div>' +
+                        '<div class="p-row">' +
+                        '<span class="p-price" style="color:#f97316;">' + Number(s.flashPrice).toLocaleString('fr-FR') + ' F</span>' +
+                        '<span class="p-old">' + Number(s.originalPrice).toLocaleString('fr-FR') + ' F</span>' +
+                        (oos ? '<button class="add-btn" disabled>Épuisé</button>' :
+                            '<button class="add-btn" style="background:#f97316;" onclick="addCart(event,' + p.id + ',\'' + p.name.replace(/'/g, "\\'") + '\',' + s.flashPrice + ',\'' + img + '\')">+ Panier</button>') +
+                        '</div></div></div>';
+                }).join('');
+
+            } catch (e) {
+                // En cas d'erreur, fallback sur les produits avec oldPrice
+                if (flashSection) flashSection.style.display = 'none';
+            }
+        }
+
 
         function filterCatById(el, pid, nm) {
             document.querySelectorAll('.cat-tab').forEach(function (x) { x.classList.remove('active'); }); el.classList.add('active');
