@@ -180,7 +180,7 @@ namespace RanitaApi.Controllers
 
                                 parrain.ReferralCount += 1;
                                 await _context.SaveChangesAsync();
-                                Console.WriteLine($"Parrainage : +2500F crédités à {parrain.FullName} (id={parrain.Id})");
+                                Console.WriteLine($"Parrainage : +{credit}F crédités à {parrain.FullName} (id={parrain.Id})");
 
                                 // Email au parrain
                                 try
