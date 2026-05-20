@@ -688,4 +688,4 @@ namespace RanitaApi.Controllers
         public bool Available { get; set; }
         public string? Motif { get; set; }
     }
-}
+} 
