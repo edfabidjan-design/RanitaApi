@@ -219,30 +219,40 @@ namespace RanitaApi.Services
             await SendBrevoEmail(payload);
         }
 
-        // ✅ Confirmation commande → client
-        public async Task SendOrderConfirmationToClientAsync(string toEmail, string clientName, int orderId, decimal total, List<OrderItem> items)
+        public async Task SendOrderConfirmationToClientAsync(
+            string toEmail, string clientName, int orderId,
+            decimal total, List<OrderItem> items,
+            decimal shippingFee = 0, decimal referralCreditUsed = 0)
         {
+            var subtotal = items.Sum(i => i.Price * i.Quantity);
+            var shippingLabel = shippingFee == 0 ? "🎉 Gratuite !" : shippingFee.ToString("N0") + " FCFA";
+            var referralLine = referralCreditUsed > 0 ? $@"
+        <div style='display:flex;justify-content:space-between;font-size:14px;padding:4px 0;color:#10b981;font-weight:700;'>
+            <span>🎁 Crédit parrainage</span>
+            <span>- {referralCreditUsed.ToString("N0")} FCFA</span>
+        </div>" : "";
+
             var itemsHtml = string.Join("", items.Select(i => $@"
-                <tr>
-                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;'>{i.ProductName}{(string.IsNullOrEmpty(i.VariantName) ? "" : $" ({i.VariantName})")}</td>
-                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:center;'>{i.Quantity}</td>
-                    <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;color:#10b981;'>{(i.Price * i.Quantity).ToString("N0")} FCFA</td>
-                </tr>"));
+        <tr>
+            <td style='padding:8px;border-bottom:1px solid #f3f4f6;'>{i.ProductName}{(string.IsNullOrEmpty(i.VariantName) ? "" : $" ({i.VariantName})")}</td>
+            <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:center;'>{i.Quantity}</td>
+            <td style='padding:8px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;color:#10b981;'>{(i.Price * i.Quantity).ToString("N0")} FCFA</td>
+        </tr>"));
 
             var payload = new
             {
                 replyTo = new { email = "ranitabouda@gmail.com", name = "Ranita Market" },
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
                 to = new[] { new { email = toEmail } },
-                subject = $"Commande #{orderId} confirmee - Ranita Market",
+                subject = $"Commande #{orderId} confirmée - Ranita Market",
                 htmlContent = $@"
 <div style='font-family:Arial;padding:20px;background:#f4f4f4'>
   <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
-    <h2 style='color:#059669;margin:0 0 8px'>Commande recue !</h2>
+    <h2 style='color:#059669;margin:0 0 8px'>✅ Commande reçue !</h2>
     <p>Bonjour <strong>{clientName}</strong>,</p>
-    <p>Merci pour votre commande sur <strong>Ranita Market</strong> ! Nous l'avons bien recue et elle est en cours de traitement.</p>
+    <p>Merci pour votre commande sur <strong>Ranita Market</strong> ! Nous l'avons bien reçue et elle est en cours de traitement.</p>
     <div style='background:#f9fafb;border-radius:8px;padding:16px;margin:16px 0;text-align:center;'>
-        <div style='font-size:13px;color:#6b7280;'>Numero de commande</div>
+        <div style='font-size:13px;color:#6b7280;'>Numéro de commande</div>
         <div style='font-size:28px;font-weight:800;color:#111827;'>#{orderId}</div>
         <div style='display:inline-block;margin-top:8px;background:#fef3c7;color:#92400e;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px;'>En attente</div>
     </div>
@@ -250,15 +260,26 @@ namespace RanitaApi.Services
         <thead>
             <tr style='background:#f9fafb;'>
                 <th style='padding:8px;text-align:left;color:#6b7280;font-weight:600;'>Produit</th>
-                <th style='padding:8px;text-align:center;color:#6b7280;font-weight:600;'>Qte</th>
+                <th style='padding:8px;text-align:center;color:#6b7280;font-weight:600;'>Qté</th>
                 <th style='padding:8px;text-align:right;color:#6b7280;font-weight:600;'>Prix</th>
             </tr>
         </thead>
         <tbody>{itemsHtml}</tbody>
     </table>
-    <div style='display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-top:16px;padding-top:12px;border-top:2px solid #f3f4f6;'>
-        <span>Total</span>
-        <span style='color:#10b981;'>{total.ToString("N0")} FCFA</span>
+    <div style='margin-top:16px;padding-top:12px;border-top:2px solid #f3f4f6;'>
+        <div style='display:flex;justify-content:space-between;font-size:14px;padding:4px 0;color:#6b7280;'>
+            <span>Sous-total</span>
+            <span>{subtotal.ToString("N0")} FCFA</span>
+        </div>
+        <div style='display:flex;justify-content:space-between;font-size:14px;padding:4px 0;color:#6b7280;'>
+            <span>🚚 Livraison</span>
+            <span>{shippingLabel}</span>
+        </div>
+        {referralLine}
+        <div style='display:flex;justify-content:space-between;font-size:16px;font-weight:800;padding-top:8px;margin-top:4px;border-top:1px solid #f3f4f6;'>
+            <span>Total</span>
+            <span style='color:#10b981;'>{total.ToString("N0")} FCFA</span>
+        </div>
     </div>
     <a href='https://www.ranita-shop.com/client-orders.html'
        style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>

@@ -273,7 +273,8 @@ namespace RanitaApi.Controllers
                             var client = await db.Clients.FindAsync(clientId.Value);
                             if (client != null && !string.IsNullOrEmpty(client.Email))
                                 await _emailService.SendOrderConfirmationToClientAsync(
-                                    client.Email, client.FullName, orderId, orderTotal, orderItems);
+                                    client.Email, client.FullName, orderId, orderTotal, orderItems,
+                                    order.ShippingFee, creditUsed);
                         }
                         catch (Exception ex) { Console.WriteLine("EMAIL CLIENT ERROR: " + ex.Message); }
                     }
