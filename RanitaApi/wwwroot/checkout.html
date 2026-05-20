@@ -660,7 +660,7 @@
                 customerPhone: document.getElementById("customerPhone").value,
                 customerAddress: zoneName + " — " + document.getElementById("customerAddress").value,
                 paymentMethod: selectedPayment,
-                shippingFee: window._finalShippingFee || SHIPPING_FEE,
+                shippingFee: window._finalShippingFee ?? SHIPPING_FEE,
                 referralCreditUsed: window._referralCreditUsed || 0,
                 items: cart.map(item => ({
                     productId: item.id,
