@@ -599,6 +599,16 @@
                         <input type="number" id="referral_rate" placeholder="5" min="1" max="50" oninput="updateReferralPreview()">
                         <span class="hint">Ex: 5 = 5% du montant reversé au parrain</span>
                     </div>
+                    <div class="field">
+                        <label>Date de début campagne (optionnel)</label>
+                        <input type="date" id="referral_start" oninput="updateReferralPreview()">
+                        <span class="hint">Laisser vide = actif immédiatement</span>
+                    </div>
+                    <div class="field">
+                        <label>Date de fin campagne (optionnel)</label>
+                        <input type="date" id="referral_end" oninput="updateReferralPreview()">
+                        <span class="hint">Laisser vide = pas d'expiration</span>
+                    </div>
                     <div class="field full">
                         <div id="referralRatePreview" style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:14px;font-size:13px;color:#065f46;display:none;"></div>
                     </div>
@@ -750,7 +760,8 @@
             'referral_title', 'referral_desc',
             'featured_title', 'featured_subtitle', 'featured_product_ids',
             'free_shipping_threshold',
-            'promo_bar_start', 'promo_bar_end', 'referral_rate'
+            'promo_bar_start', 'promo_bar_end', 'referral_rate',
+            'referral_start', 'referral_end'
         ];
         function slideKeys(n) { return ['slide' + n + '_title', 'slide' + n + '_sub', 'slide' + n + '_cta_text', 'slide' + n + '_cta_link', 'slide' + n + '_img', 'slide' + n + '_badge', 'slide' + n + '_discount', 'slide' + n + '_discount_label']; }
 
@@ -768,10 +779,31 @@
 
         function updateReferralPreview() {
             var rate = parseFloat(document.getElementById('referral_rate').value) || 5;
+            var start = document.getElementById('referral_start').value;
+            var end = document.getElementById('referral_end').value;
             var box = document.getElementById('referralRatePreview');
             if (!box) return;
+
+            var today = new Date(); today.setHours(0, 0, 0, 0);
+            var s = start ? new Date(start) : null;
+            var e = end ? new Date(end) : null;
+
+            var statusHtml = '';
+            if (s && today < s) {
+                statusHtml = '<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;margin-bottom:10px;color:#1e40af;font-weight:700;">🕐 Campagne programmée — démarrera le ' + s.toLocaleDateString('fr-FR') + '</div>';
+            } else if (e && today > e) {
+                statusHtml = '<div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;margin-bottom:10px;color:#991b1b;font-weight:700;">⏰ Campagne expirée le ' + e.toLocaleDateString('fr-FR') + '</div>';
+            } else if (s || e) {
+                var diff = e ? Math.ceil((e - today) / (1000 * 60 * 60 * 24)) : null;
+                var msg = diff ? 'Active — expire dans ' + diff + ' jour' + (diff > 1 ? 's' : '') + ' (' + e.toLocaleDateString('fr-FR') + ')' : 'Active depuis le ' + s.toLocaleDateString('fr-FR');
+                statusHtml = '<div style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:8px 12px;margin-bottom:10px;color:#065f46;font-weight:700;">✅ ' + msg + '</div>';
+            } else {
+                statusHtml = '<div style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:8px 12px;margin-bottom:10px;color:#065f46;font-weight:700;">✅ Active en permanence</div>';
+            }
+
             box.style.display = 'block';
-            box.innerHTML = '<strong>👁 Aperçu :</strong><br><br>' +
+            box.innerHTML = statusHtml +
+                '<strong>👁 Aperçu commission :</strong><br><br>' +
                 '🛒 Ami achète <strong>15 000 F</strong> → parrain reçoit <strong style="color:#10b981;">' + Math.round(15000 * rate / 100).toLocaleString() + ' F</strong><br>' +
                 '🛒 Ami achète <strong>50 000 F</strong> → parrain reçoit <strong style="color:#10b981;">' + Math.round(50000 * rate / 100).toLocaleString() + ' F</strong><br>' +
                 '🛒 Ami achète <strong>100 000 F</strong> → parrain reçoit <strong style="color:#10b981;">' + Math.round(100000 * rate / 100).toLocaleString() + ' F</strong>';

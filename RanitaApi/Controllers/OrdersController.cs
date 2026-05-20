@@ -162,7 +162,7 @@ namespace RanitaApi.Controllers
                     var ordersCount = await _context.Orders
                         .CountAsync(o => o.ClientId == dto.ClientId.Value);
 
-                    if (ordersCount == 1) // C'est bien la toute première commande
+                    if (ordersCount == 1)
                     {
                         var acheteur = await _context.Clients.FindAsync(dto.ClientId.Value);
                         if (acheteur?.ReferredById != null)
@@ -170,29 +170,47 @@ namespace RanitaApi.Controllers
                             var parrain = await _context.Clients.FindAsync(acheteur.ReferredById.Value);
                             if (parrain != null)
                             {
-                                var subtotal = order.Items.Sum(i => i.Price * i.Quantity);
-                                var rateSetting = await _context.SiteSettings
-                                    .FirstOrDefaultAsync(s => s.Key == "referral_rate");
-                                var rate = decimal.TryParse(rateSetting?.Value, out var r) ? r / 100m : 0.05m;
-                                var credit = (int)Math.Round(subtotal * rate);
-                                parrain.ReferralCredits += credit;
+                                // ── Vérifier dates campagne ──
+                                var startSetting = await _context.SiteSettings
+                                    .FirstOrDefaultAsync(s => s.Key == "referral_start");
+                                var endSetting = await _context.SiteSettings
+                                    .FirstOrDefaultAsync(s => s.Key == "referral_end");
 
+                                var today = DateTime.UtcNow.Date;
+                                var startDate = DateTime.TryParse(startSetting?.Value, out var sd) ? sd.Date : (DateTime?)null;
+                                var endDate = DateTime.TryParse(endSetting?.Value, out var ed) ? ed.Date : (DateTime?)null;
 
-                                parrain.ReferralCount += 1;
-                                await _context.SaveChangesAsync();
-                                Console.WriteLine($"Parrainage : +{credit}F crédités à {parrain.FullName} (id={parrain.Id})");
+                                bool campagneActive = (startDate == null || today >= startDate) &&
+                                                     (endDate == null || today <= endDate);
 
-                                // Email au parrain
-                                try
+                                if (campagneActive)
                                 {
-                                    if (!string.IsNullOrEmpty(parrain.Email))
-                                        await _emailService.SendReferralCreditNotificationAsync(
-                                            parrain.Email, parrain.FullName,
-                                            acheteur.FullName, 2500);
+                                    var subtotal = order.Items.Sum(i => i.Price * i.Quantity);
+                                    var rateSetting = await _context.SiteSettings
+                                        .FirstOrDefaultAsync(s => s.Key == "referral_rate");
+                                    var rate = decimal.TryParse(rateSetting?.Value, out var r) ? r / 100m : 0.05m;
+                                    var credit = (int)Math.Round(subtotal * rate);
+
+                                    parrain.ReferralCredits += credit;
+                                    parrain.ReferralCount += 1;
+                                    await _context.SaveChangesAsync();
+                                    Console.WriteLine($"Parrainage : +{credit}F crédités à {parrain.FullName} (id={parrain.Id})");
+
+                                    try
+                                    {
+                                        if (!string.IsNullOrEmpty(parrain.Email))
+                                            await _emailService.SendReferralCreditNotificationAsync(
+                                                parrain.Email, parrain.FullName,
+                                                acheteur.FullName, credit);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("EMAIL PARRAIN ERROR: " + ex.Message);
+                                    }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    Console.WriteLine("EMAIL PARRAIN ERROR: " + ex.Message);
+                                    Console.WriteLine($"Parrainage ignoré — campagne inactive (start={startSetting?.Value}, end={endSetting?.Value})");
                                 }
                             }
                         }
@@ -203,6 +221,7 @@ namespace RanitaApi.Controllers
                     Console.WriteLine("PARRAINAGE ERROR: " + ex.Message);
                 }
             }
+            // ── FIN PARRAINAGE ─────────────────────────────────────────────
             // ── FIN PARRAINAGE ─────────────────────────────────────────────
 
             var orderId = order.Id;
