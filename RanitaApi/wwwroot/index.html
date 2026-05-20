@@ -1752,21 +1752,7 @@
         </div>
     </div>
 
-    <!-- ══ 5. MEILLEURES VENTES ══════════════════════════════════ -->
-    <section style="background:var(--w2);border-top:1px solid var(--wb);">
-        <div class="sec">
-            <div class="sec-head">
-                <div class="sec-title"><span class="sec-accent"></span> Meilleures ventes</div>
-                <a href="products.html" class="see-all">Voir tout →</a>
-            </div>
-            <div class="products-grid" id="bestsellers-grid">
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- ══ 6. CATÉGORIES PHARES ══════════════════════════════════ -->
     <div class="big-cats-section">
@@ -1819,6 +1805,26 @@
             </div>
         </div>
     </div>
+
+
+
+    <!-- ══ 5. MEILLEURES VENTES ══════════════════════════════════ -->
+    <section style="background:var(--w2);border-top:1px solid var(--wb);">
+        <div class="sec">
+            <div class="sec-head">
+                <div class="sec-title"><span class="sec-accent"></span> Meilleures ventes</div>
+                <a href="products.html" class="see-all">Voir tout →</a>
+            </div>
+            <div class="products-grid" id="bestsellers-grid">
+                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+            </div>
+        </div>
+    </section>
+
+  
 
     <!-- ══ 7. RÉASSURANCE + PAIEMENTS ════════════════════════════ -->
     <div class="trust-section">
@@ -2366,8 +2372,8 @@
 
     <script>
         (function () {
-          
-          
+
+
 
             var client = JSON.parse(localStorage.getItem('client') || 'null');
             if (!client) return;
@@ -2385,7 +2391,7 @@
                     setTimeout(function () {
                         var toast = document.getElementById('referralToast');
                         if (toast) toast.style.right = '20px';
-                      
+
 
                         // Masquer automatiquement après 8 secondes
                         setTimeout(function () {

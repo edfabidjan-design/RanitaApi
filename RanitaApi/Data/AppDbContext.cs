@@ -29,6 +29,7 @@ namespace RanitaApi.Data
         public DbSet<CommissionSetting> CommissionSettings { get; set; }
         public DbSet<SiteSetting> SiteSettings { get; set; }
         public DbSet<SiteEvent> SiteEvents { get; set; }
+        public DbSet<FlashSale> FlashSales { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

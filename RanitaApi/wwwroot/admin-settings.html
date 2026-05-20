@@ -511,6 +511,7 @@
             <div class="tab" onclick="switchTab('referral',this)">🎁 Parrainage</div>
             <div class="tab" onclick="switchTab('event',this)">🎉 Événements</div>
             <div class="tab" onclick="switchTab('livraison',this)">🚚 Livraison</div>
+            <div class="tab" onclick="switchTab('flash',this)">⚡ Ventes Flash</div>
         </div>
 
         <!-- ══ SLIDER ══════════════════════════════════════════════ -->
@@ -737,6 +738,74 @@
             </div>
         </div>
 
+
+        <!-- ══ VENTES FLASH ════════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-flash">
+            <div class="info-box info-yellow">⚡ Les ventes flash s'affichent automatiquement sur la home avec un compte à rebours. Le prix flash reprend automatiquement à l'expiration.</div>
+
+            <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+                <button onclick="fsOpenForm()" style="background:#f97316;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">⚡ Nouvelle vente flash</button>
+            </div>
+
+            <!-- Formulaire -->
+            <div class="ev-form" id="fsForm">
+                <div class="ev-form-title">
+                    <span id="fsFormTitle">⚡ Nouvelle vente flash</span>
+                    <button onclick="fsCloseForm()" style="background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:#6b7280;">×</button>
+                </div>
+                <input type="hidden" id="fs_id">
+                <div class="fields-grid">
+                    <div class="field full">
+                        <label>Rechercher un produit</label>
+                        <input type="text" id="fs_search" placeholder="🔍 Nom du produit..." oninput="fsSearchProduct()">
+                        <div id="fs_search_results" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
+                    </div>
+                    <div class="field full" id="fs_selected_product" style="display:none;">
+                        <label>Produit sélectionné</label>
+                        <div id="fs_product_display" style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px;"></div>
+                    </div>
+                    <input type="hidden" id="fs_product_id">
+                    <div class="field">
+                        <label>Prix flash (F CFA)</label>
+                        <input type="number" id="fs_price" placeholder="5000" oninput="fsUpdatePreview()">
+                    </div>
+                    <div class="field">
+                        <label>Stock flash (unités)</label>
+                        <input type="number" id="fs_stock" placeholder="10">
+                    </div>
+                    <div class="field">
+                        <label>Date & heure début</label>
+                        <input type="datetime-local" id="fs_start">
+                    </div>
+                    <div class="field">
+                        <label>Date & heure fin</label>
+                        <input type="datetime-local" id="fs_end">
+                    </div>
+                    <div class="field">
+                        <label>Statut</label>
+                        <select id="fs_active">
+                            <option value="true">✅ Activé</option>
+                            <option value="false">⏸ Désactivé</option>
+                        </select>
+                    </div>
+                    <div class="field full" id="fsPreviewBox" style="display:none;">
+                        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px;font-size:13px;color:#92400e;">
+                            <span id="fsPreviewText"></span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
+                    <button onclick="fsCloseForm()" style="background:#f3f4f6;color:#374151;border:none;padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">Annuler</button>
+                    <button onclick="fsSave()" id="fsBtnSave" style="background:#f97316;color:white;border:none;padding:11px 28px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">⚡ Enregistrer</button>
+                </div>
+            </div>
+
+            <!-- Liste -->
+            <div id="fsList"><div style="text-align:center;padding:40px;color:#9ca3af;font-size:13px;">⏳ Chargement...</div></div>
+        </div>
+
+
+
         <div class="save-bar" id="mainSaveBar">
             <div class="toast-ok" id="toastOk">✅ Modifications enregistrées !</div>
             <div class="save-info" id="saveInfo">Les modifications seront visibles immédiatement sur le site.</div>
@@ -769,6 +838,9 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.getElementById('mainSaveBar').style.display = tab === 'event' ? 'none' : 'flex';
+            document.getElementById('mainSaveBar').style.display =
+                (tab === 'event' || tab === 'flash') ? 'none' : 'flex';
+            if (tab === 'flash') fsLoadList();
             el.classList.add('active'); document.getElementById('panel-' + tab).classList.add('active');
             if (tab === 'featured' && !document.getElementById('featuredSellerList').querySelector('[id^="fsel-"]')) featuredLoadSellers();
             if (tab === 'event') evLoadList();
@@ -1040,6 +1112,207 @@
             btn.disabled = false; btn.textContent = '💾 Enregistrer';
         }
         loadSettings();
+
+
+        // ── VENTES FLASH ─────────────────────────────────────────────
+        let fsFlashes = [], fsSelectedProduct = null;
+
+        function fsOpenForm() {
+            document.getElementById('fs_id').value = '';
+            document.getElementById('fsFormTitle').textContent = '⚡ Nouvelle vente flash';
+            ['fs_search', 'fs_price', 'fs_stock', 'fs_start', 'fs_end'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('fs_active').value = 'true';
+            document.getElementById('fs_search_results').innerHTML = '';
+            document.getElementById('fs_selected_product').style.display = 'none';
+            document.getElementById('fsPreviewBox').style.display = 'none';
+            document.getElementById('fs_product_id').value = '';
+            fsSelectedProduct = null;
+            document.getElementById('fsForm').classList.add('open');
+            document.getElementById('fsForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function fsCloseForm() { document.getElementById('fsForm').classList.remove('open'); }
+
+        async function fsSearchProduct() {
+            const q = document.getElementById('fs_search').value.trim();
+            if (q.length < 2) { document.getElementById('fs_search_results').innerHTML = ''; return; }
+            try {
+                const res = await fetch(`${API}/products?search=${encodeURIComponent(q)}`);
+                const prods = await res.json();
+                const list = prods.slice(0, 8);
+                document.getElementById('fs_search_results').innerHTML = list.map(p => {
+                    const imgs = (() => { try { return JSON.parse(p.images || '[]'); } catch { return [p.imageUrl || '']; } })();
+                    const img = imgs[0] || p.imageUrl || '';
+                    return `<div onclick="fsSelectProduct(${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${img}')"
+                style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;" 
+                onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#e5e7eb'">
+                ${img ? `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">` : '<span style="font-size:24px">📦</span>'}
+                <div>
+                    <div style="font-size:13px;font-weight:700;color:#111827;">${p.name}</div>
+                    <div style="font-size:12px;color:#10b981;font-weight:700;">${Number(p.price).toLocaleString()} F CFA</div>
+                </div>
+            </div>`;
+                }).join('');
+            } catch (e) { }
+        }
+
+        function fsSelectProduct(id, name, price, img) {
+            fsSelectedProduct = { id, name, price, img };
+            document.getElementById('fs_product_id').value = id;
+            document.getElementById('fs_search_results').innerHTML = '';
+            document.getElementById('fs_search').value = '';
+            document.getElementById('fs_selected_product').style.display = 'block';
+            document.getElementById('fs_product_display').innerHTML = `
+        ${img ? `<img src="${img}" style="width:50px;height:50px;object-fit:cover;border-radius:8px;">` : '<span style="font-size:30px">📦</span>'}
+        <div>
+            <div style="font-size:14px;font-weight:700;color:#111827;">${name}</div>
+            <div style="font-size:13px;color:#6b7280;">Prix normal : <strong>${Number(price).toLocaleString()} F CFA</strong></div>
+        </div>
+        <button onclick="fsClearProduct()" style="margin-left:auto;background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">✕</button>`;
+            fsUpdatePreview();
+        }
+
+        function fsClearProduct() {
+            fsSelectedProduct = null;
+            document.getElementById('fs_product_id').value = '';
+            document.getElementById('fs_selected_product').style.display = 'none';
+            document.getElementById('fsPreviewBox').style.display = 'none';
+        }
+
+        function fsUpdatePreview() {
+            if (!fsSelectedProduct) return;
+            const flashPrice = parseFloat(document.getElementById('fs_price').value);
+            if (!flashPrice) return;
+            const discount = Math.round((1 - flashPrice / fsSelectedProduct.price) * 100);
+            const box = document.getElementById('fsPreviewBox');
+            box.style.display = 'block';
+            document.getElementById('fsPreviewText').innerHTML =
+                `⚡ <strong>${fsSelectedProduct.name}</strong> — Prix normal : <s>${Number(fsSelectedProduct.price).toLocaleString()} F</s> → Prix flash : <strong style="color:#f97316;">${Number(flashPrice).toLocaleString()} F</strong> <span style="background:#f97316;color:white;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;">-${discount}%</span>`;
+        }
+
+        async function fsSave() {
+            const productId = parseInt(document.getElementById('fs_product_id').value);
+            if (!productId) { alert('Veuillez sélectionner un produit.'); return; }
+            const flashPrice = parseFloat(document.getElementById('fs_price').value);
+            if (!flashPrice) { alert('Veuillez entrer un prix flash.'); return; }
+            const start = document.getElementById('fs_start').value;
+            const end = document.getElementById('fs_end').value;
+            if (!start || !end) { alert('Veuillez définir les dates de début et fin.'); return; }
+
+            const btn = document.getElementById('fsBtnSave'); btn.disabled = true; btn.textContent = '⏳...';
+            const id = document.getElementById('fs_id').value;
+            const payload = {
+                productId, flashPrice,
+                flashStock: parseInt(document.getElementById('fs_stock').value) || 10,
+                startDate: new Date(start).toISOString(),
+                endDate: new Date(end).toISOString(),
+                isActive: document.getElementById('fs_active').value === 'true'
+            };
+            try {
+                const url = id ? `${API}/flash-sales/${id}` : `${API}/flash-sales`;
+                const method = id ? 'PUT' : 'POST';
+                const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (r.ok) { fsCloseForm(); await fsLoadList(); }
+                else alert('Erreur : ' + await r.text());
+            } catch (e) { alert('Erreur réseau.'); }
+            btn.disabled = false; btn.textContent = '⚡ Enregistrer';
+        }
+
+        async function fsLoadList() {
+            try {
+                const res = await fetch(`${API}/flash-sales`);
+                fsFlashes = await res.json();
+                fsRenderList();
+            } catch (e) {
+                document.getElementById('fsList').innerHTML = '<div style="color:#ef4444;text-align:center;padding:40px;">❌ Erreur de chargement</div>';
+            }
+        }
+
+        function fsGetStatus(f) {
+            if (!f.isActive) return { label: '⏸ Désactivé', bg: '#fee2e2', color: '#991b1b' };
+            const now = new Date(), start = new Date(f.startDate), end = new Date(f.endDate);
+            if (now < start) return { label: '🕐 À venir', bg: '#eff6ff', color: '#1e40af' };
+            if (now > end) return { label: '⏰ Terminé', bg: '#f3f4f6', color: '#6b7280' };
+            if (f.stockLeft <= 0) return { label: '🚫 Épuisé', bg: '#fee2e2', color: '#991b1b' };
+            return { label: '⚡ En cours', bg: '#fff7ed', color: '#c2410c' };
+        }
+
+        function fsFmtDate(d) { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+
+        function fsRenderList() {
+            const list = document.getElementById('fsList');
+            if (!fsFlashes.length) {
+                list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#9ca3af;"><div style="font-size:40px;margin-bottom:10px;">⚡</div><div style="font-size:15px;font-weight:600;color:#374151;margin-bottom:4px;">Aucune vente flash</div><div style="font-size:13px;">Créez votre première vente flash</div></div>';
+                return;
+            }
+            list.innerHTML = fsFlashes.map(f => {
+                const st = fsGetStatus(f);
+                const imgs = (() => { try { return JSON.parse(f.product.images || '[]'); } catch { return [f.product.imageUrl || '']; } })();
+                const img = imgs[0] || f.product.imageUrl || '';
+                const progressPct = Math.round((f.flashStockSold / f.flashStock) * 100);
+                return `<div class="ev-card">
+            <div class="ev-card-head" style="background:#fff7ed;padding:14px 18px;display:flex;align-items:center;gap:12px;">
+                ${img ? `<img src="${img}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;">` : '<span style="font-size:28px">📦</span>'}
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:14px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.product.name}</div>
+                    <div style="font-size:12px;color:#6b7280;margin-top:2px;">${fsFmtDate(f.startDate)} → ${fsFmtDate(f.endDate)}</div>
+                </div>
+                <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;background:${st.bg};color:${st.color};">${st.label}</span>
+            </div>
+            <div style="padding:12px 18px;">
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+                    <div><div style="font-size:11px;color:#9ca3af;font-weight:600;">PRIX FLASH</div><div style="font-size:18px;font-weight:800;color:#f97316;">${Number(f.flashPrice).toLocaleString()} F</div></div>
+                    <div><div style="font-size:11px;color:#9ca3af;font-weight:600;">PRIX NORMAL</div><div style="font-size:14px;color:#9ca3af;text-decoration:line-through;">${Number(f.originalPrice).toLocaleString()} F</div></div>
+                    <div style="background:#fef3c7;color:#92400e;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;">-${f.discount}%</div>
+                </div>
+                <div style="font-size:12px;color:#6b7280;margin-bottom:6px;">Stock : <strong>${f.flashStockSold}/${f.flashStock}</strong> vendus</div>
+                <div style="background:#f3f4f6;border-radius:999px;height:6px;overflow:hidden;">
+                    <div style="background:#f97316;height:100%;width:${progressPct}%;border-radius:999px;transition:.3s;"></div>
+                </div>
+            </div>
+            <div class="ev-card-actions">
+                <button class="ev-btn ev-btn-edit" onclick="fsOpenEdit(${f.id})">✏️ Modifier</button>
+                <button class="ev-btn ${f.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="fsToggle(${f.id},${!f.isActive})">${f.isActive ? '✅ Actif' : '⏸ Inactif'}</button>
+                <button class="ev-btn ev-btn-del" onclick="fsDelete(${f.id})">🗑</button>
+            </div>
+        </div>`;
+            }).join('');
+        }
+
+        function fsOpenEdit(id) {
+            const f = fsFlashes.find(x => x.id === id); if (!f) return;
+            document.getElementById('fs_id').value = id;
+            document.getElementById('fsFormTitle').textContent = '✏️ Modifier la vente flash';
+            document.getElementById('fs_price').value = f.flashPrice;
+            document.getElementById('fs_stock').value = f.flashStock;
+            document.getElementById('fs_start').value = new Date(f.startDate).toISOString().slice(0, 16);
+            document.getElementById('fs_end').value = new Date(f.endDate).toISOString().slice(0, 16);
+            document.getElementById('fs_active').value = f.isActive ? 'true' : 'false';
+            document.getElementById('fs_product_id').value = f.product.id;
+            const imgs = (() => { try { return JSON.parse(f.product.images || '[]'); } catch { return [f.product.imageUrl || '']; } })();
+            fsSelectProduct(f.product.id, f.product.name, f.originalPrice, imgs[0] || f.product.imageUrl || '');
+            document.getElementById('fsForm').classList.add('open');
+            document.getElementById('fsForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        async function fsToggle(id, newState) {
+            const f = fsFlashes.find(x => x.id === id); if (!f) return;
+            try {
+                const r = await fetch(`${API}/flash-sales/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...f, productId: f.product.id, isActive: newState, startDate: f.startDate, endDate: f.endDate }) });
+                if (r.ok) await fsLoadList();
+            } catch (e) { alert('Erreur réseau.'); }
+        }
+
+        async function fsDelete(id) {
+            if (!confirm('Supprimer cette vente flash ?')) return;
+            try {
+                const r = await fetch(`${API}/flash-sales/${id}`, { method: 'DELETE' });
+                if (r.ok) await fsLoadList();
+            } catch (e) { alert('Erreur réseau.'); }
+        }
+
+
+
     </script>
 </body>
 </html>

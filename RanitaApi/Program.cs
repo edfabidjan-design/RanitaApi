@@ -779,5 +779,31 @@ catch (Exception ex) { Console.WriteLine("ReferralCode seed error: " + ex.Messag
 
 
 
+// ── FlashSales table ───────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""FlashSales"" (
+            ""Id""              SERIAL PRIMARY KEY,
+            ""ProductId""       INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
+            ""FlashPrice""      NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""OriginalPrice""   NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""FlashStock""      INT NOT NULL DEFAULT 0,
+            ""FlashStockSold""  INT NOT NULL DEFAULT 0,
+            ""StartDate""       TIMESTAMP NOT NULL,
+            ""EndDate""         TIMESTAMP NOT NULL,
+            ""IsActive""        BOOLEAN NOT NULL DEFAULT TRUE,
+            ""CreatedAt""       TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+    Console.WriteLine("FlashSales OK");
+}
+catch (Exception ex) { Console.WriteLine("FlashSales error: " + ex.Message); }
+
+
+
+
 
 app.Run();
