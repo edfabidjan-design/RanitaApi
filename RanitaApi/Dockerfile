@@ -15,4 +15,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 ARG CACHEBUST=1
 COPY --from=build /src/RanitaApi/wwwroot ./wwwroot
-ENTRYPOINT ["dotnet", "RanitaApi.dll"]
+ENTRYPOINT ["dotnet", "RanitaApi.dll"]# trigger
