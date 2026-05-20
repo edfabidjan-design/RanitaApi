@@ -1990,7 +1990,6 @@
         function errH() { return '<div class="api-error">Impossible de charger.<br><button onclick="loadProducts()">Réessayer</button></div>'; }
 
         async function loadProducts() {
-            document.getElementById('flash-grid').innerHTML = sk(6);
             document.getElementById('bestsellers-grid').innerHTML = sk(4);
             try {
                 var res = await fetch(API);
@@ -1998,14 +1997,15 @@
                 allProducts = await res.json();
                 var active = allProducts.filter(function (p) { return p.isActive !== false; });
                 buildCatsBar(active);
-                // APRÈS — ne plus gérer le flash ici, loadFlashSales() s'en charge
+
+                // Flash sales gérées séparément
                 loadFlashSales();
 
-                var ids = new Set(fill.map(function (p) { return p.id; }));
-                var best = active.filter(function (p) { return !ids.has(p.id); }).slice(0, 4);
+                // Meilleures ventes = produits actifs (les 4 premiers)
+                var best = active.slice(0, 4);
                 document.getElementById('bestsellers-grid').innerHTML = best.length ? best.map(buildCard).join('') : errH();
+
             } catch (e) {
-                document.getElementById('flash-grid').innerHTML = errH();
                 document.getElementById('bestsellers-grid').innerHTML = errH();
             }
         }
