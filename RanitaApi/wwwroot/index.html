@@ -2127,6 +2127,19 @@
                     if (hide || notStarted || expired) promoEl.style.display = 'none';
                 }
 
+                // Gestion dates campagne parrainage
+                var refSection = document.querySelector('.ref-section');
+                if (refSection) {
+                    var refStart = s.referral_start ? new Date(s.referral_start) : null;
+                    var refEnd = s.referral_end ? new Date(s.referral_end) : null;
+                    var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
+                    var refNotStarted = refStart && todayRef < refStart;
+                    var refExpired = refEnd && todayRef > refEnd;
+                    if (refNotStarted || refExpired) {
+                        refSection.style.display = 'none';
+                    }
+                }
+
                 if (s.referral_title) { var e = document.getElementById('refTitle'); if (e) e.textContent = s.referral_title; }
                 if (s.referral_desc) { var e = document.getElementById('refDesc'); if (e) e.textContent = s.referral_desc; }
                 // Big cats
