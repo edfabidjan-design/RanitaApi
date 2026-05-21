@@ -2126,14 +2126,34 @@
                     var expired = pe && today > pe;
                     if (hide) {
                         promoEl.style.display = 'none';
-                    } else if (notStarted || expired) {
-                        // Texte permanent hors campagne
-                        var barText = document.getElementById('promoBarText');
-                        var barLink = document.getElementById('promoBarLink');
-                        if (barText) barText.textContent = '🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients · Livraison partout en CI';
-                        if (barLink) { barLink.textContent = 'Vendre →'; barLink.href = 'vendeur.html'; }
-                    }
-                }
+                        // Barre promo hors campagne
+                        if (notStarted || expired) {
+                            var barText = document.getElementById('promoBarText');
+                            var barLink = document.getElementById('promoBarLink');
+                            if (barText) barText.textContent = s.promo_bar_fallback ||
+                                '🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients · Livraison partout en CI';
+                            if (barLink) {
+                                barLink.textContent = s.promo_bar_fallback_link_text || 'Vendre →';
+                                barLink.href = s.promo_bar_fallback_link || 'vendeur.html';
+                            }
+                        }
+
+                        // Parrainage hors campagne
+                        if ((refStart && todayRef < refStart) || (refEnd && todayRef > refEnd)) {
+                            var fbTitle = s.referral_fallback_title || 'Vendez sur Ranita Market';
+                            var fbDesc = s.referral_fallback_desc || 'Rejoignez nos vendeurs et touchez des milliers de clients à Abidjan et partout en Côte d\'Ivoire. Inscription gratuite, commission compétitive.';
+                            var fbBtn = s.referral_fallback_btn || 'Devenir vendeur →';
+                            var fbLink = s.referral_fallback_link || 'vendeur.html';
+                            refSection.innerHTML = `
+    <div class="ref-card">
+        <div class="ref-icon">🏪</div>
+        <div class="ref-text">
+            <h2>${fbTitle}</h2>
+            <p>${fbDesc}</p>
+        </div>
+        <a href="${fbLink}" class="ref-btn">${fbBtn}</a>
+    </div>`;
+                        }
 
                 // Gestion dates campagne parrainage
                 var refSection = document.querySelector('.ref-section');
