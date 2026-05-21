@@ -2164,18 +2164,7 @@
                     var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
                     var refStart = s.referral_start ? new Date(s.referral_start) : null;
                     var refEnd = s.referral_end ? new Date(s.referral_end) : null;
-                    if ((refStart && todayRef < refStart) || (refEnd && todayRef > refEnd)) {
-                        refSection.innerHTML = `
-        <div class="ref-card">
-            <div class="ref-icon">🏪</div>
-            <div class="ref-text">
-                <h2>Vendez sur Ranita Market</h2>
-                <p>Rejoignez nos vendeurs et touchez des milliers de clients à Abidjan et partout en Côte d'Ivoire. Inscription gratuite, commission compétitive.</p>
-            </div>
-            <a href="vendeur.html" class="ref-btn">Devenir vendeur →</a>
-        </div>`;
-                    }
-                }
+
 
                 if (s.referral_title) { var e = document.getElementById('refTitle'); if (e) e.textContent = s.referral_title; }
                 if (s.referral_desc) { var e = document.getElementById('refDesc'); if (e) e.textContent = s.referral_desc; }
