@@ -2144,16 +2144,14 @@
                     var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
                     var refStart = s.referral_start ? new Date(s.referral_start) : null;
                     var refEnd = s.referral_end ? new Date(s.referral_end) : null;
-                    if ((refStart && todayRef < refStart) || (refEnd && todayRef > refEnd)) {
+                    var refExpired = (refStart && todayRef < refStart) || (refEnd && todayRef > refEnd);
+                    console.log('refExpired:', refExpired, '| refEnd:', refEnd, '| today:', todayRef);
+                    if (refExpired) {
                         var fbTitle = s.referral_fallback_title || 'Vendez sur Ranita Market';
-                        var fbDesc = s.referral_fallback_desc || 'Rejoignez nos vendeurs et touchez des milliers de clients à Abidjan et partout en Côte d\'Ivoire. Inscription gratuite, commission compétitive.';
+                        var fbDesc = s.referral_fallback_desc || "Rejoignez nos vendeurs...";
                         var fbBtn = s.referral_fallback_btn || 'Devenir vendeur →';
                         var fbLink = s.referral_fallback_link || 'vendeur.html';
-                        refSection.innerHTML = `<div class="ref-card">
-            <div class="ref-icon">🏪</div>
-            <div class="ref-text"><h2>${fbTitle}</h2><p>${fbDesc}</p></div>
-            <a href="${fbLink}" class="ref-btn">${fbBtn}</a>
-        </div>`;
+                        refSection.innerHTML = '<div class="ref-card"><div class="ref-icon">🏪</div><div class="ref-text"><h2>' + fbTitle + '</h2><p>' + fbDesc + '</p></div><a href="' + fbLink + '" class="ref-btn">' + fbBtn + '</a></div>';
                     }
                 }
 
