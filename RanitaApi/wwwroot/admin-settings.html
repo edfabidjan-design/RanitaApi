@@ -583,26 +583,27 @@
                         <span class="hint">Laisser vide = pas d'expiration</span>
                     </div>
                 </div>
+
+                <div class="fields-grid" style="margin-top:20px;">
+                    <div class="field full">
+                        <label>Texte hors campagne</label>
+                        <input type="text" id="promo_bar_fallback" placeholder="🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients">
+                        <span class="hint">Affiché quand la campagne expire. Vide = texte par défaut.</span>
+                    </div>
+                    <div class="field">
+                        <label>Lien hors campagne</label>
+                        <input type="text" id="promo_bar_fallback_link" placeholder="vendeur.html">
+                    </div>
+                    <div class="field">
+                        <label>Texte lien hors campagne</label>
+                        <input type="text" id="promo_bar_fallback_link_text" placeholder="Vendre →">
+                    </div>
+                </div>
+
+
                 <div id="promoStatusBox" style="margin-top:20px;padding:14px 18px;border-radius:10px;font-size:13px;font-weight:600;display:none;"></div>
             </div>
         </div>
-
-
-        <div class="field full">
-            <label>Texte hors campagne (affiché quand la barre promo expire)</label>
-            <input type="text" id="promo_bar_fallback"
-                   placeholder="🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients · Livraison partout en CI">
-            <span class="hint">Si vide = texte par défaut affiché</span>
-        </div>
-        <div class="field">
-            <label>Lien hors campagne</label>
-            <input type="text" id="promo_bar_fallback_link" placeholder="vendeur.html">
-        </div>
-        <div class="field">
-            <label>Texte lien hors campagne</label>
-            <input type="text" id="promo_bar_fallback_link_text" placeholder="Vendre →">
-        </div>
-
 
 
         <!-- ══ PARRAINAGE ═══════════════════════════════════════════ -->
@@ -629,23 +630,34 @@
                         <span class="hint">Laisser vide = pas d'expiration</span>
                     </div>
                     <div class="field full">
+
+                        <div class="field full" style="border-top:1px solid #f3f4f6;padding-top:16px;margin-top:4px;">
+                            <label style="color:#f97316;">⚙️ Contenu affiché hors campagne</label>
+                        </div>
+                        <div class="field">
+                            <label>Titre hors campagne</label>
+                            <input type="text" id="referral_fallback_title" placeholder="Vendez sur Ranita Market">
+                        </div>
+                        <div class="field">
+                            <label>Description hors campagne</label>
+                            <textarea id="referral_fallback_desc" placeholder="Rejoignez nos vendeurs..."></textarea>
+                        </div>
+                        <div class="field">
+                            <label>Texte bouton</label>
+                            <input type="text" id="referral_fallback_btn" placeholder="Devenir vendeur →">
+                        </div>
+                        <div class="field">
+                            <label>Lien bouton</label>
+                            <input type="text" id="referral_fallback_link" placeholder="vendeur.html">
+                        </div>
+
                         <div id="referralRatePreview" style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:14px;font-size:13px;color:#065f46;display:none;"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-        <div class="field full" style="border-top:1px solid #f3f4f6;padding-top:16px;margin-top:8px;">
-            <label style="color:#f97316;">⚙️ Contenu affiché hors campagne</label>
-        </div>
-        <div class="field"><label>Titre hors campagne</label><input type="text" id="referral_fallback_title" placeholder="Vendez sur Ranita Market"></div>
-        <div class="field"><label>Description hors campagne</label><textarea id="referral_fallback_desc" placeholder="Rejoignez nos vendeurs et touchez des milliers de clients à Abidjan..."></textarea></div>
-        <div class="field"><label>Texte bouton</label><input type="text" id="referral_fallback_btn" placeholder="Devenir vendeur →"></div>
-        <div class="field"><label>Lien bouton</label><input type="text" id="referral_fallback_link" placeholder="vendeur.html"></div>
-
-
-
+         
         <!-- ══ ÉVÉNEMENTS MULTI ══════════════════════════════════════ -->
         <div class="tab-panel" id="panel-event">
             <div class="info-box info-yellow">
