@@ -545,7 +545,7 @@ namespace RanitaApi.Controllers
         }
 
         // GET /api/sellers/product/{productId}
-        [HttpGet("product/{productId}")]
+        [HttpGet("product/{productId:int}")]
         public async Task<IActionResult> GetByProductId(int productId)
         {
             var sellerProduct = await _db.SellerProducts
