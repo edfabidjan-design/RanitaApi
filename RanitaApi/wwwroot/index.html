@@ -1865,8 +1865,8 @@
         <div class="ref-card">
             <div class="ref-icon">🎁</div>
             <div class="ref-text">
-                <h2 id="refTitle">Invitez un ami, gagnez 2 500 F CFA</h2>
-                <p id="refDesc">Pour chaque ami qui effectue son premier achat sur Ranita Market, vous recevez 2 500 F sur votre compte.</p>
+                <h2 id="refTitle">Invitez un ami, gagnez de l argent </h2>
+                <p id="refDesc">Pour chaque ami qui effectue son premier achat sur Ranita Market, vous recevez de l argent sur votre compte.</p>
             </div>
             <a href="referral.html" class="ref-btn">Inviter maintenant →</a>
         </div>
@@ -2115,7 +2115,7 @@
                 var s = await res.json();
                 if (s.promo_bar_text) { var e = document.getElementById('promoBarText'); if (e) e.textContent = s.promo_bar_text; }
                 if (s.promo_bar_link) { var e = document.getElementById('promoBarLink'); if (e) e.href = s.promo_bar_link; }
-                // Gestion dates barre promo
+
                 var promoEl = document.getElementById('promoBar');
                 if (promoEl) {
                     var hide = s.promo_bar_hide === 'true';
@@ -2129,46 +2129,30 @@
                     } else if (notStarted || expired) {
                         var barText = document.getElementById('promoBarText');
                         var barLink = document.getElementById('promoBarLink');
-                        if (barText) barText.textContent = s.promo_bar_fallback ||
-                            '🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients · Livraison partout en CI';
-                        if (barLink) {
-                            barLink.textContent = s.promo_bar_fallback_link_text || 'Vendre →';
-                            barLink.href = s.promo_bar_fallback_link || 'vendeur.html';
-                        }
+                        if (barText) barText.textContent = s.promo_bar_fallback || '🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients · Livraison partout en CI';
+                        if (barLink) { barLink.textContent = s.promo_bar_fallback_link_text || 'Vendre →'; barLink.href = s.promo_bar_fallback_link || 'vendeur.html'; }
                     }
                 }
 
-                // Gestion dates campagne parrainage
                 var refSection = document.querySelector('.ref-section');
                 if (refSection) {
                     var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
                     var refStart = s.referral_start ? new Date(s.referral_start) : null;
-                    // APRÈS — comparaison correcte
                     var refEnd = s.referral_end ? new Date(s.referral_end) : null;
-                    if (refEnd) refEnd.setHours(23, 59, 59, 0); // fin de journée
+                    if (refEnd) refEnd.setHours(23, 59, 59, 0);
                     var refExpired = (refStart && todayRef < refStart) || (refEnd && todayRef > refEnd);
-                    console.log('refExpired:', refExpired, '| refEnd:', refEnd, '| today:', todayRef);
                     if (refExpired) {
                         var fbTitle = s.referral_fallback_title || 'Vendez sur Ranita Market';
-                        var fbDesc = s.referral_fallback_desc || "Rejoignez nos vendeurs...";
+                        var fbDesc = s.referral_fallback_desc || "Rejoignez nos vendeurs et touchez des milliers de clients à Abidjan et partout en Côte d'Ivoire.";
                         var fbBtn = s.referral_fallback_btn || 'Devenir vendeur →';
                         var fbLink = s.referral_fallback_link || 'vendeur.html';
                         refSection.innerHTML = '<div class="ref-card"><div class="ref-icon">🏪</div><div class="ref-text"><h2>' + fbTitle + '</h2><p>' + fbDesc + '</p></div><a href="' + fbLink + '" class="ref-btn">' + fbBtn + '</a></div>';
                     }
                 }
 
-
-                // Gestion dates campagne parrainage
-                var refSection = document.querySelector('.ref-section');
-                if (refSection) {
-                    var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
-                    var refStart = s.referral_start ? new Date(s.referral_start) : null;
-                    var refEnd = s.referral_end ? new Date(s.referral_end) : null;
-
-
                 if (s.referral_title) { var e = document.getElementById('refTitle'); if (e) e.textContent = s.referral_title; }
                 if (s.referral_desc) { var e = document.getElementById('refDesc'); if (e) e.textContent = s.referral_desc; }
-                // Big cats
+
                 [{ n: 'bc1', tag: 'bc1_tag', name: 'bc1_name', desc: 'bc1_desc', img: 'bc1_img', btn: 'bc1_btn', link: 'bc1_link' },
                 { n: 'bc2', tag: 'bc2_tag', name: 'bc2_name', desc: 'bc2_desc', img: 'bc2_img', btn: 'bc2_btn', link: 'bc2_link' },
                 { n: 'bc3', tag: 'bc3_tag', name: 'bc3_name', desc: 'bc3_desc', img: 'bc3_img', btn: 'bc3_btn', link: 'bc3_link' },
@@ -2178,14 +2162,10 @@
                     if (s[c.name]) { var e = document.getElementById(c.n + '-name'); if (e) e.textContent = s[c.name]; }
                     if (s[c.desc]) { var e = document.getElementById(c.n + '-desc'); if (e) e.textContent = s[c.desc]; }
                     if (s[c.link]) { var e = document.getElementById(c.n + '-btn'); if (e) e.href = s[c.link]; }
-                    if (s[c.img]) {
-                        var img = document.getElementById(c.n + '-img');
-                        var ph = document.getElementById(c.n + '-ph');
-                        if (img && s[c.img]) { img.src = s[c.img]; img.style.display = 'block'; if (ph) ph.style.display = 'none'; }
-                    }
+                    if (s[c.img]) { var img = document.getElementById(c.n + '-img'); var ph = document.getElementById(c.n + '-ph'); if (img && s[c.img]) { img.src = s[c.img]; img.style.display = 'block'; if (ph) ph.style.display = 'none'; } }
                 });
+
                 buildSlider(s);
-                // Charger l'événement actif depuis la nouvelle API
                 loadCurrentEvent();
 
             } catch (e) { buildSlider({}); }
