@@ -341,7 +341,21 @@
             try {
                 var res = await fetch('/api/site-settings');
                 var s = await res.json();
-                if (s.free_shipping_threshold) freeShippingThreshold = parseInt(s.free_shipping_threshold) || 15000;
+
+                // Vérifier si la barre promo est active
+                var today = new Date(); today.setHours(0, 0, 0, 0);
+                var ps = s.promo_bar_start ? new Date(s.promo_bar_start) : null;
+                var pe = s.promo_bar_end ? new Date(s.promo_bar_end) : null;
+                var hide = s.promo_bar_hide === 'true';
+                var notStarted = ps && today < ps;
+                var expired = pe && today > pe;
+
+                if (hide || notStarted || expired) {
+                    // Hors campagne = livraison jamais gratuite
+                    freeShippingThreshold = 999999999;
+                } else {
+                    freeShippingThreshold = parseInt(s.free_shipping_threshold) || 15000;
+                }
             } catch (e) { }
             renderCart();
         }
