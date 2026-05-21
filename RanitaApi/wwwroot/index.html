@@ -2124,19 +2124,33 @@
                     var pe = s.promo_bar_end ? new Date(s.promo_bar_end) : null;
                     var notStarted = ps && today < ps;
                     var expired = pe && today > pe;
-                    if (hide || notStarted || expired) promoEl.style.display = 'none';
+                    if (hide) {
+                        promoEl.style.display = 'none';
+                    } else if (notStarted || expired) {
+                        // Texte permanent hors campagne
+                        var barText = document.getElementById('promoBarText');
+                        var barLink = document.getElementById('promoBarLink');
+                        if (barText) barText.textContent = '🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients · Livraison partout en CI';
+                        if (barLink) { barLink.textContent = 'Vendre →'; barLink.href = 'vendeur.html'; }
+                    }
                 }
 
                 // Gestion dates campagne parrainage
                 var refSection = document.querySelector('.ref-section');
                 if (refSection) {
+                    var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
                     var refStart = s.referral_start ? new Date(s.referral_start) : null;
                     var refEnd = s.referral_end ? new Date(s.referral_end) : null;
-                    var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
-                    var refNotStarted = refStart && todayRef < refStart;
-                    var refExpired = refEnd && todayRef > refEnd;
-                    if (refNotStarted || refExpired) {
-                        refSection.style.display = 'none';
+                    if ((refStart && todayRef < refStart) || (refEnd && todayRef > refEnd)) {
+                        refSection.innerHTML = `
+        <div class="ref-card">
+            <div class="ref-icon">🏪</div>
+            <div class="ref-text">
+                <h2>Vendez sur Ranita Market</h2>
+                <p>Rejoignez nos vendeurs et touchez des milliers de clients à Abidjan et partout en Côte d'Ivoire. Inscription gratuite, commission compétitive.</p>
+            </div>
+            <a href="vendeur.html" class="ref-btn">Devenir vendeur →</a>
+        </div>`;
                     }
                 }
 
