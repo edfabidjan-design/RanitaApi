@@ -2143,7 +2143,9 @@
                 if (refSection) {
                     var todayRef = new Date(); todayRef.setHours(0, 0, 0, 0);
                     var refStart = s.referral_start ? new Date(s.referral_start) : null;
+                    // APRÈS — comparaison correcte
                     var refEnd = s.referral_end ? new Date(s.referral_end) : null;
+                    if (refEnd) refEnd.setHours(23, 59, 59, 0); // fin de journée
                     var refExpired = (refStart && todayRef < refStart) || (refEnd && todayRef > refEnd);
                     console.log('refExpired:', refExpired, '| refEnd:', refEnd, '| today:', todayRef);
                     if (refExpired) {
