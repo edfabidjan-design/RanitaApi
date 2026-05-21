@@ -453,8 +453,16 @@
         const productId = params.get("id");
 
         // ── Détection prix flash depuis URL ──
-        var flashPrice = params.get('flashPrice') ? parseFloat(params.get('flashPrice')) : null;
-        var flashSaleId = params.get('flashSaleId') ? parseInt(params.get('flashSaleId')) : null;
+        var flashPrice = null, flashSaleId = null;
+        var fpSession = sessionStorage.getItem('flashPrice');
+        var fpProductId = sessionStorage.getItem('flashProductId');
+        if (fpSession && fpProductId == productId) {
+            flashPrice = parseFloat(fpSession);
+            flashSaleId = parseInt(sessionStorage.getItem('flashSaleId'));
+            sessionStorage.removeItem('flashPrice');
+            sessionStorage.removeItem('flashSaleId');
+            sessionStorage.removeItem('flashProductId');
+        }
 
         let currentProduct = null;
         let selectedVariant = null;

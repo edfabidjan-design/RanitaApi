@@ -395,8 +395,8 @@
                     var pct = Math.round(((s.flashStock - stockLeft) / s.flashStock) * 100);
                     var stockLabel = oos ? '🚫 Épuisé' : stockLeft <= 3 ? '⚠️ Plus que ' + stockLeft + ' restants' : stockLeft + ' restants';
 
-                    return '<div class="flash-card" onclick="location.href=\'product-details.html?id=' + p.id + '&flashPrice=' + s.flashPrice + '&flashSaleId=' + s.id + '\'">' +
-                        '<div class="flash-card-img">' +
+                    // APRÈS
+                    return '<div class="flash-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ')">' +                        '<div class="flash-card-img">' +
                         (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div style="font-size:60px">🛍️</div>') +
                         '<span class="flash-disc-badge">-' + s.discount + '%</span>' +
                         '</div>' +
@@ -432,6 +432,14 @@
             var btn = e.currentTarget;
             btn.textContent = '✓ Ajouté'; btn.style.background = '#059669';
             setTimeout(function(){ btn.textContent = '+ Ajouter au panier'; btn.style.background = ''; }, 1200);
+        }
+
+
+        function goFlash(productId, flashPrice, flashSaleId) {
+            sessionStorage.setItem('flashPrice', flashPrice);
+            sessionStorage.setItem('flashSaleId', flashSaleId);
+            sessionStorage.setItem('flashProductId', productId);
+            window.location.href = 'product-details.html?id=' + productId;
         }
 
         loadFlash();
