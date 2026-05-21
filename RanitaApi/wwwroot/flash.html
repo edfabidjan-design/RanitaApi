@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Ventes Flash — Ranita Market</title>
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="products.css">
+    <style>
+        :root {
+            --g: #10b981;
+            --gd: #059669;
+            --dk: #0D1117;
+            --dk2: #161B22;
+            --dkb: rgba(255,255,255,.08);
+            --dkt: #F0F6FC;
+            --dkt2: #8B949E;
+            --w: #fff;
+            --w2: #f9fafb;
+            --w3: #f3f4f6;
+            --wb: #e5e7eb;
+            --t: #111827;
+            --t2: #6b7280;
+            --t3: #9ca3af;
+            --amber: #F59E0B;
+            --red: #EF4444;
+            --flash: #f97316;
+            --r: 12px;
+            --rsm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial,sans-serif;
+            background: var(--w2);
+            color: var(--t);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .flash-hero {
+            background: var(--dk);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--flash);
+        }
+
+            .flash-hero h1 {
+                font-size: 32px;
+                font-weight: 800;
+                color: var(--dkt);
+                margin-bottom: 8px;
+            }
+
+            .flash-hero p {
+                font-size: 14px;
+                color: var(--dkt2);
+                margin-bottom: 24px;
+            }
+
+        .flash-timer-big {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(249,115,22,.12);
+            border: 1px solid rgba(249,115,22,.3);
+            border-radius: 12px;
+            padding: 12px 24px;
+        }
+
+        .t-block-big {
+            background: var(--flash);
+            color: #fff;
+            font-weight: 800;
+            font-size: 28px;
+            padding: 8px 14px;
+            border-radius: var(--rsm);
+            min-width: 54px;
+            text-align: center;
+        }
+
+        .t-label {
+            font-size: 10px;
+            color: var(--dkt2);
+            text-align: center;
+            margin-top: 3px;
+        }
+
+        .t-sep-big {
+            color: var(--flash);
+            font-weight: 800;
+            font-size: 28px;
+        }
+
+        .flash-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .flash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .flash-card {
+            background: var(--w);
+            border: 2px solid var(--wb);
+            border-radius: var(--r);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all .25s;
+            position: relative;
+        }
+
+            .flash-card:hover {
+                border-color: var(--flash);
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(249,115,22,.18);
+            }
+
+        .flash-card-img {
+            height: 200px;
+            background: var(--w3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .flash-card-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                padding: 10px;
+            }
+
+        .flash-disc-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--flash);
+            color: #fff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .flash-card-body {
+            padding: 14px;
+        }
+
+        .flash-card-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--t);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.35;
+        }
+
+        .flash-stock-bar {
+            background: var(--w3);
+            border-radius: 999px;
+            height: 6px;
+            margin-bottom: 6px;
+            overflow: hidden;
+        }
+
+        .flash-stock-fill {
+            background: var(--flash);
+            height: 100%;
+            border-radius: 999px;
+            transition: width .5s;
+        }
+
+        .flash-stock-label {
+            font-size: 11px;
+            color: var(--t3);
+            margin-bottom: 10px;
+        }
+
+        .flash-price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .flash-price {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--flash);
+        }
+
+        .flash-old {
+            font-size: 13px;
+            color: var(--t3);
+            text-decoration: line-through;
+        }
+
+        .flash-add-btn {
+            width: 100%;
+            background: var(--flash);
+            color: #fff;
+            border: none;
+            border-radius: var(--rsm);
+            padding: 10px;
+            font-family: Arial,sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+
+            .flash-add-btn:hover {
+                opacity: .88;
+            }
+
+            .flash-add-btn:disabled {
+                background: #d1d5db;
+                cursor: not-allowed;
+            }
+
+        .empty-flash {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--t3);
+        }
+
+            .empty-flash div:first-child {
+                font-size: 60px;
+                margin-bottom: 16px;
+            }
+
+            .empty-flash p {
+                font-size: 16px;
+                margin-bottom: 24px;
+            }
+
+        @media(max-width:768px) {
+            .flash-hero h1 {
+                font-size: 24px;
+            }
+
+            .t-block-big {
+                font-size: 22px;
+                padding: 6px 10px;
+                min-width: 44px;
+            }
+
+            .flash-grid {
+                grid-template-columns: repeat(2,1fr);
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div style="background:var(--dk);color:var(--dkt);padding:8px 20px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;border-bottom:1px solid rgba(249,115,22,.3);">
+        <span style="background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);color:var(--flash);font-size:10px;font-weight:700;padding:2px 10px;border-radius:999px;margin-right:10px;">⚡ FLASH</span>
+        Prix réduits pour une durée limitée — Ne ratez pas ces offres !
+    </div>
+
+    <header style="background:rgba(13,17,23,.97);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;border-bottom:1px solid var(--dkb);">
+        <div style="font-size:17px;font-weight:800;color:var(--dkt);cursor:pointer;" onclick="location.href='index.html'">🛒 Ranita<span style="color:var(--g)">Market</span></div>
+        <div style="display:flex;align-items:center;gap:16px;">
+            <a href="index.html" style="color:var(--dkt2);font-size:13px;">Accueil</a>
+            <a href="products.html" style="color:var(--dkt2);font-size:13px;">Produits</a>
+            <a href="cart.html" style="position:relative;color:var(--dkt2);">
+                🛒 <span id="cartBadge" style="display:none;position:absolute;top:-4px;right:-8px;background:var(--g);color:#fff;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span>
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <div class="flash-hero">
+        <div style="font-size:48px;margin-bottom:8px;">⚡</div>
+        <h1>Ventes Flash</h1>
+        <p>Offres exclusives à durée limitée — stocks épuisés = offre terminée !</p>
+        <div class="flash-timer-big" id="timerWrap">
+            <div>
+                <div class="t-block-big" id="fh">00</div>
+                <div class="t-label">heures</div>
+            </div>
+            <span class="t-sep-big">:</span>
+            <div>
+                <div class="t-block-big" id="fm">00</div>
+                <div class="t-label">minutes</div>
+            </div>
+            <span class="t-sep-big">:</span>
+            <div>
+                <div class="t-block-big" id="fs">00</div>
+                <div class="t-label">secondes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENU -->
+    <div class="flash-content">
+        <div id="flashGrid" class="flash-grid"></div>
+    </div>
+
+    <!-- NAV MOBILE -->
+    <nav style="display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(13,17,23,.97);border-top:1px solid var(--dkb);z-index:300;padding:6px 0;" id="mobNav">
+        <div style="display:flex;justify-content:space-around;">
+            <a href="index.html" style="display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--dkt2);font-size:9px;font-weight:600;text-decoration:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                Accueil
+            </a>
+            <a href="products.html" style="display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--dkt2);font-size:9px;font-weight:600;text-decoration:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
+                Catégories
+            </a>
+            <a href="cart.html" style="display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--flash);font-size:9px;font-weight:600;text-decoration:none;">
+                <div style="background:linear-gradient(135deg,var(--flash),#ea580c);color:#fff;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;margin-top:-16px;box-shadow:0 4px 16px rgba(249,115,22,.4);">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg>
+                </div>
+            </a>
+            <a href="login.html" style="display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--dkt2);font-size:9px;font-weight:600;text-decoration:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                Compte
+            </a>
+            <a href="flash.html" style="display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--flash);font-size:9px;font-weight:600;text-decoration:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                Flash
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // Badge panier
+        (function() {
+            var c = JSON.parse(localStorage.getItem('cart') || '[]');
+            var t = c.reduce(function(s,i){ return s+(i.qty||i.quantity||1); }, 0);
+            var b = document.getElementById('cartBadge');
+            if (b && t > 0) { b.textContent = t; b.style.display = 'flex'; }
+        })();
+
+        // Mobile nav
+        if (window.innerWidth <= 768) {
+            document.getElementById('mobNav').style.display = 'block';
+            document.body.style.paddingBottom = '70px';
+        }
+
+        var timerInterval = null;
+
+        function startTimer(endDate) {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(function() {
+                var diff = Math.max(0, Math.floor((new Date(endDate) - new Date()) / 1000));
+                document.getElementById('fh').textContent = String(Math.floor(diff / 3600)).padStart(2,'0');
+                document.getElementById('fm').textContent = String(Math.floor((diff % 3600) / 60)).padStart(2,'0');
+                document.getElementById('fs').textContent = String(diff % 60).padStart(2,'0');
+                if (diff <= 0) { clearInterval(timerInterval); loadFlash(); }
+            }, 1000);
+        }
+
+        async function loadFlash() {
+            var grid = document.getElementById('flashGrid');
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--t3);font-size:14px;">⏳ Chargement...</div>';
+            try {
+                var res = await fetch('/api/flash-sales/active');
+                var sales = await res.json();
+
+                if (!sales || !sales.length) {
+                    grid.innerHTML = '<div class="empty-flash"><div>⚡</div><p>Aucune vente flash en cours.</p><a href="products.html" style="background:var(--flash);color:#fff;padding:12px 28px;border-radius:12px;font-weight:700;font-size:14px;">Voir tous les produits →</a></div>';
+                    document.getElementById('timerWrap').style.display = 'none';
+                    return;
+                }
+
+                startTimer(sales[0].endDate);
+
+                grid.innerHTML = sales.map(function(s) {
+                    var p = s.product;
+                    var imgs = (function(){ try { return JSON.parse(p.images||'[]'); } catch { return p.imageUrl ? [p.imageUrl] : []; } })();
+                    var img = imgs[0] || p.imageUrl || '';
+                    var stockLeft = s.stockLeft;
+                    var oos = stockLeft <= 0;
+                    var pct = Math.round(((s.flashStock - stockLeft) / s.flashStock) * 100);
+                    var stockLabel = oos ? '🚫 Épuisé' : stockLeft <= 3 ? '⚠️ Plus que ' + stockLeft + ' restants' : stockLeft + ' restants';
+
+                    return '<div class="flash-card" onclick="location.href=\'product-details.html?id=' + p.id + '\'">' +
+                        '<div class="flash-card-img">' +
+                        (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div style="font-size:60px">🛍️</div>') +
+                        '<span class="flash-disc-badge">-' + s.discount + '%</span>' +
+                        '</div>' +
+                        '<div class="flash-card-body">' +
+                        '<div class="flash-card-name">' + p.name + '</div>' +
+                        '<div class="flash-stock-bar"><div class="flash-stock-fill" style="width:' + pct + '%"></div></div>' +
+                        '<div class="flash-stock-label">' + stockLabel + '</div>' +
+                        '<div class="flash-price-row">' +
+                        '<span class="flash-price">' + Number(s.flashPrice).toLocaleString('fr-FR') + ' F</span>' +
+                        '<span class="flash-old">' + Number(s.originalPrice).toLocaleString('fr-FR') + ' F</span>' +
+                        '</div>' +
+                        (oos ?
+                            '<button class="flash-add-btn" disabled>Épuisé</button>' :
+                            '<button class="flash-add-btn" onclick="event.stopPropagation();addCart(event,' + p.id + ',\'' + p.name.replace(/'/g,"\\'") + '\',' + s.flashPrice + ',\'' + img + '\')">+ Ajouter au panier</button>'
+                        ) +
+                        '</div></div>';
+                }).join('');
+
+            } catch(e) {
+                grid.innerHTML = '<div class="empty-flash"><div>❌</div><p>Erreur de chargement.</p><button onclick="loadFlash()" style="background:var(--flash);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-weight:700;cursor:pointer;">Réessayer</button></div>';
+            }
+        }
+
+        function addCart(e, id, name, price, img) {
+            e.stopPropagation();
+            var cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            var idx = cart.findIndex(function(i){ return i.id === id; });
+            if (idx >= 0) { cart[idx].qty++; } else { cart.push({ id:id, name:name, price:price, imageUrl:img, qty:1 }); }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            var total = cart.reduce(function(s,i){ return s+i.qty; }, 0);
+            var b = document.getElementById('cartBadge');
+            if (b) { b.textContent = total; b.style.display = 'flex'; }
+            var btn = e.currentTarget;
+            btn.textContent = '✓ Ajouté'; btn.style.background = '#059669';
+            setTimeout(function(){ btn.textContent = '+ Ajouter au panier'; btn.style.background = ''; }, 1200);
+        }
+
+        loadFlash();
+    </script>
+</body>
+</html>

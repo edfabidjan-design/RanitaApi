@@ -160,6 +160,26 @@ namespace RanitaApi.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            // ── Déduire FlashStockSold si produit en vente flash ──
+            foreach (var item in order.Items)
+            {
+                var flashSale = await _context.FlashSales
+                    .FirstOrDefaultAsync(f =>
+                        f.ProductId == item.ProductId &&
+                        f.IsActive &&
+                        f.StartDate <= DateTime.UtcNow &&
+                        f.EndDate >= DateTime.UtcNow);
+
+                if (flashSale != null)
+                {
+                    flashSale.FlashStockSold = Math.Min(
+                        flashSale.FlashStockSold + item.Quantity,
+                        flashSale.FlashStock
+                    );
+                }
+            }
+            await _context.SaveChangesAsync();
+
 
             // ── Déduire le crédit parrainage utilisé ──
             if (dto.ClientId.HasValue && creditUsed > 0)
