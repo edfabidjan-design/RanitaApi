@@ -408,13 +408,16 @@
             const progress = Math.min((total / freeShippingThreshold) * 100, 100);
 
             let shippingBanner = '';
-            if (isFreeShipping) {
+            if (freeShippingThreshold >= 999999999) {
+                // Livraison gratuite non disponible — pas de bannière
+                shippingBanner = '';
+            } else if (isFreeShipping) {
                 shippingBanner = `<div class="shipping-banner">🎉 Livraison gratuite offerte ! Vous avez dépassé ${Number(freeShippingThreshold).toLocaleString()} F CFA</div>`;
             } else {
                 shippingBanner = `<div class="shipping-warning">
-                        🚚 Plus que <strong>${Number(remaining).toLocaleString()} F</strong> pour la livraison gratuite !
-                        <div class="shipping-progress"><div class="shipping-progress-bar" style="width:${progress}%"></div></div>
-                    </div>`;
+        🚚 Plus que <strong>${Number(remaining).toLocaleString()} F</strong> pour la livraison gratuite !
+        <div class="shipping-progress"><div class="shipping-progress-bar" style="width:${progress}%"></div></div>
+    </div>`;
             }
 
             summary.innerHTML = `
