@@ -1628,7 +1628,7 @@
     <!-- ══ BARRE PROMO ══════════════════════════════════════════ -->
     <div class="promo-bar" id="promoBar">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
-            <span class="promo-bar-pill">🚚 LIVRAISON</span>
+            <span class="promo-bar-pill" id="promoBarPill">🚚 LIVRAISON</span>
             <span id="promoBarText">Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison</span>
             <a href="products.html" id="promoBarLink" style="color:var(--g);font-weight:700;white-space:nowrap;">Voir les offres →</a>
         </div>
@@ -2129,6 +2129,8 @@
                     } else if (notStarted || expired) {
                         var barText = document.getElementById('promoBarText');
                         var barLink = document.getElementById('promoBarLink');
+                        var pill = document.getElementById('promoBarPill');
+                        if (pill) pill.textContent = '🏪 VENDEURS';
                         if (barText) barText.textContent = s.promo_bar_fallback || '🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients · Livraison partout en CI';
                         if (barLink) { barLink.textContent = s.promo_bar_fallback_link_text || 'Vendre →'; barLink.href = s.promo_bar_fallback_link || 'vendeur.html'; }
                     }
