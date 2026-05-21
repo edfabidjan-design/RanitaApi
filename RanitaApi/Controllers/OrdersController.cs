@@ -132,11 +132,30 @@ namespace RanitaApi.Controllers
                 }
             }
 
-            total += dto.ShippingFee;
+            // ── Vérifier si livraison gratuite est active (liée aux dates barre promo) ──
+            var promoStart = await _context.SiteSettings.FirstOrDefaultAsync(s => s.Key == "promo_bar_start");
+            var promoEnd = await _context.SiteSettings.FirstOrDefaultAsync(s => s.Key == "promo_bar_end");
+            var promoHide = await _context.SiteSettings.FirstOrDefaultAsync(s => s.Key == "promo_bar_hide");
+            var thresholdSetting = await _context.SiteSettings.FirstOrDefaultAsync(s => s.Key == "free_shipping_threshold");
+
+            var todayPromo = DateTime.UtcNow.Date;
+            var ps = DateTime.TryParse(promoStart?.Value, out var psd) ? psd.Date : (DateTime?)null;
+            var pe = DateTime.TryParse(promoEnd?.Value, out var ped) ? ped.Date : (DateTime?)null;
+            var hidden = promoHide?.Value == "true";
+            var promoActive = !hidden && (ps == null || todayPromo >= ps) && (pe == null || todayPromo <= pe);
+
+            var freeThreshold = promoActive
+                ? (decimal.TryParse(thresholdSetting?.Value, out var t) ? t : 15000m)
+                : 999999m;
+
+            var subtotalItems = order.Items.Sum(i => i.Price * i.Quantity);
+            var effectiveShipping = subtotalItems >= freeThreshold ? 0 : dto.ShippingFee;
+
+            total += effectiveShipping;
             var creditUsed = Math.Min(dto.ReferralCreditUsed, total);
             total = Math.Max(0, total - creditUsed);
             order.Total = total;
-            order.ShippingFee = dto.ShippingFee;
+            order.ShippingFee = effectiveShipping;
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
