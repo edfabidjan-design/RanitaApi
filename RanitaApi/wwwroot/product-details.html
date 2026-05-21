@@ -452,6 +452,10 @@
         const params = new URLSearchParams(window.location.search);
         const productId = params.get("id");
 
+        // ── Détection prix flash depuis URL ──
+        var flashPrice = params.get('flashPrice') ? parseFloat(params.get('flashPrice')) : null;
+        var flashSaleId = params.get('flashSaleId') ? parseInt(params.get('flashSaleId')) : null;
+
         let currentProduct = null;
         let selectedVariant = null;
         let quantity = 1;
@@ -707,7 +711,7 @@
             } else {
                 cart.push({
                     cartKey, id: currentProduct.id, name: currentProduct.name,
-                    price: selectedVariant?.price || currentProduct.price,
+                    price: flashPrice || selectedVariant?.price || currentProduct.price,
                     imageUrl: currentProduct.imageUrl, quantity,
                     variant: selectedVariant?.combination || null,
                     variantId: selectedVariant?.id || null,
@@ -777,7 +781,14 @@
                                     <h1 class="product-title">${currentProduct.name}</h1>
                                     ${currentProduct.shortDescription ? `<p class="product-short-desc">${currentProduct.shortDescription}</p>` : ''}
                                     <div class="price-block">
-                                        <span class="price-main">${Number(currentProduct.price).toLocaleString()} FCFA</span>
+                                        
+                                    ${flashPrice ? `
+<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;width:100%;">
+    <span style="font-size:13px;font-weight:700;color:#c2410c;">⚡ Prix flash</span>
+    <span style="font-size:24px;font-weight:800;color:#f97316;">${Number(flashPrice).toLocaleString()} FCFA</span>
+    <span style="font-size:13px;color:#9ca3af;text-decoration:line-through;">${Number(currentProduct.price).toLocaleString()} FCFA</span>
+</div>` : `<span class="price-main">${Number(currentProduct.price).toLocaleString()} FCFA</span>`}
+
                                         ${currentProduct.oldPrice ? `<span class="price-old">${Number(currentProduct.oldPrice).toLocaleString()} FCFA</span>` : ''}
                                         ${discount ? `<span class="price-discount">-${discount}%</span>` : ''}
                                     </div>
