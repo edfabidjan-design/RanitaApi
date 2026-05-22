@@ -30,10 +30,33 @@ namespace RanitaApi.Data
         public DbSet<SiteSetting> SiteSettings { get; set; }
         public DbSet<SiteEvent> SiteEvents { get; set; }
         public DbSet<FlashSale> FlashSales { get; set; }
+        public DbSet<FlashSaleRequest> FlashSaleRequests { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
 
+
+            modelBuilder.Entity<FlashSaleRequest>(entity =>
+            {
+                entity.Property(f => f.FlashPrice).HasPrecision(18, 2);
+                entity.Property(f => f.OriginalPrice).HasPrecision(18, 2);
+
+                entity.HasOne(f => f.Seller)
+                      .WithMany()
+                      .HasForeignKey(f => f.SellerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(f => f.Product)
+                      .WithMany()
+                      .HasForeignKey(f => f.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(f => f.Variant)
+                      .WithMany()
+                      .HasForeignKey(f => f.VariantId)
+                      .OnDelete(DeleteBehavior.SetNull)
+                      .IsRequired(false);
+            });
 
 
 

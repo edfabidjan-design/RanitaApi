@@ -867,4 +867,51 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Restitution flash error: " + ex.Message); }
 
+
+
+
+// ── FlashSaleRequests table ────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""FlashSaleRequests"" (
+            ""Id""              SERIAL PRIMARY KEY,
+            ""SellerId""        INT NOT NULL REFERENCES ""Sellers""(""Id"") ON DELETE CASCADE,
+            ""ProductId""       INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
+            ""VariantId""       INT NULL REFERENCES ""ProductVariants""(""Id"") ON DELETE SET NULL,
+            ""FlashPrice""      NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""OriginalPrice""   NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""FlashStock""      INT NOT NULL DEFAULT 0,
+            ""StartDate""       TIMESTAMP NOT NULL,
+            ""EndDate""         TIMESTAMP NOT NULL,
+            ""Status""          TEXT NOT NULL DEFAULT 'Pending',
+            ""RejectionReason"" TEXT NULL,
+            ""CreatedAt""       TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+    // Settings flash vendeur
+    db.Database.ExecuteSqlRaw(@"
+        INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
+        VALUES ('flash_max_duration_hours', '48')
+        ON CONFLICT (""Key"") DO NOTHING;
+    ");
+    db.Database.ExecuteSqlRaw(@"
+        INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
+        VALUES ('flash_min_discount_pct', '10')
+        ON CONFLICT (""Key"") DO NOTHING;
+    ");
+    Console.WriteLine("FlashSaleRequests OK");
+}
+catch (Exception ex) { Console.WriteLine("FlashSaleRequests error: " + ex.Message); }
+
+
+
+
+
+
+
+
+
 app.Run();
