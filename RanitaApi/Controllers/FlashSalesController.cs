@@ -68,7 +68,8 @@ namespace RanitaApi.Controllers
                         f.Product.Id,
                         f.Product.Name,
                         f.Product.ImageUrl,
-                        f.Product.Images
+                        f.Product.Images,
+                        f.Product.Stock  // ← stock normal visible
                     }
                 })
                 .ToListAsync();
@@ -82,19 +83,42 @@ namespace RanitaApi.Controllers
             var product = await _context.Products.FindAsync(dto.ProductId);
             if (product == null) return NotFound("Produit introuvable");
 
+            // ✅ Vérifier stock suffisant
+            if (dto.FlashStock <= 0)
+                return BadRequest("Le stock flash doit être supérieur à 0.");
+
+            if (dto.FlashStock > product.Stock)
+                return BadRequest($"Stock insuffisant. Stock disponible : {product.Stock}");
+
+            // ✅ Réserver le stock flash — soustraire du stock normal
+            product.Stock -= dto.FlashStock;
+
             var flash = new FlashSale
             {
                 ProductId = dto.ProductId,
                 FlashPrice = dto.FlashPrice,
                 OriginalPrice = product.Price,
                 FlashStock = dto.FlashStock,
+                FlashStockSold = 0,
                 StartDate = dto.StartDate.ToUniversalTime(),
                 EndDate = dto.EndDate.ToUniversalTime(),
-                IsActive = dto.IsActive
+                IsActive = dto.IsActive,
+                CreatedAt = DateTime.UtcNow
             };
+
             _context.FlashSales.Add(flash);
             await _context.SaveChangesAsync();
-            return Ok(flash);
+
+            return Ok(new
+            {
+                flash.Id,
+                flash.FlashPrice,
+                flash.FlashStock,
+                flash.StartDate,
+                flash.EndDate,
+                StockNormalRestant = product.Stock,
+                Message = $"Flash créé. Stock normal restant : {product.Stock}"
+            });
         }
 
         // PUT modifier
@@ -103,13 +127,42 @@ namespace RanitaApi.Controllers
         {
             var flash = await _context.FlashSales.FindAsync(id);
             if (flash == null) return NotFound();
+
+            var product = await _context.Products.FindAsync(flash.ProductId);
+            if (product == null) return NotFound("Produit introuvable");
+
+            // ✅ Remettre l'ancien stock flash non vendu au stock normal
+            var ancienStockNonVendu = flash.FlashStock - flash.FlashStockSold;
+            product.Stock += ancienStockNonVendu;
+
+            // ✅ Vérifier que le nouveau stock flash est disponible
+            if (dto.FlashStock <= 0)
+                return BadRequest("Le stock flash doit être supérieur à 0.");
+
+            if (dto.FlashStock > product.Stock)
+                return BadRequest($"Stock insuffisant. Stock disponible après restitution : {product.Stock}");
+
+            // ✅ Réserver le nouveau stock flash
+            product.Stock -= dto.FlashStock;
+
+            // Mettre à jour le flash
             flash.FlashPrice = dto.FlashPrice;
             flash.FlashStock = dto.FlashStock;
             flash.StartDate = dto.StartDate.ToUniversalTime();
             flash.EndDate = dto.EndDate.ToUniversalTime();
             flash.IsActive = dto.IsActive;
+
             await _context.SaveChangesAsync();
-            return Ok(flash);
+
+            return Ok(new
+            {
+                flash.Id,
+                flash.FlashPrice,
+                flash.FlashStock,
+                flash.FlashStockSold,
+                StockNormalRestant = product.Stock,
+                Message = $"Flash mis à jour. Stock normal restant : {product.Stock}"
+            });
         }
 
         // DELETE
@@ -118,9 +171,26 @@ namespace RanitaApi.Controllers
         {
             var flash = await _context.FlashSales.FindAsync(id);
             if (flash == null) return NotFound();
+
+            var product = await _context.Products.FindAsync(flash.ProductId);
+            if (product != null)
+            {
+                // ✅ Remettre le stock flash non vendu au stock normal
+                var stockNonVendu = flash.FlashStock - flash.FlashStockSold;
+                product.Stock += stockNonVendu;
+
+                Console.WriteLine($"Flash supprimé — {stockNonVendu} unités restituées au produit #{product.Id}");
+            }
+
             _context.FlashSales.Remove(flash);
             await _context.SaveChangesAsync();
-            return Ok();
+
+            return Ok(new
+            {
+                Message = "Flash supprimé",
+                StockRestitue = flash.FlashStock - flash.FlashStockSold,
+                StockNormalActuel = product?.Stock
+            });
         }
     }
 
