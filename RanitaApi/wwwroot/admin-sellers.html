@@ -587,7 +587,10 @@
             <div class="tab active" onclick="switchTab('sellers',this)">Demandes vendeurs <span class="tab-badge hidden" id="badge-sellers">0</span></div>
             <div class="tab" onclick="switchTab('products',this)">Produits à valider <span class="tab-badge hidden" id="badge-products">0</span></div>
             <div class="tab" onclick="switchTab('payouts',this)">Paiements vendeurs <span class="tab-badge hidden" id="badge-payouts">0</span></div>
+            <div class="tab" onclick="switchTab('flash-requests',this)">⚡ Flash vendeurs <span class="tab-badge hidden" id="badge-flash">0</span></div>
+
         </div>
+
         <div class="section active" id="section-sellers">
             <div class="filters">
                 <button class="filter-btn active" onclick="filterSellers('all',this)">Tous</button>
@@ -615,12 +618,31 @@
         </div>
     </div>
 
+    <div class="section" id="section-flash-requests">
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterFlash('Pending',this)">⏳ En attente</button>
+            <button class="filter-btn" onclick="filterFlash('Approved',this)">✅ Approuvés</button>
+            <button class="filter-btn" onclick="filterFlash('Rejected',this)">❌ Refusés</button>
+        </div>
+        <div id="flash-requests-list"><div class="loading">Chargement...</div></div>
+    </div>
+
     <div class="modal-overlay" id="modal-approve"><div class="modal"><h3>✅ Approuver cette boutique</h3><div class="commission-row"><label>Commission Ranita (%)</label><input type="number" id="approve-commission" value="10" min="0" max="50"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-approve')">Annuler</button><button class="btn-modal-approve" onclick="confirmApprove()">Approuver</button></div></div></div>
     <div class="modal-overlay" id="modal-reject"><div class="modal"><h3>❌ Refuser cette boutique</h3><textarea id="reject-reason" rows="3" placeholder="Motif du refus (obligatoire)..."></textarea><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-reject')">Annuler</button><button class="btn-modal-reject" onclick="confirmReject()">Confirmer le refus</button></div></div></div>
     <div class="modal-overlay" id="modal-reject-product"><div class="modal"><h3>❌ Refuser ce produit</h3><textarea id="reject-product-reason" rows="3" placeholder="Motif du refus..."></textarea><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-reject-product')">Annuler</button><button class="btn-modal-reject" onclick="confirmRejectProduct()">Confirmer</button></div></div></div>
     <div class="modal-overlay" id="modal-product-detail"><div class="modal" style="max-width:700px;max-height:85vh;overflow-y:auto;"><h3>📦 Détail du produit</h3><div id="product-detail-content"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-product-detail')">Fermer</button></div></div></div>
     <div class="toast" id="toast"></div>
 
+    <div class="modal-overlay" id="modal-reject-flash">
+        <div class="modal">
+            <h3>❌ Rejeter cette demande flash</h3>
+            <textarea id="reject-flash-reason" rows="3" placeholder="Motif du rejet (obligatoire)..."></textarea>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" onclick="closeModal('modal-reject-flash')">Annuler</button>
+                <button class="btn-modal-reject" onclick="confirmRejectFlash()">Confirmer</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         checkPageAccess('sellers');
@@ -631,7 +653,7 @@
 
         window.addEventListener('DOMContentLoaded', () => { loadAll(); });
 
-        async function loadAll() { await Promise.all([loadSellers(), loadProducts(), loadPayouts()]); }
+        async function loadAll() { await Promise.all([loadSellers(), loadProducts(), loadPayouts(), loadFlashRequests()]); }
 
         function switchTab(tab, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -661,26 +683,26 @@
             const el = document.getElementById('sellers-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">🏪</div><p>Aucun vendeur trouvé</p></div>'; return; }
             el.innerHTML = list.map(s => `
-                                <div class="seller-card">
-                                    <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
-                                    <div class="seller-info">
-                                        <div class="seller-name">${s.shopName}</div>
-                                        <div class="seller-meta">
-                                            <span>👤 ${s.clientName}</span><span>📧 ${s.clientEmail}</span>
-                                            <span>📞 ${s.phoneNumber}</span><span>🪪 CNI: ${s.nationalIdNumber}</span>
-                                            <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
-                                            ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
-                                            <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
-                                        </div>
-                                        ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
-                                    </div>
-                                    <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
-                                    <div class="seller-actions">
-                                        ${s.status === 'Pending' ? `<button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button><button class="btn btn-reject" onclick="openReject(${s.id})">✗ Refuser</button>` : ''}
-                                        ${s.status === 'Approved' ? `<button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>` : ''}
-                                        ${s.status === 'Suspended' ? `<button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>` : ''}
-                                    </div>
-                                </div>`).join('');
+                                        <div class="seller-card">
+                                            <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
+                                            <div class="seller-info">
+                                                <div class="seller-name">${s.shopName}</div>
+                                                <div class="seller-meta">
+                                                    <span>👤 ${s.clientName}</span><span>📧 ${s.clientEmail}</span>
+                                                    <span>📞 ${s.phoneNumber}</span><span>🪪 CNI: ${s.nationalIdNumber}</span>
+                                                    <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
+                                                    ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
+                                                    <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
+                                                </div>
+                                                ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
+                                            </div>
+                                            <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
+                                            <div class="seller-actions">
+                                                ${s.status === 'Pending' ? `<button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button><button class="btn btn-reject" onclick="openReject(${s.id})">✗ Refuser</button>` : ''}
+                                                ${s.status === 'Approved' ? `<button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>` : ''}
+                                                ${s.status === 'Suspended' ? `<button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>` : ''}
+                                            </div>
+                                        </div>`).join('');
         }
 
         function statusLabel(s) { return { Pending: 'En attente', Approved: 'Approuvé', Rejected: 'Refusé', Suspended: 'Suspendu' }[s] || s; }
@@ -723,36 +745,36 @@
             const el = document.getElementById('products-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">📦</div><p>Aucun produit trouvé</p></div>'; return; }
             el.innerHTML = list.map(p => `
-                                <div class="product-card">
-                                    <div class="product-img">${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-                                    <div class="product-info">
-                                        <div class="product-name">${p.name}</div>
-                                        <div class="product-meta"><span>🏪 ${p.shopName}</span><span>📦 Stock: ${p.stock}</span><span>🏷️ ${p.category || 'Sans catégorie'}</span><span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                                    </div>
-                                    <div class="product-price">${formatPrice(p.price)}</div>
-                                    <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
-                                    <div class="seller-actions">
-                                        <button class="btn" onclick="viewProduct(${p.id})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;">👁 Détails</button>
-                                        ${p.approvalStatus === 'Pending' ? `<button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button><button class="btn btn-reject" onclick="openRejectProduct(${p.id})">✗ Refuser</button>` : ''}
-                                    </div>
-                                </div>`).join('');
+                                        <div class="product-card">
+                                            <div class="product-img">${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+                                            <div class="product-info">
+                                                <div class="product-name">${p.name}</div>
+                                                <div class="product-meta"><span>🏪 ${p.shopName}</span><span>📦 Stock: ${p.stock}</span><span>🏷️ ${p.category || 'Sans catégorie'}</span><span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
+                                            </div>
+                                            <div class="product-price">${formatPrice(p.price)}</div>
+                                            <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
+                                            <div class="seller-actions">
+                                                <button class="btn" onclick="viewProduct(${p.id})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;">👁 Détails</button>
+                                                ${p.approvalStatus === 'Pending' ? `<button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button><button class="btn btn-reject" onclick="openRejectProduct(${p.id})">✗ Refuser</button>` : ''}
+                                            </div>
+                                        </div>`).join('');
         }
 
         function viewProduct(id) {
             const p = allProducts.find(x => x.id === id); if (!p) return;
             const imgs = Array.isArray(p.images) ? p.images : [];
             document.getElementById('product-detail-content').innerHTML = `
-                                <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">${imgs.map(img => `<img src="${img}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">`).join('')}${!imgs.length ? '<div style="width:100px;height:100px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>' : ''}</div>
-                                <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                                    <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;width:140px;">Boutique</td><td style="padding:8px 0;font-weight:600;">${p.shopName}</td></tr>
-                                    <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Nom</td><td style="padding:8px 0;font-weight:600;">${p.name}</td></tr>
-                                    <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">SKU</td><td style="padding:8px 0;">${p.sku || '—'}</td></tr>
-                                    <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Catégorie</td><td style="padding:8px 0;">${p.category || '—'}</td></tr>
-                                    <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix</td><td style="padding:8px 0;font-weight:700;color:#059669;">${formatPrice(p.price)}</td></tr>
-                                    <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Stock</td><td style="padding:8px 0;">${p.stock}</td></tr>
-                                    <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description</td><td style="padding:8px 0;">${p.shortDescription || '—'}</td></tr>
-                                    <tr><td style="padding:8px 0;color:#6b7280;">Soumis le</td><td style="padding:8px 0;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</td></tr>
-                                </table>`;
+                                        <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">${imgs.map(img => `<img src="${img}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">`).join('')}${!imgs.length ? '<div style="width:100px;height:100px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>' : ''}</div>
+                                        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                                            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;width:140px;">Boutique</td><td style="padding:8px 0;font-weight:600;">${p.shopName}</td></tr>
+                                            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Nom</td><td style="padding:8px 0;font-weight:600;">${p.name}</td></tr>
+                                            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">SKU</td><td style="padding:8px 0;">${p.sku || '—'}</td></tr>
+                                            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Catégorie</td><td style="padding:8px 0;">${p.category || '—'}</td></tr>
+                                            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix</td><td style="padding:8px 0;font-weight:700;color:#059669;">${formatPrice(p.price)}</td></tr>
+                                            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Stock</td><td style="padding:8px 0;">${p.stock}</td></tr>
+                                            <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description</td><td style="padding:8px 0;">${p.shortDescription || '—'}</td></tr>
+                                            <tr><td style="padding:8px 0;color:#6b7280;">Soumis le</td><td style="padding:8px 0;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</td></tr>
+                                        </table>`;
             openModal('modal-product-detail');
         }
 
@@ -780,6 +802,115 @@
             } catch (e) { }
         }
 
+
+        let allFlashRequests = [], currentFlashRequestId = null;
+
+        async function loadFlashRequests() {
+            try {
+                const res = await fetch(`${API}/flash-requests`);
+                allFlashRequests = await res.json();
+                const pending = allFlashRequests.filter(f => f.status === 'Pending').length;
+                const b = document.getElementById('badge-flash');
+                b.textContent = pending;
+                b.classList.toggle('hidden', pending === 0);
+                renderFlashRequests(allFlashRequests.filter(f => f.status === 'Pending'));
+            } catch (e) {
+                document.getElementById('flash-requests-list').innerHTML =
+                    '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
+            }
+        }
+
+        function filterFlash(status, btn) {
+            document.querySelectorAll('#section-flash-requests .filter-btn')
+                .forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderFlashRequests(allFlashRequests.filter(f => f.status === status));
+        }
+
+        function renderFlashRequests(list) {
+            const el = document.getElementById('flash-requests-list');
+            if (!list.length) {
+                el.innerHTML = '<div class="empty"><div class="icon">⚡</div><p>Aucune demande flash</p></div>';
+                return;
+            }
+            el.innerHTML = list.map(f => {
+                const img = f.product.imageUrl || '';
+                const statusColors = {
+                    Pending: 'background:#fef3c7;color:#92400e;',
+                    Approved: 'background:#d1fae5;color:#065f46;',
+                    Rejected: 'background:#fee2e2;color:#991b1b;'
+                };
+                const statusLabels = { Pending: '⏳ En attente', Approved: '✅ Approuvé', Rejected: '❌ Rejeté' };
+                return `<div class="product-card" style="flex-wrap:wrap;gap:12px;">
+            <div class="product-img">
+                ${img ? `<img src="${img}" onerror="this.style.display='none'">` : '📦'}
+            </div>
+            <div class="product-info">
+                <div class="product-name">${f.product.name}</div>
+                <div class="product-meta">
+                    <span>🏪 ${f.seller.shopName}</span>
+                    ${f.variant ? `<span>🎨 ${f.variant.combination}</span>` : ''}
+                    <span>📦 Stock flash: ${f.flashStock}</span>
+                    <span>📅 ${new Date(f.startDate).toLocaleDateString('fr-FR')} → ${new Date(f.endDate).toLocaleDateString('fr-FR')}</span>
+                    <span>⏱ ${Math.round((new Date(f.endDate) - new Date(f.startDate)) / 3600000)}h</span>
+                </div>
+                ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;">Motif : ${f.rejectionReason}</div>` : ''}
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:18px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
+                <div style="font-size:12px;color:#9ca3af;text-decoration:line-through;">${formatPrice(f.originalPrice)}</div>
+                <div style="font-size:12px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;display:inline-block;margin-top:4px;">-${f.discount}%</div>
+            </div>
+            <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
+            ${f.status === 'Pending' ? `
+            <div class="seller-actions">
+                <button class="btn btn-approve" onclick="approveFlash(${f.id})">✓ Approuver</button>
+                <button class="btn btn-reject" onclick="openRejectFlash(${f.id})">✗ Rejeter</button>
+            </div>` : ''}
+        </div>`;
+            }).join('');
+        }
+
+        async function approveFlash(id) {
+            if (!confirm('Approuver et publier cette vente flash ?')) return;
+            try {
+                const res = await fetch(`${API}/flash-requests/${id}/approve`, { method: 'PUT' });
+                if (res.ok) {
+                    showToast('Flash approuvé et publié ✓', 'success');
+                    loadFlashRequests();
+                } else {
+                    const err = await res.text();
+                    showToast('Erreur : ' + err, 'error');
+                }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        function openRejectFlash(id) {
+            currentFlashRequestId = id;
+            document.getElementById('reject-flash-reason').value = '';
+            openModal('modal-reject-flash');
+        }
+
+        async function confirmRejectFlash() {
+            const reason = document.getElementById('reject-flash-reason').value.trim();
+            if (!reason) { showToast('Le motif est obligatoire', 'error'); return; }
+            try {
+                const res = await fetch(`${API}/flash-requests/${currentFlashRequestId}/reject`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                if (res.ok) {
+                    showToast('Demande rejetée', '');
+                    closeModal('modal-reject-flash');
+                    loadFlashRequests();
+                }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+
+
+
         function filterPayouts(status, btn) {
             document.querySelectorAll('#section-payouts .filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
             renderPayouts(allPayouts.filter(p => p.status === status));
@@ -791,26 +922,26 @@
             const byVendor = {};
             payouts.forEach(p => { if (!byVendor[p.sellerId]) byVendor[p.sellerId] = { sellerId: p.sellerId, shopName: p.shopName, payouts: [], total: 0, status: p.status }; byVendor[p.sellerId].payouts.push(p); byVendor[p.sellerId].total += p.netAmount; });
             el.innerHTML = Object.values(byVendor).map(vendor => `
-                                <div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-                                        <div style="display:flex;align-items:center;gap:12px;">
-                                            <div style="width:44px;height:44px;background:#10b981;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${vendor.shopName[0]}</div>
-                                            <div><div style="font-weight:800;font-size:16px;">${vendor.shopName}</div><div style="font-size:12px;color:#6b7280;">${vendor.payouts.length} commande(s)</div></div>
-                                        </div>
-                                        <div style="text-align:right;"><div style="font-size:20px;font-weight:800;color:#10b981;">${formatPrice(vendor.total)}</div><div style="font-size:12px;color:#6b7280;">Net après commission</div></div>
-                                    </div>
-                                    <div style="border-top:1px solid #f3f4f6;padding-top:12px;margin-bottom:14px;">
-                                        ${vendor.payouts.map(p => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;font-size:13px;">
-                                            <div><span style="font-weight:600;">Commande #${p.orderId}</span><span style="color:#6b7280;margin-left:8px;">📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                                            <div style="text-align:right;"><div style="font-weight:700;color:#10b981;">${formatPrice(p.netAmount)}</div><div style="font-size:11px;color:#9ca3af;">Brut: ${formatPrice(p.grossAmount)} · Commission: ${formatPrice(p.commissionAmount)}</div></div>
-                                        </div>`).join('')}
-                                    </div>
-                                    ${vendor.status === 'Pending' ? `
-                                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                                        <input type="text" id="ref-${vendor.sellerId}" value="${generateTransactionRef()}" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
-                                        <button onclick="payAllVendor(${vendor.sellerId},'${vendor.shopName}')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ${formatPrice(vendor.total)}</button>
-                                    </div>`: `<div style="font-size:13px;color:#6b7280;">✅ Payé le ${new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR')}${vendor.payouts[0].transactionReference ? ` · Réf: ${vendor.payouts[0].transactionReference}` : ''}</div>`}
-                                </div>`).join('');
+                                        <div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">
+                                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                                                <div style="display:flex;align-items:center;gap:12px;">
+                                                    <div style="width:44px;height:44px;background:#10b981;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${vendor.shopName[0]}</div>
+                                                    <div><div style="font-weight:800;font-size:16px;">${vendor.shopName}</div><div style="font-size:12px;color:#6b7280;">${vendor.payouts.length} commande(s)</div></div>
+                                                </div>
+                                                <div style="text-align:right;"><div style="font-size:20px;font-weight:800;color:#10b981;">${formatPrice(vendor.total)}</div><div style="font-size:12px;color:#6b7280;">Net après commission</div></div>
+                                            </div>
+                                            <div style="border-top:1px solid #f3f4f6;padding-top:12px;margin-bottom:14px;">
+                                                ${vendor.payouts.map(p => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;font-size:13px;">
+                                                    <div><span style="font-weight:600;">Commande #${p.orderId}</span><span style="color:#6b7280;margin-left:8px;">📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
+                                                    <div style="text-align:right;"><div style="font-weight:700;color:#10b981;">${formatPrice(p.netAmount)}</div><div style="font-size:11px;color:#9ca3af;">Brut: ${formatPrice(p.grossAmount)} · Commission: ${formatPrice(p.commissionAmount)}</div></div>
+                                                </div>`).join('')}
+                                            </div>
+                                            ${vendor.status === 'Pending' ? `
+                                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                                                <input type="text" id="ref-${vendor.sellerId}" value="${generateTransactionRef()}" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
+                                                <button onclick="payAllVendor(${vendor.sellerId},'${vendor.shopName}')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ${formatPrice(vendor.total)}</button>
+                                            </div>`: `<div style="font-size:13px;color:#6b7280;">✅ Payé le ${new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR')}${vendor.payouts[0].transactionReference ? ` · Réf: ${vendor.payouts[0].transactionReference}` : ''}</div>`}
+                                        </div>`).join('');
         }
 
         function generateTransactionRef() { const now = new Date(); const date = now.toISOString().slice(0, 10).replace(/-/g, ''); const rand = Math.random().toString(36).substring(2, 7).toUpperCase(); return `OM-${date}-${rand}`; }
