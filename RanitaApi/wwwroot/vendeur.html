@@ -1017,6 +1017,11 @@
                 <button id="tab-reviews" onclick="switchTab('reviews')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
                     ⭐ Avis clients
                 </button>
+
+                <button id="tab-flash" onclick="switchTab('flash')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
+                    ⚡ Ventes Flash <span id="badge-flash" style="display:none;background:#f97316;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
+                </button>
+
             </div>
             <div id="section-products">
                 <div class="section-header">
@@ -1040,6 +1045,14 @@
             <div id="section-reviews" style="display:none;">
                 <div class="section-header"><div class="section-title">⭐ Avis clients</div></div>
                 <div id="my-reviews-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
+            </div>
+
+            <div id="section-flash" style="display:none;">
+                <div class="section-header">
+                    <div class="section-title">⚡ Mes ventes flash</div>
+                    <button class="btn-add" onclick="openAddFlash()" style="background:#f97316;">+ Demander un flash</button>
+                </div>
+                <div id="my-flash-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
         </div>
     </div>
@@ -1145,22 +1158,22 @@
                 loadSellerStatus();
             } else {
                 document.getElementById('authNav').innerHTML = `
-            <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
-            <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
+                <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
+                <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
             }
         });
 
         function buildAuthNav(seller) {
             const firstName = seller.name ? seller.name.split(' ')[0] : (seller.firstName || 'Mon compte');
             document.getElementById('authNav').innerHTML = `
-                    <div style="position:relative;display:inline-block;">
-                        <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
-                            👤 ${firstName} ▾
-                        </button>
-                        <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
-                            <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
-                        </div>
-                    </div>`;
+                        <div style="position:relative;display:inline-block;">
+                            <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
+                                👤 ${firstName} ▾
+                            </button>
+                            <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
+                                <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
+                            </div>
+                        </div>`;
         }
 
         function toggleMenu() {
@@ -1214,10 +1227,10 @@
 
                 if (s.status === 'Pending') {
                     document.getElementById('pending-info').innerHTML = `
-                            <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
-                            <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
-                            <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
-                            <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
+                                <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
+                                <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
+                                <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
+                                <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
                     showPage('page-pending');
 
                 } else if (s.status === 'Rejected') {
@@ -1310,26 +1323,26 @@
                     if (Array.isArray(p.images)) { imgs = p.images; }
                     else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
                     return `
-                        <div class="my-product">
-                            <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-                            <div class="my-product-info">
-                                <div class="my-product-name">${p.name}</div>
-                                <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
-                                ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:12px;color:#991b1b;background:#fee2e2;padding:4px 8px;border-radius:6px;margin-top:4px;">❌ Motif : ${p.rejectionReason}</div>` : ''}
-                            </div>
-                            <div class="my-product-price">${formatPrice(p.price)}</div>
-                            <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
-                            <div style="display:flex;gap:6px;flex-shrink:0;">
-                                ${p.approvalStatus !== 'Approved' ? `
-                                    <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
-                                    <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
-                                ` : `
-                                    <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
-                                    <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
-                                    <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️' : '▶️'}</button>
-                                `}
-                            </div>
-                        </div>`;
+                            <div class="my-product">
+                                <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
+                                <div class="my-product-info">
+                                    <div class="my-product-name">${p.name}</div>
+                                    <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
+                                    ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:12px;color:#991b1b;background:#fee2e2;padding:4px 8px;border-radius:6px;margin-top:4px;">❌ Motif : ${p.rejectionReason}</div>` : ''}
+                                </div>
+                                <div class="my-product-price">${formatPrice(p.price)}</div>
+                                <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
+                                <div style="display:flex;gap:6px;flex-shrink:0;">
+                                    ${p.approvalStatus !== 'Approved' ? `
+                                        <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
+                                        <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
+                                    ` : `
+                                        <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
+                                        <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
+                                        <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️' : '▶️'}</button>
+                                    `}
+                                </div>
+                            </div>`;
                 }).join('');
             } catch (e) { console.error('loadMyProducts:', e); }
         }
@@ -1406,45 +1419,45 @@
                 el.innerHTML = orders.map(o => {
                     const s = sc[o.status] || { bg: '#f3f4f6', color: '#374151' };
                     return `<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                    <div><span style="font-weight:700;font-size:15px;">Commande #${o.id}</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                    <div style="display:flex;align-items:center;gap:10px;"><span style="background:${s.bg};color:${s.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span><span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span></div>
-                </div>
-                <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📍 ${o.customerAddress}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                        <div><span style="font-weight:700;font-size:15px;">Commande #${o.id}</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span></div>
+                        <div style="display:flex;align-items:center;gap:10px;"><span style="background:${s.bg};color:${s.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span><span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span></div>
+                    </div>
+                    <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📍 ${o.customerAddress}</div>
 ${o.status === 'Confirmée par vendeur' ? `
-    <div style="background:#e0e7ff;color:#3730a3;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:8px;">
-        ✅ Vous avez confirmé cette commande — en attente de livraison
-    </div>` : ''}
+        <div style="background:#e0e7ff;color:#3730a3;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:8px;">
+            ✅ Vous avez confirmé cette commande — en attente de livraison
+        </div>` : ''}
 ${o.status === 'Indisponible vendeur' ? `
-    <div style="background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:8px;">
-        ⚠️ Vous avez signalé ce produit indisponible — en attente de décision admin
-    </div>` : ''}
+        <div style="background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:8px;">
+            ⚠️ Vous avez signalé ce produit indisponible — en attente de décision admin
+        </div>` : ''}
 
-    ${o.refundMotif ? `
-    <div style="background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:12px;margin-bottom:8px;">
-        📝 Motif : ${o.refundMotif}
-    </div>` : ''}
+        ${o.refundMotif ? `
+        <div style="background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:12px;margin-bottom:8px;">
+            📝 Motif : ${o.refundMotif}
+        </div>` : ''}
 
-                <div style="border-top:1px solid #f3f4f6;padding-top:10px;">${o.items.map(i => `
-                    <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
-                        ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
-                        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${i.productName}</div>${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}</div>
-                        <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
-                        <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
-                    </div>`).join('')}
-                </div>
-                ${o.status === 'En attente' ? `
-                <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f3f4f6;">
-                    <button onclick="vendorConfirm(${o.id})"
-                        style="flex:1;padding:10px;background:#d1fae5;color:#065f46;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
-                        ✅ Confirmer disponibilité
-                    </button>
-                    <button onclick="vendorConfirmUnavailable(${o.id})"
-                        style="flex:1;padding:10px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
-                        ❌ Produit indisponible
-                    </button>
-                </div>` : ''}
-            </div>`;
+                    <div style="border-top:1px solid #f3f4f6;padding-top:10px;">${o.items.map(i => `
+                        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
+                            ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
+                            <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${i.productName}</div>${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}</div>
+                            <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
+                            <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
+                        </div>`).join('')}
+                    </div>
+                    ${o.status === 'En attente' ? `
+                    <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f3f4f6;">
+                        <button onclick="vendorConfirm(${o.id})"
+                            style="flex:1;padding:10px;background:#d1fae5;color:#065f46;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
+                            ✅ Confirmer disponibilité
+                        </button>
+                        <button onclick="vendorConfirmUnavailable(${o.id})"
+                            style="flex:1;padding:10px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
+                            ❌ Produit indisponible
+                        </button>
+                    </div>` : ''}
+                </div>`;
                 }).join('');
             } catch (e) { }
         }
@@ -1462,7 +1475,7 @@ ${o.status === 'Indisponible vendeur' ? `
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
- 
+
 
         async function vendorConfirmUnavailable(orderId) {
             const motif = prompt('Motif d\'indisponibilité (optionnel) :');
@@ -1486,12 +1499,12 @@ ${o.status === 'Indisponible vendeur' ? `
                 const failed = orders.filter(o => o.status === 'Échec livraison' || o.status === 'Annulée');
                 if (!failed.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun échec de livraison.</div>'; return; }
                 el.innerHTML = failed.map(o => `
-                        <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-weight:700;">Commande #${o.id}</span><span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span></div>
-                            <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
-                            <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
-                            <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
-                        </div>`).join('');
+                            <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-weight:700;">Commande #${o.id}</span><span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span></div>
+                                <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
+                                <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
+                                <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
+                            </div>`).join('');
             } catch (e) { }
         }
 
@@ -1505,36 +1518,36 @@ ${o.status === 'Indisponible vendeur' ? `
                     return;
                 }
                 el.innerHTML = payouts.map(p => `
-            <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-                    <div>
-                        <span style="font-weight:700;font-size:15px;">Commande #${p.orderId}</span>
-                        <span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                        <div>
+                            <span style="font-weight:700;font-size:15px;">Commande #${p.orderId}</span>
+                            <span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        <span style="background:${p.status === 'Paid' ? '#d1fae5' : '#fef3c7'};color:${p.status === 'Paid' ? '#065f46' : '#92400e'};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">
+                            ${p.status === 'Paid' ? '✅ Payé' : '⏳ En attente'}
+                        </span>
                     </div>
-                    <span style="background:${p.status === 'Paid' ? '#d1fae5' : '#fef3c7'};color:${p.status === 'Paid' ? '#065f46' : '#92400e'};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">
-                        ${p.status === 'Paid' ? '✅ Payé' : '⏳ En attente'}
-                    </span>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-                    <div style="text-align:center;background:#f9fafb;padding:10px;border-radius:8px;">
-                        <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Montant brut</div>
-                        <div style="font-weight:700;">${formatPrice(p.grossAmount)}</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                        <div style="text-align:center;background:#f9fafb;padding:10px;border-radius:8px;">
+                            <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Montant brut</div>
+                            <div style="font-weight:700;">${formatPrice(p.grossAmount)}</div>
+                        </div>
+                        <div style="text-align:center;background:#fee2e2;padding:10px;border-radius:8px;">
+                            <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Commission</div>
+                            <div style="font-weight:700;color:#991b1b;">-${formatPrice(p.commissionAmount)}</div>
+                        </div>
+                        <div style="text-align:center;background:#d1fae5;padding:10px;border-radius:8px;">
+                            <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Net reçu</div>
+                            <div style="font-weight:700;font-size:16px;color:#065f46;">${formatPrice(p.netAmount)}</div>
+                        </div>
                     </div>
-                    <div style="text-align:center;background:#fee2e2;padding:10px;border-radius:8px;">
-                        <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Commission</div>
-                        <div style="font-weight:700;color:#991b1b;">-${formatPrice(p.commissionAmount)}</div>
-                    </div>
-                    <div style="text-align:center;background:#d1fae5;padding:10px;border-radius:8px;">
-                        <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Net reçu</div>
-                        <div style="font-weight:700;font-size:16px;color:#065f46;">${formatPrice(p.netAmount)}</div>
-                    </div>
-                </div>
-                ${p.status === 'Paid' && p.paidAt ? `
-                <div style="margin-top:8px;font-size:12px;color:#6b7280;">
-                    💸 Payé le ${new Date(p.paidAt).toLocaleDateString('fr-FR')}
-                    ${p.transactionReference ? `· Réf: ${p.transactionReference}` : ''}
-                </div>` : ''}
-            </div>`).join('');
+                    ${p.status === 'Paid' && p.paidAt ? `
+                    <div style="margin-top:8px;font-size:12px;color:#6b7280;">
+                        💸 Payé le ${new Date(p.paidAt).toLocaleDateString('fr-FR')}
+                        ${p.transactionReference ? `· Réf: ${p.transactionReference}` : ''}
+                    </div>` : ''}
+                </div>`).join('');
             } catch (e) { console.error('loadMyPayouts:', e); }
         }
 
@@ -1572,28 +1585,28 @@ ${o.status === 'Indisponible vendeur' ? `
                 const moyenne = (allReviews.reduce((s, r) => s + r.note, 0) / allReviews.length).toFixed(1);
 
                 el.innerHTML = `
-            <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
-                <div style="text-align:center;">
-                    <div style="font-size:36px;font-weight:800;color:#f59e0b;">${moyenne}</div>
-                    <div style="font-size:20px;color:#f59e0b;">${'★'.repeat(Math.round(moyenne))}${'☆'.repeat(5 - Math.round(moyenne))}</div>
-                    <div style="font-size:12px;color:#6b7280;">${allReviews.length} avis</div>
-                </div>
-            </div>
-            ${allReviews.map(r => `
-            <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-                    <div>
-                        <div style="font-size:13px;font-weight:700;">${maskName(r.client)}</div>
-                        <div style="font-size:11px;color:#6b7280;">sur : ${r._productName}</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <span style="color:#f59e0b;font-size:16px;">${'★'.repeat(r.note)}${'☆'.repeat(5 - r.note)}</span>
-                        <span style="font-size:11px;color:#9ca3af;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
+                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
+                    <div style="text-align:center;">
+                        <div style="font-size:36px;font-weight:800;color:#f59e0b;">${moyenne}</div>
+                        <div style="font-size:20px;color:#f59e0b;">${'★'.repeat(Math.round(moyenne))}${'☆'.repeat(5 - Math.round(moyenne))}</div>
+                        <div style="font-size:12px;color:#6b7280;">${allReviews.length} avis</div>
                     </div>
                 </div>
-                ${r.commentaire ? `<p style="font-size:13px;color:#374151;margin:0;background:#f9fafb;padding:8px 12px;border-radius:8px;">${r.commentaire}</p>` : ''}
-            </div>`).join('')}
-        `;
+                ${allReviews.map(r => `
+                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+                        <div>
+                            <div style="font-size:13px;font-weight:700;">${maskName(r.client)}</div>
+                            <div style="font-size:11px;color:#6b7280;">sur : ${r._productName}</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span style="color:#f59e0b;font-size:16px;">${'★'.repeat(r.note)}${'☆'.repeat(5 - r.note)}</span>
+                            <span style="font-size:11px;color:#9ca3af;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                    </div>
+                    ${r.commentaire ? `<p style="font-size:13px;color:#374151;margin:0;background:#f9fafb;padding:8px 12px;border-radius:8px;">${r.commentaire}</p>` : ''}
+                </div>`).join('')}
+            `;
             } catch (e) { console.error('loadMyReviews:', e); }
         }
 
@@ -1606,7 +1619,7 @@ ${o.status === 'Indisponible vendeur' ? `
 
 
         function switchTab(tab) {
-            ['products', 'orders', 'failed', 'payouts', 'reviews'].forEach(t => {
+            ['products', 'orders', 'failed', 'payouts', 'reviews', 'flash'].forEach(t => {
                 document.getElementById(`section-${t}`).style.display = 'none';
                 const btn = document.getElementById(`tab-${t}`);
                 btn.style.color = '#6b7280'; btn.style.borderBottom = '3px solid transparent';
@@ -1620,7 +1633,224 @@ ${o.status === 'Indisponible vendeur' ? `
             if (tab === 'failed') loadFailedDeliveries();
             if (tab === 'payouts') loadMyPayouts();
             if (tab === 'reviews') loadMyReviews();
+            if (tab === 'flash') loadMyFlash();
+
         }
+
+
+
+        // ── VENTES FLASH VENDEUR ──────────────────────────────────
+        let flashProducts = [], flashSettings = {};
+
+        async function loadFlashSettings() {
+            try {
+                const res = await fetch(`${API}/site-settings`);
+                const s = await res.json();
+                flashSettings = {
+                    maxHours: parseInt(s.flash_max_duration_hours) || 48,
+                    minDiscount: parseInt(s.flash_min_discount_pct) || 10
+                };
+            } catch (e) { }
+        }
+
+        async function openAddFlash() {
+            await loadFlashSettings();
+            // Charger produits approuvés
+            try {
+                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                flashProducts = (await res.json()).filter(p => p.approvalStatus === 'Approved');
+            } catch (e) { flashProducts = []; }
+
+            const select = document.getElementById('flash-product-select');
+            select.innerHTML = '<option value="">-- Sélectionner un produit --</option>' +
+                flashProducts.map(p => `<option value="${p.id}" data-price="${p.price}" data-product-id="${p.productId}">${p.name} — ${formatPrice(p.price)}</option>`).join('');
+
+            // Reset form
+            ['flash-price', 'flash-stock', 'flash-start', 'flash-end', 'flash-original-price', 'flash-available-stock'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('flash-product-id').value = '';
+            document.getElementById('flash-variant-id').value = '';
+            document.getElementById('flash-variant-section').style.display = 'none';
+            document.getElementById('flash-preview').style.display = 'none';
+            document.getElementById('flash-duration-hint').textContent =
+                `ℹ️ Durée max : ${flashSettings.maxHours}h · Remise min : ${flashSettings.minDiscount}%`;
+
+            openModal('modal-flash');
+        }
+
+        async function onFlashProductChange() {
+            const select = document.getElementById('flash-product-select');
+            const opt = select.options[select.selectedIndex];
+            if (!opt.value) return;
+
+            const sellerProductId = parseInt(opt.value);
+            const productId = parseInt(opt.dataset.productId);
+            const price = parseFloat(opt.dataset.price);
+
+            document.getElementById('flash-product-id').value = productId;
+            document.getElementById('flash-original-price').value = price;
+            document.getElementById('flash-variant-id').value = '';
+            document.getElementById('flash-variant-section').style.display = 'none';
+
+            // Charger variantes du produit réel
+            try {
+                const res = await fetch(`${API}/products/${productId}`);
+                const product = await res.json();
+                const variants = (product.variants || []).filter(v => v.stock > 0);
+
+                if (variants.length > 0) {
+                    const varSelect = document.getElementById('flash-variant-select');
+                    varSelect.innerHTML = '<option value="">-- Sélectionner une variante --</option>' +
+                        variants.map(v => `<option value="${v.id}" data-stock="${v.stock}">${v.combination} — Stock: ${v.stock}</option>`).join('');
+                    document.getElementById('flash-variant-section').style.display = 'block';
+                    document.getElementById('flash-available-stock').value = '';
+                } else {
+                    document.getElementById('flash-available-stock').value = product.stock;
+                }
+            } catch (e) { }
+
+            updateFlashPreview();
+        }
+
+        function onFlashVariantChange() {
+            const select = document.getElementById('flash-variant-select');
+            const opt = select.options[select.selectedIndex];
+            document.getElementById('flash-variant-id').value = opt.value || '';
+            document.getElementById('flash-available-stock').value = opt.value ? (opt.dataset.stock || '') : '';
+            document.getElementById('flash-variant-hint').textContent =
+                opt.value ? `Stock disponible : ${opt.dataset.stock} unités` : '';
+            updateFlashPreview();
+        }
+
+        function updateFlashPreview() {
+            const originalPrice = parseFloat(document.getElementById('flash-original-price').value);
+            const flashPrice = parseFloat(document.getElementById('flash-price').value);
+            const flashStock = parseInt(document.getElementById('flash-stock').value);
+            const start = document.getElementById('flash-start').value;
+            const end = document.getElementById('flash-end').value;
+            const preview = document.getElementById('flash-preview');
+
+            if (!originalPrice || !flashPrice) { preview.style.display = 'none'; return; }
+
+            const discount = Math.round((1 - flashPrice / originalPrice) * 100);
+            let html = `⚡ <strong>${formatPrice(flashPrice)}</strong> au lieu de <s>${formatPrice(originalPrice)}</s> — <strong>-${discount}%</strong>`;
+
+            if (discount < flashSettings.minDiscount) {
+                html += `<br>⚠️ Remise insuffisante — minimum ${flashSettings.minDiscount}% requis`;
+                preview.style.background = '#fee2e2';
+                preview.style.borderColor = '#fca5a5';
+                preview.style.color = '#991b1b';
+            } else {
+                preview.style.background = '#fff7ed';
+                preview.style.borderColor = '#fed7aa';
+                preview.style.color = '#92400e';
+            }
+
+            if (start && end) {
+                const hours = Math.round((new Date(end) - new Date(start)) / 3600000);
+                html += `<br>⏱ Durée : ${hours}h`;
+                if (hours > flashSettings.maxHours) {
+                    html += ` — ⚠️ Maximum ${flashSettings.maxHours}h autorisé`;
+                }
+            }
+
+            preview.innerHTML = html;
+            preview.style.display = 'block';
+        }
+
+        async function submitFlashRequest() {
+            const productId = parseInt(document.getElementById('flash-product-id').value);
+            const variantId = document.getElementById('flash-variant-id').value;
+            const flashPrice = parseFloat(document.getElementById('flash-price').value);
+            const flashStock = parseInt(document.getElementById('flash-stock').value);
+            const start = document.getElementById('flash-start').value;
+            const end = document.getElementById('flash-end').value;
+
+            if (!productId) { showToast('Sélectionnez un produit', 'error'); return; }
+            if (!flashPrice || flashPrice <= 0) { showToast('Prix flash invalide', 'error'); return; }
+            if (!flashStock || flashStock <= 0) { showToast('Stock flash invalide', 'error'); return; }
+            if (!start || !end) { showToast('Définissez les dates', 'error'); return; }
+
+            const btn = document.getElementById('btn-save-flash');
+            btn.disabled = true; btn.textContent = '⏳...';
+
+            try {
+                const res = await fetch(`${API}/flash-requests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sellerId,
+                        productId,
+                        variantId: variantId ? parseInt(variantId) : null,
+                        flashPrice,
+                        flashStock,
+                        startDate: new Date(start).toISOString(),
+                        endDate: new Date(end).toISOString()
+                    })
+                });
+
+                if (res.ok) {
+                    showToast('Demande envoyée — en attente de validation ✓', 'success');
+                    closeModal('modal-flash');
+                    loadMyFlash();
+                } else {
+                    const err = await res.text();
+                    showToast('Erreur : ' + err, 'error');
+                }
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+
+            btn.disabled = false; btn.textContent = '⚡ Envoyer la demande';
+        }
+
+        async function loadMyFlash() {
+            try {
+                const res = await fetch(`${API}/flash-requests/seller/${sellerId}`);
+                const requests = await res.json();
+                const el = document.getElementById('my-flash-list');
+
+                if (!requests.length) {
+                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucune demande flash. Créez votre première vente flash !</div>';
+                    return;
+                }
+
+                const statusColors = {
+                    Pending: { bg: '#fef3c7', color: '#92400e', label: '⏳ En attente' },
+                    Approved: { bg: '#d1fae5', color: '#065f46', label: '✅ Approuvé' },
+                    Rejected: { bg: '#fee2e2', color: '#991b1b', label: '❌ Rejeté' }
+                };
+
+                el.innerHTML = requests.map(f => {
+                    const st = statusColors[f.status] || statusColors.Pending;
+                    return `<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <div style="width:50px;height:50px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                        ${f.product.imageUrl ? `<img src="${f.product.imageUrl}" style="width:100%;height:100%;object-fit:cover;">` : '📦'}
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:700;font-size:14px;">${f.product.name}</div>
+                        <div style="font-size:12px;color:#6b7280;margin-top:2px;">
+                            ${f.variant ? `🎨 ${f.variant.combination} · ` : ''}
+                            📦 Stock: ${f.flashStock} · 
+                            📅 ${new Date(f.startDate).toLocaleDateString('fr-FR')} → ${new Date(f.endDate).toLocaleDateString('fr-FR')}
+                        </div>
+                        ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;">Motif : ${f.rejectionReason}</div>` : ''}
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <div style="font-size:18px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
+                        <div style="font-size:12px;text-decoration:line-through;color:#9ca3af;">${formatPrice(f.originalPrice)}</div>
+                        <div style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;display:inline-block;">-${f.discount}%</div>
+                    </div>
+                    <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:${st.bg};color:${st.color};">${st.label}</span>
+                </div>
+            </div>`;
+                }).join('');
+            } catch (e) { console.error('loadMyFlash:', e); }
+        }
+
+
+
+
 
         async function loadBadges() {
             try {
@@ -1737,18 +1967,18 @@ ${o.status === 'Indisponible vendeur' ? `
                 if (!attrs.length) { section.style.display = 'none'; varSection.style.display = 'none'; return; }
                 section.style.display = 'block';
                 fields.innerHTML = attrs.map(a => `
-                        <div class="attr-field full">
-                            <label>${a.attributeName}</label>
-                            ${a.attributeType === 'select'
+                            <div class="attr-field full">
+                                <label>${a.attributeName}</label>
+                                ${a.attributeType === 'select'
                         ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-                                    ${a.attributeOptions.split(',').map(o => `
-                                        <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;">
-                                            <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')">
-                                            <span>${o.trim()}</span>
-                                        </label>`).join('')}
-                                    <input type="hidden" id="attr_${a.attributeName}" value=""></div>`
+                                        ${a.attributeOptions.split(',').map(o => `
+                                            <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;">
+                                                <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')">
+                                                <span>${o.trim()}</span>
+                                            </label>`).join('')}
+                                        <input type="hidden" id="attr_${a.attributeName}" value=""></div>`
                         : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}" id="attr_${a.attributeName}" placeholder="${a.attributeName}">`}
-                        </div>`).join('');
+                            </div>`).join('');
                 varSection.style.display = attrs.some(a => a.attributeType === 'select') ? 'block' : 'none';
                 document.getElementById('p-variants-list').innerHTML = '';
                 window._variantLabels = null;
@@ -1771,15 +2001,15 @@ ${o.status === 'Indisponible vendeur' ? `
             const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
             window._variantLabels = labels;
             document.getElementById('p-variants-list').innerHTML = `
-                    <table class="variant-table">
-                        <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
-                        <tbody>${labels.map((label, i) => `<tr><td>${label}</td><td><input type="number" id="variant_stock_${i}" value="" placeholder="0" min="0" 
-    style="color:#9ca3af;"
-    onfocus="if(this.value===''){this.style.color='#111827'}" 
-    oninput="this.style.color='#111827'"
-    onblur="if(this.value===''){this.style.color='#9ca3af'}"
+                        <table class="variant-table">
+                            <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
+                            <tbody>${labels.map((label, i) => `<tr><td>${label}</td><td><input type="number" id="variant_stock_${i}" value="" placeholder="0" min="0"
+        style="color:#9ca3af;"
+        onfocus="if(this.value===''){this.style.color='#111827'}"
+        oninput="this.style.color='#111827'"
+        onblur="if(this.value===''){this.style.color='#9ca3af'}"
 ></td></tr>`).join('')}</tbody>
-                    </table>`;
+                        </table>`;
         }
 
         // ── IMAGES ────────────────────────────────────────────
@@ -1993,7 +2223,7 @@ ${o.status === 'Indisponible vendeur' ? `
                     'section-products': loadMyProducts,
                     'section-failed': loadFailedDeliveries,
                     'section-payouts': loadMyPayouts,
-                    'section-reviews': loadMyReviews 
+                    'section-reviews': loadMyReviews
                 };
 
                 for (const [id, fn] of Object.entries(sections)) {
@@ -2011,5 +2241,78 @@ ${o.status === 'Indisponible vendeur' ? `
         }
 
     </script>
+
+
+    <!-- AVANT la balise </body>, AJOUTE : -->
+    <div class="modal-overlay" id="modal-flash">
+        <div class="modal" style="max-width:580px;">
+            <h3>⚡ Demande de vente flash</h3>
+            <input type="hidden" id="flash-product-id">
+            <input type="hidden" id="flash-variant-id">
+
+            <div class="form-section">
+                <h4>📦 Choisir un produit approuvé</h4>
+                <select id="flash-product-select" onchange="onFlashProductChange()" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;">
+                    <option value="">-- Sélectionner un produit --</option>
+                </select>
+            </div>
+
+            <div class="form-section" id="flash-variant-section" style="display:none;">
+                <h4>🎨 Variante concernée</h4>
+                <select id="flash-variant-select" onchange="onFlashVariantChange()" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;">
+                    <option value="">-- Sélectionner une variante --</option>
+                </select>
+                <div id="flash-variant-hint" style="font-size:12px;color:#f97316;margin-top:6px;"></div>
+            </div>
+
+            <div class="form-section">
+                <h4>💰 Prix & Stock flash</h4>
+                <div class="form-grid">
+                    <div>
+                        <label>Prix normal</label>
+                        <input type="number" id="flash-original-price" readonly style="background:#f3f4f6;color:#6b7280;">
+                    </div>
+                    <div>
+                        <label>Prix flash (FCFA) *</label>
+                        <input type="number" id="flash-price" placeholder="Ex: 8000" oninput="updateFlashPreview()">
+                    </div>
+                    <div>
+                        <label>Stock flash *</label>
+                        <input type="number" id="flash-stock" placeholder="Ex: 5" oninput="updateFlashPreview()">
+                    </div>
+                    <div>
+                        <label>Stock disponible</label>
+                        <input type="number" id="flash-available-stock" readonly style="background:#f3f4f6;color:#6b7280;">
+                    </div>
+                </div>
+                <div id="flash-preview" style="display:none;margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;color:#92400e;"></div>
+            </div>
+
+            <div class="form-section">
+                <h4>📅 Dates</h4>
+                <div class="form-grid">
+                    <div>
+                        <label>Début *</label>
+                        <input type="datetime-local" id="flash-start">
+                    </div>
+                    <div>
+                        <label>Fin *</label>
+                        <input type="datetime-local" id="flash-end" oninput="updateFlashPreview()">
+                    </div>
+                </div>
+                <div id="flash-duration-hint" style="font-size:12px;color:#6b7280;margin-top:6px;"></div>
+            </div>
+
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:12px;color:#1e40af;margin-bottom:16px;">
+                ℹ️ Votre demande sera examinée par l'admin avant publication. Durée max et remise min définies par Ranita.
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('modal-flash')">Annuler</button>
+                <button class="btn-save" id="btn-save-flash" onclick="submitFlashRequest()" style="background:#f97316;">⚡ Envoyer la demande</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
