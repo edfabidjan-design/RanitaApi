@@ -2055,7 +2055,7 @@
                     var progressPct = Math.round(((s.flashStock - stockLeft) / s.flashStock) * 100);
                     var variantId = s.variantId || 'null'; // ← capture variantId
 
-                    return '<div class="p-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ',' + s.stockLeft + ',' + variantId + ')">' +
+                    return '<div class="p-card" onclick="location.href=\'product-details.html?id=' + p.id + '\'">'
                         '<div class="p-img">' +
                         (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
                         '<span class="bdg bdg-r">-' + s.discount + '%</span>' +
