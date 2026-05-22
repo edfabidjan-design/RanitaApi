@@ -453,17 +453,20 @@
         const productId = params.get("id");
 
         // ── Détection prix flash depuis URL ──
-        var flashPrice = null, flashSaleId = null, flashStockLeft = null;
+        var flashPrice = null, flashSaleId = null, flashStockLeft = null, flashVariantId = null;
         var fpSession = sessionStorage.getItem('flashPrice');
         var fpProductId = sessionStorage.getItem('flashProductId');
         if (fpSession && fpProductId == productId) {
             flashPrice = parseFloat(fpSession);
             flashSaleId = parseInt(sessionStorage.getItem('flashSaleId'));
-            flashStockLeft = parseInt(sessionStorage.getItem('flashStockLeft')); // ← nouveau
+            flashStockLeft = parseInt(sessionStorage.getItem('flashStockLeft'));
+            var fvId = sessionStorage.getItem('flashVariantId');
+            if (fvId) flashVariantId = parseInt(fvId);
             sessionStorage.removeItem('flashPrice');
             sessionStorage.removeItem('flashSaleId');
             sessionStorage.removeItem('flashProductId');
-            sessionStorage.removeItem('flashStockLeft'); // ← nouveau
+            sessionStorage.removeItem('flashStockLeft');
+            sessionStorage.removeItem('flashVariantId');
         }
 
         let currentProduct = null;
@@ -668,6 +671,19 @@
             document.querySelectorAll(".variant-btn").forEach(b => {
                 b.classList.toggle("selected", parseInt(b.dataset.id) === variantId);
             });
+            // ✅ Si client change de variante → effacer prix flash
+            if (flashVariantId && variantId !== flashVariantId) {
+                flashPrice = null;
+                flashStockLeft = null;
+                const priceBlock = document.querySelector('.price-block');
+                if (priceBlock) {
+                    const disc = calcDiscount(currentProduct.price, currentProduct.oldPrice);
+                    priceBlock.innerHTML =
+                        `<span class="price-main">${Number(currentProduct.price).toLocaleString()} FCFA</span>
+                ${currentProduct.oldPrice ? `<span class="price-old">${Number(currentProduct.oldPrice).toLocaleString()} FCFA</span>` : ''}
+                ${disc ? `<span class="price-discount">-${disc}%</span>` : ''}`;
+                }
+            }
             updateStockDisplay();
         }
 
@@ -799,8 +815,8 @@
     <span style="font-size:13px;color:#9ca3af;text-decoration:line-through;">${Number(currentProduct.price).toLocaleString()} FCFA</span>
 </div>` : `<span class="price-main">${Number(currentProduct.price).toLocaleString()} FCFA</span>`}
 
-                                        ${currentProduct.oldPrice ? `<span class="price-old">${Number(currentProduct.oldPrice).toLocaleString()} FCFA</span>` : ''}
-                                        ${discount ? `<span class="price-discount">-${discount}%</span>` : ''}
+${!flashPrice && currentProduct.oldPrice ? `<span class="price-old">${Number(currentProduct.oldPrice).toLocaleString()} FCFA</span>` : ''}
+${!flashPrice && discount ? `<span class="price-discount">-${discount}%</span>` : ''}
                                     </div>
                                     ${hasVariants ? `
                                     <div class="variants-section">
@@ -845,8 +861,12 @@
                                 <div id="reviewsList"><p style="color:#9ca3af;font-size:14px;">Chargement des avis...</p></div>
                             </div>`;
 
-            const firstAvailable = currentProduct.variants?.find(v => v.stock > 0);
-            if (firstAvailable) selectVariant(firstAvailable.id);
+            if (flashVariantId) {
+                selectVariant(flashVariantId);
+            } else {
+                const firstAvailable = currentProduct.variants?.find(v => v.stock > 0);
+                if (firstAvailable) selectVariant(firstAvailable.id);
+            }
             updateStockDisplay();
         }
 
