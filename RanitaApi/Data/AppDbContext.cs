@@ -35,6 +35,26 @@ namespace RanitaApi.Data
 
 
 
+
+
+            modelBuilder.Entity<FlashSale>(entity =>
+            {
+                entity.Property(f => f.FlashPrice).HasPrecision(18, 2);
+                entity.Property(f => f.OriginalPrice).HasPrecision(18, 2);
+
+                entity.HasOne(f => f.Product)
+                      .WithMany()
+                      .HasForeignKey(f => f.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(f => f.Variant)
+                      .WithMany()
+                      .HasForeignKey(f => f.VariantId)
+                      .OnDelete(DeleteBehavior.SetNull)
+                      .IsRequired(false);
+            });
+
+
             modelBuilder.Entity<CommissionSetting>()
     .Property(c => c.Rate)
     .HasPrecision(5, 4);
