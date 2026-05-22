@@ -317,7 +317,61 @@ namespace RanitaApi.Controllers
         }
 
 
+        // ✅ GET ALL — remplace la méthode GetAll() complète
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] string? search = null)
+        {
+            var query = _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Variants)
+                .AsQueryable();
 
+            // ✅ Filtre recherche — multi-mots, insensible à la casse
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var words = search.ToLower().Trim().Split(' ',
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var word in words)
+                {
+                    var w = word; // capture variable
+                    query = query.Where(p =>
+                        p.Name.ToLower().Contains(w) ||
+                        (p.Brand != null && p.Brand.ToLower().Contains(w)) ||
+                        (p.ShortDescription != null && p.ShortDescription.ToLower().Contains(w)) ||
+                        (p.Category != null && p.Category.Name.ToLower().Contains(w))
+                    );
+                }
+            }
+
+            var products = await query.ToListAsync();
+
+            var result = products.Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.Price,
+                p.OldPrice,
+                Stock = p.Variants != null && p.Variants.Any()
+                    ? p.Variants.Sum(v => v.Stock)
+                    : p.Stock,
+                p.ShortDescription,
+                p.Description,
+                p.ImageUrl,
+                p.Images,
+                p.CategoryId,
+                p.Brand,
+                p.Sku,
+                p.IsActive,
+                p.Slug,
+                p.MetaDescription,
+                Attributes = p.Attributes ?? "{}",
+                Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name },
+                Variants = p.Variants?.Select(v => new { v.Id, v.Combination, v.Stock, v.Price })
+            });
+
+            return Ok(result);
+        }
 
     }
 
