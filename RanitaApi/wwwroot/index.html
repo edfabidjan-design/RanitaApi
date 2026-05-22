@@ -2054,7 +2054,7 @@
                     var oos = stockLeft <= 0;
                     var progressPct = Math.round(((s.flashStock - stockLeft) / s.flashStock) * 100);
 
-                    return '<div class="p-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ')">' +
+                    return '<div class="p-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ',' + s.stockLeft + ')">' +
                         '<div class="p-img">' +
                         (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
                         '<span class="bdg bdg-r">-' + s.discount + '%</span>' +
@@ -2073,7 +2073,7 @@
                         '<span class="p-old">' + Number(s.originalPrice).toLocaleString('fr-FR') + ' F</span>' +
                         (oos
                             ? '<button class="add-btn" disabled>Épuisé</button>'
-                            : '<button class="add-btn" style="background:#f97316;" onclick="event.stopPropagation();goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ')">+ Panier</button>') +
+                        : '<button class="add-btn" style="background:#f97316;" onclick="event.stopPropagation();goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ',' + s.stockLeft + ')">+ Panier</button>') +
                         '</div></div></div>';
                 }).join('');
 
@@ -2082,12 +2082,15 @@
             }
         }
 
-        function goFlash(productId, flashPrice, flashSaleId) {
+        function goFlash(productId, flashPrice, flashSaleId, stockLeft) {
             sessionStorage.setItem('flashPrice', flashPrice);
             sessionStorage.setItem('flashSaleId', flashSaleId);
             sessionStorage.setItem('flashProductId', productId);
+            sessionStorage.setItem('flashStockLeft', stockLeft); // ← nouveau
             location.href = 'product-details.html?id=' + productId;
         }
+
+
 
 
         function filterCatById(el, pid, nm) {

@@ -453,15 +453,17 @@
         const productId = params.get("id");
 
         // ── Détection prix flash depuis URL ──
-        var flashPrice = null, flashSaleId = null;
+        var flashPrice = null, flashSaleId = null, flashStockLeft = null;
         var fpSession = sessionStorage.getItem('flashPrice');
         var fpProductId = sessionStorage.getItem('flashProductId');
         if (fpSession && fpProductId == productId) {
             flashPrice = parseFloat(fpSession);
             flashSaleId = parseInt(sessionStorage.getItem('flashSaleId'));
+            flashStockLeft = parseInt(sessionStorage.getItem('flashStockLeft')); // ← nouveau
             sessionStorage.removeItem('flashPrice');
             sessionStorage.removeItem('flashSaleId');
             sessionStorage.removeItem('flashProductId');
+            sessionStorage.removeItem('flashStockLeft'); // ← nouveau
         }
 
         let currentProduct = null;
@@ -676,7 +678,7 @@
         }
 
         function updateStockDisplay() {
-            const stock = getStock();
+            const stock = flashStockLeft !== null ? flashStockLeft : getStock();
             const stockEl = document.getElementById("stockInfo");
             const addBtn = document.getElementById("addBtn");
             if (stock === null) {
