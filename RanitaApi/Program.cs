@@ -820,4 +820,50 @@ try
 catch (Exception ex) { Console.WriteLine("FlashSales.VariantId error: " + ex.Message); }
 
 
+
+// ── Restituer stock des flash expirés ─────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var now = DateTime.UtcNow;
+
+    var expiredFlashes = db.Set<FlashSale>()
+        .Where(f => f.EndDate < now && f.FlashStock > f.FlashStockSold)
+        .ToList();
+
+    foreach (var flash in expiredFlashes)
+    {
+        var stockNonVendu = flash.FlashStock - flash.FlashStockSold;
+
+        if (flash.VariantId.HasValue)
+        {
+            var variant = db.Set<ProductVariant>().Find(flash.VariantId.Value);
+            if (variant != null)
+            {
+                variant.Stock += stockNonVendu;
+                Console.WriteLine($"Flash #{flash.Id} expiré — {stockNonVendu} unités restituées à variante #{flash.VariantId}");
+            }
+        }
+        else
+        {
+            var product = db.Set<Product>().Find(flash.ProductId);
+            if (product != null)
+            {
+                product.Stock += stockNonVendu;
+                Console.WriteLine($"Flash #{flash.Id} expiré — {stockNonVendu} unités restituées au produit #{flash.ProductId}");
+            }
+        }
+
+        // Marquer comme traité en mettant FlashStock = FlashStockSold
+        flash.FlashStock = flash.FlashStockSold;
+    }
+
+    if (expiredFlashes.Any())
+        db.SaveChanges();
+
+    Console.WriteLine($"Restitution stock flash expirés : {expiredFlashes.Count} flash(s) traité(s)");
+}
+catch (Exception ex) { Console.WriteLine("Restitution flash error: " + ex.Message); }
+
 app.Run();
