@@ -818,16 +818,19 @@
 ${!flashPrice && currentProduct.oldPrice ? `<span class="price-old">${Number(currentProduct.oldPrice).toLocaleString()} FCFA</span>` : ''}
 ${!flashPrice && discount ? `<span class="price-discount">-${discount}%</span>` : ''}
                                     </div>
-                                    ${hasVariants ? `
-                                    <div class="variants-section">
-                                        <div class="variant-label">Choisir une variante :</div>
-                                        <div class="variant-options">
-                                            ${currentProduct.variants.map(v => `
-                                                <button class="variant-btn ${v.stock <= 0 ? 'out-of-stock' : ''}"
-                                                        data-id="${v.id}" onclick="selectVariant(${v.id})"
-                                                        ${v.stock <= 0 ? 'disabled' : ''}>${v.combination}</button>`).join('')}
-                                        </div>
-                                    </div>` : ''}
+${hasVariants ? `
+<div class="variants-section">
+    <div class="variant-label">Choisir une variante :</div>
+    <div class="variant-options">
+        ${currentProduct.variants
+                        .filter(v => flashVariantId ? v.id === flashVariantId : true)
+                        .map(v => `
+            <button class="variant-btn ${v.stock <= 0 && !flashVariantId ? 'out-of-stock' : ''}"
+                    data-id="${v.id}" onclick="selectVariant(${v.id})"
+                    ${v.stock <= 0 && !flashVariantId ? 'disabled' : ''}>${v.combination}</button>`).join('')}
+    </div>
+    ${flashVariantId ? '<div style="font-size:12px;color:#f97316;margin-top:6px;">⚡ Offre flash sur cette variante uniquement</div>' : ''}
+</div>` : ''}
                                     <div class="qty-block">
                                         <span class="qty-label">Quantité :</span>
                                         <div class="qty-controls">
