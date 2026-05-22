@@ -4,6 +4,8 @@
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
+        public int? VariantId { get; set; }
+        public ProductVariant? Variant { get; set; }
         public Product Product { get; set; } = null!;
         public decimal FlashPrice { get; set; }
         public decimal OriginalPrice { get; set; }

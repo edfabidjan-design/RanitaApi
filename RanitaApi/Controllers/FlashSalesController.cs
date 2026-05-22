@@ -22,7 +22,8 @@ namespace RanitaApi.Controllers
                 .Where(f => f.IsActive && f.StartDate <= now && f.EndDate >= now
                          && f.FlashStockSold < f.FlashStock)
                 .OrderBy(f => f.EndDate)
-                .Select(f => new {
+                .Select(f => new
+                {
                     f.Id,
                     f.FlashPrice,
                     f.OriginalPrice,
@@ -51,7 +52,8 @@ namespace RanitaApi.Controllers
             var sales = await _context.FlashSales
                 .Include(f => f.Product)
                 .OrderByDescending(f => f.CreatedAt)
-                .Select(f => new {
+                .Select(f => new
+                {
                     f.Id,
                     f.FlashPrice,
                     f.OriginalPrice,
@@ -88,22 +90,34 @@ namespace RanitaApi.Controllers
             if (dto.FlashStock <= 0)
                 return BadRequest("Le stock flash doit être supérieur à 0.");
 
-            // ✅ Stock réel = variantes si elles existent, sinon stock produit
             var hasVariants = product.Variants != null && product.Variants.Any();
-            var stockDisponible = hasVariants
-                ? product.Variants!.Sum(v => v.Stock)
-                : product.Stock;
 
-            if (dto.FlashStock > stockDisponible)
-                return BadRequest($"Stock insuffisant. Stock disponible : {stockDisponible}");
+            // ✅ Produit avec variante — variante obligatoire
+            if (hasVariants && !dto.VariantId.HasValue)
+                return BadRequest("Ce produit a des variantes. Veuillez sélectionner une variante.");
 
-            // ✅ Déduire uniquement si pas de variantes
-            if (!hasVariants)
+            ProductVariant? variant = null;
+            if (dto.VariantId.HasValue)
+            {
+                variant = await _context.ProductVariants.FindAsync(dto.VariantId.Value);
+                if (variant == null) return NotFound("Variante introuvable");
+
+                if (dto.FlashStock > variant.Stock)
+                    return BadRequest($"Stock variante insuffisant. Disponible : {variant.Stock}");
+
+                variant.Stock -= dto.FlashStock;
+            }
+            else
+            {
+                if (dto.FlashStock > product.Stock)
+                    return BadRequest($"Stock insuffisant. Disponible : {product.Stock}");
                 product.Stock -= dto.FlashStock;
+            }
 
             var flash = new FlashSale
             {
                 ProductId = dto.ProductId,
+                VariantId = dto.VariantId,
                 FlashPrice = dto.FlashPrice,
                 OriginalPrice = product.Price,
                 FlashStock = dto.FlashStock,
@@ -122,10 +136,8 @@ namespace RanitaApi.Controllers
                 flash.Id,
                 flash.FlashPrice,
                 flash.FlashStock,
-                flash.StartDate,
-                flash.EndDate,
-                StockNormalRestant = hasVariants ? stockDisponible - dto.FlashStock : product.Stock,
-                Message = $"Flash créé. Stock restant : {(hasVariants ? stockDisponible - dto.FlashStock : product.Stock)}"
+                flash.VariantId,
+                Message = "Flash créé avec succès"
             });
         }
 
@@ -140,28 +152,38 @@ namespace RanitaApi.Controllers
                 .FirstOrDefaultAsync(p => p.Id == flash.ProductId);
             if (product == null) return NotFound("Produit introuvable");
 
-            var hasVariants = product.Variants != null && product.Variants.Any();
-
-            // ✅ Remettre ancien stock seulement si pas de variantes
-            if (!hasVariants)
+            // ✅ Restituer l'ancien stock
+            if (flash.VariantId.HasValue)
             {
-                var ancienStockNonVendu = flash.FlashStock - flash.FlashStockSold;
-                product.Stock += ancienStockNonVendu;
+                var oldVariant = await _context.ProductVariants.FindAsync(flash.VariantId.Value);
+                if (oldVariant != null)
+                    oldVariant.Stock += flash.FlashStock - flash.FlashStockSold;
+            }
+            else
+            {
+                product.Stock += flash.FlashStock - flash.FlashStockSold;
             }
 
             if (dto.FlashStock <= 0)
                 return BadRequest("Le stock flash doit être supérieur à 0.");
 
-            var stockDisponible = hasVariants
-                ? product.Variants!.Sum(v => v.Stock)
-                : product.Stock;
-
-            if (dto.FlashStock > stockDisponible)
-                return BadRequest($"Stock insuffisant. Stock disponible : {stockDisponible}");
-
-            if (!hasVariants)
+            // ✅ Déduire nouveau stock
+            if (dto.VariantId.HasValue)
+            {
+                var newVariant = await _context.ProductVariants.FindAsync(dto.VariantId.Value);
+                if (newVariant == null) return NotFound("Variante introuvable");
+                if (dto.FlashStock > newVariant.Stock)
+                    return BadRequest($"Stock variante insuffisant. Disponible : {newVariant.Stock}");
+                newVariant.Stock -= dto.FlashStock;
+            }
+            else
+            {
+                if (dto.FlashStock > product.Stock)
+                    return BadRequest($"Stock insuffisant. Disponible : {product.Stock}");
                 product.Stock -= dto.FlashStock;
+            }
 
+            flash.VariantId = dto.VariantId;
             flash.FlashPrice = dto.FlashPrice;
             flash.FlashStock = dto.FlashStock;
             flash.StartDate = dto.StartDate.ToUniversalTime();
@@ -169,16 +191,7 @@ namespace RanitaApi.Controllers
             flash.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                flash.Id,
-                flash.FlashPrice,
-                flash.FlashStock,
-                flash.FlashStockSold,
-                StockNormalRestant = hasVariants ? stockDisponible - dto.FlashStock : product.Stock,
-                Message = $"Flash mis à jour."
-            });
+            return Ok(new { flash.Id, flash.FlashPrice, flash.FlashStock, flash.VariantId });
         }
 
         // DELETE
@@ -188,35 +201,34 @@ namespace RanitaApi.Controllers
             var flash = await _context.FlashSales.FindAsync(id);
             if (flash == null) return NotFound();
 
-            var product = await _context.Products.FindAsync(flash.ProductId);
-            if (product != null)
-            {
-                // ✅ Remettre le stock flash non vendu au stock normal
-                var stockNonVendu = flash.FlashStock - flash.FlashStockSold;
-                product.Stock += stockNonVendu;
+            var stockNonVendu = flash.FlashStock - flash.FlashStockSold;
 
-                Console.WriteLine($"Flash supprimé — {stockNonVendu} unités restituées au produit #{product.Id}");
+            if (flash.VariantId.HasValue)
+            {
+                var variant = await _context.ProductVariants.FindAsync(flash.VariantId.Value);
+                if (variant != null) variant.Stock += stockNonVendu;
+            }
+            else
+            {
+                var product = await _context.Products.FindAsync(flash.ProductId);
+                if (product != null) product.Stock += stockNonVendu;
             }
 
             _context.FlashSales.Remove(flash);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                Message = "Flash supprimé",
-                StockRestitue = flash.FlashStock - flash.FlashStockSold,
-                StockNormalActuel = product?.Stock
-            });
+            return Ok(new { Message = "Flash supprimé", StockRestitue = stockNonVendu });
         }
-    }
 
-    public class FlashSaleDto
-    {
-        public int ProductId { get; set; }
-        public decimal FlashPrice { get; set; }
-        public int FlashStock { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public bool IsActive { get; set; } = true;
+        public class FlashSaleDto
+        {
+            public int ProductId { get; set; }
+            public int? VariantId { get; set; }
+            public decimal FlashPrice { get; set; }
+            public int FlashStock { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public bool IsActive { get; set; } = true;
+        }
     }
 }

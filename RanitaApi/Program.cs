@@ -805,5 +805,19 @@ catch (Exception ex) { Console.WriteLine("FlashSales error: " + ex.Message); }
 
 
 
+// ── FlashSales.VariantId ───────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        ALTER TABLE ""FlashSales"" 
+        ADD COLUMN IF NOT EXISTS ""VariantId"" INT NULL 
+        REFERENCES ""ProductVariants""(""Id"") ON DELETE SET NULL;
+    ");
+    Console.WriteLine("FlashSales.VariantId OK");
+}
+catch (Exception ex) { Console.WriteLine("FlashSales.VariantId error: " + ex.Message); }
+
 
 app.Run();
