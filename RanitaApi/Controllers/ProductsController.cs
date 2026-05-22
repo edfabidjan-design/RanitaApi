@@ -317,34 +317,29 @@ namespace RanitaApi.Controllers
         }
 
 
-        // ✅ GET ALL — remplace la méthode GetAll() complète
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? search = null)
         {
-            var query = _context.Products
+            var products = await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Variants)
-                .AsQueryable();
+                .ToListAsync();
 
-            // ✅ Filtre recherche — multi-mots, insensible à la casse
+            // Filtre recherche en mémoire
             if (!string.IsNullOrWhiteSpace(search))
             {
-                var words = search.ToLower().Trim().Split(' ',
-                    StringSplitOptions.RemoveEmptyEntries);
+                var words = search.ToLower().Trim()
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var word in words)
-                {
-                    var w = word; // capture variable
-                    query = query.Where(p =>
+                products = products.Where(p =>
+                    words.All(w =>
                         p.Name.ToLower().Contains(w) ||
-                        (p.Brand != null && p.Brand.ToLower().Contains(w)) ||
-                        (p.ShortDescription != null && p.ShortDescription.ToLower().Contains(w)) ||
-                        (p.Category != null && p.Category.Name.ToLower().Contains(w))
-                    );
-                }
+                        (p.Brand ?? "").ToLower().Contains(w) ||
+                        (p.ShortDescription ?? "").ToLower().Contains(w) ||
+                        (p.Category?.Name ?? "").ToLower().Contains(w)
+                    )
+                ).ToList();
             }
-
-            var products = await query.ToListAsync();
 
             var result = products.Select(p => new
             {
