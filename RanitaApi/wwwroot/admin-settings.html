@@ -809,7 +809,18 @@
                         <label>Produit sélectionné</label>
                         <div id="fs_product_display" style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px;"></div>
                     </div>
+
                     <input type="hidden" id="fs_product_id">
+                    <input type="hidden" id="fs_variant_id">
+                    <div class="field full" id="fs_variant_section" style="display:none;">
+                        <label>Variante flash (obligatoire si variantes)</label>
+                        <select id="fs_variant_select" onchange="fsSelectVariant()"
+                                style="padding:10px 14px;border:2px solid #f97316;border-radius:8px;font-size:14px;background:#fff7ed;font-family:Arial,sans-serif;">
+                            <option value="">-- Choisir une variante --</option>
+                        </select>
+                        <span class="hint" id="fs_variant_hint" style="color:#f97316;font-weight:700;"></span>
+                    </div>
+
                     <div class="field">
                         <label>Prix flash (F CFA)</label>
                         <input type="number" id="fs_price" placeholder="5000" oninput="fsUpdatePreview()">
@@ -826,6 +837,8 @@
                         <label>Date & heure fin</label>
                         <input type="datetime-local" id="fs_end">
                     </div>
+
+
                     <div class="field">
                         <label>Statut</label>
                         <select id="fs_active">
@@ -1173,6 +1186,9 @@
             document.getElementById('fs_selected_product').style.display = 'none';
             document.getElementById('fsPreviewBox').style.display = 'none';
             document.getElementById('fs_product_id').value = '';
+            document.getElementById('fs_variant_id').value = '';           // ← nouveau
+            document.getElementById('fs_variant_section').style.display = 'none'; // ← nouveau
+            document.getElementById('fs_variant_select').innerHTML = '';   // ← nouveau
             fsSelectedProduct = null;
             document.getElementById('fsForm').classList.add('open');
             document.getElementById('fsForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1190,22 +1206,31 @@
                 document.getElementById('fs_search_results').innerHTML = list.map(p => {
                     const imgs = (() => { try { return JSON.parse(p.images || '[]'); } catch { return [p.imageUrl || '']; } })();
                     const img = imgs[0] || p.imageUrl || '';
-                    return `<div onclick="fsSelectProduct(${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${img}',${p.stock})"
-                style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;" 
+                    const variants = p.variants || [];
+                    const hasV = variants.length > 0;
+                    // ✅ Sérialiser les variantes pour l'onclick
+                    const vJson = JSON.stringify(variants).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    return `<div onclick="fsSelectProduct(${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${img}',${p.stock ?? 0},'${vJson}')"
+                style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;"
                 onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#e5e7eb'">
                 ${img ? `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">` : '<span style="font-size:24px">📦</span>'}
                 <div>
                     <div style="font-size:13px;font-weight:700;color:#111827;">${p.name}</div>
                     <div style="font-size:12px;color:#10b981;font-weight:700;">${Number(p.price).toLocaleString()} F CFA</div>
+                    ${hasV ? `<div style="font-size:11px;color:#f97316;font-weight:600;">⚡ ${variants.length} variante(s)</div>` : ''}
                 </div>
             </div>`;
                 }).join('');
             } catch (e) { }
         }
 
-        function fsSelectProduct(id, name, price, img, stock) {
-            fsSelectedProduct = { id, name, price, img, stock };
+        function fsSelectProduct(id, name, price, img, stock, variantsStr) {
+            let variants = [];
+            try { variants = variantsStr ? JSON.parse(variantsStr.replace(/&quot;/g, '"')) : []; } catch (e) { }
+
+            fsSelectedProduct = { id, name, price, img, stock, variants };
             document.getElementById('fs_product_id').value = id;
+            document.getElementById('fs_variant_id').value = '';
             document.getElementById('fs_search_results').innerHTML = '';
             document.getElementById('fs_search').value = '';
             document.getElementById('fs_selected_product').style.display = 'block';
@@ -1213,10 +1238,26 @@
         ${img ? `<img src="${img}" style="width:50px;height:50px;object-fit:cover;border-radius:8px;">` : '<span style="font-size:30px">📦</span>'}
         <div>
             <div style="font-size:14px;font-weight:700;color:#111827;">${name}</div>
-           <div style="font-size:13px;color:#6b7280;">Prix normal : <strong>${Number(price).toLocaleString()} F CFA</strong></div>
-<div style="font-size:13px;font-weight:700;color:#10b981;margin-top:2px;">📦 Stock disponible : ${stock !== undefined ? stock : '—'} unités</div>
+            <div style="font-size:13px;color:#6b7280;">Prix normal : <strong>${Number(price).toLocaleString()} F CFA</strong></div>
+            <div style="font-size:13px;font-weight:700;color:#10b981;margin-top:2px;">📦 Stock total : ${stock ?? '—'} unités</div>
         </div>
         <button onclick="fsClearProduct()" style="margin-left:auto;background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">✕</button>`;
+
+            // ✅ Sélecteur variante
+            const varSection = document.getElementById('fs_variant_section');
+            const varSelect = document.getElementById('fs_variant_select');
+            if (variants && variants.length > 0) {
+                varSelect.innerHTML = '<option value="">-- Choisir une variante --</option>' +
+                    variants.map(v =>
+                        `<option value="${v.id}" data-stock="${v.stock}">
+                    ${v.combination} — Stock: ${v.stock} unités
+                </option>`
+                    ).join('');
+                varSection.style.display = 'block';
+            } else {
+                varSection.style.display = 'none';
+                varSelect.innerHTML = '';
+            }
             fsUpdatePreview();
         }
 
@@ -1253,19 +1294,42 @@
                 `⚡ <strong>${fsSelectedProduct.name}</strong> — Prix normal : <s>${Number(fsSelectedProduct.price).toLocaleString()} F</s> → Prix flash : <strong style="color:#f97316;">${Number(flashPrice).toLocaleString()} F</strong> <span style="background:#f97316;color:white;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;">-${discount}%</span>${stockWarning}`;
         }
 
+        function fsSelectVariant() {
+            const select = document.getElementById('fs_variant_select');
+            const opt = select.options[select.selectedIndex];
+            const varStock = parseInt(opt?.dataset?.stock) || 0;
+            document.getElementById('fs_variant_id').value = select.value;
+            document.getElementById('fs_variant_hint').textContent =
+                select.value ? `Stock de cette variante : ${varStock} unités` : '';
+            if (fsSelectedProduct && select.value) {
+                fsSelectedProduct.stock = varStock;
+            }
+            fsUpdatePreview();
+        }
         async function fsSave() {
             const productId = parseInt(document.getElementById('fs_product_id').value);
             if (!productId) { alert('Veuillez sélectionner un produit.'); return; }
+
             const flashPrice = parseFloat(document.getElementById('fs_price').value);
             if (!flashPrice) { alert('Veuillez entrer un prix flash.'); return; }
+
             const start = document.getElementById('fs_start').value;
             const end = document.getElementById('fs_end').value;
             if (!start || !end) { alert('Veuillez définir les dates de début et fin.'); return; }
 
+            // ✅ Variante obligatoire si le produit en a
+            const variantIdVal = document.getElementById('fs_variant_id').value;
+            if (fsSelectedProduct?.variants?.length > 0 && !variantIdVal) {
+                alert('⚠️ Ce produit a des variantes. Veuillez sélectionner une variante.');
+                return;
+            }
+
             const btn = document.getElementById('fsBtnSave'); btn.disabled = true; btn.textContent = '⏳...';
             const id = document.getElementById('fs_id').value;
             const payload = {
-                productId, flashPrice,
+                productId,
+                variantId: variantIdVal ? parseInt(variantIdVal) : null, // ← nouveau
+                flashPrice,
                 flashStock: parseInt(document.getElementById('fs_stock').value) || 10,
                 startDate: new Date(start).toISOString(),
                 endDate: new Date(end).toISOString(),
