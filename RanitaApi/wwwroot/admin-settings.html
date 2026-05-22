@@ -1247,12 +1247,19 @@
             const varSection = document.getElementById('fs_variant_section');
             const varSelect = document.getElementById('fs_variant_select');
             if (variants && variants.length > 0) {
-                varSelect.innerHTML = '<option value="">-- Choisir une variante --</option>' +
-                    variants.map(v =>
-                        `<option value="${v.id}" data-stock="${v.stock}">
-                    ${v.combination} — Stock: ${v.stock} unités
-                </option>`
-                    ).join('');
+                const availableVariants = variants.filter(v => v.stock > 0);
+                if (availableVariants.length === 0) {
+                    varSelect.innerHTML = '<option value="">Aucune variante disponible</option>';
+                    document.getElementById('fs_variant_hint').textContent = '⚠️ Toutes les variantes sont épuisées';
+                    document.getElementById('fs_variant_hint').style.color = '#ef4444';
+                } else {
+                    varSelect.innerHTML = '<option value="">-- Choisir une variante --</option>' +
+                        availableVariants.map(v =>
+                            `<option value="${v.id}" data-stock="${v.stock}">
+                ${v.combination} — Stock: ${v.stock} unités
+            </option>`
+                        ).join('');
+                }
                 varSection.style.display = 'block';
             } else {
                 varSection.style.display = 'none';
