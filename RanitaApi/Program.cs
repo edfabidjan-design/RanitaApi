@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddHostedService<FlashStockService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
