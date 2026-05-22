@@ -22,28 +22,30 @@ namespace RanitaApi.Controllers
                 .Where(f => f.IsActive && f.StartDate <= now && f.EndDate >= now
                          && f.FlashStockSold < f.FlashStock)
                 .OrderBy(f => f.EndDate)
-                .Select(f => new
-                {
-                    f.Id,
-                    f.FlashPrice,
-                    f.OriginalPrice,
-                    f.FlashStock,
-                    f.FlashStockSold,
-                    f.StartDate,
-                    f.EndDate,
-                    f.VariantId,
-                    StockLeft = f.FlashStock - f.FlashStockSold,
-                    Discount = (int)Math.Round((1 - f.FlashPrice / f.OriginalPrice) * 100),
-                    Product = new
-                    {
-                        f.Product.Id,
-                        f.Product.Name,
-                        f.Product.ImageUrl,
-                        f.Product.Images
-                    }
-                })
                 .ToListAsync();
-            return Ok(sales);
+
+            var result = sales.Select(f => new
+            {
+                f.Id,
+                f.FlashPrice,
+                f.OriginalPrice,
+                f.FlashStock,
+                f.FlashStockSold,
+                f.StartDate,
+                f.EndDate,
+                VariantId = f.VariantId, // ← lecture directe depuis l'objet chargé
+                StockLeft = f.FlashStock - f.FlashStockSold,
+                Discount = (int)Math.Round((1 - f.FlashPrice / f.OriginalPrice) * 100),
+                Product = new
+                {
+                    f.Product.Id,
+                    f.Product.Name,
+                    f.Product.ImageUrl,
+                    f.Product.Images
+                }
+            });
+
+            return Ok(result);
         }
 
         // GET toutes (admin)
