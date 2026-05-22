@@ -114,8 +114,28 @@ namespace RanitaApi.Controllers
                 total += orderItem.Price * item.Quantity;
                 order.Items.Add(orderItem);
 
-                if (item.VariantId.HasValue)
+                var now = DateTime.UtcNow;
+                var flashActif = await _context.FlashSales
+                    .FirstOrDefaultAsync(f =>
+                        f.ProductId == product.Id &&
+                        f.IsActive &&
+                        f.StartDate <= now &&
+                        f.EndDate >= now &&
+                        f.FlashStockSold < f.FlashStock &&
+                        (!f.VariantId.HasValue || f.VariantId == item.VariantId));
+
+                if (flashActif != null)
                 {
+                    // ✅ Produit en flash — déduire du FlashStockSold uniquement
+                    flashActif.FlashStockSold = Math.Min(
+                        flashActif.FlashStockSold + item.Quantity,
+                        flashActif.FlashStock
+                    );
+                    // Ne pas toucher au stock variante/produit (déjà réservé pour le flash)
+                }
+                else if (item.VariantId.HasValue)
+                {
+                    // Pas de flash — déduire du stock variante normal
                     var variant = await _context.ProductVariants.FindAsync(item.VariantId.Value);
                     if (variant != null)
                     {
@@ -127,6 +147,7 @@ namespace RanitaApi.Controllers
                 }
                 else
                 {
+                    // Pas de flash — déduire du stock produit normal
                     product.Stock = Math.Max(0, product.Stock - item.Quantity);
                     var sp = await _context.SellerProducts
                         .FirstOrDefaultAsync(x => x.ProductId == product.Id && x.ApprovalStatus == "Approved");
@@ -162,25 +183,7 @@ namespace RanitaApi.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // ── Déduire FlashStockSold si produit en vente flash ──
-            foreach (var item in order.Items)
-            {
-                var flashSale = await _context.FlashSales
-                    .FirstOrDefaultAsync(f =>
-                        f.ProductId == item.ProductId &&
-                        f.IsActive &&
-                        f.StartDate <= DateTime.UtcNow &&
-                        f.EndDate >= DateTime.UtcNow);
 
-                if (flashSale != null)
-                {
-                    flashSale.FlashStockSold = Math.Min(
-                        flashSale.FlashStockSold + item.Quantity,
-                        flashSale.FlashStock
-                    );
-                }
-            }
-            await _context.SaveChangesAsync();
 
 
             // ── Déduire le crédit parrainage utilisé ──
