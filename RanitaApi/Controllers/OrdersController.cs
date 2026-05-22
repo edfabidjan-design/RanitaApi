@@ -115,14 +115,16 @@ namespace RanitaApi.Controllers
                 order.Items.Add(orderItem);
 
                 var now = DateTime.UtcNow;
-                var flashActif = await _context.FlashSales
-                    .FirstOrDefaultAsync(f =>
+                var flashActif = (item.UnitPrice.HasValue && item.UnitPrice.Value > 0)
+                    ? await _context.FlashSales.FirstOrDefaultAsync(f =>
                         f.ProductId == product.Id &&
                         f.IsActive &&
                         f.StartDate <= now &&
                         f.EndDate >= now &&
                         f.FlashStockSold < f.FlashStock &&
-                        (!f.VariantId.HasValue || f.VariantId == item.VariantId));
+                        f.FlashPrice == item.UnitPrice.Value &&
+                        (!f.VariantId.HasValue || f.VariantId == item.VariantId))
+                    : null;
 
                 if (flashActif != null)
                 {
