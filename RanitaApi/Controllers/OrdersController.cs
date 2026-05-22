@@ -111,7 +111,7 @@ namespace RanitaApi.Controllers
                     VariantId = item.VariantId,
                     VariantName = item.VariantName
                 };
-                total += product.Price * item.Quantity;
+                total += orderItem.Price * item.Quantity;
                 order.Items.Add(orderItem);
 
                 if (item.VariantId.HasValue)
