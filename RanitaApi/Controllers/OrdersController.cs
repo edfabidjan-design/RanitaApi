@@ -103,7 +103,9 @@ namespace RanitaApi.Controllers
                 {
                     ProductId = product.Id,
                     ProductName = product.Name,
-                    Price = product.Price,
+                    Price = item.UnitPrice.HasValue && item.UnitPrice.Value > 0
+    ? item.UnitPrice.Value
+    : product.Price,
                     Quantity = item.Quantity,
                     ImageUrl = product.ImageUrl,
                     VariantId = item.VariantId,
@@ -727,6 +729,7 @@ namespace RanitaApi.Controllers
         public decimal ShippingFee { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();
         public decimal ReferralCreditUsed { get; set; } = 0;
+        public decimal? FlashPrice { get; set; }
     }
 
     public class OrderItemDto
@@ -735,6 +738,8 @@ namespace RanitaApi.Controllers
         public int Quantity { get; set; }
         public int? VariantId { get; set; }
         public string? VariantName { get; set; }
+        public decimal? UnitPrice { get; set; }
+
     }
 
     public class UpdateStatusDto
