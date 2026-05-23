@@ -1648,7 +1648,10 @@ ${o.status === 'Indisponible vendeur' ? `
                 const s = await res.json();
                 flashSettings = {
                     maxHours: parseInt(s.flash_max_duration_hours) || 48,
-                    minDiscount: parseInt(s.flash_min_discount_pct) || 10
+                    minDiscount: parseInt(s.flash_min_discount_pct) || 10,
+                    periodStart: s.flash_period_start || '',
+                    periodEnd: s.flash_period_end || '',
+                    periodLabel: s.flash_period_label || ''
                 };
             } catch (e) { }
         }
@@ -1673,8 +1676,25 @@ ${o.status === 'Indisponible vendeur' ? `
             document.getElementById('flash-variant-id').value = '';
             document.getElementById('flash-variant-section').style.display = 'none';
             document.getElementById('flash-preview').style.display = 'none';
-            document.getElementById('flash-duration-hint').textContent =
-                `ℹ️ Durée max : ${flashSettings.maxHours}h · Remise min : ${flashSettings.minDiscount}%`;
+            const periodLabel = flashSettings.periodLabel || '';
+            const periodStart = flashSettings.periodStart || '';
+            const periodEnd = flashSettings.periodEnd || '';
+            const periodInfo = document.getElementById('flash-period-info');
+            const noPeriod = document.getElementById('flash-no-period');
+            const periodDisplay = document.getElementById('flash-period-display');
+
+            if (periodStart && periodEnd) {
+                periodInfo.style.display = 'block';
+                noPeriod.style.display = 'none';
+                const s = new Date(periodStart).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+                const e = new Date(periodEnd).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+                periodDisplay.textContent = `⚡ ${periodLabel || 'Période flash'} · ${s} → ${e}`;
+                document.getElementById('flash-duration-hint').textContent =
+                    `Durée max : ${flashSettings.maxHours}h · Remise min : ${flashSettings.minDiscount}%`;
+            } else {
+                periodInfo.style.display = 'none';
+                noPeriod.style.display = 'block';
+            }
 
             openModal('modal-flash');
         }
@@ -1764,13 +1784,10 @@ ${o.status === 'Indisponible vendeur' ? `
             const variantId = document.getElementById('flash-variant-id').value;
             const flashPrice = parseFloat(document.getElementById('flash-price').value);
             const flashStock = parseInt(document.getElementById('flash-stock').value);
-            const start = document.getElementById('flash-start').value;
-            const end = document.getElementById('flash-end').value;
 
             if (!productId) { showToast('Sélectionnez un produit', 'error'); return; }
             if (!flashPrice || flashPrice <= 0) { showToast('Prix flash invalide', 'error'); return; }
             if (!flashStock || flashStock <= 0) { showToast('Stock flash invalide', 'error'); return; }
-            if (!start || !end) { showToast('Définissez les dates', 'error'); return; }
 
             const btn = document.getElementById('btn-save-flash');
             btn.disabled = true; btn.textContent = '⏳...';
@@ -1785,8 +1802,12 @@ ${o.status === 'Indisponible vendeur' ? `
                         variantId: variantId ? parseInt(variantId) : null,
                         flashPrice,
                         flashStock,
-                        startDate: new Date(start).toISOString(),
-                        endDate: new Date(end).toISOString()
+                        startDate: flashSettings.periodStart
+                            ? new Date(flashSettings.periodStart).toISOString()
+                            : new Date().toISOString(),
+                        endDate: flashSettings.periodEnd
+                            ? new Date(flashSettings.periodEnd).toISOString()
+                            : new Date(Date.now() + 48 * 3600000).toISOString()
                     })
                 });
 
@@ -2288,19 +2309,15 @@ ${o.status === 'Indisponible vendeur' ? `
                 <div id="flash-preview" style="display:none;margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;color:#92400e;"></div>
             </div>
 
-            <div class="form-section">
-                <h4>📅 Dates</h4>
-                <div class="form-grid">
-                    <div>
-                        <label>Début *</label>
-                        <input type="datetime-local" id="flash-start">
-                    </div>
-                    <div>
-                        <label>Fin *</label>
-                        <input type="datetime-local" id="flash-end" oninput="updateFlashPreview()">
-                    </div>
+            <div class="form-section" id="flash-period-info" style="display:none;">
+                <h4>📅 Période flash</h4>
+                <div id="flash-period-display" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;color:#c2410c;font-weight:600;"></div>
+                <div style="font-size:12px;color:#6b7280;margin-top:8px;" id="flash-duration-hint"></div>
+            </div>
+            <div class="form-section" id="flash-no-period" style="display:none;">
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:13px;color:#1e40af;">
+                    ℹ️ Aucune période flash n'est définie actuellement. Votre demande sera publiée lors de la prochaine période.
                 </div>
-                <div id="flash-duration-hint" style="font-size:12px;color:#6b7280;margin-top:6px;"></div>
             </div>
 
             <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:12px;color:#1e40af;margin-bottom:16px;">

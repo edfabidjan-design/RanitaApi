@@ -827,6 +827,7 @@
             renderFlashRequests(allFlashRequests.filter(f => f.status === status));
         }
 
+        // REMPLACE la fonction renderFlashRequests() par :
         function renderFlashRequests(list) {
             const el = document.getElementById('flash-requests-list');
             if (!list.length) {
@@ -841,35 +842,41 @@
                     Rejected: 'background:#fee2e2;color:#991b1b;'
                 };
                 const statusLabels = { Pending: '⏳ En attente', Approved: '✅ Approuvé', Rejected: '❌ Rejeté' };
-                return `<div class="product-card" style="flex-wrap:wrap;gap:12px;">
+                const variantStock = f.variant ? f.variant.stock : null;
+
+                return `<div class="product-card" style="flex-wrap:wrap;gap:12px;align-items:flex-start;">
             <div class="product-img">
                 ${img ? `<img src="${img}" onerror="this.style.display='none'">` : '📦'}
             </div>
-            <div class="product-info">
+            <div class="product-info" style="min-width:200px;">
                 <div class="product-name">${f.product.name}</div>
-                <div class="product-meta">
+                <div class="product-meta" style="flex-direction:column;gap:4px;">
                     <span>🏪 ${f.seller.shopName}</span>
-                    ${f.variant ? `<span>🎨 ${f.variant.combination}</span>` : ''}
-                    <span>📦 Stock flash: ${f.flashStock}</span>
-                    <span>📅 ${new Date(f.startDate).toLocaleDateString('fr-FR')} → ${new Date(f.endDate).toLocaleDateString('fr-FR')}</span>
-                    <span>⏱ ${Math.round((new Date(f.endDate) - new Date(f.startDate)) / 3600000)}h</span>
+                    ${f.variant ? `<span>🎨 Variante : <strong>${f.variant.combination}</strong></span>` : ''}
+                    <span>📦 Stock flash demandé : <strong>${f.flashStock} unités</strong></span>
+                    ${variantStock !== null
+                        ? `<span>🏷️ Stock initial variante : <strong>${variantStock} unités</strong></span>`
+                        : ''}
+                    <span>📅 Du ${new Date(f.startDate).toLocaleDateString('fr-FR')} au ${new Date(f.endDate).toLocaleDateString('fr-FR')}</span>
+                    <span>⏱ Durée : ${Math.round((new Date(f.endDate) - new Date(f.startDate)) / 3600000)}h</span>
                 </div>
-                ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;">Motif : ${f.rejectionReason}</div>` : ''}
+                ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;background:#fee2e2;padding:4px 8px;border-radius:6px;">Motif : ${f.rejectionReason}</div>` : ''}
             </div>
-            <div style="text-align:right;">
-                <div style="font-size:18px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
-                <div style="font-size:12px;color:#9ca3af;text-decoration:line-through;">${formatPrice(f.originalPrice)}</div>
-                <div style="font-size:12px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;display:inline-block;margin-top:4px;">-${f.discount}%</div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:auto;">
+                <div style="font-size:20px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
+                <div style="font-size:13px;color:#9ca3af;text-decoration:line-through;">${formatPrice(f.originalPrice)}</div>
+                <div style="font-size:12px;font-weight:700;background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:999px;">-${f.discount}%</div>
+                <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
+                ${f.status === 'Pending' ? `
+                <div style="display:flex;gap:6px;margin-top:4px;">
+                    <button class="btn btn-approve" onclick="approveFlash(${f.id})">✓ Approuver</button>
+                    <button class="btn btn-reject" onclick="openRejectFlash(${f.id})">✗ Rejeter</button>
+                </div>` : ''}
             </div>
-            <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
-            ${f.status === 'Pending' ? `
-            <div class="seller-actions">
-                <button class="btn btn-approve" onclick="approveFlash(${f.id})">✓ Approuver</button>
-                <button class="btn btn-reject" onclick="openRejectFlash(${f.id})">✗ Rejeter</button>
-            </div>` : ''}
         </div>`;
             }).join('');
         }
+
 
         async function approveFlash(id) {
             if (!confirm('Approuver et publier cette vente flash ?')) return;
