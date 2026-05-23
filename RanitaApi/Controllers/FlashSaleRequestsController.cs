@@ -213,7 +213,7 @@ namespace RanitaApi.Controllers
                 FlashStockSold = 0,
                 StartDate = startDate,
                 EndDate = endDate,
-                IsActive = startDate <= now && now <= endDate,
+                IsActive = now <= endDate,
                 CreatedAt = now
             };
 
