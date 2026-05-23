@@ -170,15 +170,17 @@ namespace RanitaApi.Controllers
 
             DateTime startDate, endDate;
 
-            if (DateTime.TryParse(periodStart?.Value, out var ps) &&
-                DateTime.TryParse(periodEnd?.Value, out var pe))
+            if (!string.IsNullOrEmpty(periodStart?.Value) &&
+                !string.IsNullOrEmpty(periodEnd?.Value) &&
+                DateTime.TryParse(periodStart.Value, out var ps) &&
+                DateTime.TryParse(periodEnd.Value, out var pe))
             {
                 startDate = ps.ToUniversalTime();
                 endDate = pe.ToUniversalTime();
             }
             else
             {
-                // Fallback : dates de la demande
+                // ✅ Fallback : dates de la demande vendeur
                 startDate = request.StartDate;
                 endDate = request.EndDate;
             }
@@ -199,7 +201,6 @@ namespace RanitaApi.Controllers
                 request.Product.Stock -= request.FlashStock;
             }
 
-            // Créer le flash avec les dates de la période
             var flash = new FlashSale
             {
                 ProductId = request.ProductId,
