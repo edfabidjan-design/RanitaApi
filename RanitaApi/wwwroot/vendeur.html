@@ -1669,9 +1669,11 @@ ${o.status === 'Indisponible vendeur' ? `
                 flashProducts.map(p => `<option value="${p.id}" data-price="${p.price}" data-product-id="${p.productId}">${p.name} — ${formatPrice(p.price)}</option>`).join('');
 
             // Reset form
-            ['flash-price', 'flash-stock', 'flash-start', 'flash-end', 'flash-original-price', 'flash-available-stock'].forEach(id => {
-                document.getElementById(id).value = '';
+            ['flash-price', 'flash-stock', 'flash-original-price', 'flash-available-stock'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
             });
+          
             document.getElementById('flash-product-id').value = '';
             document.getElementById('flash-variant-id').value = '';
             document.getElementById('flash-variant-section').style.display = 'none';
