@@ -250,11 +250,33 @@ namespace RanitaApi.Controllers
         {
             var request = await _context.FlashSaleRequests.FindAsync(id);
             if (request == null) return NotFound();
-            if (request.Status == "Approved")
-                return BadRequest("Impossible de supprimer une demande approuvée.");
+
+            // Chercher le FlashSale lié par ProductId + VariantId
+            var flashSale = await _context.FlashSales
+                .FirstOrDefaultAsync(f => f.ProductId == request.ProductId
+                                       && f.VariantId == request.VariantId);
+
+            if (flashSale != null)
+            {
+                if (flashSale.IsActive)
+                {
+                    if (request.VariantId.HasValue)
+                    {
+                        var variant = await _context.ProductVariants.FindAsync(request.VariantId.Value);
+                        if (variant != null) variant.Stock += request.FlashStock;
+                    }
+                    else
+                    {
+                        var product = await _context.Products.FindAsync(request.ProductId);
+                        if (product != null) product.Stock += request.FlashStock;
+                    }
+                }
+                _context.FlashSales.Remove(flashSale);
+            }
+
             _context.FlashSaleRequests.Remove(request);
             await _context.SaveChangesAsync();
-            return Ok(new { Message = "Demande supprimée." });
+            return Ok();
         }
 
         // ✅ PUT modifier (vendeur) — pas de dates non plus
