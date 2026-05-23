@@ -175,14 +175,14 @@ namespace RanitaApi.Controllers
                 DateTime.TryParse(periodStart.Value, out var ps) &&
                 DateTime.TryParse(periodEnd.Value, out var pe))
             {
-                startDate = ps.ToUniversalTime();
-                endDate = pe.ToUniversalTime();
+                startDate = DateTime.SpecifyKind(ps, DateTimeKind.Utc);
+                endDate = DateTime.SpecifyKind(pe, DateTimeKind.Utc);
             }
             else
             {
                 // ✅ Fallback : dates de la demande vendeur
-                startDate = request.StartDate;
-                endDate = request.EndDate;
+                startDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
+                endDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
             }
 
             // Déduire stock
