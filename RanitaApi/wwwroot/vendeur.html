@@ -1782,6 +1782,11 @@ ${o.status === 'Indisponible vendeur' ? `
         }
 
         async function submitFlashRequest() {
+
+            if (!flashSettings.periodStart || !flashSettings.periodEnd) {
+                showToast('Aucune période flash active. Contactez l\'admin.', 'error');
+                return;
+            }
             const editId = document.getElementById('modal-flash').dataset.editId;
             const productId = parseInt(document.getElementById('flash-product-id').value);
             const variantId = document.getElementById('flash-variant-id').value;
@@ -1813,7 +1818,7 @@ ${o.status === 'Indisponible vendeur' ? `
                             : new Date().toISOString(),
                         endDate: flashSettings.periodEnd
                             ? new Date(flashSettings.periodEnd).toISOString()
-                            : new Date(Date.now() + 48 * 3600000).toISOString()
+                            : new Date(Date.now() + 47 * 3600000).toISOString() // 47h pour éviter la limite exacte
                     })
                 });
 

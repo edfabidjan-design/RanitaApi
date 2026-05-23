@@ -107,7 +107,7 @@ namespace RanitaApi.Controllers
 
             // Vérifier durée
             var duration = (dto.EndDate - dto.StartDate).TotalHours;
-            if (duration > maxHours)
+            if (duration > maxHours + 0.1) // tolérance pour les arrondis
                 return BadRequest($"Durée maximale autorisée : {maxHours}h. Votre flash dure {Math.Round(duration)}h.");
 
             // Vérifier remise minimale
