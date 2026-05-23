@@ -1658,11 +1658,13 @@
                 </div>
                 <div style="font-size:18px;font-weight:800;color:#f97316;">${Number(f.flashPrice).toLocaleString()} F</div>
                 <span style="padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
-                ${f.status === 'Pending' ? `
-                <div style="display:flex;gap:6px;margin-top:4px;">
-                    <button onclick="frApprove(${f.id})" style="background:#d1fae5;color:#065f46;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✓ Approuver</button>
-                    <button onclick="frOpenReject(${f.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✗ Rejeter</button>
-                </div>` : ''}
+<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+    ${f.status === 'Pending' ? `
+        <button onclick="frApprove(${f.id})" style="background:#d1fae5;color:#065f46;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✓ Approuver</button>
+        <button onclick="frOpenReject(${f.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✗ Rejeter</button>
+    ` : ''}
+    <button onclick="frDelete(${f.id})" style="background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️ Supprimer</button>
+</div>
             </div>
         </div>`;
             }).join('');
@@ -1707,6 +1709,20 @@
                     showFlashToast('Demande rejetée', '#374151');
                     frCloseReject();
                     frLoadRequests();
+                }
+            } catch (e) { showFlashToast('Erreur réseau', '#ef4444'); }
+        }
+
+
+        async function frDelete(id) {
+            if (!confirm('Supprimer définitivement cette demande flash ?')) return;
+            try {
+                const res = await fetch(`${API}/flash-requests/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showFlashToast('Demande supprimée ✓', '#374151');
+                    frLoadRequests();
+                } else {
+                    showFlashToast('Erreur suppression', '#ef4444');
                 }
             } catch (e) { showFlashToast('Erreur réseau', '#ef4444'); }
         }
