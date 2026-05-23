@@ -648,7 +648,7 @@
         checkPageAccess('sellers');
         buildAdminNav('sellers');
 
-        const API = 'https://ranitaapi-production.up.railway.app/api';
+        const API = '/api';
         let allSellers = [], allProducts = [], allPayouts = [], currentSellerId = null, currentProductId = null;
 
         window.addEventListener('DOMContentLoaded', () => { loadAll(); });
