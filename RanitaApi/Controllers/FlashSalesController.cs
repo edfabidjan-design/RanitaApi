@@ -19,7 +19,7 @@ namespace RanitaApi.Controllers
             var now = DateTime.UtcNow;
             var sales = await _context.FlashSales
                 .Include(f => f.Product)
-                .Where(f => f.IsActive && f.StartDate <= now && f.EndDate >= now
+                .Where(f => f.StartDate <= now && f.EndDate >= now
                          && f.FlashStockSold < f.FlashStock)
                 .OrderBy(f => f.EndDate)
                 .ToListAsync();
@@ -33,7 +33,7 @@ namespace RanitaApi.Controllers
                 f.FlashStockSold,
                 f.StartDate,
                 f.EndDate,
-                VariantId = f.VariantId, // ← lecture directe depuis l'objet chargé
+                VariantId = f.VariantId,
                 StockLeft = f.FlashStock - f.FlashStockSold,
                 Discount = (int)Math.Round((1 - f.FlashPrice / f.OriginalPrice) * 100),
                 Product = new
