@@ -132,6 +132,10 @@ namespace RanitaApi.Controllers
                     return BadRequest($"Stock insuffisant. Disponible : {product.Stock}");
             }
 
+            int originalVariantStock = dto.VariantId.HasValue
+                ? (await _context.ProductVariants.FindAsync(dto.VariantId.Value))?.Stock ?? 0
+                : product.Stock;
+
             var request = new FlashSaleRequest
             {
                 SellerId = dto.SellerId,
@@ -143,11 +147,8 @@ namespace RanitaApi.Controllers
                 StartDate = dto.StartDate.ToUniversalTime(),
                 EndDate = dto.EndDate.ToUniversalTime(),
                 Status = "Pending",
-                CreatedAt = DateTime.UtcNow
-
-                OriginalVariantStock = dto.VariantId.HasValue
-    ? (await _context.ProductVariants.FindAsync(dto.VariantId.Value))?.Stock ?? 0
-    : product.Stock,
+                CreatedAt = DateTime.UtcNow,
+                OriginalVariantStock = originalVariantStock
             };
 
             _context.FlashSaleRequests.Add(request);
