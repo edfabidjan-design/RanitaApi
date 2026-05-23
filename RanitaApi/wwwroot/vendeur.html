@@ -1863,13 +1863,14 @@ ${o.status === 'Indisponible vendeur' ? `
                         </div>
                         ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;">Motif : ${f.rejectionReason}</div>` : ''}
                     </div>
-                    <div style="text-align:right;flex-shrink:0;">
-                        <div style="font-size:18px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
-                        <div style="font-size:12px;text-decoration:line-through;color:#9ca3af;">${formatPrice(f.originalPrice)}</div>
-                        <div style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;display:inline-block;">-${f.discount}%</div>
-                    </div>
-<span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:${st.bg};color:${st.color};">${st.label}</span>
-                </div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;color:#9ca3af;text-decoration:line-through;">${formatPrice(f.originalPrice)}</span>
+        <span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;">-${f.discount}%</span>
+    </div>
+    <div style="font-size:20px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
+    <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:${st.bg};color:${st.color};">${st.label}</span>
+</div>
                 ${f.status === 'Rejected' ? `
                 <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f3f4f6;">
                     <button onclick="editFlashRequest(${f.id})" style="flex:1;padding:8px;background:#f59e0b;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️ Modifier et renvoyer</button>
