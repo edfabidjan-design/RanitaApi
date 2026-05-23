@@ -587,7 +587,7 @@
             <div class="tab active" onclick="switchTab('sellers',this)">Demandes vendeurs <span class="tab-badge hidden" id="badge-sellers">0</span></div>
             <div class="tab" onclick="switchTab('products',this)">Produits à valider <span class="tab-badge hidden" id="badge-products">0</span></div>
             <div class="tab" onclick="switchTab('payouts',this)">Paiements vendeurs <span class="tab-badge hidden" id="badge-payouts">0</span></div>
-            <div class="tab" onclick="switchTab('flash-requests',this)">⚡ Flash vendeurs <span class="tab-badge hidden" id="badge-flash">0</span></div>
+
 
         </div>
 
@@ -618,14 +618,7 @@
         </div>
     </div>
 
-    <div class="section" id="section-flash-requests">
-        <div class="filters">
-            <button class="filter-btn active" onclick="filterFlash('Pending',this)">⏳ En attente</button>
-            <button class="filter-btn" onclick="filterFlash('Approved',this)">✅ Approuvés</button>
-            <button class="filter-btn" onclick="filterFlash('Rejected',this)">❌ Refusés</button>
-        </div>
-        <div id="flash-requests-list"><div class="loading">Chargement...</div></div>
-    </div>
+
 
     <div class="modal-overlay" id="modal-approve"><div class="modal"><h3>✅ Approuver cette boutique</h3><div class="commission-row"><label>Commission Ranita (%)</label><input type="number" id="approve-commission" value="10" min="0" max="50"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-approve')">Annuler</button><button class="btn-modal-approve" onclick="confirmApprove()">Approuver</button></div></div></div>
     <div class="modal-overlay" id="modal-reject"><div class="modal"><h3>❌ Refuser cette boutique</h3><textarea id="reject-reason" rows="3" placeholder="Motif du refus (obligatoire)..."></textarea><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-reject')">Annuler</button><button class="btn-modal-reject" onclick="confirmReject()">Confirmer le refus</button></div></div></div>
@@ -633,16 +626,8 @@
     <div class="modal-overlay" id="modal-product-detail"><div class="modal" style="max-width:700px;max-height:85vh;overflow-y:auto;"><h3>📦 Détail du produit</h3><div id="product-detail-content"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-product-detail')">Fermer</button></div></div></div>
     <div class="toast" id="toast"></div>
 
-    <div class="modal-overlay" id="modal-reject-flash">
-        <div class="modal">
-            <h3>❌ Rejeter cette demande flash</h3>
-            <textarea id="reject-flash-reason" rows="3" placeholder="Motif du rejet (obligatoire)..."></textarea>
-            <div class="modal-actions">
-                <button class="btn-modal-cancel" onclick="closeModal('modal-reject-flash')">Annuler</button>
-                <button class="btn-modal-reject" onclick="confirmRejectFlash()">Confirmer</button>
-            </div>
-        </div>
-    </div>
+    
+    <
 
     <script>
         checkPageAccess('sellers');
@@ -653,7 +638,7 @@
 
         window.addEventListener('DOMContentLoaded', () => { loadAll(); });
 
-        async function loadAll() { await Promise.all([loadSellers(), loadProducts(), loadPayouts(), loadFlashRequests()]); }
+        async function loadAll() { await Promise.all([loadSellers(), loadProducts(), loadPayouts()]); }
 
         function switchTab(tab, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -803,117 +788,6 @@
         }
 
 
-        let allFlashRequests = [], currentFlashRequestId = null;
-
-        async function loadFlashRequests() {
-            try {
-                const res = await fetch(`${API}/flash-requests`);
-                allFlashRequests = await res.json();
-                const pending = allFlashRequests.filter(f => f.status === 'Pending').length;
-                const b = document.getElementById('badge-flash');
-                b.textContent = pending;
-                b.classList.toggle('hidden', pending === 0);
-                renderFlashRequests(allFlashRequests.filter(f => f.status === 'Pending'));
-            } catch (e) {
-                document.getElementById('flash-requests-list').innerHTML =
-                    '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
-            }
-        }
-
-        function filterFlash(status, btn) {
-            document.querySelectorAll('#section-flash-requests .filter-btn')
-                .forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderFlashRequests(allFlashRequests.filter(f => f.status === status));
-        }
-
-        // REMPLACE la fonction renderFlashRequests() par :
-        function renderFlashRequests(list) {
-            const el = document.getElementById('flash-requests-list');
-            if (!list.length) {
-                el.innerHTML = '<div class="empty"><div class="icon">⚡</div><p>Aucune demande flash</p></div>';
-                return;
-            }
-            el.innerHTML = list.map(f => {
-                const img = f.product.imageUrl || '';
-                const statusColors = {
-                    Pending: 'background:#fef3c7;color:#92400e;',
-                    Approved: 'background:#d1fae5;color:#065f46;',
-                    Rejected: 'background:#fee2e2;color:#991b1b;'
-                };
-                const statusLabels = { Pending: '⏳ En attente', Approved: '✅ Approuvé', Rejected: '❌ Rejeté' };
-                const variantStock = f.variant ? f.variant.stock : null;
-
-                return `<div class="product-card" style="flex-wrap:wrap;gap:12px;align-items:flex-start;">
-            <div class="product-img">
-                ${img ? `<img src="${img}" onerror="this.style.display='none'">` : '📦'}
-            </div>
-            <div class="product-info" style="min-width:200px;">
-                <div class="product-name">${f.product.name}</div>
-                <div class="product-meta" style="flex-direction:column;gap:4px;">
-                    <span>🏪 ${f.seller.shopName}</span>
-                    ${f.variant ? `<span>🎨 Variante : <strong>${f.variant.combination}</strong></span>` : ''}
-                    <span>📦 Stock flash demandé : <strong>${f.flashStock} unités</strong></span>
-                    ${variantStock !== null
-                        ? `<span>🏷️ Stock initial variante : <strong>${variantStock} unités</strong></span>`
-                        : ''}
-                    <span>📅 Du ${new Date(f.startDate).toLocaleDateString('fr-FR')} au ${new Date(f.endDate).toLocaleDateString('fr-FR')}</span>
-                    <span>⏱ Durée : ${Math.round((new Date(f.endDate) - new Date(f.startDate)) / 3600000)}h</span>
-                </div>
-                ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;background:#fee2e2;padding:4px 8px;border-radius:6px;">Motif : ${f.rejectionReason}</div>` : ''}
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:auto;">
-                <div style="font-size:20px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
-                <div style="font-size:13px;color:#9ca3af;text-decoration:line-through;">${formatPrice(f.originalPrice)}</div>
-                <div style="font-size:12px;font-weight:700;background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:999px;">-${f.discount}%</div>
-                <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
-                ${f.status === 'Pending' ? `
-                <div style="display:flex;gap:6px;margin-top:4px;">
-                    <button class="btn btn-approve" onclick="approveFlash(${f.id})">✓ Approuver</button>
-                    <button class="btn btn-reject" onclick="openRejectFlash(${f.id})">✗ Rejeter</button>
-                </div>` : ''}
-            </div>
-        </div>`;
-            }).join('');
-        }
-
-
-        async function approveFlash(id) {
-            if (!confirm('Approuver et publier cette vente flash ?')) return;
-            try {
-                const res = await fetch(`${API}/flash-requests/${id}/approve`, { method: 'PUT' });
-                if (res.ok) {
-                    showToast('Flash approuvé et publié ✓', 'success');
-                    loadFlashRequests();
-                } else {
-                    const err = await res.text();
-                    showToast('Erreur : ' + err, 'error');
-                }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
-        }
-
-        function openRejectFlash(id) {
-            currentFlashRequestId = id;
-            document.getElementById('reject-flash-reason').value = '';
-            openModal('modal-reject-flash');
-        }
-
-        async function confirmRejectFlash() {
-            const reason = document.getElementById('reject-flash-reason').value.trim();
-            if (!reason) { showToast('Le motif est obligatoire', 'error'); return; }
-            try {
-                const res = await fetch(`${API}/flash-requests/${currentFlashRequestId}/reject`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ reason })
-                });
-                if (res.ok) {
-                    showToast('Demande rejetée', '');
-                    closeModal('modal-reject-flash');
-                    loadFlashRequests();
-                }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
-        }
 
 
 
