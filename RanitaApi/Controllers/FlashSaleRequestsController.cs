@@ -309,6 +309,26 @@ namespace RanitaApi.Controllers
             return Ok(new { Message = "Demande modifiée — en attente de validation." });
         }
 
+
+        [HttpPatch("{id}/dates")]
+        public async Task<IActionResult> UpdateDates(int id, [FromBody] UpdateDatesDto dto)
+        {
+            var flash = await _context.FlashSales.FindAsync(id);
+            if (flash == null) return NotFound();
+            flash.StartDate = dto.StartDate;
+            flash.EndDate = dto.EndDate;
+            flash.IsActive = true;
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        public class UpdateDatesDto
+        {
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+        }
+
+
         // ✅ DTO mis à jour — dates optionnelles
         public class FlashSaleRequestDto
         {
