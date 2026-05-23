@@ -1782,6 +1782,7 @@ ${o.status === 'Indisponible vendeur' ? `
         }
 
         async function submitFlashRequest() {
+            const editId = document.getElementById('modal-flash').dataset.editId;
             const productId = parseInt(document.getElementById('flash-product-id').value);
             const variantId = document.getElementById('flash-variant-id').value;
             const flashPrice = parseFloat(document.getElementById('flash-price').value);
@@ -1794,9 +1795,12 @@ ${o.status === 'Indisponible vendeur' ? `
             const btn = document.getElementById('btn-save-flash');
             btn.disabled = true; btn.textContent = '⏳...';
 
+            const url = editId ? `${API}/flash-requests/${editId}` : `${API}/flash-requests`;
+            const method = editId ? 'PUT' : 'POST';
+
             try {
-                const res = await fetch(`${API}/flash-requests`, {
-                    method: 'POST',
+                const res = await fetch(url, {
+                    method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         sellerId,
@@ -1814,7 +1818,7 @@ ${o.status === 'Indisponible vendeur' ? `
                 });
 
                 if (res.ok) {
-                    showToast('Demande envoyée — en attente de validation ✓', 'success');
+                    showToast(editId ? 'Demande modifiée ✓' : 'Demande envoyée ✓', 'success');
                     closeModal('modal-flash');
                     loadMyFlash();
                 } else {
@@ -1864,15 +1868,54 @@ ${o.status === 'Indisponible vendeur' ? `
                         <div style="font-size:12px;text-decoration:line-through;color:#9ca3af;">${formatPrice(f.originalPrice)}</div>
                         <div style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;display:inline-block;">-${f.discount}%</div>
                     </div>
-                    <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:${st.bg};color:${st.color};">${st.label}</span>
+<span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:${st.bg};color:${st.color};">${st.label}</span>
                 </div>
+                ${f.status === 'Rejected' ? `
+                <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f3f4f6;">
+                    <button onclick="editFlashRequest(${f.id})" style="flex:1;padding:8px;background:#f59e0b;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️ Modifier et renvoyer</button>
+                    <button onclick="deleteFlashRequest(${f.id})" style="padding:8px 14px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️ Supprimer</button>
+                </div>` : ''}
             </div>`;
+
+
                 }).join('');
             } catch (e) { console.error('loadMyFlash:', e); }
         }
 
 
 
+
+        async function deleteFlashRequest(id) {
+            if (!confirm('Supprimer cette demande flash ?')) return;
+            try {
+                const res = await fetch(`${API}/flash-requests/${id}`, { method: 'DELETE' });
+                if (res.ok) { showToast('Demande supprimée ✓', 'success'); loadMyFlash(); }
+                else showToast('Erreur suppression', 'error');
+            } catch (e) { showToast('Erreur réseau', 'error'); }
+        }
+
+        async function editFlashRequest(id) {
+            // Charger la demande et pré-remplir le formulaire
+            try {
+                const res = await fetch(`${API}/flash-requests/seller/${sellerId}`);
+                const requests = await res.json();
+                const f = requests.find(x => x.id === id);
+                if (!f) return;
+
+                await openAddFlash();
+
+                // Pré-remplir
+                document.getElementById('flash-product-id').value = f.product.id;
+                document.getElementById('flash-price').value = f.flashPrice;
+                document.getElementById('flash-stock').value = f.flashStock;
+                document.getElementById('flash-original-price').value = f.originalPrice;
+
+                // Stocker l'id pour la mise à jour
+                document.getElementById('modal-flash').dataset.editId = id;
+                document.querySelector('#modal-flash h3').textContent = '✏️ Modifier la demande flash';
+
+            } catch (e) { showToast('Erreur chargement', 'error'); }
+        }
 
 
         async function loadBadges() {

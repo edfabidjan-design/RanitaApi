@@ -236,6 +236,51 @@ namespace RanitaApi.Controllers
             return Ok(new { Message = "Demande rejetée." });
         }
 
+        // DELETE
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var request = await _context.FlashSaleRequests.FindAsync(id);
+            if (request == null) return NotFound();
+            if (request.Status == "Approved")
+                return BadRequest("Impossible de supprimer une demande approuvée.");
+            _context.FlashSaleRequests.Remove(request);
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Demande supprimée." });
+        }
+
+        // PUT modifier (vendeur)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] FlashSaleRequestDto dto)
+        {
+            var request = await _context.FlashSaleRequests.FindAsync(id);
+            if (request == null) return NotFound();
+            if (request.Status == "Approved")
+                return BadRequest("Impossible de modifier une demande approuvée.");
+
+            var product = await _context.Products.FindAsync(dto.ProductId);
+            if (product == null) return NotFound("Produit introuvable");
+
+            // Revérifier les règles
+            var minDiscount = await _context.SiteSettings
+                .FirstOrDefaultAsync(s => s.Key == "flash_min_discount_pct");
+            var minPct = int.TryParse(minDiscount?.Value, out var mp) ? mp : 10;
+            var discount = (1 - dto.FlashPrice / product.Price) * 100;
+            if (discount < minPct)
+                return BadRequest($"Remise minimale requise : {minPct}%.");
+
+            request.FlashPrice = dto.FlashPrice;
+            request.FlashStock = dto.FlashStock;
+            request.VariantId = dto.VariantId;
+            request.StartDate = dto.StartDate.ToUniversalTime();
+            request.EndDate = dto.EndDate.ToUniversalTime();
+            request.Status = "Pending"; // Remet en attente
+            request.RejectionReason = null;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Demande modifiée — en attente de validation." });
+        }
+
         public class FlashSaleRequestDto
         {
             public int SellerId { get; set; }
