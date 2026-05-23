@@ -323,8 +323,7 @@
             max-width: 1000px;
             margin: 0 auto;
             padding: 28px 24px;
-          
-            width: 100%; /* ✅ AJOUTER */
+            width: 100%;
         }
 
         .dash-header {
@@ -700,28 +699,6 @@
                 cursor: not-allowed;
             }
 
-        .login-prompt {
-            text-align: center;
-            padding: 80px 24px;
-        }
-
-            .login-prompt .icon {
-                font-size: 48px;
-                margin-bottom: 16px;
-            }
-
-            .login-prompt h2 {
-                font-size: 20px;
-                font-weight: 800;
-                margin-bottom: 8px;
-            }
-
-            .login-prompt p {
-                color: #6b7280;
-                margin-bottom: 24px;
-                font-size: 14px;
-            }
-
         .toast {
             position: fixed;
             bottom: 24px;
@@ -757,18 +734,6 @@
                 padding-top: 56px;
             }
 
-            .site-header {
-                padding: 8px 12px;
-            }
-
-                .site-header nav {
-                    gap: 4px;
-                }
-
-                    .site-header nav a {
-                        font-size: 12px;
-                    }
-
             .dashboard {
                 padding: 12px;
             }
@@ -778,11 +743,6 @@
                 align-items: flex-start;
                 gap: 8px;
             }
-
-                .dash-header > div:last-child {
-                    width: 100%;
-                    justify-content: flex-start;
-                }
 
             .dash-stats {
                 grid-template-columns: 1fr 1fr;
@@ -798,58 +758,12 @@
                     font-size: 16px;
                 }
 
-                .dash-stat .label {
-                    font-size: 10px;
-                }
-
-            /* ONGLETS — scroll horizontal sans wrapping */
             #tabs-bar {
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch;
                 flex-wrap: nowrap !important;
-                gap: 0 !important;
-                padding-bottom: 0;
-                margin-bottom: 16px;
             }
 
-            #tab-products, #tab-orders, #tab-failed, #tab-payouts {
-                flex-shrink: 0 !important;
-                padding: 8px 10px !important;
-                font-size: 11px !important;
-                white-space: nowrap;
-            }
-
-            /* Cartes commandes */
-            #my-orders-list > div {
-                padding: 10px !important;
-            }
-
-                #my-orders-list > div > div:first-child {
-                    flex-direction: column !important;
-                    align-items: flex-start !important;
-                    gap: 4px !important;
-                }
-
-            /* Boutons confirmer/indisponible — empilés */
-            #my-orders-list .btn-group-confirm {
-                flex-direction: column !important;
-            }
-
-            /* Paiements — grille 1 colonne sur mobile */
-            #my-payouts-list [style*="grid-template-columns:1fr 1fr 1fr"] {
-                grid-template-columns: 1fr !important;
-            }
-
-            /* Produits */
-            .my-product {
-                gap: 8px;
-            }
-
-            .my-product-info {
-                min-width: 0;
-            }
-
-            /* Modals full width */
             .modal {
                 padding: 16px;
                 border-radius: 12px;
@@ -858,10 +772,6 @@
             .form-grid {
                 grid-template-columns: 1fr !important;
             }
-
-                .form-grid .full {
-                    grid-column: 1 !important;
-                }
 
             .form-row {
                 grid-template-columns: 1fr !important;
@@ -872,7 +782,7 @@
 <body>
 
     <header class="site-header">
-        <div class="site-logo" onclick="window.location.href='index.html'">🛒 Ranita Market</div>
+        <div class="site-logo" onclick="window.location.href='index.html'">&#128722; Ranita Market</div>
         <nav style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
             <a href="products.html">Produits</a>
             <a href="cart.html">Panier</a>
@@ -892,13 +802,13 @@
                 <div class="hero-stat"><div class="number">0 F</div><div class="label">Inscription gratuite</div></div>
                 <div class="hero-stat"><div class="number">24h</div><div class="label">Validation rapide</div></div>
             </div>
-            <button class="hero-cta" onclick="checkAndStart()">Commencer à vendre →</button>
+            <button class="hero-cta" onclick="checkAndStart()">Commencer à vendre &rarr;</button>
         </div>
         <div class="avantages">
-            <div class="avantage-card"><div class="avantage-icon">🛡️</div><div class="avantage-title">Sécurisé</div><div class="avantage-desc">Ranita vérifie chaque vendeur avant publication</div></div>
-            <div class="avantage-card"><div class="avantage-icon">💸</div><div class="avantage-title">Paiement rapide</div><div class="avantage-desc">Orange Money, MTN Money ou virement bancaire</div></div>
-            <div class="avantage-card"><div class="avantage-icon">📦</div><div class="avantage-title">Livraison gérée</div><div class="avantage-desc">Ranita centralise toutes les livraisons pour vous</div></div>
-            <div class="avantage-card"><div class="avantage-icon">📊</div><div class="avantage-title">Dashboard</div><div class="avantage-desc">Suivez vos ventes et gains en temps réel</div></div>
+            <div class="avantage-card"><div class="avantage-icon">&#128737;</div><div class="avantage-title">Sécurisé</div><div class="avantage-desc">Ranita vérifie chaque vendeur avant publication</div></div>
+            <div class="avantage-card"><div class="avantage-icon">&#128184;</div><div class="avantage-title">Paiement rapide</div><div class="avantage-desc">Orange Money, MTN Money ou virement bancaire</div></div>
+            <div class="avantage-card"><div class="avantage-icon">&#128230;</div><div class="avantage-title">Livraison gérée</div><div class="avantage-desc">Ranita centralise toutes les livraisons pour vous</div></div>
+            <div class="avantage-card"><div class="avantage-icon">&#128202;</div><div class="avantage-title">Dashboard</div><div class="avantage-desc">Suivez vos ventes et gains en temps réel</div></div>
         </div>
     </div>
 
@@ -908,41 +818,17 @@
             <div class="form-card">
                 <h2>Créer ma boutique</h2>
                 <div class="form-subtitle">Ranita validera votre demande sous 24h</div>
-                <div class="form-group">
-                    <label>Nom de la boutique *</label>
-                    <input type="text" id="shopName" placeholder="Ex: Mode Abidjan, Tech Shop CI..." maxlength="100">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="shopDescription" rows="3" placeholder="Décrivez ce que vous vendez..."></textarea>
+                <div class="form-group"><label>Nom de la boutique *</label><input type="text" id="shopName" placeholder="Ex: Mode Abidjan, Tech Shop CI..." maxlength="100"></div>
+                <div class="form-group"><label>Description</label><textarea id="shopDescription" rows="3" placeholder="Décrivez ce que vous vendez..."></textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Téléphone *</label><input type="tel" id="phoneNumber" placeholder="07 XX XX XX XX"></div>
+                    <div class="form-group"><label>Numéro CNI *</label><input type="text" id="nationalIdNumber" placeholder="CI-XXXXXXXXX"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Téléphone *</label>
-                        <input type="tel" id="phoneNumber" placeholder="07 XX XX XX XX">
-                    </div>
-                    <div class="form-group">
-                        <label>Numéro CNI *</label>
-                        <input type="text" id="nationalIdNumber" placeholder="CI-XXXXXXXXX">
-                    </div>
+                    <div class="form-group"><label>Moyen de paiement</label><select id="paymentMethod"><option value="">Choisir...</option><option value="ORANGE_MONEY">Orange Money</option><option value="MTN_MONEY">MTN Money</option><option value="WAVE">Wave</option><option value="MOOV_MONEY">Moov Money</option></select></div>
+                    <div class="form-group"><label>Numéro</label><input type="text" id="paymentDetails" placeholder="Numéro Mobile Money"></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Moyen de paiement</label>
-                        <select id="paymentMethod">
-                            <option value="">Choisir...</option>
-                            <option value="ORANGE_MONEY">Orange Money</option>
-                            <option value="MTN_MONEY">MTN Money</option>
-                            <option value="WAVE">Wave</option>
-                            <option value="MOOV_MONEY">Moov Money</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Numéro</label>
-                        <input type="text" id="paymentDetails" placeholder="Numéro Mobile Money">
-                    </div>
-                </div>
-                <button class="btn-submit" id="btn-register" onclick="submitRegistration()">Envoyer ma demande →</button>
+                <button class="btn-submit" id="btn-register" onclick="submitRegistration()">Envoyer ma demande &rarr;</button>
                 <div class="form-note">En soumettant ce formulaire, vous acceptez que Ranita Market vérifie votre identité avant toute publication.</div>
             </div>
         </div>
@@ -951,7 +837,7 @@
     <!-- EN ATTENTE -->
     <div class="page" id="page-pending">
         <div class="status-container">
-            <div class="status-icon">⏳</div>
+            <div class="status-icon">&#9203;</div>
             <div class="status-title">Demande en cours d'examen</div>
             <div class="status-desc">Notre équipe examine votre dossier. Vous serez notifié dès validation.</div>
             <div class="status-card" id="pending-info"></div>
@@ -962,7 +848,7 @@
     <!-- REFUSÉ -->
     <div class="page" id="page-rejected">
         <div class="status-container">
-            <div class="status-icon">❌</div>
+            <div class="status-icon">&#10060;</div>
             <div class="status-title">Demande refusée</div>
             <div class="status-desc" id="rejected-reason">Votre demande n'a pas été acceptée.</div>
             <button onclick="showPage('page-register')" style="background:#10b981;color:white;border:none;padding:12px 32px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">Soumettre une nouvelle demande</button>
@@ -979,7 +865,7 @@
                 </div>
                 <div style="display:flex;gap:10px;align-items:center;">
                     <span class="badge badge-approved">Boutique active</span>
-                    <button onclick="openEditProfile()" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">⚙️ Modifier profil</button>
+                    <button onclick="openEditProfile()" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">&#9881; Modifier profil</button>
                 </div>
             </div>
             <div class="dash-stats">
@@ -988,11 +874,9 @@
                 <div class="dash-stat"><div class="label">Gains totaux</div><div class="value green" id="dash-earnings">—</div></div>
                 <div class="dash-stat"><div class="label">À recevoir</div><div class="value orange" id="dash-pending-payouts">—</div></div>
             </div>
-
-            <!-- GRAPHIQUE VENTES -->
             <div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:20px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-                    <div style="font-size:15px;font-weight:700;">📊 Mes ventes</div>
+                    <div style="font-size:15px;font-weight:700;">&#128202; Mes ventes</div>
                     <div style="display:flex;gap:8px;">
                         <button onclick="setChartPeriod(7)" id="btn-7j" style="padding:5px 12px;border-radius:20px;border:1px solid #e5e7eb;font-size:12px;font-weight:700;cursor:pointer;background:#111827;color:white;">7j</button>
                         <button onclick="setChartPeriod(30)" id="btn-30j" style="padding:5px 12px;border-radius:20px;border:1px solid #e5e7eb;font-size:12px;font-weight:700;cursor:pointer;background:white;color:#374151;">30j</button>
@@ -1000,34 +884,16 @@
                 </div>
                 <canvas id="salesChart" height="120"></canvas>
             </div>
-
-            <div id="tabs-bar" style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;padding-bottom:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;">
-                <button id="tab-products" onclick="switchTab('products')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">
-                    📦 Mes produits <span id="badge-products" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
-                </button>
-                <button id="tab-orders" onclick="switchTab('orders')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
-                    🛒 Mes commandes <span id="badge-orders" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
-                </button>
-                <button id="tab-failed" onclick="switchTab('failed')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
-                    ❌ Échecs livraison <span id="badge-failed" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
-                </button>
-                <button id="tab-payouts" onclick="switchTab('payouts')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
-                    💰 Mes paiements
-                </button>
-                <button id="tab-reviews" onclick="switchTab('reviews')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
-                    ⭐ Avis clients
-                </button>
-
-                <button id="tab-flash" onclick="switchTab('flash')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">
-                    ⚡ Ventes Flash <span id="badge-flash" style="display:none;background:#f97316;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span>
-                </button>
-
+            <div id="tabs-bar" style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e5e7eb;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+                <button id="tab-products" onclick="switchTab('products')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#10b981;border-bottom:3px solid #10b981;cursor:pointer;margin-bottom:-2px;">&#128230; Mes produits <span id="badge-products" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span></button>
+                <button id="tab-orders" onclick="switchTab('orders')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">&#128722; Mes commandes <span id="badge-orders" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span></button>
+                <button id="tab-failed" onclick="switchTab('failed')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">&#10060; Echecs livraison <span id="badge-failed" style="display:none;background:#ef4444;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span></button>
+                <button id="tab-payouts" onclick="switchTab('payouts')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">&#128176; Mes paiements</button>
+                <button id="tab-reviews" onclick="switchTab('reviews')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">&#11088; Avis clients</button>
+                <button id="tab-flash" onclick="switchTab('flash')" style="flex-shrink:0;white-space:nowrap;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:700;color:#6b7280;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-2px;">&#9889; Ventes Flash <span id="badge-flash" style="display:none;background:#f97316;color:white;border-radius:999px;font-size:11px;padding:2px 7px;margin-left:4px;"></span></button>
             </div>
             <div id="section-products">
-                <div class="section-header">
-                    <div class="section-title">Mes produits</div>
-                    <button class="btn-add" onclick="openAddProduct()">+ Ajouter un produit</button>
-                </div>
+                <div class="section-header"><div class="section-title">Mes produits</div><button class="btn-add" onclick="openAddProduct()">+ Ajouter un produit</button></div>
                 <div id="my-products-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
             <div id="section-orders" style="display:none;">
@@ -1035,7 +901,7 @@
                 <div id="my-orders-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
             <div id="section-failed" style="display:none;">
-                <div class="section-header"><div class="section-title">Échecs de livraison</div></div>
+                <div class="section-header"><div class="section-title">Echecs de livraison</div></div>
                 <div id="my-failed-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
             <div id="section-payouts" style="display:none;">
@@ -1043,13 +909,12 @@
                 <div id="my-payouts-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
             <div id="section-reviews" style="display:none;">
-                <div class="section-header"><div class="section-title">⭐ Avis clients</div></div>
+                <div class="section-header"><div class="section-title">Avis clients</div></div>
                 <div id="my-reviews-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
             </div>
-
             <div id="section-flash" style="display:none;">
                 <div class="section-header">
-                    <div class="section-title">⚡ Mes ventes flash</div>
+                    <div class="section-title">&#9889; Mes ventes flash</div>
                     <button class="btn-add" onclick="openAddFlash()" style="background:#f97316;">+ Demander un flash</button>
                 </div>
                 <div id="my-flash-list"><div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Chargement...</div></div>
@@ -1062,72 +927,75 @@
         <div class="modal">
             <h3 id="modal-product-title">Ajouter un produit</h3>
             <input type="hidden" id="p-id">
-            <div class="form-section">
-                <h4>📦 Informations de base</h4>
-                <div class="form-grid">
-                    <div><label>Nom du produit *</label><input type="text" id="p-name" placeholder="Ex: Chemise Homme Slim"></div>
-                    <div><label>SKU — généré automatiquement</label><input type="text" id="p-sku" placeholder="RAN-XXX-0000" readonly style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;"></div>
-                    <div><label>Marque</label><input type="text" id="p-brand" placeholder="Ex: Nike, Samsung..."></div>
-                    <div><label>Catégorie *</label><select id="p-category" onchange="loadProductAttributes()"></select></div>
-                    <div class="full"><label>Description courte *</label><input type="text" id="p-short-desc" placeholder="1-2 phrases résumant le produit"></div>
-                    <div class="full"><label>Description longue</label><textarea id="p-description" rows="3" placeholder="Description détaillée..."></textarea></div>
-                </div>
-            </div>
-            <div class="form-section">
-                <h4>💰 Prix & Stock</h4>
-                <div class="form-grid">
-                    <div><label>Prix de vente * (FCFA)</label><input type="number" id="p-price" placeholder="Ex: 15000" min="0"></div>
-                    <div><label>Prix barré (FCFA)</label><input type="number" id="p-old-price" placeholder="Ex: 20000" min="0"></div>
-                    <div><label>Stock global</label><input type="number" id="p-stock" placeholder="Ex: 50" min="0"></div>
-                </div>
-            </div>
-            <div class="form-section">
-                <h4>🖼️ Images (max 5 — la 1ère est l'image principale)</h4>
-                <input type="file" id="p-image-file" accept="image/*" onchange="handleImageUpload(this)" style="padding:8px;border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;width:100%;font-size:13px;">
-                <div class="image-gallery" id="p-image-gallery"><p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutée</p></div>
-            </div>
-            <div class="form-section" id="p-attributes-section" style="display:none;">
-                <h4>🏷️ Attributs</h4>
-                <div class="form-grid" id="p-attribute-fields"></div>
-            </div>
-            <div class="form-section" id="p-variants-section" style="display:none;">
-                <h4>🔀 Variantes & Stock</h4>
-                <p style="font-size:12px;color:#6b7280;margin-bottom:10px;">Sélectionnez vos attributs ci-dessus puis cliquez sur "Générer"</p>
-                <button type="button" onclick="generateVariants()" style="background:#3b82f6;color:white;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;margin-bottom:12px;">🔀 Générer les variantes</button>
-                <div id="p-variants-list"></div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal('modal-product')">Annuler</button>
-                <button class="btn-save" id="btn-save-product" onclick="submitProduct()">Soumettre pour validation</button>
-            </div>
+            <div class="form-section"><h4>&#128230; Informations de base</h4><div class="form-grid"><div><label>Nom du produit *</label><input type="text" id="p-name" placeholder="Ex: Chemise Homme Slim"></div><div><label>SKU - genere automatiquement</label><input type="text" id="p-sku" placeholder="RAN-XXX-0000" readonly style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;"></div><div><label>Marque</label><input type="text" id="p-brand" placeholder="Ex: Nike, Samsung..."></div><div><label>Categorie *</label><select id="p-category" onchange="loadProductAttributes()"></select></div><div class="full"><label>Description courte *</label><input type="text" id="p-short-desc" placeholder="1-2 phrases resumant le produit"></div><div class="full"><label>Description longue</label><textarea id="p-description" rows="3" placeholder="Description detaillee..."></textarea></div></div></div>
+            <div class="form-section"><h4>&#128176; Prix &amp; Stock</h4><div class="form-grid"><div><label>Prix de vente * (FCFA)</label><input type="number" id="p-price" placeholder="Ex: 15000" min="0"></div><div><label>Prix barre (FCFA)</label><input type="number" id="p-old-price" placeholder="Ex: 20000" min="0"></div><div><label>Stock global</label><input type="number" id="p-stock" placeholder="Ex: 50" min="0"></div></div></div>
+            <div class="form-section"><h4>&#128444; Images (max 5)</h4><input type="file" id="p-image-file" accept="image/*" onchange="handleImageUpload(this)" style="padding:8px;border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;width:100%;font-size:13px;"><div class="image-gallery" id="p-image-gallery"><p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutee</p></div></div>
+            <div class="form-section" id="p-attributes-section" style="display:none;"><h4>&#127991; Attributs</h4><div class="form-grid" id="p-attribute-fields"></div></div>
+            <div class="form-section" id="p-variants-section" style="display:none;"><h4>&#128256; Variantes &amp; Stock</h4><p style="font-size:12px;color:#6b7280;margin-bottom:10px;">Selectionnez vos attributs ci-dessus puis cliquez sur Generer</p><button type="button" onclick="generateVariants()" style="background:#3b82f6;color:white;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;margin-bottom:12px;">Generer les variantes</button><div id="p-variants-list"></div></div>
+            <div class="modal-actions"><button class="btn-cancel" onclick="closeModal('modal-product')">Annuler</button><button class="btn-save" id="btn-save-product" onclick="submitProduct()">Soumettre pour validation</button></div>
         </div>
     </div>
 
     <!-- MODAL PROFIL -->
     <div class="modal-overlay" id="modal-profile">
         <div class="modal" style="max-width:500px;">
-            <h3>⚙️ Mon profil boutique</h3>
+            <h3>&#9881; Mon profil boutique</h3>
+            <div class="form-section"><div class="form-grid"><div class="full"><label>Nom de la boutique</label><input type="text" id="profile-name"></div><div class="full"><label>Description</label><textarea id="profile-desc" rows="3"></textarea></div><div class="full"><label>Telephone</label><input type="tel" id="profile-phone"></div><div><label>Moyen de paiement</label><select id="profile-payment"><option value="">Choisir...</option><option value="ORANGE_MONEY">Orange Money</option><option value="MTN_MONEY">MTN Money</option><option value="WAVE">Wave</option><option value="MOOV_MONEY">Moov Money</option></select></div><div><label>Numero</label><input type="text" id="profile-payment-details"></div></div></div>
+            <div class="modal-actions"><button class="btn-cancel" onclick="closeModal('modal-profile')">Annuler</button><button class="btn-save" onclick="saveProfile()">Enregistrer</button></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         MODAL FLASH — Les dates sont definies par l'admin
+         ============================================================ -->
+    <div class="modal-overlay" id="modal-flash">
+        <div class="modal" style="max-width:580px;">
+            <h3>&#9889; Demande de vente flash</h3>
+            <input type="hidden" id="flash-product-id">
+            <input type="hidden" id="flash-variant-id">
+
             <div class="form-section">
+                <h4>&#128230; Choisir un produit approuve</h4>
+                <select id="flash-product-select" onchange="onFlashProductChange()" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;">
+                    <option value="">-- Selectionner un produit --</option>
+                </select>
+            </div>
+
+            <div class="form-section" id="flash-variant-section" style="display:none;">
+                <h4>&#127912; Variante concernee</h4>
+                <select id="flash-variant-select" onchange="onFlashVariantChange()" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;">
+                    <option value="">-- Selectionner une variante --</option>
+                </select>
+                <div id="flash-variant-hint" style="font-size:12px;color:#f97316;margin-top:6px;"></div>
+            </div>
+
+            <div class="form-section">
+                <h4>&#128176; Prix &amp; Stock flash</h4>
                 <div class="form-grid">
-                    <div class="full"><label>Nom de la boutique</label><input type="text" id="profile-name" placeholder="Nom de votre boutique"></div>
-                    <div class="full"><label>Description</label><textarea id="profile-desc" rows="3" placeholder="Décrivez votre boutique..."></textarea></div>
-                    <div class="full"><label>Téléphone</label><input type="tel" id="profile-phone" placeholder="07 XX XX XX XX"></div>
-                    <div>
-                        <label>Moyen de paiement</label>
-                        <select id="profile-payment">
-                            <option value="">Choisir...</option>
-                            <option value="ORANGE_MONEY">Orange Money</option>
-                            <option value="MTN_MONEY">MTN Money</option>
-                            <option value="WAVE">Wave</option>
-                            <option value="MOOV_MONEY">Moov Money</option>
-                        </select>
-                    </div>
-                    <div><label>Numéro</label><input type="text" id="profile-payment-details" placeholder="Numéro Mobile Money"></div>
+                    <div><label>Prix normal</label><input type="number" id="flash-original-price" readonly style="background:#f3f4f6;color:#6b7280;"></div>
+                    <div><label>Prix flash (FCFA) *</label><input type="number" id="flash-price" placeholder="Ex: 8000" oninput="updateFlashPreview()"></div>
+                    <div><label>Stock flash *</label><input type="number" id="flash-stock" placeholder="Ex: 5" oninput="updateFlashPreview()"></div>
+                    <div><label>Stock disponible</label><input type="number" id="flash-available-stock" readonly style="background:#f3f4f6;color:#6b7280;"></div>
+                </div>
+                <div id="flash-preview" style="display:none;margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;color:#92400e;"></div>
+            </div>
+
+            <!-- MESSAGE INFORMATIF FIXE - pas de blocage periode -->
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;font-size:13px;color:#1e40af;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:18px;flex-shrink:0;">&#128197;</span>
+                <div>
+                    <strong>Les dates seront definies par l'admin.</strong><br>
+                    <span style="opacity:0.85;">Soumettez votre demande - Ranita fixera la periode et publiera votre flash apres validation.</span>
                 </div>
             </div>
+
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:12px;color:#1e40af;margin-bottom:16px;">
+                Votre demande sera examinee par l'admin avant publication. La remise minimale est definie par Ranita.
+            </div>
+
             <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal('modal-profile')">Annuler</button>
-                <button class="btn-save" onclick="saveProfile()">Enregistrer</button>
+                <button class="btn-cancel" onclick="closeModal('modal-flash')">Annuler</button>
+                <button class="btn-save" id="btn-save-flash" onclick="submitFlashRequest()" style="background:#f97316;">&#9889; Envoyer la demande</button>
             </div>
         </div>
     </div>
@@ -1140,105 +1008,57 @@
         let productImages = [], newImageFiles = [];
         let sellerData = null;
 
-        // ══════════════════════════════════════════════════════
-        // INIT — appelé au chargement de la page
-        // ══════════════════════════════════════════════════════
         window.addEventListener('DOMContentLoaded', () => {
-            const sellerStored = localStorage.getItem('seller');
-            const clientStored = localStorage.getItem('client');
-
-            const seller = sellerStored ? JSON.parse(sellerStored) : null;
-            const client = clientStored ? JSON.parse(clientStored) : null;
-
+            const seller = JSON.parse(localStorage.getItem('seller') || 'null');
+            const client = JSON.parse(localStorage.getItem('client') || 'null');
             clientId = seller?.clientId || seller?.id || client?.id || client?.clientId || null;
-
             if (clientId) {
-                const displayName = seller?.name || client?.fullName || client?.name || 'Mon compte';
-                buildAuthNav({ name: displayName });
+                buildAuthNav({ name: seller?.name || client?.fullName || client?.name || 'Mon compte' });
                 loadSellerStatus();
             } else {
-                document.getElementById('authNav').innerHTML = `
-                <a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>
-                <a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>`;
+                document.getElementById('authNav').innerHTML =
+                    '<a href="vendeur-login.html" style="margin-left:10px;color:#10b981;font-weight:700;text-decoration:none;">Connexion</a>' +
+                    '<a href="register.html" style="margin-left:10px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:8px 14px;border-radius:10px;font-weight:700;text-decoration:none;">Inscription</a>';
             }
         });
 
         function buildAuthNav(seller) {
-            const firstName = seller.name ? seller.name.split(' ')[0] : (seller.firstName || 'Mon compte');
-            document.getElementById('authNav').innerHTML = `
-                        <div style="position:relative;display:inline-block;">
-                            <button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">
-                                👤 ${firstName} ▾
-                            </button>
-                            <div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">
-                                <div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">🚪 Se déconnecter</div>
-                            </div>
-                        </div>`;
+            const firstName = seller.name ? seller.name.split(' ')[0] : 'Mon compte';
+            document.getElementById('authNav').innerHTML =
+                '<div style="position:relative;display:inline-block;">' +
+                '<button onclick="toggleMenu()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:8px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;">&#128100; ' + firstName + ' &#9660;</button>' +
+                '<div id="clientMenu" style="display:none;position:absolute;right:0;top:42px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.12);min-width:200px;z-index:999;overflow:hidden;">' +
+                '<div onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:12px 16px;color:#ef4444;font-weight:600;cursor:pointer;">&#128682; Se deconnecter</div></div></div>';
         }
 
-        function toggleMenu() {
-            const m = document.getElementById('clientMenu');
-            if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
-        }
+        function toggleMenu() { const m = document.getElementById('clientMenu'); if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none'; }
+        function logout() { localStorage.removeItem('seller'); window.location.reload(); }
+        document.addEventListener('click', e => { const m = document.getElementById('clientMenu'); if (m && !e.target.closest('#authNav')) m.style.display = 'none'; });
 
-        // ✅ FIX 2 : supprimer 'seller' (pas 'client') + recharger
-        function logout() {
-            localStorage.removeItem('seller');
-            window.location.reload();
-        }
-
-        document.addEventListener('click', e => {
-            const m = document.getElementById('clientMenu');
-            if (m && !e.target.closest('#authNav')) m.style.display = 'none';
-        });
-
-        // ── BOUTON CTA landing ────────────────────────────────
         function checkAndStart() {
             const seller = JSON.parse(localStorage.getItem('seller') || 'null');
-            if (!seller) {
-                window.location.href = 'vendeur-login.html';
-                return;
-            }
-            // Si déjà chargé (dashboard visible), ne pas recharger
+            if (!seller) { window.location.href = 'vendeur-login.html'; return; }
             if (document.getElementById('page-dashboard').classList.contains('active')) return;
             loadSellerStatus();
         }
 
-        // ── CHARGER STATUT VENDEUR ────────────────────────────
         async function loadSellerStatus() {
-            // ✅ FIX 3 : si clientId est null, log un warning clair
-            if (!clientId) {
-                console.error('clientId est null — vérifiez la réponse JSON de /api/sellers/login');
-                // Afficher le formulaire d'inscription en dernier recours
-                showPage('page-register');
-                return;
-            }
-
+            if (!clientId) { showPage('page-register'); return; }
             try {
-                const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
-
-                if (res.status === 404) {
-                    showPage('page-register');
-                    return;
-                }
-
+                const res = await fetch(API + '/sellers/my?clientId=' + clientId);
+                if (res.status === 404) { showPage('page-register'); return; }
                 const s = await res.json();
                 sellerId = s.id;
-
                 if (s.status === 'Pending') {
-                    document.getElementById('pending-info').innerHTML = `
-                                <div class="status-row"><span class="key">Boutique</span><span class="val">${s.shopName}</span></div>
-                                <div class="status-row"><span class="key">Téléphone</span><span class="val">${s.phoneNumber}</span></div>
-                                <div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>
-                                <div class="status-row"><span class="key">Soumis le</span><span class="val">${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span></div>`;
+                    document.getElementById('pending-info').innerHTML =
+                        '<div class="status-row"><span class="key">Boutique</span><span class="val">' + s.shopName + '</span></div>' +
+                        '<div class="status-row"><span class="key">Telephone</span><span class="val">' + s.phoneNumber + '</span></div>' +
+                        '<div class="status-row"><span class="key">Statut</span><span class="val"><span class="badge badge-pending">En attente</span></span></div>' +
+                        '<div class="status-row"><span class="key">Soumis le</span><span class="val">' + new Date(s.createdAt).toLocaleDateString('fr-FR') + '</span></div>';
                     showPage('page-pending');
-
                 } else if (s.status === 'Rejected') {
-                    document.getElementById('rejected-reason').textContent = s.rejectionReason
-                        ? `Motif : ${s.rejectionReason}`
-                        : 'Votre demande n\'a pas été acceptée.';
+                    document.getElementById('rejected-reason').textContent = s.rejectionReason ? 'Motif : ' + s.rejectionReason : "Votre demande n'a pas ete acceptee.";
                     showPage('page-rejected');
-
                 } else if (s.status === 'Approved') {
                     document.getElementById('dash-shop-name').textContent = s.shopName;
                     document.getElementById('dash-shop-desc').textContent = s.shopDescription || '';
@@ -1248,101 +1068,62 @@
                     document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
                     sellerData = s;
                     showPage('page-dashboard');
-                    loadMyProducts();
-                    loadCategories();
-                    loadBadges();
-                    startAutoRefresh();
-                    renderSalesChart();
-
+                    loadMyProducts(); loadCategories(); loadBadges(); startAutoRefresh(); renderSalesChart();
                 } else {
-                    // Suspendu
                     document.querySelector('#page-pending .status-icon').textContent = '⏸️';
                     document.querySelector('#page-pending .status-title').textContent = 'Boutique suspendue';
                     document.querySelector('#page-pending .status-desc').textContent = 'Contactez le support Ranita.';
                     showPage('page-pending');
                 }
-
-            } catch (e) {
-                console.error('loadSellerStatus error:', e);
-                showPage('page-register');
-            }
+            } catch (e) { showPage('page-register'); }
         }
 
-        // ── INSCRIPTION ───────────────────────────────────────
         async function submitRegistration() {
             const btn = document.getElementById('btn-register');
             const shopName = document.getElementById('shopName').value.trim();
             const phoneNumber = document.getElementById('phoneNumber').value.trim();
             const nationalIdNumber = document.getElementById('nationalIdNumber').value.trim();
-            if (!shopName || !phoneNumber || !nationalIdNumber) {
-                showToast('Remplissez tous les champs obligatoires (*)', 'error');
-                return;
-            }
+            if (!shopName || !phoneNumber || !nationalIdNumber) { showToast('Remplissez tous les champs obligatoires (*)', 'error'); return; }
             btn.disabled = true; btn.textContent = 'Envoi en cours...';
             try {
-                const res = await fetch(`${API}/sellers/register?clientId=${clientId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        shopName,
-                        shopDescription: document.getElementById('shopDescription').value.trim(),
-                        phoneNumber,
-                        nationalIdNumber,
-                        paymentMethod: document.getElementById('paymentMethod').value,
-                        paymentDetails: document.getElementById('paymentDetails').value.trim()
-                    })
+                const res = await fetch(API + '/sellers/register?clientId=' + clientId, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shopName, shopDescription: document.getElementById('shopDescription').value.trim(), phoneNumber, nationalIdNumber, paymentMethod: document.getElementById('paymentMethod').value, paymentDetails: document.getElementById('paymentDetails').value.trim() })
                 });
                 const data = await res.json();
-                if (res.ok) {
-                    showToast('Demande envoyée ! Réponse sous 24h ✓', 'success');
-                    setTimeout(() => loadSellerStatus(), 1500);
-                } else {
-                    showToast(data.message || 'Erreur', 'error');
-                    btn.disabled = false; btn.textContent = 'Envoyer ma demande →';
-                }
-            } catch (e) {
-                showToast('Erreur réseau', 'error');
-                btn.disabled = false; btn.textContent = 'Envoyer ma demande →';
-            }
+                if (res.ok) { showToast('Demande envoyee ! Reponse sous 24h', 'success'); setTimeout(() => loadSellerStatus(), 1500); }
+                else { showToast(data.message || 'Erreur', 'error'); btn.disabled = false; btn.textContent = 'Envoyer ma demande'; }
+            } catch (e) { showToast('Erreur reseau', 'error'); btn.disabled = false; btn.textContent = 'Envoyer ma demande'; }
         }
 
-        // ── MES PRODUITS ──────────────────────────────────────
         async function loadMyProducts() {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/products');
                 const products = await res.json();
                 const el = document.getElementById('my-products-list');
-                if (!products.length) {
-                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit. Ajoutez votre premier produit !</div>';
-                    return;
-                }
-                const labels = { Pending: 'En attente', Approved: 'Publié', Rejected: 'Refusé' };
+                if (!products.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit. Ajoutez votre premier produit !</div>'; return; }
+                const labels = { Pending: 'En attente', Approved: 'Publie', Rejected: 'Refuse' };
                 const bclass = { Pending: 'badge-pending', Approved: 'badge-approved', Rejected: 'badge-rejected' };
                 el.innerHTML = products.map(p => {
                     let imgs = [];
-                    if (Array.isArray(p.images)) { imgs = p.images; }
+                    if (Array.isArray(p.images)) imgs = p.images;
                     else { try { imgs = JSON.parse(p.images || '[]'); } catch (e) { } }
-                    return `
-                            <div class="my-product">
-                                <div class="my-product-img">${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-                                <div class="my-product-info">
-                                    <div class="my-product-name">${p.name}</div>
-                                    <div class="my-product-meta">SKU: ${p.sku || '—'} · Stock: ${p.stock || 0} · ${p.category || 'Sans catégorie'}</div>
-                                    ${p.approvalStatus === 'Rejected' && p.rejectionReason ? `<div style="font-size:12px;color:#991b1b;background:#fee2e2;padding:4px 8px;border-radius:6px;margin-top:4px;">❌ Motif : ${p.rejectionReason}</div>` : ''}
-                                </div>
-                                <div class="my-product-price">${formatPrice(p.price)}</div>
-                                <span class="badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
-                                <div style="display:flex;gap:6px;flex-shrink:0;">
-                                    ${p.approvalStatus !== 'Approved' ? `
-                                        <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
-                                        <button onclick="deleteProduct(${p.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️</button>
-                                    ` : `
-                                        <button onclick="viewProductDetail(${p.productId})" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👁️ Voir</button>
-                                        <button onclick="editProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️</button>
-                                        <button onclick="toggleProduct(${p.id}, ${p.isActive})" style="background:${p.isActive !== false ? '#fee2e2' : '#d1fae5'};color:${p.isActive !== false ? '#991b1b' : '#065f46'};border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">${p.isActive !== false ? '⏸️' : '▶️'}</button>
-                                    `}
-                                </div>
-                            </div>`;
+                    return '<div class="my-product">' +
+                        '<div class="my-product-img">' + (imgs.length ? '<img src="' + imgs[0] + '" onerror="this.style.display=\'none\'">' : '&#128230;') + '</div>' +
+                        '<div class="my-product-info"><div class="my-product-name">' + p.name + '</div>' +
+                        '<div class="my-product-meta">SKU: ' + (p.sku || '—') + ' · Stock: ' + (p.stock || 0) + ' · ' + (p.category || 'Sans categorie') + '</div>' +
+                        (p.approvalStatus === 'Rejected' && p.rejectionReason ? '<div style="font-size:12px;color:#991b1b;background:#fee2e2;padding:4px 8px;border-radius:6px;margin-top:4px;">Motif : ' + p.rejectionReason + '</div>' : '') +
+                        '</div>' +
+                        '<div class="my-product-price">' + formatPrice(p.price) + '</div>' +
+                        '<span class="badge ' + (bclass[p.approvalStatus] || '') + '">' + (labels[p.approvalStatus] || p.approvalStatus) + '</span>' +
+                        '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+                        (p.approvalStatus !== 'Approved' ?
+                            '<button onclick="editProduct(' + p.id + ')" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">&#9999;</button>' +
+                            '<button onclick="deleteProduct(' + p.id + ')" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">&#128465;</button>' :
+                            '<button onclick="viewProductDetail(' + p.productId + ')" style="background:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">&#128065; Voir</button>' +
+                            '<button onclick="editProduct(' + p.id + ')" style="background:#f59e0b;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">&#9999;</button>' +
+                            '<button onclick="toggleProduct(' + p.id + ',' + p.isActive + ')" style="background:' + (p.isActive !== false ? '#fee2e2' : '#d1fae5') + ';color:' + (p.isActive !== false ? '#991b1b' : '#065f46') + ';border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">' + (p.isActive !== false ? '&#9208;' : '&#9654;') + '</button>') +
+                        '</div></div>';
                 }).join('');
             } catch (e) { console.error('loadMyProducts:', e); }
         }
@@ -1350,354 +1131,181 @@
         async function deleteProduct(id) {
             if (!confirm('Supprimer ce produit ?')) return;
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products/${id}`, { method: 'DELETE' });
-                if (res.ok) { showToast('Produit supprimé ✓', 'success'); loadMyProducts(); }
+                const res = await fetch(API + '/sellers/' + sellerId + '/products/' + id, { method: 'DELETE' });
+                if (res.ok) { showToast('Produit supprime', 'success'); loadMyProducts(); }
                 else { const d = await res.json(); showToast(d.message || 'Erreur', 'error'); }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+            } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
         function editProduct(id) {
-            fetch(`${API}/sellers/${sellerId}/products`)
-                .then(r => r.json())
-                .then(products => {
-                    const p = products.find(x => x.id === id);
-                    if (!p) return;
-                    document.getElementById('modal-product-title').textContent = 'Modifier le produit';
-                    document.getElementById('p-id').value = p.id;
-                    document.getElementById('p-name').value = p.name || '';
-                    document.getElementById('p-sku').value = p.sku || '';
-                    document.getElementById('p-brand').value = p.brand || '';
-                    document.getElementById('p-short-desc').value = p.shortDescription || '';
-                    document.getElementById('p-description').value = p.description || '';
-                    document.getElementById('p-price').value = p.price || '';
-                    document.getElementById('p-old-price').value = p.oldPrice || '';
-                    document.getElementById('p-stock').value = p.stock || '';
-                    productImages = Array.isArray(p.images) ? p.images : [];
-                    newImageFiles = [];
-                    renderGallery();
-                    loadCategories().then(() => {
-                        const opts = document.getElementById('p-category').options;
-                        for (let i = 0; i < opts.length; i++) {
-                            if (opts[i].text === p.category) {
-                                document.getElementById('p-category').value = opts[i].value;
-                                loadProductAttributes();
-                                break;
-                            }
-                        }
-                    });
-                    openModal('modal-product');
+            fetch(API + '/sellers/' + sellerId + '/products').then(r => r.json()).then(products => {
+                const p = products.find(x => x.id === id); if (!p) return;
+                document.getElementById('modal-product-title').textContent = 'Modifier le produit';
+                document.getElementById('p-id').value = p.id;
+                document.getElementById('p-name').value = p.name || '';
+                document.getElementById('p-sku').value = p.sku || '';
+                document.getElementById('p-brand').value = p.brand || '';
+                document.getElementById('p-short-desc').value = p.shortDescription || '';
+                document.getElementById('p-description').value = p.description || '';
+                document.getElementById('p-price').value = p.price || '';
+                document.getElementById('p-old-price').value = p.oldPrice || '';
+                document.getElementById('p-stock').value = p.stock || '';
+                productImages = Array.isArray(p.images) ? p.images : [];
+                newImageFiles = []; renderGallery();
+                loadCategories().then(() => {
+                    const opts = document.getElementById('p-category').options;
+                    for (let i = 0; i < opts.length; i++) {
+                        if (opts[i].text === p.category) { document.getElementById('p-category').value = opts[i].value; loadProductAttributes(); break; }
+                    }
                 });
+                openModal('modal-product');
+            });
         }
 
-        async function toggleProduct(sellerProductId, isActive) {
+        async function toggleProduct(spId, isActive) {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products/${sellerProductId}/toggle`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ isActive: !isActive })
-                });
-                if (res.ok) { showToast(isActive ? 'Produit désactivé' : 'Produit activé ✓', 'success'); loadMyProducts(); }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+                const res = await fetch(API + '/sellers/' + sellerId + '/products/' + spId + '/toggle', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive: !isActive }) });
+                if (res.ok) { showToast(isActive ? 'Produit desactive' : 'Produit active', 'success'); loadMyProducts(); }
+            } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
-        // ── COMMANDES ─────────────────────────────────────────
         async function loadMyOrders() {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
                 const el = document.getElementById('my-orders-list');
                 if (!orders.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Aucune commande pour le moment.</div>'; return; }
-                const sc = {
-                    'En attente': { bg: '#fef3c7', color: '#92400e' },
-                    'Confirmée par vendeur': { bg: '#dbeafe', color: '#1e40af' },
-                    'Indisponible vendeur': { bg: '#fef3c7', color: '#92400e' },
-                    'Confirmée': { bg: '#dbeafe', color: '#1e40af' },
-                    'En cours': { bg: '#e0e7ff', color: '#3730a3' },
-                    'Livrée': { bg: '#d1fae5', color: '#065f46' },
-                    'Annulée': { bg: '#fee2e2', color: '#991b1b' }
-                };
+                const sc = { 'En attente': { bg: '#fef3c7', color: '#92400e' }, 'Confirmee par vendeur': { bg: '#dbeafe', color: '#1e40af' }, 'Indisponible vendeur': { bg: '#fef3c7', color: '#92400e' }, 'En cours': { bg: '#e0e7ff', color: '#3730a3' }, 'Livree': { bg: '#d1fae5', color: '#065f46' }, 'Annulee': { bg: '#fee2e2', color: '#991b1b' } };
                 el.innerHTML = orders.map(o => {
                     const s = sc[o.status] || { bg: '#f3f4f6', color: '#374151' };
-                    return `<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                        <div><span style="font-weight:700;font-size:15px;">Commande #${o.id}</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                        <div style="display:flex;align-items:center;gap:10px;"><span style="background:${s.bg};color:${s.color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span><span style="font-weight:800;color:#10b981;font-size:15px;">${formatPrice(o.sellerTotal)}</span></div>
-                    </div>
-                    <div style="font-size:13px;color:#6b7280;margin-bottom:10px;">👤 ${o.customerName} · 📍 ${o.customerAddress}</div>
-${o.status === 'Confirmée par vendeur' ? `
-        <div style="background:#e0e7ff;color:#3730a3;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:8px;">
-            ✅ Vous avez confirmé cette commande — en attente de livraison
-        </div>` : ''}
-${o.status === 'Indisponible vendeur' ? `
-        <div style="background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:8px;">
-            ⚠️ Vous avez signalé ce produit indisponible — en attente de décision admin
-        </div>` : ''}
-
-        ${o.refundMotif ? `
-        <div style="background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:12px;margin-bottom:8px;">
-            📝 Motif : ${o.refundMotif}
-        </div>` : ''}
-
-                    <div style="border-top:1px solid #f3f4f6;padding-top:10px;">${o.items.map(i => `
-                        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">
-                            ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">` : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">📦</div>'}
-                            <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${i.productName}</div>${i.variantName ? `<div style="font-size:11px;color:#6b7280;">${i.variantName}</div>` : ''}</div>
-                            <div style="font-size:13px;color:#6b7280;">x${i.quantity}</div>
-                            <div style="font-size:13px;font-weight:700;">${formatPrice(i.subtotal)}</div>
-                        </div>`).join('')}
-                    </div>
-                    ${o.status === 'En attente' ? `
-                    <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f3f4f6;">
-                        <button onclick="vendorConfirm(${o.id})"
-                            style="flex:1;padding:10px;background:#d1fae5;color:#065f46;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
-                            ✅ Confirmer disponibilité
-                        </button>
-                        <button onclick="vendorConfirmUnavailable(${o.id})"
-                            style="flex:1;padding:10px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
-                            ❌ Produit indisponible
-                        </button>
-                    </div>` : ''}
-                </div>`;
+                    return '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">' +
+                        '<div><span style="font-weight:700;font-size:15px;">Commande #' + o.id + '</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">' + new Date(o.createdAt).toLocaleDateString('fr-FR') + '</span></div>' +
+                        '<div style="display:flex;align-items:center;gap:10px;"><span style="background:' + s.bg + ';color:' + s.color + ';padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">' + o.status + '</span><span style="font-weight:800;color:#10b981;font-size:15px;">' + formatPrice(o.sellerTotal) + '</span></div></div>' +
+                        '<div style="font-size:13px;color:#6b7280;margin-bottom:10px;">&#128100; ' + o.customerName + ' · &#128205; ' + o.customerAddress + '</div>' +
+                        (o.refundMotif ? '<div style="background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:12px;margin-bottom:8px;">Motif : ' + o.refundMotif + '</div>' : '') +
+                        '<div style="border-top:1px solid #f3f4f6;padding-top:10px;">' +
+                        o.items.map(i => '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f9fafb;">' +
+                            (i.imageUrl ? '<img src="' + i.imageUrl + '" style="width:36px;height:36px;border-radius:6px;object-fit:cover;">' : '<div style="width:36px;height:36px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;">&#128230;</div>') +
+                            '<div style="flex:1;"><div style="font-size:13px;font-weight:600;">' + i.productName + '</div>' + (i.variantName ? '<div style="font-size:11px;color:#6b7280;">' + i.variantName + '</div>' : '') + '</div>' +
+                            '<div style="font-size:13px;color:#6b7280;">x' + i.quantity + '</div>' +
+                            '<div style="font-size:13px;font-weight:700;">' + formatPrice(i.subtotal) + '</div></div>').join('') + '</div>' +
+                        (o.status === 'En attente' ?
+                            '<div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f3f4f6;">' +
+                            '<button onclick="vendorConfirm(' + o.id + ')" style="flex:1;padding:10px;background:#d1fae5;color:#065f46;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Confirmer disponibilite</button>' +
+                            '<button onclick="vendorConfirmUnavailable(' + o.id + ')" style="flex:1;padding:10px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Produit indisponible</button></div>' : '') +
+                        '</div>';
                 }).join('');
             } catch (e) { }
         }
 
         async function vendorConfirm(orderId) {
-            if (!confirm('Confirmer la disponibilité de cette commande ?')) return;
+            if (!confirm('Confirmer la disponibilite de cette commande ?')) return;
             try {
-                const res = await fetch(`${API}/orders/${orderId}/vendor-confirm`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ available: true, motif: null })
-                });
-                if (res.ok) { showToast('Commande confirmée ✓', 'success'); loadMyOrders(); }
-                else showToast('Erreur', 'error');
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+                const res = await fetch(API + '/orders/' + orderId + '/vendor-confirm', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: true, motif: null }) });
+                if (res.ok) { showToast('Commande confirmee', 'success'); loadMyOrders(); } else showToast('Erreur', 'error');
+            } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
-
-
         async function vendorConfirmUnavailable(orderId) {
-            const motif = prompt('Motif d\'indisponibilité (optionnel) :');
-            if (motif === null) return; // annulé
+            const motif = prompt("Motif d'indisponibilite (optionnel) :"); if (motif === null) return;
             try {
-                const res = await fetch(`${API}/orders/${orderId}/vendor-confirm`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ available: false, motif: motif || 'Produit indisponible' })
-                });
-                if (res.ok) { showToast('Commande signalée indisponible', 'success'); loadMyOrders(); }
-                else showToast('Erreur', 'error');
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+                const res = await fetch(API + '/orders/' + orderId + '/vendor-confirm', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: false, motif: motif || 'Produit indisponible' }) });
+                if (res.ok) { showToast('Commande signalee indisponible', 'success'); loadMyOrders(); } else showToast('Erreur', 'error');
+            } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
         async function loadFailedDeliveries() {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
                 const el = document.getElementById('my-failed-list');
-                const failed = orders.filter(o => o.status === 'Échec livraison' || o.status === 'Annulée');
-                if (!failed.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun échec de livraison.</div>'; return; }
-                el.innerHTML = failed.map(o => `
-                            <div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;">
-                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-weight:700;">Commande #${o.id}</span><span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${o.status}</span></div>
-                                <div style="font-size:13px;color:#6b7280;">👤 ${o.customerName} · 📞 ${o.customerPhone}</div>
-                                <div style="font-size:13px;color:#6b7280;">📅 ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</div>
-                                <div style="margin-top:8px;font-weight:700;color:#ef4444;">${formatPrice(o.sellerTotal)}</div>
-                            </div>`).join('');
+                const failed = orders.filter(o => o.status === 'Echec livraison' || o.status === 'Annulee');
+                if (!failed.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun echec de livraison.</div>'; return; }
+                el.innerHTML = failed.map(o => '<div style="background:white;border:1px solid #fee2e2;border-left:4px solid #ef4444;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-weight:700;">Commande #' + o.id + '</span><span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">' + o.status + '</span></div><div style="font-size:13px;color:#6b7280;">&#128100; ' + o.customerName + ' · ' + new Date(o.createdAt).toLocaleDateString('fr-FR') + '</div><div style="margin-top:8px;font-weight:700;color:#ef4444;">' + formatPrice(o.sellerTotal) + '</div></div>').join('');
             } catch (e) { }
         }
 
         async function loadMyPayouts() {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/payouts`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/payouts');
                 const payouts = await res.json();
                 const el = document.getElementById('my-payouts-list');
-                if (!payouts.length) {
-                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun paiement pour le moment.</div>';
-                    return;
-                }
-                el.innerHTML = payouts.map(p => `
-                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-                        <div>
-                            <span style="font-weight:700;font-size:15px;">Commande #${p.orderId}</span>
-                            <span style="color:#6b7280;font-size:12px;margin-left:10px;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                        <span style="background:${p.status === 'Paid' ? '#d1fae5' : '#fef3c7'};color:${p.status === 'Paid' ? '#065f46' : '#92400e'};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">
-                            ${p.status === 'Paid' ? '✅ Payé' : '⏳ En attente'}
-                        </span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-                        <div style="text-align:center;background:#f9fafb;padding:10px;border-radius:8px;">
-                            <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Montant brut</div>
-                            <div style="font-weight:700;">${formatPrice(p.grossAmount)}</div>
-                        </div>
-                        <div style="text-align:center;background:#fee2e2;padding:10px;border-radius:8px;">
-                            <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Commission</div>
-                            <div style="font-weight:700;color:#991b1b;">-${formatPrice(p.commissionAmount)}</div>
-                        </div>
-                        <div style="text-align:center;background:#d1fae5;padding:10px;border-radius:8px;">
-                            <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Net reçu</div>
-                            <div style="font-weight:700;font-size:16px;color:#065f46;">${formatPrice(p.netAmount)}</div>
-                        </div>
-                    </div>
-                    ${p.status === 'Paid' && p.paidAt ? `
-                    <div style="margin-top:8px;font-size:12px;color:#6b7280;">
-                        💸 Payé le ${new Date(p.paidAt).toLocaleDateString('fr-FR')}
-                        ${p.transactionReference ? `· Réf: ${p.transactionReference}` : ''}
-                    </div>` : ''}
-                </div>`).join('');
+                if (!payouts.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun paiement pour le moment.</div>'; return; }
+                el.innerHTML = payouts.map(p => '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><div><span style="font-weight:700;font-size:15px;">Commande #' + p.orderId + '</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">' + new Date(p.createdAt).toLocaleDateString('fr-FR') + '</span></div><span style="background:' + (p.status === 'Paid' ? '#d1fae5' : '#fef3c7') + ';color:' + (p.status === 'Paid' ? '#065f46' : '#92400e') + ';padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">' + (p.status === 'Paid' ? 'Paye' : 'En attente') + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;"><div style="text-align:center;background:#f9fafb;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Brut</div><div style="font-weight:700;">' + formatPrice(p.grossAmount) + '</div></div><div style="text-align:center;background:#fee2e2;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Commission</div><div style="font-weight:700;color:#991b1b;">-' + formatPrice(p.commissionAmount) + '</div></div><div style="text-align:center;background:#d1fae5;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Net recu</div><div style="font-weight:700;font-size:16px;color:#065f46;">' + formatPrice(p.netAmount) + '</div></div></div></div>').join('');
             } catch (e) { console.error('loadMyPayouts:', e); }
         }
 
-
         async function loadMyReviews() {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/products');
                 const products = await res.json();
                 const approved = products.filter(p => p.approvalStatus === 'Approved' && p.productId);
                 const el = document.getElementById('my-reviews-list');
-
-                if (!approved.length) {
-                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit publié.</div>';
-                    return;
-                }
-
+                if (!approved.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit publie.</div>'; return; }
                 let allReviews = [];
                 for (const p of approved) {
-                    try {
-                        const r = await fetch(`${API}/reviews/product/${p.productId}`);
-                        const reviews = await r.json();
-                        reviews.forEach(rev => rev._productName = p.name);
-                        allReviews = allReviews.concat(reviews);
-                    } catch (e) { }
+                    try { const r = await fetch(API + '/reviews/product/' + p.productId); const reviews = await r.json(); reviews.forEach(rev => rev._productName = p.name); allReviews = allReviews.concat(reviews); } catch (e) { }
                 }
-
-                if (!allReviews.length) {
-                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun avis pour le moment.</div>';
-                    return;
-                }
-
-                // Trier par date décroissante
+                if (!allReviews.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun avis pour le moment.</div>'; return; }
                 allReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-                const moyenne = (allReviews.reduce((s, r) => s + r.note, 0) / allReviews.length).toFixed(1);
-
-                el.innerHTML = `
-                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:16px;">
-                    <div style="text-align:center;">
-                        <div style="font-size:36px;font-weight:800;color:#f59e0b;">${moyenne}</div>
-                        <div style="font-size:20px;color:#f59e0b;">${'★'.repeat(Math.round(moyenne))}${'☆'.repeat(5 - Math.round(moyenne))}</div>
-                        <div style="font-size:12px;color:#6b7280;">${allReviews.length} avis</div>
-                    </div>
-                </div>
-                ${allReviews.map(r => `
-                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-                        <div>
-                            <div style="font-size:13px;font-weight:700;">${maskName(r.client)}</div>
-                            <div style="font-size:11px;color:#6b7280;">sur : ${r._productName}</div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <span style="color:#f59e0b;font-size:16px;">${'★'.repeat(r.note)}${'☆'.repeat(5 - r.note)}</span>
-                            <span style="font-size:11px;color:#9ca3af;">${new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                    </div>
-                    ${r.commentaire ? `<p style="font-size:13px;color:#374151;margin:0;background:#f9fafb;padding:8px 12px;border-radius:8px;">${r.commentaire}</p>` : ''}
-                </div>`).join('')}
-            `;
+                const moy = (allReviews.reduce((s, r) => s + r.note, 0) / allReviews.length).toFixed(1);
+                el.innerHTML = '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px;"><div style="font-size:36px;font-weight:800;color:#f59e0b;">' + moy + '</div><div style="font-size:20px;color:#f59e0b;">' + '★'.repeat(Math.round(moy)) + '☆'.repeat(5 - Math.round(moy)) + '</div><div style="font-size:12px;color:#6b7280;">' + allReviews.length + ' avis</div></div>' +
+                    allReviews.map(r => '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;"><div><div style="font-size:13px;font-weight:700;">' + maskName(r.client) + '</div><div style="font-size:11px;color:#6b7280;">sur : ' + r._productName + '</div></div><div style="display:flex;align-items:center;gap:8px;"><span style="color:#f59e0b;font-size:16px;">' + '★'.repeat(r.note) + '☆'.repeat(5 - r.note) + '</span><span style="font-size:11px;color:#9ca3af;">' + new Date(r.createdAt).toLocaleDateString('fr-FR') + '</span></div></div>' + (r.commentaire ? '<p style="font-size:13px;color:#374151;margin:0;background:#f9fafb;padding:8px 12px;border-radius:8px;">' + r.commentaire + '</p>' : '') + '</div>').join('');
             } catch (e) { console.error('loadMyReviews:', e); }
         }
 
-        function maskName(fullName) {
-            if (!fullName) return 'Client';
-            const parts = fullName.trim().split(' ');
-            if (parts.length === 1) return parts[0].charAt(0) + '***';
-            return parts[0] + ' ' + parts[1].charAt(0) + '***';
-        }
-
+        function maskName(n) { if (!n) return 'Client'; const p = n.trim().split(' '); return p.length === 1 ? p[0].charAt(0) + '***' : p[0] + ' ' + p[1].charAt(0) + '***'; }
 
         function switchTab(tab) {
             ['products', 'orders', 'failed', 'payouts', 'reviews', 'flash'].forEach(t => {
-                document.getElementById(`section-${t}`).style.display = 'none';
-                const btn = document.getElementById(`tab-${t}`);
+                document.getElementById('section-' + t).style.display = 'none';
+                const btn = document.getElementById('tab-' + t);
                 btn.style.color = '#6b7280'; btn.style.borderBottom = '3px solid transparent';
             });
-            document.getElementById(`section-${tab}`).style.display = 'block';
-            const activeBtn = document.getElementById(`tab-${tab}`);
+            document.getElementById('section-' + tab).style.display = 'block';
+            const activeBtn = document.getElementById('tab-' + tab);
             activeBtn.style.color = '#10b981'; activeBtn.style.borderBottom = '3px solid #10b981';
-            const badge = document.getElementById(`badge-${tab}`);
+            const badge = document.getElementById('badge-' + tab);
             if (badge) badge.style.display = 'none';
             if (tab === 'orders') loadMyOrders();
             if (tab === 'failed') loadFailedDeliveries();
             if (tab === 'payouts') loadMyPayouts();
             if (tab === 'reviews') loadMyReviews();
             if (tab === 'flash') loadMyFlash();
-
         }
 
-
-
-        // ── VENTES FLASH VENDEUR ──────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // VENTES FLASH VENDEUR — Les dates sont definies par l'admin
+        // ══════════════════════════════════════════════════════════════
         let flashProducts = [], flashSettings = {};
 
         async function loadFlashSettings() {
             try {
-                const res = await fetch(`${API}/site-settings`);
+                const res = await fetch(API + '/site-settings');
                 const s = await res.json();
-                flashSettings = {
-                    maxHours: parseInt(s.flash_max_duration_hours) || 48,
-                    minDiscount: parseInt(s.flash_min_discount_pct) || 10,
-                    periodStart: s.flash_period_start || '',
-                    periodEnd: s.flash_period_end || '',
-                    periodLabel: s.flash_period_label || ''
-                };
-            } catch (e) { }
+                flashSettings = { minDiscount: parseInt(s.flash_min_discount_pct) || 10 };
+            } catch (e) { flashSettings = { minDiscount: 10 }; }
         }
 
         async function openAddFlash() {
             await loadFlashSettings();
-            // Charger produits approuvés
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/products');
                 flashProducts = (await res.json()).filter(p => p.approvalStatus === 'Approved');
             } catch (e) { flashProducts = []; }
 
             const select = document.getElementById('flash-product-select');
-            select.innerHTML = '<option value="">-- Sélectionner un produit --</option>' +
-                flashProducts.map(p => `<option value="${p.id}" data-price="${p.price}" data-product-id="${p.productId}">${p.name} — ${formatPrice(p.price)}</option>`).join('');
+            select.innerHTML = '<option value="">-- Selectionner un produit --</option>' +
+                flashProducts.map(p => '<option value="' + p.id + '" data-price="' + p.price + '" data-product-id="' + p.productId + '">' + p.name + ' - ' + formatPrice(p.price) + '</option>').join('');
 
-            // Reset form
-            ['flash-price', 'flash-stock', 'flash-original-price', 'flash-available-stock'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
-            });
-          
+            ['flash-price', 'flash-stock', 'flash-original-price', 'flash-available-stock'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             document.getElementById('flash-product-id').value = '';
             document.getElementById('flash-variant-id').value = '';
             document.getElementById('flash-variant-section').style.display = 'none';
             document.getElementById('flash-preview').style.display = 'none';
-            const periodLabel = flashSettings.periodLabel || '';
-            const periodStart = flashSettings.periodStart || '';
-            const periodEnd = flashSettings.periodEnd || '';
-            const periodInfo = document.getElementById('flash-period-info');
-            const noPeriod = document.getElementById('flash-no-period');
-            const periodDisplay = document.getElementById('flash-period-display');
-
-            if (periodStart && periodEnd) {
-                periodInfo.style.display = 'block';
-                noPeriod.style.display = 'none';
-                const s = new Date(periodStart).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-                const e = new Date(periodEnd).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-                periodDisplay.textContent = `⚡ ${periodLabel || 'Période flash'} · ${s} → ${e}`;
-                document.getElementById('flash-duration-hint').textContent =
-                    `Durée max : ${flashSettings.maxHours}h · Remise min : ${flashSettings.minDiscount}%`;
-            } else {
-                periodInfo.style.display = 'none';
-                noPeriod.style.display = 'block';
-            }
-
+            delete document.getElementById('modal-flash').dataset.editId;
+            document.querySelector('#modal-flash h3').textContent = 'Demande de vente flash';
             openModal('modal-flash');
         }
 
@@ -1705,33 +1313,26 @@ ${o.status === 'Indisponible vendeur' ? `
             const select = document.getElementById('flash-product-select');
             const opt = select.options[select.selectedIndex];
             if (!opt.value) return;
-
-            const sellerProductId = parseInt(opt.value);
             const productId = parseInt(opt.dataset.productId);
             const price = parseFloat(opt.dataset.price);
-
             document.getElementById('flash-product-id').value = productId;
             document.getElementById('flash-original-price').value = price;
             document.getElementById('flash-variant-id').value = '';
             document.getElementById('flash-variant-section').style.display = 'none';
-
-            // Charger variantes du produit réel
             try {
-                const res = await fetch(`${API}/products/${productId}`);
+                const res = await fetch(API + '/products/' + productId);
                 const product = await res.json();
                 const variants = (product.variants || []).filter(v => v.stock > 0);
-
                 if (variants.length > 0) {
                     const varSelect = document.getElementById('flash-variant-select');
-                    varSelect.innerHTML = '<option value="">-- Sélectionner une variante --</option>' +
-                        variants.map(v => `<option value="${v.id}" data-stock="${v.stock}">${v.combination} — Stock: ${v.stock}</option>`).join('');
+                    varSelect.innerHTML = '<option value="">-- Selectionner une variante --</option>' +
+                        variants.map(v => '<option value="' + v.id + '" data-stock="' + v.stock + '">' + v.combination + ' - Stock: ' + v.stock + '</option>').join('');
                     document.getElementById('flash-variant-section').style.display = 'block';
                     document.getElementById('flash-available-stock').value = '';
                 } else {
                     document.getElementById('flash-available-stock').value = product.stock;
                 }
             } catch (e) { }
-
             updateFlashPreview();
         }
 
@@ -1740,67 +1341,45 @@ ${o.status === 'Indisponible vendeur' ? `
             const opt = select.options[select.selectedIndex];
             document.getElementById('flash-variant-id').value = opt.value || '';
             document.getElementById('flash-available-stock').value = opt.value ? (opt.dataset.stock || '') : '';
-            document.getElementById('flash-variant-hint').textContent =
-                opt.value ? `Stock disponible : ${opt.dataset.stock} unités` : '';
+            document.getElementById('flash-variant-hint').textContent = opt.value ? 'Stock disponible : ' + opt.dataset.stock + ' unites' : '';
             updateFlashPreview();
         }
 
         function updateFlashPreview() {
             const originalPrice = parseFloat(document.getElementById('flash-original-price').value);
             const flashPrice = parseFloat(document.getElementById('flash-price').value);
-            const flashStock = parseInt(document.getElementById('flash-stock').value);
-            const start = document.getElementById('flash-start').value;
-            const end = document.getElementById('flash-end').value;
             const preview = document.getElementById('flash-preview');
-
             if (!originalPrice || !flashPrice) { preview.style.display = 'none'; return; }
-
             const discount = Math.round((1 - flashPrice / originalPrice) * 100);
-            let html = `⚡ <strong>${formatPrice(flashPrice)}</strong> au lieu de <s>${formatPrice(originalPrice)}</s> — <strong>-${discount}%</strong>`;
-
+            let html = '<strong>' + formatPrice(flashPrice) + '</strong> au lieu de <s>' + formatPrice(originalPrice) + '</s> - <strong>-' + discount + '%</strong>';
             if (discount < flashSettings.minDiscount) {
-                html += `<br>⚠️ Remise insuffisante — minimum ${flashSettings.minDiscount}% requis`;
-                preview.style.background = '#fee2e2';
-                preview.style.borderColor = '#fca5a5';
-                preview.style.color = '#991b1b';
+                html += '<br><span style="color:#991b1b;">Remise insuffisante - minimum ' + flashSettings.minDiscount + '% requis</span>';
+                preview.style.background = '#fee2e2'; preview.style.borderColor = '#fca5a5'; preview.style.color = '#991b1b';
             } else {
-                preview.style.background = '#fff7ed';
-                preview.style.borderColor = '#fed7aa';
-                preview.style.color = '#92400e';
+                preview.style.background = '#fff7ed'; preview.style.borderColor = '#fed7aa'; preview.style.color = '#92400e';
             }
-
-            if (start && end) {
-                const hours = Math.round((new Date(end) - new Date(start)) / 3600000);
-                html += `<br>⏱ Durée : ${hours}h`;
-                if (hours > flashSettings.maxHours) {
-                    html += ` — ⚠️ Maximum ${flashSettings.maxHours}h autorisé`;
-                }
-            }
-
             preview.innerHTML = html;
             preview.style.display = 'block';
         }
 
+        // ✅ SOUMISSION SANS DATES — l'admin les definit a l'approbation
         async function submitFlashRequest() {
-
-            if (!flashSettings.periodStart || !flashSettings.periodEnd) {
-                showToast('Aucune période flash active. Contactez l\'admin.', 'error');
-                return;
-            }
             const editId = document.getElementById('modal-flash').dataset.editId;
             const productId = parseInt(document.getElementById('flash-product-id').value);
             const variantId = document.getElementById('flash-variant-id').value;
             const flashPrice = parseFloat(document.getElementById('flash-price').value);
             const flashStock = parseInt(document.getElementById('flash-stock').value);
+            const originalPrice = parseFloat(document.getElementById('flash-original-price').value);
 
-            if (!productId) { showToast('Sélectionnez un produit', 'error'); return; }
+            if (!productId) { showToast('Selectionnez un produit', 'error'); return; }
             if (!flashPrice || flashPrice <= 0) { showToast('Prix flash invalide', 'error'); return; }
             if (!flashStock || flashStock <= 0) { showToast('Stock flash invalide', 'error'); return; }
+            if (originalPrice && flashPrice >= originalPrice) { showToast('Le prix flash doit etre inferieur au prix normal', 'error'); return; }
 
             const btn = document.getElementById('btn-save-flash');
-            btn.disabled = true; btn.textContent = '⏳...';
+            btn.disabled = true; btn.textContent = 'Envoi...';
 
-            const url = editId ? `${API}/flash-requests/${editId}` : `${API}/flash-requests`;
+            const url = editId ? (API + '/flash-requests/' + editId) : (API + '/flash-requests');
             const method = editId ? 'PUT' : 'POST';
 
             try {
@@ -1812,166 +1391,130 @@ ${o.status === 'Indisponible vendeur' ? `
                         productId,
                         variantId: variantId ? parseInt(variantId) : null,
                         flashPrice,
-                        flashStock,
-                        startDate: flashSettings.periodStart
-                            ? new Date(flashSettings.periodStart).toISOString()
-                            : new Date().toISOString(),
-                        endDate: flashSettings.periodEnd
-                            ? new Date(flashSettings.periodEnd).toISOString()
-                            : new Date(Date.now() + 47 * 3600000).toISOString() // 47h pour éviter la limite exacte
+                        flashStock
+                        // Pas de dates - l'admin les definit a l'approbation
                     })
                 });
-
                 if (res.ok) {
-                    showToast(editId ? 'Demande modifiée ✓' : 'Demande envoyée ✓', 'success');
+                    showToast(editId ? 'Demande modifiee' : 'Demande envoyee - l\'admin va definir les dates', 'success');
                     closeModal('modal-flash');
+                    delete document.getElementById('modal-flash').dataset.editId;
                     loadMyFlash();
                 } else {
                     const err = await res.text();
                     showToast('Erreur : ' + err, 'error');
                 }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+            } catch (e) { showToast('Erreur reseau', 'error'); }
 
-            btn.disabled = false; btn.textContent = '⚡ Envoyer la demande';
+            btn.disabled = false; btn.textContent = 'Envoyer la demande';
         }
 
         async function loadMyFlash() {
             try {
-                const res = await fetch(`${API}/flash-requests/seller/${sellerId}`);
+                const res = await fetch(API + '/flash-requests/seller/' + sellerId);
                 const requests = await res.json();
                 const el = document.getElementById('my-flash-list');
-
-                if (!requests.length) {
-                    el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucune demande flash. Créez votre première vente flash !</div>';
-                    return;
-                }
-
+                if (!requests.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucune demande flash. Cliquez sur Demander un flash !</div>'; return; }
                 const statusColors = {
-                    Pending: { bg: '#fef3c7', color: '#92400e', label: '⏳ En attente' },
-                    Approved: { bg: '#d1fae5', color: '#065f46', label: '✅ Approuvé' },
-                    Rejected: { bg: '#fee2e2', color: '#991b1b', label: '❌ Rejeté' }
+                    Pending: { bg: '#fef3c7', color: '#92400e', label: "En attente de l'admin" },
+                    Approved: { bg: '#d1fae5', color: '#065f46', label: 'Approuve' },
+                    Rejected: { bg: '#fee2e2', color: '#991b1b', label: 'Rejete' }
                 };
-
                 el.innerHTML = requests.map(f => {
                     const st = statusColors[f.status] || statusColors.Pending;
-                    return `<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-                    <div style="width:50px;height:50px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-                        ${f.product.imageUrl ? `<img src="${f.product.imageUrl}" style="width:100%;height:100%;object-fit:cover;">` : '📦'}
-                    </div>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-weight:700;font-size:14px;">${f.product.name}</div>
-                        <div style="font-size:12px;color:#6b7280;margin-top:2px;">
-                            ${f.variant ? `🎨 ${f.variant.combination} · ` : ''}
-                            📦 Stock: ${f.flashStock} · 
-                            📅 ${new Date(f.startDate).toLocaleDateString('fr-FR')} → ${new Date(f.endDate).toLocaleDateString('fr-FR')}
-                        </div>
-                        ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;">Motif : ${f.rejectionReason}</div>` : ''}
-                    </div>
-<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
-    <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:13px;color:#9ca3af;text-decoration:line-through;">${formatPrice(f.originalPrice)}</span>
-        <span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;">-${f.discount}%</span>
-    </div>
-    <div style="font-size:20px;font-weight:800;color:#f97316;">${formatPrice(f.flashPrice)}</div>
-    <span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:${st.bg};color:${st.color};">${st.label}</span>
-</div>
-                ${f.status === 'Rejected' ? `
-                <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f3f4f6;">
-                    <button onclick="editFlashRequest(${f.id})" style="flex:1;padding:8px;background:#f59e0b;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✏️ Modifier et renvoyer</button>
-                    <button onclick="deleteFlashRequest(${f.id})" style="padding:8px 14px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️ Supprimer</button>
-                </div>` : ''}
-            </div>`;
-
-
+                    const datesHtml = (f.status === 'Approved' && f.startDate && new Date(f.startDate).getFullYear() > 2000)
+                        ? new Date(f.startDate).toLocaleDateString('fr-FR') + ' a ' + new Date(f.endDate).toLocaleDateString('fr-FR')
+                        : "Dates a definir par l'admin";
+                    return '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;">' +
+                        '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
+                        '<div style="width:50px;height:50px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">' +
+                        (f.product.imageUrl ? '<img src="' + f.product.imageUrl + '" style="width:100%;height:100%;object-fit:cover;">' : '&#128230;') + '</div>' +
+                        '<div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:14px;">' + f.product.name + '</div>' +
+                        '<div style="font-size:12px;color:#6b7280;margin-top:2px;">' + (f.variant ? f.variant.combination + ' · ' : '') + 'Stock flash: ' + f.flashStock + ' · ' + datesHtml + '</div>' +
+                        (f.rejectionReason ? '<div style="font-size:12px;color:#ef4444;margin-top:4px;background:#fee2e2;padding:4px 8px;border-radius:6px;">Motif : ' + f.rejectionReason + '</div>' : '') + '</div>' +
+                        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">' +
+                        '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;color:#9ca3af;text-decoration:line-through;">' + formatPrice(f.originalPrice) + '</span><span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;">-' + f.discount + '%</span></div>' +
+                        '<div style="font-size:20px;font-weight:800;color:#f97316;">' + formatPrice(f.flashPrice) + '</div>' +
+                        '<span style="padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:' + st.bg + ';color:' + st.color + ';">' + st.label + '</span></div></div>' +
+                        (f.status === 'Rejected' ?
+                            '<div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f3f4f6;">' +
+                            '<button onclick="editFlashRequest(' + f.id + ')" style="flex:1;padding:8px;background:#f59e0b;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">Modifier et renvoyer</button>' +
+                            '<button onclick="deleteFlashRequest(' + f.id + ')" style="padding:8px 14px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">Supprimer</button></div>' : '') +
+                        (f.status === 'Pending' ?
+                            '<div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f3f4f6;">' +
+                            '<button onclick="deleteFlashRequest(' + f.id + ')" style="padding:8px 14px;background:#fee2e2;color:#991b1b;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">Annuler la demande</button></div>' : '') +
+                        '</div>';
                 }).join('');
             } catch (e) { console.error('loadMyFlash:', e); }
         }
 
-
-
-
         async function deleteFlashRequest(id) {
             if (!confirm('Supprimer cette demande flash ?')) return;
             try {
-                const res = await fetch(`${API}/flash-requests/${id}`, { method: 'DELETE' });
-                if (res.ok) { showToast('Demande supprimée ✓', 'success'); loadMyFlash(); }
+                const res = await fetch(API + '/flash-requests/' + id, { method: 'DELETE' });
+                if (res.ok) { showToast('Demande supprimee', 'success'); loadMyFlash(); }
                 else showToast('Erreur suppression', 'error');
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+            } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
         async function editFlashRequest(id) {
-            // Charger la demande et pré-remplir le formulaire
             try {
-                const res = await fetch(`${API}/flash-requests/seller/${sellerId}`);
+                const res = await fetch(API + '/flash-requests/seller/' + sellerId);
                 const requests = await res.json();
-                const f = requests.find(x => x.id === id);
-                if (!f) return;
-
+                const f = requests.find(x => x.id === id); if (!f) return;
                 await openAddFlash();
-
-                // Pré-remplir
+                const select = document.getElementById('flash-product-select');
+                for (let i = 0; i < select.options.length; i++) {
+                    if (parseInt(select.options[i].dataset.productId) === f.product.id) { select.selectedIndex = i; await onFlashProductChange(); break; }
+                }
                 document.getElementById('flash-product-id').value = f.product.id;
                 document.getElementById('flash-price').value = f.flashPrice;
                 document.getElementById('flash-stock').value = f.flashStock;
                 document.getElementById('flash-original-price').value = f.originalPrice;
-
-                // Stocker l'id pour la mise à jour
+                if (f.variant) {
+                    const varSelect = document.getElementById('flash-variant-select');
+                    for (let i = 0; i < varSelect.options.length; i++) {
+                        if (parseInt(varSelect.options[i].value) === f.variant.id) { varSelect.selectedIndex = i; onFlashVariantChange(); break; }
+                    }
+                }
+                updateFlashPreview();
                 document.getElementById('modal-flash').dataset.editId = id;
-                document.querySelector('#modal-flash h3').textContent = '✏️ Modifier la demande flash';
-
+                document.querySelector('#modal-flash h3').textContent = 'Modifier la demande flash';
             } catch (e) { showToast('Erreur chargement', 'error'); }
         }
 
-
+        // ══════════════════════════════════════════════════════════════
+        // BADGES
+        // ══════════════════════════════════════════════════════════════
         async function loadBadges() {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/products`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/products');
                 const products = await res.json();
                 const pending = products.filter(p => p.approvalStatus === 'Pending').length;
                 const badgeP = document.getElementById('badge-products');
-                const last = parseInt(localStorage.getItem(`badge-products-${sellerId}`) || '0');
-
-                if (document.getElementById('section-products').style.display !== 'none') {
-                    localStorage.setItem(`badge-products-${sellerId}`, pending);
-                    badgeP.style.display = 'none';
-                } else {
-                    badgeP.style.display = pending > last ? 'inline' : 'none';
-                    if (pending > last) badgeP.textContent = pending - last;
-                }
+                const last = parseInt(localStorage.getItem('badge-products-' + sellerId) || '0');
+                if (document.getElementById('section-products').style.display !== 'none') { localStorage.setItem('badge-products-' + sellerId, pending); badgeP.style.display = 'none'; }
+                else { badgeP.style.display = pending > last ? 'inline' : 'none'; if (pending > last) badgeP.textContent = pending - last; }
             } catch (e) { }
-
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
-
-                // Badge commandes En attente
                 const newO = orders.filter(o => o.status === 'En attente').length;
-                const lastO = parseInt(localStorage.getItem(`badge-orders-${sellerId}`) || '0');
+                const lastO = parseInt(localStorage.getItem('badge-orders-' + sellerId) || '0');
                 const badgeO = document.getElementById('badge-orders');
-                if (document.getElementById('section-orders').style.display !== 'none') {
-                    localStorage.setItem(`badge-orders-${sellerId}`, newO);
-                    badgeO.style.display = 'none';
-                } else {
-                    badgeO.style.display = newO > lastO ? 'inline' : 'none';
-                    if (newO > lastO) badgeO.textContent = newO - lastO;
-                }
-
-                // Badge échecs livraison
-                const failed = orders.filter(o => o.status === 'Échec livraison').length;
-                const lastF = parseInt(localStorage.getItem(`badge-failed-${sellerId}`) || '0');
+                if (document.getElementById('section-orders').style.display !== 'none') { localStorage.setItem('badge-orders-' + sellerId, newO); badgeO.style.display = 'none'; }
+                else { badgeO.style.display = newO > lastO ? 'inline' : 'none'; if (newO > lastO) badgeO.textContent = newO - lastO; }
+                const failed = orders.filter(o => o.status === 'Echec livraison').length;
+                const lastF = parseInt(localStorage.getItem('badge-failed-' + sellerId) || '0');
                 const badgeF = document.getElementById('badge-failed');
-                if (document.getElementById('section-failed').style.display !== 'none') {
-                    localStorage.setItem(`badge-failed-${sellerId}`, failed);
-                    badgeF.style.display = 'none';
-                } else {
-                    badgeF.style.display = failed > lastF ? 'inline' : 'none';
-                    if (failed > lastF) badgeF.textContent = failed - lastF;
-                }
+                if (document.getElementById('section-failed').style.display !== 'none') { localStorage.setItem('badge-failed-' + sellerId, failed); badgeF.style.display = 'none'; }
+                else { badgeF.style.display = failed > lastF ? 'inline' : 'none'; if (failed > lastF) badgeF.textContent = failed - lastF; }
             } catch (e) { }
         }
 
-        // ── PROFIL ────────────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // PROFIL
+        // ══════════════════════════════════════════════════════════════
         function openEditProfile() {
             if (!sellerData) return;
             document.getElementById('profile-name').value = sellerData.shopName || '';
@@ -1983,45 +1526,34 @@ ${o.status === 'Indisponible vendeur' ? `
         }
 
         async function saveProfile() {
-            const body = {
-                shopName: document.getElementById('profile-name').value.trim(),
-                shopDescription: document.getElementById('profile-desc').value.trim(),
-                phoneNumber: document.getElementById('profile-phone').value.trim(),
-                paymentMethod: document.getElementById('profile-payment').value,
-                paymentDetails: document.getElementById('profile-payment-details').value.trim()
-            };
+            const body = { shopName: document.getElementById('profile-name').value.trim(), shopDescription: document.getElementById('profile-desc').value.trim(), phoneNumber: document.getElementById('profile-phone').value.trim(), paymentMethod: document.getElementById('profile-payment').value, paymentDetails: document.getElementById('profile-payment-details').value.trim() };
             if (!body.shopName) { showToast('Le nom est obligatoire', 'error'); return; }
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/profile`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-                if (res.ok) {
-                    showToast('Profil mis à jour ✓', 'success'); closeModal('modal-profile');
-                    document.getElementById('dash-shop-name').textContent = body.shopName;
-                    document.getElementById('dash-shop-desc').textContent = body.shopDescription;
-                    sellerData.shopName = body.shopName; sellerData.shopDescription = body.shopDescription;
-                } else { showToast('Erreur', 'error'); }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+                const res = await fetch(API + '/sellers/' + sellerId + '/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                if (res.ok) { showToast('Profil mis a jour', 'success'); closeModal('modal-profile'); document.getElementById('dash-shop-name').textContent = body.shopName; document.getElementById('dash-shop-desc').textContent = body.shopDescription; sellerData.shopName = body.shopName; }
+                else showToast('Erreur', 'error');
+            } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
-        // ── CATÉGORIES ────────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // CATEGORIES & ATTRIBUTS
+        // ══════════════════════════════════════════════════════════════
         async function loadCategories() {
             try {
-                const res = await fetch(`${API}/categories`);
+                const res = await fetch(API + '/categories');
                 const parents = await res.json();
                 const select = document.getElementById('p-category');
-                select.innerHTML = '<option value="">-- Choisir une catégorie --</option>';
+                select.innerHTML = '<option value="">-- Choisir une categorie --</option>';
                 parents.forEach(parent => {
                     if (parent.children && parent.children.length > 0) {
-                        select.innerHTML += `<optgroup label="📁 ${parent.name}">`;
-                        parent.children.forEach(child => { select.innerHTML += `<option value="${child.id}">${child.name}</option>`; });
-                        select.innerHTML += `</optgroup>`;
-                    } else {
-                        select.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
-                    }
+                        select.innerHTML += '<optgroup label="' + parent.name + '">';
+                        parent.children.forEach(child => { select.innerHTML += '<option value="' + child.id + '">' + child.name + '</option>'; });
+                        select.innerHTML += '</optgroup>';
+                    } else { select.innerHTML += '<option value="' + parent.id + '">' + parent.name + '</option>'; }
                 });
             } catch (e) { }
         }
 
-        // ── ATTRIBUTS ─────────────────────────────────────────
         async function loadProductAttributes() {
             const catId = document.getElementById('p-category').value;
             const section = document.getElementById('p-attributes-section');
@@ -2031,26 +1563,21 @@ ${o.status === 'Indisponible vendeur' ? `
             if (!document.getElementById('p-id').value) {
                 const catText = document.getElementById('p-category').options[document.getElementById('p-category').selectedIndex]?.text || 'PRD';
                 const prefix = catText.substring(0, 3).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                document.getElementById('p-sku').value = `RAN-${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
+                document.getElementById('p-sku').value = 'RAN-' + prefix + '-' + Math.floor(1000 + Math.random() * 9000);
             }
             try {
-                const res = await fetch(`${API}/category-attributes/${catId}`);
+                const res = await fetch(API + '/category-attributes/' + catId);
                 const attrs = await res.json();
                 if (!attrs.length) { section.style.display = 'none'; varSection.style.display = 'none'; return; }
                 section.style.display = 'block';
-                fields.innerHTML = attrs.map(a => `
-                            <div class="attr-field full">
-                                <label>${a.attributeName}</label>
-                                ${a.attributeType === 'select'
-                        ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
-                                        ${a.attributeOptions.split(',').map(o => `
-                                            <label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;">
-                                                <input type="checkbox" name="attr_${a.attributeName}" value="${o.trim()}" onchange="updateAttrHidden('${a.attributeName}')">
-                                                <span>${o.trim()}</span>
-                                            </label>`).join('')}
-                                        <input type="hidden" id="attr_${a.attributeName}" value=""></div>`
-                        : `<input type="${a.attributeType === 'number' ? 'number' : 'text'}" id="attr_${a.attributeName}" placeholder="${a.attributeName}">`}
-                            </div>`).join('');
+                fields.innerHTML = attrs.map(a =>
+                    '<div class="attr-field full"><label>' + a.attributeName + '</label>' +
+                    (a.attributeType === 'select'
+                        ? '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">' +
+                        a.attributeOptions.split(',').map(o => '<label style="display:flex;align-items:center;gap:6px;background:#f9fafb;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px;"><input type="checkbox" name="attr_' + a.attributeName + '" value="' + o.trim() + '" onchange="updateAttrHidden(\'' + a.attributeName + '\')"><span>' + o.trim() + '</span></label>').join('') +
+                        '<input type="hidden" id="attr_' + a.attributeName + '" value=""></div>'
+                        : '<input type="' + (a.attributeType === 'number' ? 'number' : 'text') + '" id="attr_' + a.attributeName + '" placeholder="' + a.attributeName + '">') + '</div>'
+                ).join('');
                 varSection.style.display = attrs.some(a => a.attributeType === 'select') ? 'block' : 'none';
                 document.getElementById('p-variants-list').innerHTML = '';
                 window._variantLabels = null;
@@ -2058,33 +1585,27 @@ ${o.status === 'Indisponible vendeur' ? `
         }
 
         function updateAttrHidden(attrName) {
-            const checked = document.querySelectorAll(`input[name="attr_${attrName}"]:checked`);
-            document.getElementById(`attr_${attrName}`).value = Array.from(checked).map(cb => cb.value).join(',');
+            const checked = document.querySelectorAll('input[name="attr_' + attrName + '"]:checked');
+            document.getElementById('attr_' + attrName).value = Array.from(checked).map(cb => cb.value).join(',');
         }
 
-        // ── VARIANTES ─────────────────────────────────────────
         function generateVariants() {
             const attrFields = document.querySelectorAll('[id^="attr_"]');
             const selectedAttrs = {};
             attrFields.forEach(el => { const key = el.id.replace('attr_', ''); if (el.value) selectedAttrs[key] = el.value.split(',').map(v => v.trim()).filter(v => v); });
             const keys = Object.keys(selectedAttrs);
-            if (!keys.length) { showToast('Sélectionnez d\'abord des attributs !', 'error'); return; }
+            if (!keys.length) { showToast("Selectionnez d'abord des attributs !", 'error'); return; }
             const combinations = keys.map(k => selectedAttrs[k]).reduce((acc, curr) => acc.flatMap(a => curr.map(b => [...a, b])), [[]]);
-            const labels = combinations.map(c => keys.map((k, i) => `${k}: ${c[i]}`).join(' / '));
+            const labels = combinations.map(c => keys.map((k, i) => k + ': ' + c[i]).join(' / '));
             window._variantLabels = labels;
-            document.getElementById('p-variants-list').innerHTML = `
-                        <table class="variant-table">
-                            <thead><tr><th>Variante</th><th>Stock</th></tr></thead>
-                            <tbody>${labels.map((label, i) => `<tr><td>${label}</td><td><input type="number" id="variant_stock_${i}" value="" placeholder="0" min="0"
-        style="color:#9ca3af;"
-        onfocus="if(this.value===''){this.style.color='#111827'}"
-        oninput="this.style.color='#111827'"
-        onblur="if(this.value===''){this.style.color='#9ca3af'}"
-></td></tr>`).join('')}</tbody>
-                        </table>`;
+            document.getElementById('p-variants-list').innerHTML = '<table class="variant-table"><thead><tr><th>Variante</th><th>Stock</th></tr></thead><tbody>' +
+                labels.map((label, i) => '<tr><td>' + label + '</td><td><input type="number" id="variant_stock_' + i + '" value="" placeholder="0" min="0" style="color:#9ca3af;" onfocus="if(this.value===\'\'){this.style.color=\'#111827\'}" oninput="this.style.color=\'#111827\'" onblur="if(this.value===\'\'){this.style.color=\'#9ca3af\'}"></td></tr>').join('') +
+                '</tbody></table>';
         }
 
-        // ── IMAGES ────────────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // IMAGES
+        // ══════════════════════════════════════════════════════════════
         function handleImageUpload(input) {
             if (!input.files || !input.files[0]) return;
             if (productImages.length + newImageFiles.length >= 5) { showToast('Maximum 5 images !', 'error'); input.value = ''; return; }
@@ -2094,15 +1615,15 @@ ${o.status === 'Indisponible vendeur' ? `
         function renderGallery() {
             const gallery = document.getElementById('p-image-gallery');
             gallery.innerHTML = '';
-            if (!productImages.length && !newImageFiles.length) { gallery.innerHTML = '<p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutée</p>'; return; }
+            if (!productImages.length && !newImageFiles.length) { gallery.innerHTML = '<p style="color:#9ca3af;font-size:13px;margin-top:8px;">Aucune image ajoutee</p>'; return; }
             productImages.forEach((url, i) => {
                 const isMain = i === 0;
-                gallery.innerHTML += `<div class="img-thumb ${isMain ? 'main' : ''}"><img src="${url}">${isMain ? '<span class="main-label">Principal</span>' : ''}<button type="button" class="btn-remove" onclick="removeExistingImage(${i})">✕</button>${!isMain ? `<button type="button" class="btn-main" onclick="setMainImage(${i})">Principal</button>` : ''}</div>`;
+                gallery.innerHTML += '<div class="img-thumb ' + (isMain ? 'main' : '') + '"><img src="' + url + '">' + (isMain ? '<span class="main-label">Principal</span>' : '') + '<button type="button" class="btn-remove" onclick="removeExistingImage(' + i + ')">x</button>' + (!isMain ? '<button type="button" class="btn-main" onclick="setMainImage(' + i + ')">Principal</button>' : '') + '</div>';
             });
             newImageFiles.forEach((file, i) => {
                 const url = URL.createObjectURL(file);
                 const isMain = productImages.length === 0 && i === 0;
-                gallery.innerHTML += `<div class="img-thumb ${isMain ? 'main' : ''}"><img src="${url}">${isMain ? '<span class="main-label">Principal</span>' : ''}<button type="button" class="btn-remove" onclick="removeNewImage(${i})">✕</button></div>`;
+                gallery.innerHTML += '<div class="img-thumb ' + (isMain ? 'main' : '') + '"><img src="' + url + '">' + (isMain ? '<span class="main-label">Principal</span>' : '') + '<button type="button" class="btn-remove" onclick="removeNewImage(' + i + ')">x</button></div>';
             });
         }
 
@@ -2110,7 +1631,9 @@ ${o.status === 'Indisponible vendeur' ? `
         function removeNewImage(i) { newImageFiles.splice(i, 1); renderGallery(); }
         function setMainImage(i) { productImages.unshift(productImages.splice(i, 1)[0]); renderGallery(); }
 
-        // ── MODAL PRODUIT ─────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // PRODUITS
+        // ══════════════════════════════════════════════════════════════
         function openAddProduct() {
             document.getElementById('modal-product-title').textContent = 'Ajouter un produit';
             document.getElementById('p-id').value = '';
@@ -2125,21 +1648,20 @@ ${o.status === 'Indisponible vendeur' ? `
             openModal('modal-product');
         }
 
-        // ── SOUMETTRE PRODUIT ─────────────────────────────────
         async function submitProduct() {
             const productId = document.getElementById('p-id').value;
-            const url = productId ? `${API}/sellers/${sellerId}/products/${productId}` : `${API}/sellers/${sellerId}/products`;
+            const url = productId ? (API + '/sellers/' + sellerId + '/products/' + productId) : (API + '/sellers/' + sellerId + '/products');
             const method = productId ? 'PUT' : 'POST';
             const name = document.getElementById('p-name').value.trim();
             const price = parseFloat(document.getElementById('p-price').value);
             const catId = document.getElementById('p-category').value;
-            if (!name || !price || !catId) { showToast('Nom, prix et catégorie sont obligatoires', 'error'); return; }
+            if (!name || !price || !catId) { showToast('Nom, prix et categorie sont obligatoires', 'error'); return; }
             const btn = document.getElementById('btn-save-product');
             const variantSection = document.getElementById('p-variants-section');
-            if (variantSection.style.display !== 'none' && !window._variantLabels) { showToast('Veuillez générer les variantes', 'error'); return; }
+            if (variantSection.style.display !== 'none' && !window._variantLabels) { showToast('Veuillez generer les variantes', 'error'); return; }
             if (window._variantLabels) {
                 for (let i = 0; i < window._variantLabels.length; i++) {
-                    const si = document.getElementById(`variant_stock_${i}`);
+                    const si = document.getElementById('variant_stock_' + i);
                     if (!si || si.value === '' || isNaN(parseInt(si.value)) || parseInt(si.value) < 0) { showToast('Renseignez le stock de toutes les variantes', 'error'); return; }
                 }
             }
@@ -2161,34 +1683,36 @@ ${o.status === 'Indisponible vendeur' ? `
             formData.append('images', JSON.stringify(productImages));
             newImageFiles.forEach(file => formData.append('imageFiles', file));
             if (window._variantLabels) {
-                const variants = window._variantLabels.map((label, i) => ({ combination: label, stock: parseInt(document.getElementById(`variant_stock_${i}`)?.value || 0) }));
+                const variants = window._variantLabels.map((label, i) => ({ combination: label, stock: parseInt(document.getElementById('variant_stock_' + i)?.value || 0) }));
                 formData.append('variants', JSON.stringify(variants));
             }
             try {
                 const res = await fetch(url, { method, body: formData });
-                if (res.ok) { showToast('Produit soumis pour validation ✓', 'success'); closeModal('modal-product'); loadMyProducts(); }
-                else { const data = await res.json().catch(() => ({})); showToast(data.message || 'Erreur lors de l\'envoi', 'error'); }
-            } catch (e) { showToast('Erreur réseau', 'error'); }
+                if (res.ok) { showToast('Produit soumis pour validation', 'success'); closeModal('modal-product'); loadMyProducts(); }
+                else { const data = await res.json().catch(() => ({})); showToast(data.message || "Erreur lors de l'envoi", 'error'); }
+            } catch (e) { showToast('Erreur reseau', 'error'); }
             btn.disabled = false; btn.textContent = 'Soumettre pour validation';
         }
 
         function viewProductDetail(productId) {
-            if (productId) window.open(`product-details.html?id=${productId}`, '_blank');
-            else showToast('Produit pas encore publié', 'error');
+            if (productId) window.open('product-details.html?id=' + productId, '_blank');
+            else showToast('Produit pas encore publie', 'error');
         }
 
-        // ── UTILS ─────────────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // UTILS
+        // ══════════════════════════════════════════════════════════════
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0, 0); }
         function openModal(id) { document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
         document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
         function formatPrice(p) { return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0); }
-        function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3500); }
+        function showToast(msg, type) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + (type || ''); setTimeout(() => { t.className = 'toast'; }, 3500); }
 
-
-        // ── GRAPHIQUE VENTES ──────────────────────────────────────
-        let salesChartInstance = null;
-        let salesChartPeriod = 7;
+        // ══════════════════════════════════════════════════════════════
+        // GRAPHIQUE VENTES
+        // ══════════════════════════════════════════════════════════════
+        let salesChartInstance = null, salesChartPeriod = 7;
 
         function setChartPeriod(days) {
             salesChartPeriod = days;
@@ -2201,85 +1725,33 @@ ${o.status === 'Indisponible vendeur' ? `
 
         async function renderSalesChart() {
             try {
-                const res = await fetch(`${API}/sellers/${sellerId}/orders`);
+                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
-
-                // Générer les N derniers jours
-                const days = salesChartPeriod;
-                const labels = [];
-                const data = [];
-
-                for (let i = days - 1; i >= 0; i--) {
-                    const d = new Date();
-                    d.setDate(d.getDate() - i);
+                const labels = [], data = [];
+                for (let i = salesChartPeriod - 1; i >= 0; i--) {
+                    const d = new Date(); d.setDate(d.getDate() - i);
                     const key = d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
-                    const dayStr = d.toDateString();
-
-                    const total = orders
-                        .filter(o => new Date(o.createdAt).toDateString() === dayStr && o.status !== 'Annulée')
-                        .reduce((s, o) => s + (o.sellerTotal || 0), 0);
-
-                    labels.push(key);
-                    data.push(total);
+                    const total = orders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && o.status !== 'Annulee').reduce((s, o) => s + (o.sellerTotal || 0), 0);
+                    labels.push(key); data.push(total);
                 }
-
                 const ctx = document.getElementById('salesChart').getContext('2d');
-
                 if (salesChartInstance) salesChartInstance.destroy();
-
                 salesChartInstance = new Chart(ctx, {
                     type: 'line',
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: 'Ventes (FCFA)',
-                            data,
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16,185,129,0.08)',
-                            borderWidth: 2.5,
-                            pointBackgroundColor: '#10b981',
-                            pointRadius: 4,
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: ctx => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(ctx.parsed.y)
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: v => v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v,
-                                    font: { size: 11 }
-                                },
-                                grid: { color: '#f3f4f6' }
-                            },
-                            x: {
-                                ticks: { font: { size: 10 } },
-                                grid: { display: false }
-                            }
-                        }
-                    }
+                    data: { labels, datasets: [{ label: 'Ventes (FCFA)', data, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', borderWidth: 2.5, pointBackgroundColor: '#10b981', pointRadius: 4, tension: 0.4, fill: true }] },
+                    options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(ctx.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v, font: { size: 11 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 10 } }, grid: { display: false } } } }
                 });
             } catch (e) { console.error('Chart error:', e); }
         }
 
-        // ── POLLING AUTOMATIQUE ────────────────────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // AUTO-REFRESH
+        // ══════════════════════════════════════════════════════════════
         function startAutoRefresh() {
             setInterval(async () => {
                 if (!sellerId) return;
-
-                // Mettre à jour les stats du dashboard
                 try {
-                    const res = await fetch(`${API}/sellers/my?clientId=${clientId}`);
+                    const res = await fetch(API + '/sellers/my?clientId=' + clientId);
                     if (res.ok) {
                         const s = await res.json();
                         document.getElementById('dash-total-products').textContent = s.totalProducts ?? '0';
@@ -2288,99 +1760,14 @@ ${o.status === 'Indisponible vendeur' ? `
                         document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
                     }
                 } catch (e) { }
-
-                // Rafraîchir l'onglet actuellement visible
-                const sections = {
-                    'section-orders': loadMyOrders,
-                    'section-products': loadMyProducts,
-                    'section-failed': loadFailedDeliveries,
-                    'section-payouts': loadMyPayouts,
-                    'section-reviews': loadMyReviews
-                };
-
+                const sections = { 'section-orders': loadMyOrders, 'section-products': loadMyProducts, 'section-failed': loadFailedDeliveries, 'section-payouts': loadMyPayouts, 'section-reviews': loadMyReviews };
                 for (const [id, fn] of Object.entries(sections)) {
                     const el = document.getElementById(id);
-                    if (el && el.style.display !== 'none') {
-                        fn();
-                        break;
-                    }
+                    if (el && el.style.display !== 'none') { fn(); break; }
                 }
-
-                // Toujours mettre à jour les badges
                 loadBadges();
-
-            }, 20000); // toutes les 30 secondes
+            }, 20000);
         }
-
     </script>
-
-
-    <!-- AVANT la balise </body>, AJOUTE : -->
-    <div class="modal-overlay" id="modal-flash">
-        <div class="modal" style="max-width:580px;">
-            <h3>⚡ Demande de vente flash</h3>
-            <input type="hidden" id="flash-product-id">
-            <input type="hidden" id="flash-variant-id">
-
-            <div class="form-section">
-                <h4>📦 Choisir un produit approuvé</h4>
-                <select id="flash-product-select" onchange="onFlashProductChange()" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;">
-                    <option value="">-- Sélectionner un produit --</option>
-                </select>
-            </div>
-
-            <div class="form-section" id="flash-variant-section" style="display:none;">
-                <h4>🎨 Variante concernée</h4>
-                <select id="flash-variant-select" onchange="onFlashVariantChange()" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;">
-                    <option value="">-- Sélectionner une variante --</option>
-                </select>
-                <div id="flash-variant-hint" style="font-size:12px;color:#f97316;margin-top:6px;"></div>
-            </div>
-
-            <div class="form-section">
-                <h4>💰 Prix & Stock flash</h4>
-                <div class="form-grid">
-                    <div>
-                        <label>Prix normal</label>
-                        <input type="number" id="flash-original-price" readonly style="background:#f3f4f6;color:#6b7280;">
-                    </div>
-                    <div>
-                        <label>Prix flash (FCFA) *</label>
-                        <input type="number" id="flash-price" placeholder="Ex: 8000" oninput="updateFlashPreview()">
-                    </div>
-                    <div>
-                        <label>Stock flash *</label>
-                        <input type="number" id="flash-stock" placeholder="Ex: 5" oninput="updateFlashPreview()">
-                    </div>
-                    <div>
-                        <label>Stock disponible</label>
-                        <input type="number" id="flash-available-stock" readonly style="background:#f3f4f6;color:#6b7280;">
-                    </div>
-                </div>
-                <div id="flash-preview" style="display:none;margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;color:#92400e;"></div>
-            </div>
-
-            <div class="form-section" id="flash-period-info" style="display:none;">
-                <h4>📅 Période flash</h4>
-                <div id="flash-period-display" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;color:#c2410c;font-weight:600;"></div>
-                <div style="font-size:12px;color:#6b7280;margin-top:8px;" id="flash-duration-hint"></div>
-            </div>
-            <div class="form-section" id="flash-no-period" style="display:none;">
-                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:13px;color:#1e40af;">
-                    ℹ️ Aucune période flash n'est définie actuellement. Votre demande sera publiée lors de la prochaine période.
-                </div>
-            </div>
-
-            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:12px;color:#1e40af;margin-bottom:16px;">
-                ℹ️ Votre demande sera examinée par l'admin avant publication. Durée max et remise min définies par Ranita.
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal('modal-flash')">Annuler</button>
-                <button class="btn-save" id="btn-save-flash" onclick="submitFlashRequest()" style="background:#f97316;">⚡ Envoyer la demande</button>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>
