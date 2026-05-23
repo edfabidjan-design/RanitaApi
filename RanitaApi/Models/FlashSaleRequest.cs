@@ -6,6 +6,7 @@
         public int SellerId { get; set; }
         public Seller Seller { get; set; } = null!;
         public int ProductId { get; set; }
+        public int OriginalVariantStock { get; set; }
         public Product Product { get; set; } = null!;
         public int? VariantId { get; set; }
         public ProductVariant? Variant { get; set; }

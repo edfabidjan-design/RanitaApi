@@ -40,7 +40,8 @@ namespace RanitaApi.Controllers
                     Discount = (int)Math.Round((1 - f.FlashPrice / f.OriginalPrice) * 100),
                     Seller = new { f.Seller.Id, f.Seller.ShopName },
                     Product = new { f.Product.Id, f.Product.Name, f.Product.ImageUrl },
-                    Variant = f.Variant == null ? null : new { f.Variant.Id, f.Variant.Combination, f.Variant.Stock }
+                    Variant = f.Variant == null ? null : new { f.Variant.Id, f.Variant.Combination, f.Variant.Stock },
+                    OriginalVariantStock = f.OriginalVariantStock
                 })
                 .ToListAsync();
 
@@ -143,6 +144,10 @@ namespace RanitaApi.Controllers
                 EndDate = dto.EndDate.ToUniversalTime(),
                 Status = "Pending",
                 CreatedAt = DateTime.UtcNow
+
+                OriginalVariantStock = dto.VariantId.HasValue
+    ? (await _context.ProductVariants.FindAsync(dto.VariantId.Value))?.Stock ?? 0
+    : product.Stock,
             };
 
             _context.FlashSaleRequests.Add(request);

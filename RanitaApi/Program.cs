@@ -916,6 +916,13 @@ try
         VALUES ('flash_min_discount_pct', '10')
         ON CONFLICT (""Key"") DO NOTHING;
     ");
+
+    // AJOUTE dans le bloc migrations :
+    db.Database.ExecuteSqlRaw(@"
+    ALTER TABLE ""FlashSaleRequests"" 
+    ADD COLUMN IF NOT EXISTS ""OriginalVariantStock"" integer NOT NULL DEFAULT 0;
+");
+
     Console.WriteLine("FlashSaleRequests OK");
 }
 catch (Exception ex) { Console.WriteLine("FlashSaleRequests error: " + ex.Message); }

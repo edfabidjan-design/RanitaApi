@@ -1640,7 +1640,7 @@
                 <div style="font-size:12px;color:#6b7280;margin-top:3px;display:flex;flex-direction:column;gap:2px;">
                     <span>🏪 ${f.seller?.shopName || '—'}</span>
                     ${f.variant ? `<span>🎨 ${f.variant.combination}</span>` : ''}
-                    <span>📦 Stock demandé : <strong>${f.flashStock}</strong> · Stock initial : <strong>${f.variant?.stock ?? f.product?.stock ?? '—'}</strong></span>
+                   <span>📦 Stock demandé : <strong>${f.flashStock}</strong> · Stock initial : <strong>${f.originalVariantStock ?? f.product?.stock ?? '—'}</strong></span>
                     <span>📅 ${new Date(f.startDate).toLocaleDateString('fr-FR')} → ${new Date(f.endDate).toLocaleDateString('fr-FR')}</span>
                 </div>
                 ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;background:#fee2e2;padding:4px 8px;border-radius:6px;">Motif : ${f.rejectionReason}</div>` : ''}
