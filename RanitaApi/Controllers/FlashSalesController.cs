@@ -223,6 +223,24 @@ namespace RanitaApi.Controllers
             return Ok(new { Message = "Flash supprimé", StockRestitue = stockNonVendu });
         }
 
+
+        [HttpPatch("{id}/dates")]
+        public async Task<IActionResult> UpdateDates(int id, [FromBody] UpdateDatesDto dto)
+        {
+            var flash = await _context.FlashSales.FindAsync(id);
+            if (flash == null) return NotFound();
+            flash.StartDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc);
+            flash.EndDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        public class UpdateDatesDto
+        {
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+        }
+
         public class FlashSaleDto
         {
             public int ProductId { get; set; }
