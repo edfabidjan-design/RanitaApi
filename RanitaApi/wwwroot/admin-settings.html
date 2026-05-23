@@ -810,6 +810,34 @@
             <div class="info-box info-yellow">⚡ Les ventes flash s'affichent automatiquement sur la home avec un compte à rebours. Le prix flash reprend automatiquement à l'expiration.</div>
 
 
+
+            <div class="section-card" style="margin-bottom:24px;">
+                <div class="section-title">
+                    📋 Demandes flash vendeurs
+                    <span id="frBadge" style="background:#f97316;color:white;border-radius:999px;padding:2px 10px;font-size:12px;margin-left:8px;display:none;"></span>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:16px;">
+                    <button onclick="frFilter('Pending',this)" class="fr-btn fr-btn-active">⏳ En attente</button>
+                    <button onclick="frFilter('Approved',this)" class="fr-btn">✅ Approuvées</button>
+                    <button onclick="frFilter('Rejected',this)" class="fr-btn">❌ Rejetées</button>
+                </div>
+                <div id="frList"><div style="text-align:center;padding:30px;color:#9ca3af;font-size:13px;">⏳ Chargement...</div></div>
+            </div>
+
+            <!-- Modal rejet -->
+            <div id="frRejectModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+                <div style="background:white;border-radius:14px;padding:28px;width:100%;max-width:420px;margin:20px;">
+                    <h3 style="font-size:16px;font-weight:800;margin-bottom:16px;">❌ Rejeter cette demande</h3>
+                    <textarea id="frRejectReason" rows="3" placeholder="Motif du rejet (obligatoire)..." style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+                    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+                        <button onclick="frCloseReject()" style="background:#f3f4f6;color:#374151;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Annuler</button>
+                        <button onclick="frConfirmReject()" style="background:#ef4444;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Confirmer</button>
+                    </div>
+                </div>
+            </div>
+
+
+
             <div class="section-card" style="margin-bottom:20px;">
                 <div class="section-title">⚙️ Paramètres flash vendeurs</div>
                 <div class="fields-grid">
@@ -845,29 +873,7 @@
 
 
 
-            <div class="section-card" style="margin-bottom:24px;">
-                <div class="section-title">
-                    📋 Demandes flash vendeurs
-                    <span id="frBadge" style="background:#f97316;color:white;border-radius:999px;padding:2px 10px;font-size:12px;margin-left:8px;display:none;"></span>
-                </div>
-                <div style="display:flex;gap:8px;margin-bottom:16px;">
-                    <button onclick="frFilter('Pending',this)" class="fr-btn fr-btn-active">⏳ En attente</button>
-                    <button onclick="frFilter('Approved',this)" class="fr-btn">✅ Approuvées</button>
-                    <button onclick="frFilter('Rejected',this)" class="fr-btn">❌ Rejetées</button>
-                </div>
-                <div id="frList"><div style="text-align:center;padding:30px;color:#9ca3af;font-size:13px;">⏳ Chargement...</div></div>
-            </div>
 
-            <!-- Modal rejet -->
-            <div id="frRejectModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
-                <div style="background:white;border-radius:14px;padding:28px;width:100%;max-width:420px;margin:20px;">
-                    <h3 style="font-size:16px;font-weight:800;margin-bottom:16px;">❌ Rejeter cette demande</h3>
-                    <textarea id="frRejectReason" rows="3" placeholder="Motif du rejet (obligatoire)..." style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
-                    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
-                        <button onclick="frCloseReject()" style="background:#f3f4f6;color:#374151;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Annuler</button>
-                        <button onclick="frConfirmReject()" style="background:#ef4444;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;">Confirmer</button>
-                    </div>
-                </div>
             </div>
 
 
