@@ -152,6 +152,7 @@ namespace RanitaApi.Controllers
         }
 
         // PUT approuver (admin)
+        // Dans Approve(), remplace les dates fixes par les dates de la période :
         [HttpPut("{id}/approve")]
         public async Task<IActionResult> Approve(int id)
         {
@@ -160,6 +161,27 @@ namespace RanitaApi.Controllers
                 .FirstOrDefaultAsync(f => f.Id == id);
             if (request == null) return NotFound();
             if (request.Status != "Pending") return BadRequest("Demande déjà traitée.");
+
+            // ✅ Lire la période flash depuis les settings
+            var periodStart = await _context.SiteSettings
+                .FirstOrDefaultAsync(s => s.Key == "flash_period_start");
+            var periodEnd = await _context.SiteSettings
+                .FirstOrDefaultAsync(s => s.Key == "flash_period_end");
+
+            DateTime startDate, endDate;
+
+            if (DateTime.TryParse(periodStart?.Value, out var ps) &&
+                DateTime.TryParse(periodEnd?.Value, out var pe))
+            {
+                startDate = ps.ToUniversalTime();
+                endDate = pe.ToUniversalTime();
+            }
+            else
+            {
+                // Fallback : dates de la demande
+                startDate = request.StartDate;
+                endDate = request.EndDate;
+            }
 
             // Déduire stock
             if (request.VariantId.HasValue)
@@ -177,7 +199,7 @@ namespace RanitaApi.Controllers
                 request.Product.Stock -= request.FlashStock;
             }
 
-            // Créer le flash réel
+            // Créer le flash avec les dates de la période
             var flash = new FlashSale
             {
                 ProductId = request.ProductId,
@@ -186,8 +208,8 @@ namespace RanitaApi.Controllers
                 OriginalPrice = request.OriginalPrice,
                 FlashStock = request.FlashStock,
                 FlashStockSold = 0,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
+                StartDate = startDate,
+                EndDate = endDate,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };

@@ -892,6 +892,20 @@ try
         );
     ");
     // Settings flash vendeur
+
+    // DANS le bloc SiteSettings seed, AJOUTE :
+    db.Database.ExecuteSqlRaw(@"
+    INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
+    VALUES ('flash_period_start', '') ON CONFLICT (""Key"") DO NOTHING;
+");
+    db.Database.ExecuteSqlRaw(@"
+    INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
+    VALUES ('flash_period_end', '') ON CONFLICT (""Key"") DO NOTHING;
+");
+    db.Database.ExecuteSqlRaw(@"
+    INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
+    VALUES ('flash_period_label', '') ON CONFLICT (""Key"") DO NOTHING;
+");
     db.Database.ExecuteSqlRaw(@"
         INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
         VALUES ('flash_max_duration_hours', '48')
