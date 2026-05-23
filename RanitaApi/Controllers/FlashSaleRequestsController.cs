@@ -207,6 +207,7 @@ namespace RanitaApi.Controllers
                 request.Product.Stock -= request.FlashStock;
             }
 
+            var now = DateTime.UtcNow;
             var flash = new FlashSale
             {
                 ProductId = request.ProductId,
@@ -217,8 +218,8 @@ namespace RanitaApi.Controllers
                 FlashStockSold = 0,
                 StartDate = startDate,
                 EndDate = endDate,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                IsActive = startDate <= now && now <= endDate, // actif seulement si période en cours
+                CreatedAt = now
             };
 
             _context.FlashSales.Add(flash);
