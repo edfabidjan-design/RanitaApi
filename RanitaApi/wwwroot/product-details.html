@@ -889,16 +889,32 @@ ${hasVariants ? `
         async function loadSellerInfo() {
             try {
                 const res = await fetch(`${API_BASE}/sellers/product/${productId}`);
-                if (!res.ok) return;
+                if (!res.ok) {
+                    document.getElementById('seller-badge').innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #d1fae5;">
+                    🏪 Ranita Market
+                </span>`;
+                    return;
+                }
                 const data = await res.json();
                 if (data.sellerId) {
                     document.getElementById('seller-badge').innerHTML = `
-                                    <a href="boutique.html?id=${data.sellerId}"
-                                       style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">
-                                        🏪 ${data.shopName}
-                                    </a>`;
+                <a href="boutique.html?id=${data.sellerId}"
+                   style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">
+                    🏪 ${data.shopName}
+                </a>`;
+                } else {
+                    document.getElementById('seller-badge').innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #d1fae5;">
+                    🏪 Ranita Market
+                </span>`;
                 }
-            } catch (e) { }
+            } catch (e) {
+                document.getElementById('seller-badge').innerHTML = `
+            <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #d1fae5;">
+                🏪 Ranita Market
+            </span>`;
+            }
         }
     </script>
     <script src="/cart-badge.js"></script>
