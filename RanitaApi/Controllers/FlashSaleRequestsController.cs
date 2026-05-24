@@ -161,20 +161,21 @@ namespace RanitaApi.Controllers
 
             // ✅ Vérifier si un FlashSale existe déjà — mise à jour au lieu de créer
             var existingFlash = await _context.FlashSales
-                .FirstOrDefaultAsync(f => f.ProductId == request.ProductId
-                                       && f.VariantId == request.VariantId);
+                .FirstOrDefaultAsync(f => f.ProductId == request.ProductId);
 
             if (existingFlash != null)
             {
                 existingFlash.StartDate = startDate;
                 existingFlash.EndDate = endDate;
                 existingFlash.IsActive = true;
-                existingFlash.VariantId = request.VariantId; // ✅ conserver le bon VariantId
+                existingFlash.VariantId = request.VariantId; // ✅ force le bon VariantId
+                existingFlash.FlashPrice = request.FlashPrice;
+                existingFlash.FlashStock = request.FlashStock;
                 request.StartDate = startDate;
                 request.EndDate = endDate;
                 request.Status = "Approved";
                 await _context.SaveChangesAsync();
-                return Ok(new { Message = "Dates du flash mises à jour.", FlashId = existingFlash.Id });
+                return Ok(new { Message = "Flash mis à jour.", FlashId = existingFlash.Id });
             }
 
             // Premier flash — déduire stock
