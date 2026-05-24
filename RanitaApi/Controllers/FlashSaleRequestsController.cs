@@ -149,19 +149,35 @@ namespace RanitaApi.Controllers
                 .Include(f => f.Product).ThenInclude(p => p.Variants)
                 .FirstOrDefaultAsync(f => f.Id == id);
             if (request == null) return NotFound();
-            if (request.Status != "Pending") return BadRequest("Demande déjà traitée.");
+            if (request.Status == "Rejected") return BadRequest("Impossible d'approuver une demande rejetée.");
 
-            // Dates fournies par l'admin dans le body
             var startDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc);
             var endDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc);
 
             if (endDate <= startDate)
                 return BadRequest("La date de fin doit être après la date de début.");
-
             if (endDate <= DateTime.UtcNow)
                 return BadRequest("La date de fin est déjà passée.");
 
-            // Déduire stock
+            // ✅ Vérifier si un FlashSale existe déjà — mise à jour au lieu de créer
+            var existingFlash = await _context.FlashSales
+                .FirstOrDefaultAsync(f => f.ProductId == request.ProductId
+                                       && f.VariantId == request.VariantId);
+
+            if (existingFlash != null)
+            {
+                // Mise à jour des dates uniquement
+                existingFlash.StartDate = startDate;
+                existingFlash.EndDate = endDate;
+                existingFlash.IsActive = true;
+                request.StartDate = startDate;
+                request.EndDate = endDate;
+                request.Status = "Approved";
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Dates du flash mises à jour.", FlashId = existingFlash.Id });
+            }
+
+            // Premier flash — déduire stock
             if (request.VariantId.HasValue)
             {
                 var variant = await _context.ProductVariants.FindAsync(request.VariantId.Value);
@@ -181,14 +197,14 @@ namespace RanitaApi.Controllers
             var flash = new FlashSale
             {
                 ProductId = request.ProductId,
-                VariantId = request.VariantId,  // ✅ toujours copié
+                VariantId = request.VariantId,
                 FlashPrice = request.FlashPrice,
                 OriginalPrice = request.OriginalPrice,
                 FlashStock = request.FlashStock,
                 FlashStockSold = 0,
                 StartDate = startDate,
                 EndDate = endDate,
-                IsActive = true,  // ✅ toujours true — GetActive filtre par dates
+                IsActive = true,
                 CreatedAt = now
             };
 
