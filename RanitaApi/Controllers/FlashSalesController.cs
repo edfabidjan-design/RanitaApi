@@ -225,12 +225,14 @@ namespace RanitaApi.Controllers
 
 
         [HttpPatch("{id}/dates")]
+        [HttpPatch("{id}/dates")]
         public async Task<IActionResult> UpdateDates(int id, [FromBody] UpdateDatesDto dto)
         {
             var flash = await _context.FlashSales.FindAsync(id);
             if (flash == null) return NotFound();
             flash.StartDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc);
             flash.EndDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc);
+            if (dto.VariantId.HasValue) flash.VariantId = dto.VariantId;
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -239,6 +241,7 @@ namespace RanitaApi.Controllers
         {
             public DateTime StartDate { get; set; }
             public DateTime EndDate { get; set; }
+            public int? VariantId { get; set; }
         }
 
         public class FlashSaleDto
