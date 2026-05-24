@@ -1694,6 +1694,35 @@
             }
         }
 
+        /* ── FIX PROMO-BAR MOBILE ── */
+        @media(max-width: 768px) {
+            .promo-bar {
+                display: none !important;
+            }
+        }
+
+        /* ── FIX BANNIÈRE ÉVÉNEMENT MOBILE ── */
+        @media(max-width: 768px) {
+            #eventBanner > div > div[style*="grid-template-columns"] {
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: auto !important;
+            }
+
+            #eventBanner > div > div > div:first-child {
+                padding: 24px 20px !important;
+            }
+
+            #eventBanner > div > div > div:last-child {
+                min-height: 180px !important;
+                max-height: 220px !important;
+            }
+
+            #eventBanner > div > div [style*="font-size:38px"] {
+                font-size: 24px !important;
+                line-height: 1.2 !important;
+            }
+        }
         /* ── 600px ─── */
         @media(max-width: 600px) {
             .flash-header {
