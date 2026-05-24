@@ -1489,10 +1489,7 @@
                     </div>
                 </div>
 <div class="ev-card-actions">
-    ${f.variantId ?
-                        `<button class="ev-btn ev-btn-edit" style="opacity:0.5;cursor:not-allowed;" title="Utilisez Modifier dates dans l'onglet Approuvées">✏️ Modifier (via Approuvées)</button>` :
-                        `<button class="ev-btn ev-btn-edit" onclick="fsOpenEdit(${f.id})">✏️ Modifier</button>`
-                    }
+    <button class="ev-btn ev-btn-edit" onclick="fsOpenEdit(${f.id})">✏️ Modifier</button>
     <button class="ev-btn ${f.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="fsToggle(${f.id},${!f.isActive})">${f.isActive ? '✅ Actif' : '⏸ Inactif'}</button>
     <button class="ev-btn ev-btn-del" onclick="fsDelete(${f.id})">🗑</button>
 </div>
