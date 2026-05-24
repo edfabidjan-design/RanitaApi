@@ -1409,9 +1409,17 @@
 
             const btn = document.getElementById('fsBtnSave'); btn.disabled = true; btn.textContent = '⏳...';
             const id = document.getElementById('fs_id').value;
+            // Conserver le VariantId existant si modification sans nouvelle sélection
+            let variantId = variantIdVal ? parseInt(variantIdVal) : null;
+            if (id && !variantIdVal) {
+                const existingFlash = fsFlashes.find(f => f.id === parseInt(id));
+                if (existingFlash?.variantId) variantId = existingFlash.variantId;
+            }
+
             const payload = {
                 productId,
-                variantId: variantIdVal ? parseInt(variantIdVal) : null, // ← nouveau
+                variantId,
+
                 flashPrice,
                 flashStock: parseInt(document.getElementById('fs_stock').value) || 10,
                 startDate: new Date(start).toISOString(),
