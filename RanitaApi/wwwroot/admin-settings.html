@@ -1633,11 +1633,14 @@
                     <div style="font-size:18px;font-weight:800;color:#f97316;">${Number(f.flashPrice).toLocaleString()} F</div>
                     <span style="padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
 <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
-        ${f.status === 'Pending' ? `
-<button onclick="frOpenApprove(${f.id})" style="background:#d1fae5;color:#065f46;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✓ Approuver</button>
-            <button onclick="frOpenReject(${f.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✗ Rejeter</button>
-        ` : ''}
-        <button onclick="frDelete(${f.id})" style="background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️ Supprimer</button>
+    ${f.status === 'Pending' ? `
+        <button onclick="frOpenApprove(${f.id})" style="background:#d1fae5;color:#065f46;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✓ Approuver</button>
+        <button onclick="frOpenReject(${f.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✗ Rejeter</button>
+    ` : ''}
+    ${f.status === 'Approved' ? `
+        <button onclick="frOpenApprove(${f.id})" style="background:#eff6ff;color:#1e40af;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📅 Modifier dates</button>
+    ` : ''}
+    <button onclick="frDelete(${f.id})" style="background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️ Supprimer</button>
 </div>
                 </div>
             </div>`;
