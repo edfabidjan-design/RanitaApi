@@ -1750,8 +1750,16 @@
                 const res = await fetch(`${API}/flash-requests/${id}`, { method: 'DELETE' });
                 if (res.ok) { showFlashToast('Supprimée ✓', '#374151'); frLoadRequests(); }
                 else showFlashToast('Erreur suppression', '#ef4444');
-            } catch (e) {
-                showFlashToast('Erreur réseau', '#ef4
+            } catch (e) { showFlashToast('Erreur réseau', '#ef4444'); }
+        }
+
+        function showFlashToast(msg, bg) {
+            const t = document.createElement('div');
+            t.textContent = msg;
+            t.style.cssText = `position:fixed;bottom:24px;right:24px;background:${bg};color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;z-index:99999;`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
     </script>
 
 
