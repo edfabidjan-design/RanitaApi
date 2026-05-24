@@ -856,82 +856,81 @@
 
 
 
-        </div>
-
-
-        <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
-            <button onclick="fsOpenForm()" style="background:#f97316;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">⚡ Nouvelle vente flash</button>
-        </div>
-
-        <!-- Formulaire -->
-        <div class="ev-form" id="fsForm">
-            <div class="ev-form-title">
-                <span id="fsFormTitle">⚡ Nouvelle vente flash</span>
-                <button onclick="fsCloseForm()" style="background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:#6b7280;">×</button>
+            <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+                <button onclick="fsOpenForm()" style="background:#f97316;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">⚡ Nouvelle vente flash</button>
             </div>
-            <input type="hidden" id="fs_id">
-            <div class="fields-grid">
-                <div class="field full">
-                    <label>Rechercher un produit</label>
-                    <input type="text" id="fs_search" placeholder="🔍 Nom du produit..." oninput="fsSearchProduct()">
-                    <div id="fs_search_results" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
-                </div>
-                <div class="field full" id="fs_selected_product" style="display:none;">
-                    <label>Produit sélectionné</label>
-                    <div id="fs_product_display" style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px;"></div>
-                </div>
 
-                <input type="hidden" id="fs_product_id">
-                <input type="hidden" id="fs_variant_id">
-                <div class="field full" id="fs_variant_section" style="display:none;">
-                    <label>Variante flash (obligatoire si variantes)</label>
-                    <select id="fs_variant_select" onchange="fsSelectVariant()"
-                            style="padding:10px 14px;border:2px solid #f97316;border-radius:8px;font-size:14px;background:#fff7ed;font-family:Arial,sans-serif;">
-                        <option value="">-- Choisir une variante --</option>
-                    </select>
-                    <span class="hint" id="fs_variant_hint" style="color:#f97316;font-weight:700;"></span>
+            <!-- Formulaire -->
+            <div class="ev-form" id="fsForm">
+                <div class="ev-form-title">
+                    <span id="fsFormTitle">⚡ Nouvelle vente flash</span>
+                    <button onclick="fsCloseForm()" style="background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:#6b7280;">×</button>
                 </div>
+                <input type="hidden" id="fs_id">
+                <div class="fields-grid">
+                    <div class="field full">
+                        <label>Rechercher un produit</label>
+                        <input type="text" id="fs_search" placeholder="🔍 Nom du produit..." oninput="fsSearchProduct()">
+                        <div id="fs_search_results" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
+                    </div>
+                    <div class="field full" id="fs_selected_product" style="display:none;">
+                        <label>Produit sélectionné</label>
+                        <div id="fs_product_display" style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px;"></div>
+                    </div>
 
-                <div class="field">
-                    <label>Prix flash (F CFA)</label>
-                    <input type="number" id="fs_price" placeholder="5000" oninput="fsUpdatePreview()">
-                </div>
-                <div class="field">
-                    <label>Stock flash (unités)</label>
-                    <input type="number" id="fs_stock" placeholder="10" oninput="fsUpdatePreview()">
-                </div>
-                <div class="field">
-                    <label>Date & heure début</label>
-                    <input type="datetime-local" id="fs_start">
-                </div>
-                <div class="field">
-                    <label>Date & heure fin</label>
-                    <input type="datetime-local" id="fs_end">
-                </div>
+                    <input type="hidden" id="fs_product_id">
+                    <input type="hidden" id="fs_variant_id">
+                    <div class="field full" id="fs_variant_section" style="display:none;">
+                        <label>Variante flash (obligatoire si variantes)</label>
+                        <select id="fs_variant_select" onchange="fsSelectVariant()"
+                                style="padding:10px 14px;border:2px solid #f97316;border-radius:8px;font-size:14px;background:#fff7ed;font-family:Arial,sans-serif;">
+                            <option value="">-- Choisir une variante --</option>
+                        </select>
+                        <span class="hint" id="fs_variant_hint" style="color:#f97316;font-weight:700;"></span>
+                    </div>
+
+                    <div class="field">
+                        <label>Prix flash (F CFA)</label>
+                        <input type="number" id="fs_price" placeholder="5000" oninput="fsUpdatePreview()">
+                    </div>
+                    <div class="field">
+                        <label>Stock flash (unités)</label>
+                        <input type="number" id="fs_stock" placeholder="10" oninput="fsUpdatePreview()">
+                    </div>
+                    <div class="field">
+                        <label>Date & heure début</label>
+                        <input type="datetime-local" id="fs_start">
+                    </div>
+                    <div class="field">
+                        <label>Date & heure fin</label>
+                        <input type="datetime-local" id="fs_end">
+                    </div>
 
 
-                <div class="field">
-                    <label>Statut</label>
-                    <select id="fs_active">
-                        <option value="true">✅ Activé</option>
-                        <option value="false">⏸ Désactivé</option>
-                    </select>
-                </div>
-                <div class="field full" id="fsPreviewBox" style="display:none;">
-                    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px;font-size:13px;color:#92400e;">
-                        <span id="fsPreviewText"></span>
+                    <div class="field">
+                        <label>Statut</label>
+                        <select id="fs_active">
+                            <option value="true">✅ Activé</option>
+                            <option value="false">⏸ Désactivé</option>
+                        </select>
+                    </div>
+                    <div class="field full" id="fsPreviewBox" style="display:none;">
+                        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px;font-size:13px;color:#92400e;">
+                            <span id="fsPreviewText"></span>
+                        </div>
                     </div>
                 </div>
+                <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
+                    <button onclick="fsCloseForm()" style="background:#f3f4f6;color:#374151;border:none;padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">Annuler</button>
+                    <button onclick="fsSave()" id="fsBtnSave" style="background:#f97316;color:white;border:none;padding:11px 28px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">⚡ Enregistrer</button>
+                </div>
             </div>
-            <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
-                <button onclick="fsCloseForm()" style="background:#f3f4f6;color:#374151;border:none;padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">Annuler</button>
-                <button onclick="fsSave()" id="fsBtnSave" style="background:#f97316;color:white;border:none;padding:11px 28px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">⚡ Enregistrer</button>
-            </div>
-        </div>
 
-        <!-- Liste -->
-        <div id="fsList"><div style="text-align:center;padding:40px;color:#9ca3af;font-size:13px;">⏳ Chargement...</div></div>
-    </div>
+            <!-- Liste -->
+            <div id="fsList"><div style="text-align:center;padding:40px;color:#9ca3af;font-size:13px;">⏳ Chargement...</div></div>
+
+        </div><!-- fin panel-flash -->
+    </div><!-- fin admin-container -->
 
 
 
@@ -1196,17 +1195,17 @@
                 const headBg = st.cardBg ? ('#f3f4f6') : ('linear-gradient(135deg,' + color + ',' + color + 'cc)');
                 const titleColor = st.cardBg ? '#111827' : 'white'; const dateColor = st.cardBg ? '#6b7280' : 'rgba(255,255,255,.8)';
                 return `<div class="ev-card">
-                            <div class="ev-card-head" style="background:${headBg};">
-                                <div><div class="ev-card-title" style="color:${titleColor};">${ev.name}</div><div class="ev-card-dates" style="color:${dateColor};">${evFmtDate(ev.startDate)} → ${evFmtDate(ev.endDate)}</div></div>
-                                <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;background:${st.bg};color:${st.color};">${st.label}</span>
-                            </div>
-                            <div class="ev-card-body">"${ev.promoText || '—'}"${ev.slideDisc ? ` <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:8px;">JUSQU'À ${ev.slideDisc}</span>` : ''}</div>
-                            <div class="ev-card-actions">
-                                <button class="ev-btn ev-btn-edit" onclick="evOpenEdit(${ev.id})">✏️ Modifier</button>
-                                <button class="ev-btn ${ev.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="evToggle(${ev.id},${!ev.isActive})">${ev.isActive ? '✅ Actif' : '⏸ Inactif'}</button>
-                                <button class="ev-btn ev-btn-del" onclick="evDelete(${ev.id})">🗑</button>
-                            </div>
-                        </div>`;
+                                <div class="ev-card-head" style="background:${headBg};">
+                                    <div><div class="ev-card-title" style="color:${titleColor};">${ev.name}</div><div class="ev-card-dates" style="color:${dateColor};">${evFmtDate(ev.startDate)} → ${evFmtDate(ev.endDate)}</div></div>
+                                    <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;background:${st.bg};color:${st.color};">${st.label}</span>
+                                </div>
+                                <div class="ev-card-body">"${ev.promoText || '—'}"${ev.slideDisc ? ` <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:8px;">JUSQU'À ${ev.slideDisc}</span>` : ''}</div>
+                                <div class="ev-card-actions">
+                                    <button class="ev-btn ev-btn-edit" onclick="evOpenEdit(${ev.id})">✏️ Modifier</button>
+                                    <button class="ev-btn ${ev.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="evToggle(${ev.id},${!ev.isActive})">${ev.isActive ? '✅ Actif' : '⏸ Inactif'}</button>
+                                    <button class="ev-btn ev-btn-del" onclick="evDelete(${ev.id})">🗑</button>
+                                </div>
+                            </div>`;
             }).join('');
         }
 
@@ -1284,15 +1283,15 @@
                     // ✅ Sérialiser les variantes pour l'onclick
                     const vJson = JSON.stringify(variants).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     return `<div onclick="fsSelectProduct(${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${img}',${p.stock ?? 0},'${vJson}')"
-                    style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;"
-                    onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#e5e7eb'">
-                    ${img ? `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">` : '<span style="font-size:24px">📦</span>'}
-                    <div>
-                        <div style="font-size:13px;font-weight:700;color:#111827;">${p.name}</div>
-                        <div style="font-size:12px;color:#10b981;font-weight:700;">${Number(p.price).toLocaleString()} F CFA</div>
-                        ${hasV ? `<div style="font-size:11px;color:#f97316;font-weight:600;">⚡ ${variants.length} variante(s)</div>` : ''}
-                    </div>
-                </div>`;
+                        style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;"
+                        onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#e5e7eb'">
+                        ${img ? `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">` : '<span style="font-size:24px">📦</span>'}
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:#111827;">${p.name}</div>
+                            <div style="font-size:12px;color:#10b981;font-weight:700;">${Number(p.price).toLocaleString()} F CFA</div>
+                            ${hasV ? `<div style="font-size:11px;color:#f97316;font-weight:600;">⚡ ${variants.length} variante(s)</div>` : ''}
+                        </div>
+                    </div>`;
                 }).join('');
             } catch (e) { }
         }
@@ -1308,16 +1307,16 @@
             document.getElementById('fs_search').value = '';
             document.getElementById('fs_selected_product').style.display = 'block';
             document.getElementById('fs_product_display').innerHTML = `
-            ${img ? `<img src="${img}" style="width:50px;height:50px;object-fit:cover;border-radius:8px;">` : '<span style="font-size:30px">📦</span>'}
-            <div>
-                <div style="font-size:14px;font-weight:700;color:#111827;">${name}</div>
-                <div style="font-size:13px;color:#6b7280;">Prix normal : <strong>${Number(price).toLocaleString()} F CFA</strong></div>
-                <div style="font-size:13px;font-weight:700;color:#10b981;margin-top:2px;">📦 Stock total : ${variants && variants.length > 0
+                ${img ? `<img src="${img}" style="width:50px;height:50px;object-fit:cover;border-radius:8px;">` : '<span style="font-size:30px">📦</span>'}
+                <div>
+                    <div style="font-size:14px;font-weight:700;color:#111827;">${name}</div>
+                    <div style="font-size:13px;color:#6b7280;">Prix normal : <strong>${Number(price).toLocaleString()} F CFA</strong></div>
+                    <div style="font-size:13px;font-weight:700;color:#10b981;margin-top:2px;">📦 Stock total : ${variants && variants.length > 0
                     ? variants.reduce((s, v) => s + (v.stock || 0), 0)
                     : (stock ?? '—')
                 } unités</div>
-            </div>
-            <button onclick="fsClearProduct()" style="margin-left:auto;background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">✕</button>`;
+                </div>
+                <button onclick="fsClearProduct()" style="margin-left:auto;background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">✕</button>`;
 
             // ✅ Sélecteur variante
             const varSection = document.getElementById('fs_variant_section');
@@ -1332,8 +1331,8 @@
                     varSelect.innerHTML = '<option value="">-- Choisir une variante --</option>' +
                         availableVariants.map(v =>
                             `<option value="${v.id}" data-stock="${v.stock}">
-                    ${v.combination} — Stock: ${v.stock} unités
-                </option>`
+                        ${v.combination} — Stock: ${v.stock} unités
+                    </option>`
                         ).join('');
                 }
                 varSection.style.display = 'block';
@@ -1363,12 +1362,12 @@
             let stockWarning = '';
             if (stock !== undefined && flashStock > stock) {
                 stockWarning = `<div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;margin-top:8px;color:#991b1b;font-weight:700;font-size:12px;">
-                ⚠️ Stock flash (${flashStock}) dépasse le stock disponible (${stock}) !
-            </div>`;
+                    ⚠️ Stock flash (${flashStock}) dépasse le stock disponible (${stock}) !
+                </div>`;
             } else if (stock !== undefined && flashStock > 0) {
                 stockWarning = `<div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;padding:8px 12px;margin-top:8px;color:#065f46;font-weight:700;font-size:12px;">
-                ✅ Stock restant après flash : ${stock - flashStock} unités
-            </div>`;
+                    ✅ Stock restant après flash : ${stock - flashStock} unités
+                </div>`;
             }
 
             const box = document.getElementById('fsPreviewBox');
@@ -1469,31 +1468,31 @@
                 const img = imgs[0] || f.product.imageUrl || '';
                 const progressPct = Math.round((f.flashStockSold / f.flashStock) * 100);
                 return `<div class="ev-card">
-                <div class="ev-card-head" style="background:#fff7ed;padding:14px 18px;display:flex;align-items:center;gap:12px;">
-                    ${img ? `<img src="${img}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;">` : '<span style="font-size:28px">📦</span>'}
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-size:14px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.product.name}</div>
-                        <div style="font-size:12px;color:#6b7280;margin-top:2px;">${fsFmtDate(f.startDate)} → ${fsFmtDate(f.endDate)}</div>
+                    <div class="ev-card-head" style="background:#fff7ed;padding:14px 18px;display:flex;align-items:center;gap:12px;">
+                        ${img ? `<img src="${img}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;">` : '<span style="font-size:28px">📦</span>'}
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:14px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${f.product.name}</div>
+                            <div style="font-size:12px;color:#6b7280;margin-top:2px;">${fsFmtDate(f.startDate)} → ${fsFmtDate(f.endDate)}</div>
+                        </div>
+                        <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;background:${st.bg};color:${st.color};">${st.label}</span>
                     </div>
-                    <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;background:${st.bg};color:${st.color};">${st.label}</span>
-                </div>
-                <div style="padding:12px 18px;">
-                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
-                        <div><div style="font-size:11px;color:#9ca3af;font-weight:600;">PRIX FLASH</div><div style="font-size:18px;font-weight:800;color:#f97316;">${Number(f.flashPrice).toLocaleString()} F</div></div>
-                        <div><div style="font-size:11px;color:#9ca3af;font-weight:600;">PRIX NORMAL</div><div style="font-size:14px;color:#9ca3af;text-decoration:line-through;">${Number(f.originalPrice).toLocaleString()} F</div></div>
-                        <div style="background:#fef3c7;color:#92400e;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;">-${f.discount}%</div>
+                    <div style="padding:12px 18px;">
+                        <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+                            <div><div style="font-size:11px;color:#9ca3af;font-weight:600;">PRIX FLASH</div><div style="font-size:18px;font-weight:800;color:#f97316;">${Number(f.flashPrice).toLocaleString()} F</div></div>
+                            <div><div style="font-size:11px;color:#9ca3af;font-weight:600;">PRIX NORMAL</div><div style="font-size:14px;color:#9ca3af;text-decoration:line-through;">${Number(f.originalPrice).toLocaleString()} F</div></div>
+                            <div style="background:#fef3c7;color:#92400e;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:800;">-${f.discount}%</div>
+                        </div>
+                        <div style="font-size:12px;color:#6b7280;margin-bottom:6px;">Stock : <strong>${f.flashStockSold}/${f.flashStock}</strong> vendus</div>
+                        <div style="background:#f3f4f6;border-radius:999px;height:6px;overflow:hidden;">
+                            <div style="background:#f97316;height:100%;width:${progressPct}%;border-radius:999px;transition:.3s;"></div>
+                        </div>
                     </div>
-                    <div style="font-size:12px;color:#6b7280;margin-bottom:6px;">Stock : <strong>${f.flashStockSold}/${f.flashStock}</strong> vendus</div>
-                    <div style="background:#f3f4f6;border-radius:999px;height:6px;overflow:hidden;">
-                        <div style="background:#f97316;height:100%;width:${progressPct}%;border-radius:999px;transition:.3s;"></div>
-                    </div>
-                </div>
 <div class="ev-card-actions">
-    <button class="ev-btn ev-btn-edit" onclick="fsOpenEdit(${f.id})">✏️ Modifier</button>
-    <button class="ev-btn ${f.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="fsToggle(${f.id},${!f.isActive})">${f.isActive ? '✅ Actif' : '⏸ Inactif'}</button>
-    <button class="ev-btn ev-btn-del" onclick="fsDelete(${f.id})">🗑</button>
+        <button class="ev-btn ev-btn-edit" onclick="fsOpenEdit(${f.id})">✏️ Modifier</button>
+        <button class="ev-btn ${f.isActive ? 'ev-btn-toggle-on' : 'ev-btn-toggle-off'}" onclick="fsToggle(${f.id},${!f.isActive})">${f.isActive ? '✅ Actif' : '⏸ Inactif'}</button>
+        <button class="ev-btn ev-btn-del" onclick="fsDelete(${f.id})">🗑</button>
 </div>
-            </div>`;
+                </div>`;
             }).join('');
         }
 
@@ -1636,38 +1635,38 @@
                 };
                 const statusLabels = { Pending: '⏳ En attente', Approved: '✅ Approuvé', Rejected: '❌ Rejeté' };
                 return `<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;">
-                <div style="width:48px;height:48px;border-radius:8px;background:#f3f4f6;overflow:hidden;flex-shrink:0;">
-                    ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:cover;">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>'}
-                </div>
-                <div style="flex:1;min-width:180px;">
-                    <div style="font-size:14px;font-weight:700;color:#111827;">${f.product?.name || '—'}</div>
-                    <div style="font-size:12px;color:#6b7280;margin-top:3px;display:flex;flex-direction:column;gap:2px;">
-                        <span>🏪 ${f.seller?.shopName || '—'}</span>
-                        ${f.variant ? `<span>🎨 ${f.variant.combination}</span>` : ''}
-                       <span>📦 Stock demandé : <strong>${f.flashStock}</strong> · Stock initial : <strong>${f.originalVariantStock ?? f.product?.stock ?? '—'}</strong></span>
-                        <span>📅 ${new Date(f.startDate).toLocaleDateString('fr-FR')} → ${new Date(f.endDate).toLocaleDateString('fr-FR')}</span>
+                    <div style="width:48px;height:48px;border-radius:8px;background:#f3f4f6;overflow:hidden;flex-shrink:0;">
+                        ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:cover;">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>'}
                     </div>
-                    ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;background:#fee2e2;padding:4px 8px;border-radius:6px;">Motif : ${f.rejectionReason}</div>` : ''}
-                </div>
-                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <span style="font-size:12px;color:#9ca3af;text-decoration:line-through;">${Number(f.originalPrice).toLocaleString()} F</span>
-                        <span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;">-${f.discount}%</span>
+                    <div style="flex:1;min-width:180px;">
+                        <div style="font-size:14px;font-weight:700;color:#111827;">${f.product?.name || '—'}</div>
+                        <div style="font-size:12px;color:#6b7280;margin-top:3px;display:flex;flex-direction:column;gap:2px;">
+                            <span>🏪 ${f.seller?.shopName || '—'}</span>
+                            ${f.variant ? `<span>🎨 ${f.variant.combination}</span>` : ''}
+                           <span>📦 Stock demandé : <strong>${f.flashStock}</strong> · Stock initial : <strong>${f.originalVariantStock ?? f.product?.stock ?? '—'}</strong></span>
+                            <span>📅 ${new Date(f.startDate).toLocaleDateString('fr-FR')} → ${new Date(f.endDate).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        ${f.rejectionReason ? `<div style="font-size:12px;color:#ef4444;margin-top:4px;background:#fee2e2;padding:4px 8px;border-radius:6px;">Motif : ${f.rejectionReason}</div>` : ''}
                     </div>
-                    <div style="font-size:18px;font-weight:800;color:#f97316;">${Number(f.flashPrice).toLocaleString()} F</div>
-                    <span style="padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span style="font-size:12px;color:#9ca3af;text-decoration:line-through;">${Number(f.originalPrice).toLocaleString()} F</span>
+                            <span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:999px;">-${f.discount}%</span>
+                        </div>
+                        <div style="font-size:18px;font-weight:800;color:#f97316;">${Number(f.flashPrice).toLocaleString()} F</div>
+                        <span style="padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;${statusColors[f.status]}">${statusLabels[f.status]}</span>
 <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
-    ${f.status === 'Pending' ? `
-        <button onclick="frOpenApprove(${f.id})" style="background:#d1fae5;color:#065f46;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✓ Approuver</button>
-        <button onclick="frOpenReject(${f.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✗ Rejeter</button>
-    ` : ''}
-    ${f.status === 'Approved' ? `
-        <button onclick="frOpenApprove(${f.id})" style="background:#eff6ff;color:#1e40af;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📅 Modifier dates</button>
-    ` : ''}
-    <button onclick="frDelete(${f.id})" style="background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️ Supprimer</button>
+        ${f.status === 'Pending' ? `
+            <button onclick="frOpenApprove(${f.id})" style="background:#d1fae5;color:#065f46;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✓ Approuver</button>
+            <button onclick="frOpenReject(${f.id})" style="background:#fee2e2;color:#991b1b;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✗ Rejeter</button>
+        ` : ''}
+        ${f.status === 'Approved' ? `
+            <button onclick="frOpenApprove(${f.id})" style="background:#eff6ff;color:#1e40af;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📅 Modifier dates</button>
+        ` : ''}
+        <button onclick="frDelete(${f.id})" style="background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🗑️ Supprimer</button>
 </div>
-                </div>
-            </div>`;
+                    </div>
+                </div>`;
             }).join('');
         }
 
