@@ -41,6 +41,11 @@
             --red: #EF4444;
             --r: 12px;
             --rsm: 8px;
+            /* Heights pour calculs de position */
+            --promo-h: 36px;
+            --header-h: 58px;
+            --cats-h: 40px;
+            --mob-header-h: 54px;
         }
 
         * {
@@ -50,14 +55,14 @@
         }
 
         body {
-            font-family: Arial,sans-serif;
+            font-family: Arial, sans-serif;
             background: var(--w2);
             color: var(--t);
             overflow-x: hidden;
         }
 
         h1, h2, h3, h4 {
-            font-family: Arial,sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         img {
@@ -83,8 +88,7 @@
             top: 0;
             z-index: 600;
             border-bottom: 1px solid rgba(16,185,129,.2);
-            left: 0;
-            right: 0;
+            min-height: var(--promo-h);
         }
 
         .promo-bar-pill {
@@ -95,6 +99,7 @@
             font-weight: 700;
             padding: 2px 10px;
             border-radius: 999px;
+            white-space: nowrap;
         }
 
         .promo-bar-close {
@@ -117,8 +122,10 @@
         /* ── HEADER DESKTOP ────────────────────────────────────── */
         .site-header {
             position: fixed;
-            top: 36px;
+            top: var(--promo-h);
             z-index: 500;
+            left: 0;
+            right: 0;
             background: rgba(13,17,23,.97);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--dkb);
@@ -126,8 +133,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 28px;
-            height: 58px;
-            overflow: visible;
+            height: var(--header-h);
         }
 
         .site-logo {
@@ -138,6 +144,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
 
             .site-logo span {
@@ -190,35 +197,6 @@
                     color: var(--g);
                 }
 
-        .cart-icon {
-            position: relative;
-            color: var(--dkt2);
-            font-size: 20px;
-            padding: 6px;
-            cursor: pointer;
-            transition: color .2s;
-        }
-
-            .cart-icon:hover {
-                color: var(--dkt);
-            }
-
-        .cart-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background: var(--g);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 800;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
         /* ── HEADER MOBILE ─────────────────────────────────────── */
         .mob-header {
             display: none;
@@ -226,12 +204,12 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 300;
+            z-index: 500;
             background: rgba(13,17,23,.97);
-            padding: 0 16px;
-            height: 54px;
+            padding: 0 12px;
+            height: var(--mob-header-h);
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             border-bottom: 1px solid var(--dkb);
         }
 
@@ -239,7 +217,7 @@
             font-size: 15px;
             font-weight: 800;
             color: var(--dkt);
-            flex: 1;
+            flex-shrink: 0;
         }
 
             .mob-logo span {
@@ -253,6 +231,7 @@
             padding: 6px;
             position: relative;
             transition: color .2s;
+            flex-shrink: 0;
         }
 
             .mob-icon:hover {
@@ -266,9 +245,10 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 0 12px;
+            padding: 0 10px;
             height: 36px;
             flex: 1;
+            min-width: 0;
         }
 
             .mob-search-bar input {
@@ -278,6 +258,7 @@
                 color: var(--dkt);
                 font-size: 13px;
                 width: 100%;
+                min-width: 0;
             }
 
                 .mob-search-bar input::placeholder {
@@ -293,13 +274,14 @@
             right: 0;
             background: rgba(13,17,23,.97);
             border-top: 1px solid var(--dkb);
-            z-index: 300;
-            padding: 6px 0 env(safe-area-inset-bottom,6px);
+            z-index: 500;
+            padding: 6px 0 env(safe-area-inset-bottom, 6px);
         }
 
         .mob-nav-inner {
             display: flex;
             justify-content: space-around;
+            align-items: center;
         }
 
         .mob-nav-item {
@@ -311,9 +293,11 @@
             font-size: 9px;
             font-weight: 600;
             cursor: pointer;
-            padding: 4px 12px;
+            padding: 4px 8px;
             transition: color .2s;
             text-decoration: none;
+            flex: 1;
+            max-width: 80px;
         }
 
             .mob-nav-item svg {
@@ -326,7 +310,7 @@
             }
 
         .mob-fab {
-            background: linear-gradient(135deg,var(--g),var(--gd));
+            background: linear-gradient(135deg, var(--g), var(--gd));
             color: #fff;
             border-radius: 50%;
             width: 46px;
@@ -336,6 +320,7 @@
             justify-content: center;
             margin-top: -16px;
             box-shadow: 0 4px 16px rgba(16,185,129,.4);
+            flex-shrink: 0;
         }
 
         /* ── BARRE CATÉGORIES ──────────────────────────────────── */
@@ -343,7 +328,8 @@
             background: var(--dk2);
             border-bottom: 1px solid var(--dkb);
             position: sticky;
-            top: 94px;
+            /* Desktop: promo(36) + header(58) = 94px */
+            top: calc(var(--promo-h) + var(--header-h));
             z-index: 200;
         }
 
@@ -362,7 +348,7 @@
             }
 
         .cat-tab {
-            padding: 10px 16px;
+            padding: 10px 14px;
             color: var(--dkt2);
             font-size: 13px;
             font-weight: 500;
@@ -400,12 +386,12 @@
 
             .cats-btn.l {
                 left: 0;
-                background: linear-gradient(to right,var(--dk2),transparent);
+                background: linear-gradient(to right, var(--dk2), transparent);
             }
 
             .cats-btn.r {
                 right: 0;
-                background: linear-gradient(to left,var(--dk2),transparent);
+                background: linear-gradient(to left, var(--dk2), transparent);
             }
 
         /* ── SLIDER HERO ───────────────────────────────────────── */
@@ -413,7 +399,8 @@
             position: relative;
             overflow: hidden;
             background: var(--dk);
-            margin-top: 90px;
+            /* Desktop: promo + header = 94px */
+            margin-top: calc(var(--promo-h) + var(--header-h));
         }
 
         .slides-track {
@@ -498,7 +485,7 @@
             border-radius: 10px;
             font-weight: 700;
             font-size: 14px;
-            transition: background .2s,transform .2s;
+            transition: background .2s, transform .2s;
         }
 
             .slide-cta:hover {
@@ -554,10 +541,9 @@
                 font-weight: 500;
             }
 
-        /* Slider nav */
         .slider-nav {
             position: absolute;
-            bottom: 20px;
+            bottom: 16px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -862,9 +848,9 @@
         .flash-header {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 22px;
-            flex-wrap: nowrap;
+            flex-wrap: wrap;
         }
 
         .flash-badge {
@@ -908,7 +894,7 @@
         /* ── GRID PRODUITS ─────────────────────────────────────── */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill,minmax(190px,1fr));
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
             gap: 14px;
         }
 
@@ -1078,12 +1064,12 @@
         .add-btn {
             margin-left: auto;
             flex-shrink: 0;
-            background: linear-gradient(135deg,var(--g),var(--gd));
+            background: linear-gradient(135deg, var(--g), var(--gd));
             color: #fff;
             border: none;
             border-radius: var(--rsm);
             padding: 6px 10px;
-            font-family: Arial,sans-serif;
+            font-family: Arial, sans-serif;
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
@@ -1102,7 +1088,7 @@
 
         /* Skeleton */
         .skeleton {
-            background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: shimmer 1.4s infinite;
             border-radius: var(--rsm);
@@ -1110,16 +1096,12 @@
 
         @keyframes shimmer {
             0% {
-                background-position: 200% 0
+                background-position: 200% 0;
             }
 
             100% {
-                background-position: -200% 0
+                background-position: -200% 0;
             }
-        }
-
-        .p-card-sk .p-img {
-            background: none;
         }
 
         .sk-img {
@@ -1166,7 +1148,7 @@
                 border-radius: var(--rsm);
                 padding: 8px 16px;
                 cursor: pointer;
-                font-family: Arial,sans-serif;
+                font-family: Arial, sans-serif;
                 font-weight: 600;
             }
 
@@ -1181,7 +1163,7 @@
             margin: 0 auto;
             padding: 0 20px;
             display: grid;
-            grid-template-columns: repeat(4,1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 18px;
         }
 
@@ -1264,7 +1246,7 @@
             cursor: pointer;
             text-decoration: none;
             margin-top: 8px;
-            transition: background .2s,transform .2s;
+            transition: background .2s, transform .2s;
             width: fit-content;
         }
 
@@ -1292,7 +1274,7 @@
 
         .trust-grid {
             display: grid;
-            grid-template-columns: repeat(4,1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 16px;
         }
 
@@ -1386,7 +1368,7 @@
                 right: -80px;
                 width: 280px;
                 height: 280px;
-                background: radial-gradient(circle,rgba(16,185,129,.14),transparent);
+                background: radial-gradient(circle, rgba(16,185,129,.14), transparent);
                 border-radius: 50%;
                 pointer-events: none;
             }
@@ -1423,7 +1405,7 @@
             border: none;
             border-radius: var(--rsm);
             padding: 13px 28px;
-            font-family: Arial,sans-serif;
+            font-family: Arial, sans-serif;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
@@ -1469,14 +1451,42 @@
                     color: var(--g);
                 }
 
-        /* ── RESPONSIVE ────────────────────────────────────────── */
-        @media(max-width:1024px) {
+        /* ── BANNIÈRE ÉVÉNEMENT ────────────────────────────────── */
+        #eventBanner {
+            width: 100%;
+        }
+
+        .event-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px 20px 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════ */
+        /* ══            RESPONSIVE BREAKPOINTS               ══ */
+        /* ═══════════════════════════════════════════════════════ */
+
+        /* ── 1280px : léger resserrement ─── */
+        @media(max-width: 1280px) {
             .big-cats-grid {
-                grid-template-columns: repeat(2,1fr);
+                grid-template-columns: repeat(4, 1fr);
+                gap: 14px;
+            }
+        }
+
+        /* ── 1024px ─── */
+        @media(max-width: 1024px) {
+            .big-cats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .bc-img, .bc-ph {
+                height: 180px;
             }
 
             .trust-grid {
-                grid-template-columns: repeat(2,1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .trust-inner {
@@ -1491,60 +1501,106 @@
             .pay-pills {
                 justify-content: flex-start;
             }
+
+            .slide h2 {
+                font-size: 36px;
+            }
+
+            .slide-inner {
+                grid-template-columns: 1fr 320px;
+                gap: 32px;
+            }
+
+            .slide-img-wrap {
+                height: 240px;
+            }
+
+                .slide-img-wrap img {
+                    max-height: 240px;
+                }
         }
 
-        @media(max-width:768px) {
+        /* ── 768px : switch vers mobile ─── */
+        @media(max-width: 768px) {
+            :root {
+                --promo-h: 0px; /* promo masquée sur mobile */
+            }
+
+            /* Header desktop → caché */
             .site-header {
                 display: none;
             }
 
+            /* Header mobile → visible */
             .mob-header {
                 display: flex;
             }
 
+            /* Nav bas → visible */
             .mob-nav {
                 display: block;
             }
 
-            .hero-slider {
-                margin-top: 0;
-            }
-
-            .cats-bar {
-                top: 54px;
-            }
-
+            /* body padding pour la nav bas */
             body {
                 padding-bottom: 70px;
             }
 
+            /* Hero : margin = hauteur header mobile seulement */
+            .hero-slider {
+                margin-top: var(--mob-header-h);
+            }
+
+            /* Cats-bar : colle sous le header mobile */
+            .cats-bar {
+                top: var(--mob-header-h);
+            }
+
+            /* Slider */
             .slide {
                 padding: 36px 16px;
             }
 
             .slide-inner {
                 grid-template-columns: 1fr;
+                gap: 0;
             }
 
             .slide-img-wrap {
                 display: none;
             }
 
+            .slide-img-placeholder {
+                display: none;
+            }
+
             .slide h2 {
-                font-size: 28px;
+                font-size: 26px;
             }
 
             .slide p {
                 font-size: 13px;
+                margin-bottom: 18px;
             }
 
+            .slide-cta {
+                padding: 12px 20px;
+                font-size: 13px;
+            }
+
+            .slider-arrow {
+                display: none;
+            }
+
+            /* Grid produits → 2 colonnes */
             .products-grid {
-                grid-template-columns: repeat(2,1fr);
+                grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
 
+            /* Catégories phares → 2 colonnes */
             .big-cats-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
             }
 
@@ -1558,22 +1614,32 @@
 
             .bc-body {
                 padding: 14px;
+                gap: 6px;
             }
 
+            /* Trust 2 colonnes */
             .trust-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
 
+            /* Parrainage */
             .ref-card {
                 flex-direction: column;
                 text-align: center;
                 padding: 28px 20px;
+                gap: 16px;
             }
 
             .ref-icon {
                 display: none;
             }
 
+            .ref-btn {
+                align-self: center;
+            }
+
+            /* Flash timer */
             .flash-badge {
                 font-size: 12px;
                 padding: 6px 10px;
@@ -1585,6 +1651,7 @@
                 min-width: 28px;
             }
 
+            /* Carrousel phares */
             .f-card {
                 min-width: 155px;
                 max-width: 155px;
@@ -1593,20 +1660,60 @@
             .f-card-img {
                 height: 130px;
             }
-        }
 
-        @media(max-width:480px) {
-            .slide h2 {
-                font-size: 24px;
+            /* Section title */
+            .sec-title {
+                font-size: 17px;
             }
 
+            .sec {
+                padding: 28px 16px;
+            }
+
+            /* Footer */
+            .site-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 16px;
+            }
+
+                .site-footer a {
+                    margin-left: 0;
+                    margin-right: 12px;
+                }
+
+                .site-footer div {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 4px;
+                }
+
+            /* Bannière event */
+            .event-inner {
+                padding: 12px 12px 0;
+            }
+        }
+
+        /* ── 600px ─── */
+        @media(max-width: 600px) {
+            .flash-header {
+                gap: 8px;
+            }
+
+                .flash-header .see-all {
+                    margin-left: auto;
+                }
+
             .big-cats-grid {
-                grid-template-columns: 1fr 1fr;
                 gap: 10px;
             }
 
             .bc-img, .bc-ph {
-                height: 110px;
+                height: 115px;
+            }
+
+            .bc-ph {
+                font-size: 48px;
             }
 
             .bc-body {
@@ -1617,26 +1724,157 @@
                 font-size: 14px;
             }
 
+            /* Cacher la description sur petits écrans */
             .bc-desc {
                 display: none;
+            }
+
+            .bc-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+
+            /* Trust : garder 2 colonnes mais plus compact */
+            .trust-item {
+                gap: 8px;
+            }
+
+            .trust-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .trust-label {
+                font-size: 12px;
+            }
+        }
+
+        /* ── 480px ─── */
+        @media(max-width: 480px) {
+            .slide h2 {
+                font-size: 22px;
+            }
+
+            .slide p {
+                display: none;
+            }
+            /* masquer le sous-titre pour gagner de la place */
+
+            /* Produits phares : cards plus étroites */
+            .f-card {
+                min-width: 140px;
+                max-width: 140px;
+            }
+
+            .f-card-img {
+                height: 115px;
+            }
+
+            /* Promo bar : texte court */
+            .promo-bar {
+                font-size: 11px;
+                padding: 6px 36px 6px 12px;
+            }
+
+            .promo-bar-pill {
+                display: none;
+            }
+
+            /* Sections */
+            .sec {
+                padding: 20px 12px;
+            }
+
+            /* P-card image moins haute */
+            .p-img {
+                height: 140px;
+            }
+
+            .sk-img {
+                height: 140px;
+            }
+
+            /* Ref section */
+            .ref-section {
+                padding: 24px 12px;
+            }
+
+            .ref-card {
+                padding: 22px 16px;
+                border-radius: 12px;
+            }
+
+            .ref-text h2 {
+                font-size: 18px;
+            }
+
+            .ref-text p {
+                font-size: 13px;
+            }
+
+            /* Trust pills wrap */
+            .pay-pills {
+                gap: 4px;
+            }
+
+            .pay-pill {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+        }
+
+        /* ── 360px : très petits écrans ─── */
+        @media(max-width: 360px) {
+            .mob-logo {
+                font-size: 13px;
+            }
+
+            .mob-search-bar {
+                min-width: 0;
+            }
+
+            .big-cats-grid {
+                gap: 8px;
+            }
+
+            .bc-img, .bc-ph {
+                height: 100px;
+            }
+
+            .bc-ph {
+                font-size: 40px;
+            }
+
+            .bc-name {
+                font-size: 13px;
+            }
+
+            .products-grid {
+                gap: 8px;
+            }
+
+            .mob-nav-item {
+                font-size: 8px;
+                padding: 4px 4px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ══ BARRE PROMO ══════════════════════════════════════════ -->
+    <!-- ══ BARRE PROMO (desktop uniquement) ════════════════════ -->
     <div class="promo-bar" id="promoBar">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
             <span class="promo-bar-pill" id="promoBarPill">🚚 LIVRAISON</span>
             <span id="promoBarText">Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison</span>
             <a href="products.html" id="promoBarLink" style="color:var(--g);font-weight:700;white-space:nowrap;">Voir les offres →</a>
         </div>
-
+        <button class="promo-bar-close" onclick="closePromoBar()">×</button>
     </div>
 
     <!-- ══ HEADER DESKTOP ═══════════════════════════════════════ -->
-    <header class="site-header">
+    <header class="site-header" id="siteHeader">
         <div class="site-logo" onclick="location.href='index.html'">🛒 Ranita<span>Market</span></div>
         <div style="flex:1;max-width:480px;margin:0 24px;">
             <div style="background:rgba(255,255,255,.07);border:1px solid var(--dkb);border-radius:var(--rsm);display:flex;align-items:center;gap:8px;padding:0 14px;height:36px;">
@@ -1658,7 +1896,7 @@
     <!-- ══ HEADER MOBILE ════════════════════════════════════════ -->
     <nav class="mob-header">
         <div class="mob-logo" onclick="location.href='index.html'">🛒 Ranita<span>Market</span></div>
-        <div class="mob-search-bar" style="max-width:200px;">
+        <div class="mob-search-bar">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--dkt2);flex-shrink:0;"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
             <input type="text" placeholder="Rechercher..." onkeydown="if(event.key==='Enter')location.href='products.html?q='+encodeURIComponent(this.value)">
         </div>
@@ -1666,7 +1904,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg>
             <span id="mobCartBadge" style="display:none;position:absolute;top:0;right:0;background:var(--g);color:#fff;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;"></span>
         </a>
-        <a href="login.html" class="mob-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg></a>
+        <a href="login.html" class="mob-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+        </a>
     </nav>
 
     <!-- ══ 1. SLIDER HERO ════════════════════════════════════════ -->
@@ -1688,28 +1928,10 @@
         </div>
     </div>
 
-
     <!-- ══ BANNIÈRE ÉVÉNEMENT ══════════════════════════════════ -->
-    <div id="eventBanner" style="display:none;">
-        <div style="max-width:1280px;margin:0 auto;padding:20px 20px 0;">
-            <div id="eventBannerCard" style="border-radius:16px;overflow:hidden;position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:440px;cursor:pointer;">
-                <div id="eventBannerLeft" style="padding:36px 40px;display:flex;flex-direction:column;justify-content:center;gap:12px;">
-                    <div id="eventBannerBadge" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;width:fit-content;text-transform:uppercase;"></div>
-                    <div id="eventBannerTitle" style="font-size:38px;font-weight:800;color:white;line-height:1.1;"></div>
-                    <div id="eventBannerSub" style="font-size:15px;color:rgba(255,255,255,.85);line-height:1.5;max-width:380px;"></div>
-                    <a id="eventBannerCta" href="products.html" style="display:inline-flex;align-items:center;gap:8px;background:white;color:#111827;font-weight:700;font-size:14px;padding:12px 24px;border-radius:10px;width:fit-content;margin-top:4px;">Voir les offres →</a>
-                </div>
-                <div style="position:relative;overflow:hidden;min-height:340px;">
-                    <img id="eventBannerImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
-                    <div id="eventBannerDisc" style="position:absolute;bottom:20px;left:20px;background:white;color:#111827;font-size:22px;font-weight:800;padding:10px 20px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.2);"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="eventBanner" style="display:none;"></div>
 
-
-
-    <!-- ══ 3. SÉLECTION RANITA (produits phares) ════════════════ -->
+    <!-- ══ 3. SÉLECTION RANITA ══════════════════════════════════ -->
     <section class="featured-section" id="featuredSection" style="display:none;">
         <div class="featured-wrap">
             <div class="sec-head">
@@ -1744,15 +1966,13 @@
                 <a href="flash.html" class="see-all" style="margin-left:auto;">Voir tout →</a>
             </div>
             <div class="products-grid" id="flash-grid">
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
             </div>
         </div>
     </div>
-
-
 
     <!-- ══ 6. CATÉGORIES PHARES ══════════════════════════════════ -->
     <div class="big-cats-section">
@@ -1806,8 +2026,6 @@
         </div>
     </div>
 
-
-
     <!-- ══ 5. MEILLEURES VENTES ══════════════════════════════════ -->
     <section style="background:var(--w2);border-top:1px solid var(--wb);">
         <div class="sec">
@@ -1816,15 +2034,13 @@
                 <a href="products.html" class="see-all">Voir tout →</a>
             </div>
             <div class="products-grid" id="bestsellers-grid">
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
-                <div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
+                <div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>
             </div>
         </div>
     </section>
-
-  
 
     <!-- ══ 7. RÉASSURANCE + PAIEMENTS ════════════════════════════ -->
     <div class="trust-section">
@@ -1865,8 +2081,8 @@
         <div class="ref-card">
             <div class="ref-icon">🎁</div>
             <div class="ref-text">
-                <h2 id="refTitle">Invitez un ami, gagnez de l argent </h2>
-                <p id="refDesc">Pour chaque ami qui effectue son premier achat sur Ranita Market, vous recevez de l argent sur votre compte.</p>
+                <h2 id="refTitle">Invitez un ami, gagnez de l'argent</h2>
+                <p id="refDesc">Pour chaque ami qui effectue son premier achat sur Ranita Market, vous recevez de l'argent sur votre compte.</p>
             </div>
             <a href="referral.html" class="ref-btn">Inviter maintenant →</a>
         </div>
@@ -1910,6 +2126,20 @@
     </nav>
 
     <!-- ══ SCRIPTS ═══════════════════════════════════════════════ -->
+    <!-- Promo bar close + position dynamique du header desktop -->
+    <script>
+        function closePromoBar() {
+            var bar = document.getElementById('promoBar');
+            if (bar) bar.style.display = 'none';
+            // Recalcule la position du header desktop
+            var header = document.getElementById('siteHeader');
+            if (header) header.style.top = '0';
+            // Recalcule cats-bar et hero
+            document.querySelector('.cats-bar').style.top = '58px';
+            document.getElementById('heroSlider').style.marginTop = '58px';
+        }
+    </script>
+
     <!-- Badge panier init -->
     <script>
         (function () {
@@ -1941,15 +2171,11 @@
 
     <!-- Timer flash -->
     <script>
-
-
         var flashTimerInterval = null;
         function startFlashTimer(endDate) {
             if (flashTimerInterval) clearInterval(flashTimerInterval);
             flashTimerInterval = setInterval(function () {
-                var now = new Date();
-                var end = new Date(endDate);
-                var diff = Math.max(0, Math.floor((end - now) / 1000));
+                var diff = Math.max(0, Math.floor((new Date(endDate) - new Date()) / 1000));
                 var h = document.getElementById('t-h');
                 var m = document.getElementById('t-m');
                 var s = document.getElementById('t-s');
@@ -1959,8 +2185,6 @@
                 if (diff <= 0) { clearInterval(flashTimerInterval); loadFlashSales(); }
             }, 1000);
         }
-
-
     </script>
 
     <!-- Produits + settings -->
@@ -1986,25 +2210,20 @@
             return '<div class="p-card" onclick="location.href=\'product-details.html?id=' + p.id + '\'">' + '<div class="p-img">' + img + ph + bdg + '<button class="w-btn" onclick="event.stopPropagation();wsh(this,' + p.id + ')" title="Favoris">♡</button></div>' + '<div class="p-info"><div class="p-cat">' + (p.category?.name || 'Produit') + '</div><div class="p-name" title="' + p.name + '">' + p.name + '</div><div class="p-stock ' + sk.cls + '">' + sk.txt + '</div><div class="p-row"><span class="p-price">' + fmt(p.price) + '</span>' + op + btn + '</div></div></div>';
         }
 
-        function sk(n) { return Array(n).fill('<div class="p-card p-card-sk"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:165px;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>').join(''); }
+        function skHtml() { return '<div class="p-card"><div class="p-img"><div class="skeleton sk-img" style="width:100%;height:100%;"></div></div><div class="skeleton sk-line lg"></div><div class="skeleton sk-line sm"></div><div class="skeleton sk-btn"></div></div>'; }
         function errH() { return '<div class="api-error">Impossible de charger.<br><button onclick="loadProducts()">Réessayer</button></div>'; }
 
         async function loadProducts() {
-            document.getElementById('bestsellers-grid').innerHTML = sk(4);
+            document.getElementById('bestsellers-grid').innerHTML = skHtml().repeat(4);
             try {
                 var res = await fetch(API);
                 if (!res.ok) throw new Error();
                 allProducts = await res.json();
                 var active = allProducts.filter(function (p) { return p.isActive !== false; });
                 buildCatsBar(active);
-
-                // Flash sales gérées séparément
                 loadFlashSales();
-
-                // Meilleures ventes = produits actifs (les 4 premiers)
                 var best = active.slice(0, 4);
                 document.getElementById('bestsellers-grid').innerHTML = best.length ? best.map(buildCard).join('') : errH();
-
             } catch (e) {
                 document.getElementById('bestsellers-grid').innerHTML = errH();
             }
@@ -2027,7 +2246,6 @@
             }).catch(function () { });
         }
 
-
         async function loadFlashSales() {
             var grid = document.getElementById('flash-grid');
             var flashSection = document.querySelector('.flash-section');
@@ -2035,67 +2253,36 @@
                 var res = await fetch('/api/flash-sales/active');
                 if (!res.ok) throw new Error();
                 var sales = await res.json();
-
-                if (!sales || !sales.length) {
-                    if (flashSection) flashSection.style.display = 'none';
-                    return;
-                }
-
+                if (!sales || !sales.length) { if (flashSection) flashSection.style.display = 'none'; return; }
                 if (flashSection) flashSection.style.display = 'block';
                 startFlashTimer(sales[0].endDate);
-
                 grid.innerHTML = sales.map(function (s) {
                     var p = s.product;
-                    var imgs = (function () {
-                        try { return JSON.parse(p.images || '[]'); } catch { return p.imageUrl ? [p.imageUrl] : []; }
-                    })();
+                    var imgs = (function () { try { return JSON.parse(p.images || '[]'); } catch { return p.imageUrl ? [p.imageUrl] : []; } })();
                     var img = imgs[0] || p.imageUrl || '';
                     var stockLeft = s.stockLeft;
                     var oos = stockLeft <= 0;
                     var progressPct = Math.round(((s.flashStock - stockLeft) / s.flashStock) * 100);
                     var variantId = s.variantId ?? null;
-
                     return '<div class="p-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ',' + s.stockLeft + ',' + variantId + ')">' +
-                        '<div class="p-img">' +
-                        (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
-                        '<span class="bdg bdg-r">-' + s.discount + '%</span>' +
-                        (!oos ? '<button class="w-btn" onclick="event.stopPropagation();wsh(this,' + p.id + ')">♡</button>' : '') +
-                        '</div>' +
-                        '<div class="p-info">' +
-                        '<div class="p-cat">⚡ Vente Flash</div>' +
-                        '<div class="p-name">' + p.name + '</div>' +
-                        '<div class="p-stock ' + (oos ? 'out' : stockLeft <= 3 ? 'low' : 'ok') + '">' +
-                        (oos ? 'Épuisé' : stockLeft <= 3 ? '⚠ Plus que ' + stockLeft : stockLeft + ' restants') +
-                        '</div>' +
-                        '<div style="background:#f3f4f6;border-radius:999px;height:4px;margin-bottom:8px;overflow:hidden;">' +
-                        '<div style="background:#f97316;height:100%;width:' + progressPct + '%;border-radius:999px;"></div></div>' +
-                        '<div class="p-row">' +
-                        '<span class="p-price" style="color:#f97316;">' + Number(s.flashPrice).toLocaleString('fr-FR') + ' F</span>' +
+                        '<div class="p-img">' + (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
+                        '<span class="bdg bdg-r">-' + s.discount + '%</span>' + (!oos ? '<button class="w-btn" onclick="event.stopPropagation();wsh(this,' + p.id + ')">♡</button>' : '') + '</div>' +
+                        '<div class="p-info"><div class="p-cat">⚡ Vente Flash</div><div class="p-name">' + p.name + '</div>' +
+                        '<div class="p-stock ' + (oos ? 'out' : stockLeft <= 3 ? 'low' : 'ok') + '">' + (oos ? 'Épuisé' : stockLeft <= 3 ? '⚠ Plus que ' + stockLeft : stockLeft + ' restants') + '</div>' +
+                        '<div style="background:#f3f4f6;border-radius:999px;height:4px;margin-bottom:8px;overflow:hidden;"><div style="background:#f97316;height:100%;width:' + progressPct + '%;border-radius:999px;"></div></div>' +
+                        '<div class="p-row"><span class="p-price" style="color:#f97316;">' + Number(s.flashPrice).toLocaleString('fr-FR') + ' F</span>' +
                         '<span class="p-old">' + Number(s.originalPrice).toLocaleString('fr-FR') + ' F</span>' +
-                        (oos
-                            ? '<button class="add-btn" disabled>Épuisé</button>'
-                            : '<button class="add-btn" style="background:#f97316;" onclick="event.stopPropagation();goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ',' + s.stockLeft + ',' + variantId + ')">+ Panier</button>') +
+                        (oos ? '<button class="add-btn" disabled>Épuisé</button>' : '<button class="add-btn" style="background:#f97316;" onclick="event.stopPropagation();goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ',' + s.stockLeft + ',' + variantId + ')">+ Panier</button>') +
                         '</div></div></div>';
                 }).join('');
-
-            } catch (e) {
-                if (flashSection) flashSection.style.display = 'none';
-            }
+            } catch (e) { if (flashSection) flashSection.style.display = 'none'; }
         }
 
         function goFlash(productId, flashPrice, flashSaleId, stockLeft, variantId) {
-            var url = 'product-details.html?id=' + productId
-                + '&fp=' + flashPrice
-                + '&fid=' + flashSaleId
-                + '&fsl=' + stockLeft;
-            if (variantId !== null && variantId !== undefined && variantId !== 'null') {
-                url += '&fvid=' + variantId;
-            }
+            var url = 'product-details.html?id=' + productId + '&fp=' + flashPrice + '&fid=' + flashSaleId + '&fsl=' + stockLeft;
+            if (variantId !== null && variantId !== undefined && variantId !== 'null') url += '&fvid=' + variantId;
             location.href = url;
         }
-
-
-
 
         function filterCatById(el, pid, nm) {
             document.querySelectorAll('.cat-tab').forEach(function (x) { x.classList.remove('active'); }); el.classList.add('active');
@@ -2120,7 +2307,6 @@
             document.getElementById('bestsellers-grid').innerHTML = best.length ? best.map(buildCard).join('') : '<p style="grid-column:1/-1;text-align:center;color:var(--t3);padding:24px;">—</p>';
         }
 
-        // Settings site
         async function loadSiteSettings() {
             try {
                 var res = await fetch('/api/site-settings'); if (!res.ok) return;
@@ -2138,6 +2324,10 @@
                     var expired = pe && today > pe;
                     if (hide) {
                         promoEl.style.display = 'none';
+                        // Ajuste le positionnement si promo masquée
+                        document.getElementById('siteHeader').style.top = '0';
+                        document.querySelector('.cats-bar').style.top = '58px';
+                        document.getElementById('heroSlider').style.marginTop = '58px';
                     } else if (notStarted || expired) {
                         var barText = document.getElementById('promoBarText');
                         var barLink = document.getElementById('promoBarLink');
@@ -2184,52 +2374,39 @@
 
             } catch (e) { buildSlider({}); }
         }
-        document.addEventListener('DOMContentLoaded', function () { loadSiteSettings(); loadProducts(); });
-        // Fix slider vide au retour arrière
-        window.addEventListener('pageshow', function (e) {
-            if (e.persisted) { loadSiteSettings(); }
-        });
 
+        document.addEventListener('DOMContentLoaded', function () { loadSiteSettings(); loadProducts(); });
+        window.addEventListener('pageshow', function (e) { if (e.persisted) { loadSiteSettings(); } });
 
         async function loadCurrentEvent() {
             try {
                 var res = await fetch('/api/events/current');
                 var events = await res.json();
                 if (!events || !events.length) return;
-
                 var container = document.getElementById('eventBanner');
                 if (!container) return;
-
                 container.innerHTML = '';
                 container.style.display = 'block';
-
                 events.forEach(function (ev) {
                     var color = ev.color || '#10b981';
                     var disc = ev.slideDisc ? 'JUSQU\'À ' + ev.slideDisc : '';
-                    var imgHtml = ev.slideImg ?
-                        '<img src="' + ev.slideImg + '" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">' :
-                        '<span style="font-size:48px;">🎉</span>';
-
+                    var imgHtml = ev.slideImg ? '<img src="' + ev.slideImg + '" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">' : '<span style="font-size:48px;">🎉</span>';
                     var card = document.createElement('div');
                     card.style.cssText = 'max-width:1280px;margin:0 auto;padding:20px 20px 0;';
-                    card.innerHTML = '<div style="border-radius:16px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;min-height:440px;cursor:pointer;background:linear-gradient(135deg,' + color + ',' + color + 'cc);" onclick="location.href=\'' + (ev.slideLink || 'products.html') + '\'">' +
-                        '<div style="padding:36px 40px;display:flex;flex-direction:column;justify-content:center;gap:12px;">' +
+                    card.innerHTML = '<div style="border-radius:16px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;min-height:320px;cursor:pointer;background:linear-gradient(135deg,' + color + ',' + color + 'cc);" onclick="location.href=\'' + (ev.slideLink || 'products.html') + '\'">' +
+                        '<div style="padding:28px 32px;display:flex;flex-direction:column;justify-content:center;gap:10px;">' +
                         '<div style="display:inline-flex;align-items:center;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;width:fit-content;text-transform:uppercase;">🎉 ' + (ev.name || '') + '</div>' +
-                        '<div style="font-size:38px;font-weight:800;color:white;line-height:1.1;">' + (ev.slideTitle || '') + '</div>' +
-                        '<div style="font-size:15px;color:rgba(255,255,255,.85);line-height:1.5;max-width:380px;">' + (ev.slideSub || '') + '</div>' +
+                        '<div style="font-size:clamp(22px,4vw,38px);font-weight:800;color:white;line-height:1.1;">' + (ev.slideTitle || '') + '</div>' +
+                        '<div style="font-size:14px;color:rgba(255,255,255,.85);line-height:1.5;max-width:380px;">' + (ev.slideSub || '') + '</div>' +
                         '<a href="' + (ev.slideLink || 'products.html') + '" style="display:inline-flex;align-items:center;background:white;color:#111827;font-weight:700;font-size:14px;padding:12px 24px;border-radius:10px;width:fit-content;text-decoration:none;">' + (ev.slideCta || 'Voir les offres →') + '</a>' +
                         '</div>' +
-                        '<div style="position:relative;overflow:hidden;min-height:340px;display:flex;align-items:center;justify-content:center;">' +
-                        imgHtml +
-                        (disc ? '<div style="position:absolute;bottom:20px;left:20px;background:white;color:#111827;font-size:22px;font-weight:800;padding:10px 20px;border-radius:999px;">' + disc + '</div>' : '') +
-                        '</div>' +
-                        '</div>';
+                        '<div style="position:relative;overflow:hidden;min-height:200px;display:flex;align-items:center;justify-content:center;">' + imgHtml +
+                        (disc ? '<div style="position:absolute;bottom:16px;left:16px;background:white;color:#111827;font-size:18px;font-weight:800;padding:8px 16px;border-radius:999px;">' + disc + '</div>' : '') +
+                        '</div></div>';
                     container.appendChild(card);
                 });
-            } catch (e) { console.log('Events non chargés:', e); }
+            } catch (e) { }
         }
-
-
     </script>
 
     <!-- Panier + wishlist -->
@@ -2259,14 +2436,13 @@
 
     <!-- Slider + carrousel phares -->
     <script>
-        // ── SLIDER ──────────────────────────────────────────────────
         var sliderIdx = 0, sliderTotal = 0, sliderTimer;
         var SDEFS = [
-            { bg: '#0D1117', bc: 'rgba(16,185,129,.12)', bb: 'rgba(16,185,129,.25)', bt: '#10b981', icon: '🛍️', btnBg: '#10b981', dBg: '#F59E0B', defBadge: '✦ Offres du moment' },
-            { bg: 'linear-gradient(135deg,#0a1628,#0d1f3c)', bc: 'rgba(59,130,246,.12)', bb: 'rgba(59,130,246,.3)', bt: '#60a5fa', icon: '📱', btnBg: '#3b82f6', dBg: '#3b82f6', defBadge: '📱 Électronique' },
-            { bg: 'linear-gradient(135deg,#0a1a12,#0d2416)', bc: 'rgba(16,185,129,.12)', bb: 'rgba(16,185,129,.3)', bt: '#10b981', icon: '🥘', btnBg: '#10b981', dBg: '#059669', defBadge: '🛒 Alimentation' },
-            { bg: 'linear-gradient(135deg,#1a0828,#2d0f3c)', bc: 'rgba(236,72,153,.12)', bb: 'rgba(236,72,153,.3)', bt: '#ec4899', icon: '💄', btnBg: '#ec4899', dBg: '#ec4899', defBadge: '💄 Beauté' },
-            { bg: 'linear-gradient(135deg,#1a1000,#2d1e00)', bc: 'rgba(245,158,11,.12)', bb: 'rgba(245,158,11,.3)', bt: '#f59e0b', icon: '🏡', btnBg: '#f59e0b', dBg: '#f59e0b', defBadge: '🏡 Maison' },
+            { bg: '#0D1117', bc: 'rgba(16,185,129,.12)', bb: 'rgba(16,185,129,.25)', bt: '#10b981', icon: '🛍️', btnBg: '#10b981', defBadge: '✦ Offres du moment' },
+            { bg: 'linear-gradient(135deg,#0a1628,#0d1f3c)', bc: 'rgba(59,130,246,.12)', bb: 'rgba(59,130,246,.3)', bt: '#60a5fa', icon: '📱', btnBg: '#3b82f6', defBadge: '📱 Électronique' },
+            { bg: 'linear-gradient(135deg,#0a1a12,#0d2416)', bc: 'rgba(16,185,129,.12)', bb: 'rgba(16,185,129,.3)', bt: '#10b981', icon: '🥘', btnBg: '#10b981', defBadge: '🛒 Alimentation' },
+            { bg: 'linear-gradient(135deg,#1a0828,#2d0f3c)', bc: 'rgba(236,72,153,.12)', bb: 'rgba(236,72,153,.3)', bt: '#ec4899', icon: '💄', btnBg: '#ec4899', defBadge: '💄 Beauté' },
+            { bg: 'linear-gradient(135deg,#1a1000,#2d1e00)', bc: 'rgba(245,158,11,.12)', bb: 'rgba(245,158,11,.3)', bt: '#f59e0b', icon: '🏡', btnBg: '#f59e0b', defBadge: '🏡 Maison' },
         ];
 
         function buildSlider(s) {
@@ -2274,7 +2450,8 @@
             var nav = document.getElementById('sliderNav');
             if (!track || !nav) return;
             track.innerHTML = ''; nav.innerHTML = ''; sliderTotal = 0;
-            var slides = []; var n = 0;
+            var slides = [];
+            var n = 0;
             var defTitles = ['Mode & Style<br><em>Abidjan</em>', 'Smartphones<br><em style="color:#60a5fa">& Gadgets</em>', 'Produits Frais<br><em>& Locaux</em>'];
             while (n < 10) {
                 var raw = s['slide' + n + '_title'] || '';
@@ -2288,7 +2465,6 @@
             if (!slides.length) return;
             sliderTotal = slides.length;
             var all = [slides[sliderTotal - 1], ...slides, slides[0]];
-
             all.forEach(function (sl) {
                 var d = sl.def;
                 var el = document.createElement('div'); el.className = 'slide'; el.style.background = d.bg;
@@ -2297,12 +2473,10 @@
                 el.innerHTML = '<div class="slide-inner"><div>' + '<div class="slide-badge" style="background:' + d.bc + ';border-color:' + d.bb + ';color:' + d.bt + ';">' + sl.badge + '</div>' + '<h2>' + sl.title + '</h2><p>' + sl.sub + '</p>' + '<a href="' + sl.link + '" class="slide-cta" style="background:' + d.btnBg + ';">' + sl.cta + '</a>' + '</div>' + imgH + '</div>' + discH;
                 track.appendChild(el);
             });
-
             slides.forEach(function (_, i) {
                 var dot = document.createElement('div'); dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
                 dot.onclick = function () { sliderGoReal(i); }; nav.appendChild(dot);
             });
-
             sliderIdx = 1; track.style.transition = 'none'; track.style.transform = 'translateX(-' + sliderIdx * 100 + '%)';
             resetSliderTimer();
         }
@@ -2334,7 +2508,7 @@
             if (sliderTotal > 1) sliderTimer = setInterval(function () { sliderGo(1); }, 4500);
         }
 
-        // ── CARROUSEL PRODUITS PHARES ────────────────────────────────
+        // Carrousel produits phares
         var featData = [], featOffset = 0, featTimer = null, featCW = 199;
 
         async function loadFeaturedProducts() {
@@ -2363,7 +2537,7 @@
             track.innerHTML = ''; dots.innerHTML = '';
             var wrap = document.querySelector('.featured-track-wrap');
             var ww = wrap ? wrap.offsetWidth : window.innerWidth - 40;
-            var cw = window.innerWidth <= 768 ? 169 : 199;
+            var cw = window.innerWidth <= 480 ? 154 : window.innerWidth <= 768 ? 169 : 199;
             featCW = cw;
             var vis = Math.max(Math.floor(ww / cw), 1);
             var items = [...featData, ...featData, ...featData];
@@ -2375,7 +2549,11 @@
                 var pv = p.oldPrice && p.oldPrice > p.price ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
                 var card = document.createElement('div'); card.className = 'f-card';
                 card.onclick = function () { location.href = 'product-details.html?sellerProductId=' + p.id; };
-                card.innerHTML = '<div class="f-badge">⭐ Phare</div>' + '<div class="f-card-img">' + (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy" onerror="this.style.display=\'none\'">' : '<span style="font-size:36px">📦</span>') + '</div>' + '<div class="f-card-body">' + '<div class="f-shop">🏪 ' + p.shopName + '</div>' + '<div class="f-name">' + p.name + '</div>' + '<div class="f-price-row"><span class="f-price">' + price + ' F</span>' + (oldP ? '<span class="f-old">' + oldP + ' F</span>' : '') + (pv ? '<span class="f-pct">-' + pv + '%</span>' : '') + '</div></div>';
+                card.innerHTML = '<div class="f-badge">⭐ Phare</div>' +
+                    '<div class="f-card-img">' + (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy" onerror="this.style.display=\'none\'">' : '<span style="font-size:36px">📦</span>') + '</div>' +
+                    '<div class="f-card-body"><div class="f-shop">🏪 ' + p.shopName + '</div>' +
+                    '<div class="f-name">' + p.name + '</div>' +
+                    '<div class="f-price-row"><span class="f-price">' + price + ' F</span>' + (oldP ? '<span class="f-old">' + oldP + ' F</span>' : '') + (pv ? '<span class="f-pct">-' + pv + '%</span>' : '') + '</div></div>';
                 track.appendChild(card);
             });
             var pages = Math.ceil(featData.length / vis);
@@ -2431,73 +2609,41 @@
     <script src="/cart-badge.js"></script>
     <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.addEventListener('message', function (e) { if (e.data === 'reload') location.reload(true); }); }</script>
 
-
     <!-- ── TOAST CRÉDIT PARRAINAGE ──────────────────────────── -->
     <div id="referralToast" style="
-    position:fixed;
-    bottom:90px;
-    right:-340px;
-    width:320px;
-    background:linear-gradient(135deg,#10b981,#059669);
-    color:white;
-    border-radius:16px;
-    padding:18px 20px;
-    box-shadow:0 8px 32px rgba(16,185,129,.35);
-    z-index:9999;
-    transition:right .5s cubic-bezier(.4,0,.2,1);
+        position:fixed;
+        bottom:90px;
+        right:-340px;
+        width:min(320px, calc(100vw - 32px));
+        background:linear-gradient(135deg,#10b981,#059669);
+        color:white;
+        border-radius:16px;
+        padding:18px 20px;
+        box-shadow:0 8px 32px rgba(16,185,129,.35);
+        z-index:9999;
+        transition:right .5s cubic-bezier(.4,0,.2,1);
     ">
-        <button onclick="closeReferralToast()" style="
-        position:absolute;top:10px;right:12px;
-        background:rgba(255,255,255,.2);border:none;
-        color:white;width:24px;height:24px;border-radius:50%;
-        cursor:pointer;font-size:14px;display:flex;
-        align-items:center;justify-content:center;">
-            ×
-        </button>
-        <div style="font-size:11px;font-weight:600;opacity:.85;margin-bottom:6px;">
-            🎁 Crédit parrainage disponible
-        </div>
-        <div style="font-size:22px;font-weight:800;margin-bottom:4px;" id="toastCreditAmount">
-            900 F CFA
-        </div>
-        <div style="font-size:12px;opacity:.85;margin-bottom:14px;line-height:1.4;">
-            Sera déduit automatiquement de votre prochaine commande !
-        </div>
-        <a href="products.html" style="
-        display:inline-block;background:white;color:#059669;
-        padding:9px 18px;border-radius:8px;font-weight:700;
-        font-size:13px;text-decoration:none;">
-            🛒 Commander maintenant →
-        </a>
+        <button onclick="closeReferralToast()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:none;color:white;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">×</button>
+        <div style="font-size:11px;font-weight:600;opacity:.85;margin-bottom:6px;">🎁 Crédit parrainage disponible</div>
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px;" id="toastCreditAmount">900 F CFA</div>
+        <div style="font-size:12px;opacity:.85;margin-bottom:14px;line-height:1.4;">Sera déduit automatiquement de votre prochaine commande !</div>
+        <a href="products.html" style="display:inline-block;background:white;color:#059669;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">🛒 Commander maintenant →</a>
     </div>
 
     <script>
         (function () {
-
-
-
             var client = JSON.parse(localStorage.getItem('client') || 'null');
             if (!client) return;
-
             fetch('/api/client-auth/referral/' + client.id)
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (!data.referralCredits || data.referralCredits <= 0) return;
-
-                    // Mettre à jour le montant
                     var el = document.getElementById('toastCreditAmount');
                     if (el) el.textContent = Number(data.referralCredits).toLocaleString('fr-FR') + ' F CFA';
-
-                    // Afficher après 3 secondes
                     setTimeout(function () {
                         var toast = document.getElementById('referralToast');
-                        if (toast) toast.style.right = '20px';
-
-
-                        // Masquer automatiquement après 8 secondes
-                        setTimeout(function () {
-                            closeReferralToast();
-                        }, 60000);
+                        if (toast) toast.style.right = '16px';
+                        setTimeout(function () { closeReferralToast(); }, 60000);
                     }, 3000);
                 })
                 .catch(function () { });
@@ -2508,6 +2654,5 @@
             if (toast) toast.style.right = '-340px';
         }
     </script>
-
 </body>
 </html>
