@@ -1497,8 +1497,20 @@
             }).join('');
         }
 
-        function fsOpenEdit(id) {
+        async function fsOpenEdit(id) {
             const f = fsFlashes.find(x => x.id === id); if (!f) return;
+
+            // ✅ Récupérer le variantId depuis l'API active
+            let variantId = f.variantId ?? null;
+            if (!variantId) {
+                try {
+                    const res = await fetch(`${API}/flash-sales/active`);
+                    const actives = await res.json();
+                    const active = actives.find(a => a.id === id);
+                    if (active) variantId = active.variantId ?? null;
+                } catch (e) { }
+            }
+
             document.getElementById('fs_id').value = id;
             document.getElementById('fsFormTitle').textContent = '✏️ Modifier la vente flash';
             document.getElementById('fs_price').value = f.flashPrice;
@@ -1510,10 +1522,8 @@
             const imgs = (() => { try { return JSON.parse(f.product.images || '[]'); } catch { return [f.product.imageUrl || '']; } })();
             fsSelectProduct(f.product.id, f.product.name, f.originalPrice, imgs[0] || f.product.imageUrl || '');
 
-            // ✅ Restaurer le variantId APRÈS fsSelectProduct qui le remet à vide
-            if (f.variantId) {
-                document.getElementById('fs_variant_id').value = f.variantId;
-            }
+            // ✅ Restaurer variantId
+            if (variantId) document.getElementById('fs_variant_id').value = variantId;
 
             document.getElementById('fsForm').classList.add('open');
             document.getElementById('fsForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
