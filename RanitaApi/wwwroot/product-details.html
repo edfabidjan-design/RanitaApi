@@ -454,19 +454,16 @@
 
         // ── Détection prix flash depuis URL ──
         var flashPrice = null, flashSaleId = null, flashStockLeft = null, flashVariantId = null;
-        var fpSession = sessionStorage.getItem('flashPrice');
-        var fpProductId = sessionStorage.getItem('flashProductId');
-        if (fpSession && fpProductId == productId) {
-            flashPrice = parseFloat(fpSession);
-            flashSaleId = parseInt(sessionStorage.getItem('flashSaleId'));
-            flashStockLeft = parseInt(sessionStorage.getItem('flashStockLeft'));
-            var fvId = sessionStorage.getItem('flashVariantId');
-            if (fvId) flashVariantId = parseInt(fvId);
-            sessionStorage.removeItem('flashPrice');
-            sessionStorage.removeItem('flashSaleId');
-            sessionStorage.removeItem('flashProductId');
-            sessionStorage.removeItem('flashStockLeft');
-            sessionStorage.removeItem('flashVariantId');
+        var fp = params.get('fp');
+        var fid = params.get('fid');
+        var fsl = params.get('fsl');
+        var fvid = params.get('fvid');
+
+        if (fp) {
+            flashPrice = parseFloat(fp);
+            flashSaleId = parseInt(fid);
+            flashStockLeft = parseInt(fsl);
+            if (fvid) flashVariantId = parseInt(fvid);
         }
 
         let currentProduct = null;

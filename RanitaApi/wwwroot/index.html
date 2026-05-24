@@ -2084,12 +2084,12 @@
         }
 
         function goFlash(productId, flashPrice, flashSaleId, stockLeft, variantId) {
-            sessionStorage.setItem('flashPrice', flashPrice);
-            sessionStorage.setItem('flashSaleId', flashSaleId);
-            sessionStorage.setItem('flashProductId', productId);
-            sessionStorage.setItem('flashStockLeft', stockLeft); // ← nouveau
-            if (variantId) sessionStorage.setItem('flashVariantId', variantId); 
-            location.href = 'product-details.html?id=' + productId;
+            var url = 'product-details.html?id=' + productId
+                + '&fp=' + flashPrice
+                + '&fid=' + flashSaleId
+                + '&fsl=' + stockLeft;
+            if (variantId && variantId !== 'null') url += '&fvid=' + variantId;
+            location.href = url;
         }
 
 
