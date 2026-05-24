@@ -60,6 +60,7 @@ namespace RanitaApi.Controllers
                     f.EndDate,
                     f.IsActive,
                     f.CreatedAt,
+                    f.VariantId,
                     StockLeft = f.FlashStock - f.FlashStockSold,
                     Discount = (int)Math.Round((1 - f.FlashPrice / f.OriginalPrice) * 100),
                     Product = new
