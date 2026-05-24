@@ -463,7 +463,21 @@
             flashPrice = parseFloat(fp);
             flashSaleId = parseInt(fid);
             flashStockLeft = parseInt(fsl);
-            if (fvid) flashVariantId = parseInt(fvid);
+            if (fvid) {
+                flashVariantId = parseInt(fvid);
+            } else if (fid) {
+                // ✅ fvid absent — récupérer depuis l'API
+                fetch('/api/flash-sales/active')
+                    .then(r => r.json())
+                    .then(sales => {
+                        var s = sales.find(x => x.id === parseInt(fid));
+                        if (s && s.variantId) {
+                            flashVariantId = s.variantId;
+                            // Re-render les variantes
+                            if (currentProduct) selectVariant(flashVariantId);
+                        }
+                    });
+            }
         }
 
         let currentProduct = null;
