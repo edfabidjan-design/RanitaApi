@@ -1760,8 +1760,7 @@
                         document.getElementById('dash-pending-payouts').textContent = formatPrice(s.pendingPayouts);
                     }
                 } catch (e) { }
-                const sections = { 'section-orders': loadMyOrders, 'section-products': loadMyProducts, 'section-failed': loadFailedDeliveries, 'section-payouts': loadMyPayouts, 'section-reviews': loadMyReviews };
-                for (const [id, fn] of Object.entries(sections)) {
+                const sections = { 'section-orders': loadMyOrders, 'section-products': loadMyProducts, 'section-failed': loadFailedDeliveries, 'section-payouts': loadMyPayouts, 'section-reviews': loadMyReviews, 'section-flash': loadMyFlash };
                     const el = document.getElementById(id);
                     if (el && el.style.display !== 'none') { fn(); break; }
                 }
