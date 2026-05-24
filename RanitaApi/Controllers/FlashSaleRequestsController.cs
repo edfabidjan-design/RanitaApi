@@ -166,10 +166,10 @@ namespace RanitaApi.Controllers
 
             if (existingFlash != null)
             {
-                // Mise à jour des dates uniquement
                 existingFlash.StartDate = startDate;
                 existingFlash.EndDate = endDate;
                 existingFlash.IsActive = true;
+                existingFlash.VariantId = request.VariantId; // ✅ conserver le bon VariantId
                 request.StartDate = startDate;
                 request.EndDate = endDate;
                 request.Status = "Approved";
