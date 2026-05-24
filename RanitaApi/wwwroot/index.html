@@ -2053,7 +2053,7 @@
                     var stockLeft = s.stockLeft;
                     var oos = stockLeft <= 0;
                     var progressPct = Math.round(((s.flashStock - stockLeft) / s.flashStock) * 100);
-                    var variantId = s.variantId || 'null'; // ← capture variantId
+                    var variantId = s.variantId ?? null;
 
                     return '<div class="p-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ',' + s.stockLeft + ',' + variantId + ')">' +
                         '<div class="p-img">' +
@@ -2088,7 +2088,9 @@
                 + '&fp=' + flashPrice
                 + '&fid=' + flashSaleId
                 + '&fsl=' + stockLeft;
-            if (variantId && variantId !== 'null') url += '&fvid=' + variantId;
+            if (variantId !== null && variantId !== undefined && variantId !== 'null') {
+                url += '&fvid=' + variantId;
+            }
             location.href = url;
         }
 
