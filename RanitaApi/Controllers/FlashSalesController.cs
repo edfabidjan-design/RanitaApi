@@ -36,13 +36,7 @@ namespace RanitaApi.Controllers
                 VariantId = f.VariantId,
                 StockLeft = f.FlashStock - f.FlashStockSold,
                 Discount = (int)Math.Round((1 - f.FlashPrice / f.OriginalPrice) * 100),
-                Product = new
-                {
-                    f.Product.Id,
-                    f.Product.Name,
-                    f.Product.ImageUrl,
-                    f.Product.Images
-                }
+                Product = new { f.Product.Id, f.Product.Name, f.Product.ImageUrl, f.Product.Images }
             });
 
             return Ok(result);

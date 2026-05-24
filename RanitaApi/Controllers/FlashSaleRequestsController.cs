@@ -12,7 +12,6 @@ namespace RanitaApi.Controllers
         private readonly AppDbContext _context;
         public FlashSaleRequestsController(AppDbContext context) => _context = context;
 
-        // GET toutes (admin)
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? status)
         {
@@ -41,14 +40,13 @@ namespace RanitaApi.Controllers
                     Seller = new { f.Seller.Id, f.Seller.ShopName },
                     Product = new { f.Product.Id, f.Product.Name, f.Product.ImageUrl },
                     Variant = f.Variant == null ? null : new { f.Variant.Id, f.Variant.Combination, f.Variant.Stock },
-                    OriginalVariantStock = f.OriginalVariantStock
+                    f.OriginalVariantStock
                 })
                 .ToListAsync();
 
             return Ok(result);
         }
 
-        // GET par vendeur
         [HttpGet("seller/{sellerId}")]
         public async Task<IActionResult> GetBySeller(int sellerId)
         {
@@ -76,7 +74,6 @@ namespace RanitaApi.Controllers
             return Ok(result);
         }
 
-        // ✅ POST créer demande (vendeur) — dates optionnelles, définies par l'admin à l'approbation
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] FlashSaleRequestDto dto)
         {
@@ -88,7 +85,6 @@ namespace RanitaApi.Controllers
                 .FirstOrDefaultAsync(p => p.Id == dto.ProductId);
             if (product == null) return NotFound("Produit introuvable");
 
-            // Vérifier que le produit appartient au vendeur et est approuvé
             var sellerProduct = await _context.SellerProducts
                 .FirstOrDefaultAsync(sp => sp.ProductId == dto.ProductId
                     && sp.SellerId == dto.SellerId
@@ -96,16 +92,14 @@ namespace RanitaApi.Controllers
             if (sellerProduct == null)
                 return BadRequest("Ce produit ne vous appartient pas ou n'est pas approuvé.");
 
-            // ✅ Vérifier seulement la remise minimale (pas de durée, l'admin fixe les dates)
             var minDiscountSetting = await _context.SiteSettings
                 .FirstOrDefaultAsync(s => s.Key == "flash_min_discount_pct");
             var minPct = int.TryParse(minDiscountSetting?.Value, out var mp) ? mp : 10;
 
             var discount = (1 - dto.FlashPrice / product.Price) * 100;
             if (discount < minPct)
-                return BadRequest($"Remise minimale requise : {minPct}%. Votre remise est de {Math.Round(discount)}%.");
+                return BadRequest($"Remise minimale requise : {minPct}%. Votre remise : {Math.Round(discount)}%.");
 
-            // Vérifier stock
             if (dto.VariantId.HasValue)
             {
                 var variant = await _context.ProductVariants.FindAsync(dto.VariantId.Value);
@@ -134,7 +128,6 @@ namespace RanitaApi.Controllers
                 FlashPrice = dto.FlashPrice,
                 OriginalPrice = product.Price,
                 FlashStock = dto.FlashStock,
-                // ✅ Dates à DateTime.MinValue par défaut — l'admin les définira à l'approbation
                 StartDate = DateTime.MinValue,
                 EndDate = DateTime.MinValue,
                 Status = "Pending",
@@ -145,17 +138,12 @@ namespace RanitaApi.Controllers
             _context.FlashSaleRequests.Add(request);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                request.Id,
-                request.Status,
-                Message = "Demande envoyée — l'admin définira les dates et publiera votre flash."
-            });
+            return Ok(new { request.Id, request.Status, Message = "Demande envoyée." });
         }
 
-        // ✅ PUT approuver (admin) — applique la période flash définie dans les settings
+        // ✅ NOUVEAU — Admin fournit les dates directement
         [HttpPut("{id}/approve")]
-        public async Task<IActionResult> Approve(int id)
+        public async Task<IActionResult> Approve(int id, [FromBody] ApproveDto dto)
         {
             var request = await _context.FlashSaleRequests
                 .Include(f => f.Product).ThenInclude(p => p.Variants)
@@ -163,28 +151,15 @@ namespace RanitaApi.Controllers
             if (request == null) return NotFound();
             if (request.Status != "Pending") return BadRequest("Demande déjà traitée.");
 
-            // ✅ Lire la période flash depuis les settings admin — obligatoire pour approuver
-            var periodStart = await _context.SiteSettings
-                .FirstOrDefaultAsync(s => s.Key == "flash_period_start");
-            var periodEnd = await _context.SiteSettings
-                .FirstOrDefaultAsync(s => s.Key == "flash_period_end");
+            // Dates fournies par l'admin dans le body
+            var startDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc);
+            var endDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc);
 
-            if (string.IsNullOrEmpty(periodStart?.Value) || string.IsNullOrEmpty(periodEnd?.Value))
-                return BadRequest("Aucune période flash définie. Configurez les dates dans Paramètres > Ventes Flash avant d'approuver.");
+            if (endDate <= startDate)
+                return BadRequest("La date de fin doit être après la date de début.");
 
-            if (!DateTime.TryParse(periodStart.Value, out var ps) || !DateTime.TryParse(periodEnd.Value, out var pe))
-                return BadRequest("Dates de période flash invalides. Vérifiez la configuration.");
-
-            var startDate = DateTime.SpecifyKind(ps, DateTimeKind.Utc);
-            var endDate = DateTime.SpecifyKind(pe, DateTimeKind.Utc);
-
-            // Vérifier durée maximale
-            var maxDurationSetting = await _context.SiteSettings
-                .FirstOrDefaultAsync(s => s.Key == "flash_max_duration_hours");
-            var maxHours = int.TryParse(maxDurationSetting?.Value, out var mh) ? mh : 48;
-            var duration = (endDate - startDate).TotalHours;
-            if (duration > maxHours + 0.1)
-                return BadRequest($"La période flash dépasse la durée maximale de {maxHours}h.");
+            if (endDate <= DateTime.UtcNow)
+                return BadRequest("La date de fin est déjà passée.");
 
             // Déduire stock
             if (request.VariantId.HasValue)
@@ -206,59 +181,51 @@ namespace RanitaApi.Controllers
             var flash = new FlashSale
             {
                 ProductId = request.ProductId,
-                VariantId = request.VariantId,
+                VariantId = request.VariantId,  // ✅ toujours copié
                 FlashPrice = request.FlashPrice,
                 OriginalPrice = request.OriginalPrice,
                 FlashStock = request.FlashStock,
                 FlashStockSold = 0,
                 StartDate = startDate,
                 EndDate = endDate,
-                IsActive = now <= endDate,
+                IsActive = true,  // ✅ toujours true — GetActive filtre par dates
                 CreatedAt = now
             };
 
             _context.FlashSales.Add(flash);
-
-            // ✅ Mettre à jour les dates de la demande pour traçabilité
             request.StartDate = startDate;
             request.EndDate = endDate;
             request.Status = "Approved";
 
             await _context.SaveChangesAsync();
-
             return Ok(new { Message = "Flash approuvé et publié.", FlashId = flash.Id });
         }
 
-        // PUT rejeter (admin)
         [HttpPut("{id}/reject")]
         public async Task<IActionResult> Reject(int id, [FromBody] RejectDto dto)
         {
             var request = await _context.FlashSaleRequests.FindAsync(id);
             if (request == null) return NotFound();
             if (request.Status != "Pending") return BadRequest("Demande déjà traitée.");
-
             request.Status = "Rejected";
             request.RejectionReason = dto.Reason;
             await _context.SaveChangesAsync();
-
             return Ok(new { Message = "Demande rejetée." });
         }
 
-        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var request = await _context.FlashSaleRequests.FindAsync(id);
             if (request == null) return NotFound();
 
-            // Chercher le FlashSale lié par ProductId + VariantId
             var flashSale = await _context.FlashSales
                 .FirstOrDefaultAsync(f => f.ProductId == request.ProductId
                                        && f.VariantId == request.VariantId);
-
             if (flashSale != null)
             {
-                if (flashSale.IsActive)
+                // Restituer stock seulement si flash pas encore expiré
+                if (flashSale.EndDate > DateTime.UtcNow)
                 {
                     if (request.VariantId.HasValue)
                     {
@@ -279,7 +246,6 @@ namespace RanitaApi.Controllers
             return Ok();
         }
 
-        // ✅ PUT modifier (vendeur) — pas de dates non plus
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] FlashSaleRequestDto dto)
         {
@@ -301,35 +267,19 @@ namespace RanitaApi.Controllers
             request.FlashPrice = dto.FlashPrice;
             request.FlashStock = dto.FlashStock;
             request.VariantId = dto.VariantId;
-            // ✅ Les dates restent inchangées — toujours gérées par l'admin
             request.Status = "Pending";
             request.RejectionReason = null;
 
             await _context.SaveChangesAsync();
-            return Ok(new { Message = "Demande modifiée — en attente de validation." });
+            return Ok(new { Message = "Demande modifiée." });
         }
 
-
-        [HttpPatch("{id}/dates")]
-        public async Task<IActionResult> UpdateDates(int id, [FromBody] UpdateDatesDto dto)
-        {
-            var flash = await _context.FlashSales.FindAsync(id);
-            if (flash == null) return NotFound();
-            flash.StartDate = dto.StartDate;
-            flash.EndDate = dto.EndDate;
-            flash.IsActive = true;
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
-
-        public class UpdateDatesDto
+        public class ApproveDto
         {
             public DateTime StartDate { get; set; }
             public DateTime EndDate { get; set; }
         }
 
-
-        // ✅ DTO mis à jour — dates optionnelles
         public class FlashSaleRequestDto
         {
             public int SellerId { get; set; }
@@ -337,8 +287,8 @@ namespace RanitaApi.Controllers
             public int? VariantId { get; set; }
             public decimal FlashPrice { get; set; }
             public int FlashStock { get; set; }
-            public DateTime? StartDate { get; set; } // optionnel — géré par l'admin
-            public DateTime? EndDate { get; set; }   // optionnel — géré par l'admin
+            public DateTime? StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
         }
 
         public class RejectDto
