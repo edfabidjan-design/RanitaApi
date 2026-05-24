@@ -212,6 +212,13 @@ namespace RanitaApi.Controllers
                 if (product != null) product.Stock += stockNonVendu;
             }
 
+            // ✅ Supprimer aussi la FlashSaleRequest liée
+            var request = await _context.FlashSaleRequests
+                .FirstOrDefaultAsync(r => r.ProductId == flash.ProductId
+                                       && r.VariantId == flash.VariantId
+                                       && r.Status == "Approved");
+            if (request != null) _context.FlashSaleRequests.Remove(request);
+
             _context.FlashSales.Remove(flash);
             await _context.SaveChangesAsync();
 
