@@ -1509,6 +1509,12 @@
             document.getElementById('fs_product_id').value = f.product.id;
             const imgs = (() => { try { return JSON.parse(f.product.images || '[]'); } catch { return [f.product.imageUrl || '']; } })();
             fsSelectProduct(f.product.id, f.product.name, f.originalPrice, imgs[0] || f.product.imageUrl || '');
+
+            // ✅ Restaurer le variantId APRÈS fsSelectProduct qui le remet à vide
+            if (f.variantId) {
+                document.getElementById('fs_variant_id').value = f.variantId;
+            }
+
             document.getElementById('fsForm').classList.add('open');
             document.getElementById('fsForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
