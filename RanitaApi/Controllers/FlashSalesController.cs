@@ -181,7 +181,7 @@ namespace RanitaApi.Controllers
                 product.Stock -= dto.FlashStock;
             }
 
-            flash.VariantId = dto.VariantId;
+            flash.VariantId = dto.VariantId ?? flash.VariantId;
             flash.FlashPrice = dto.FlashPrice;
             flash.FlashStock = dto.FlashStock;
             flash.StartDate = dto.StartDate.ToUniversalTime();
