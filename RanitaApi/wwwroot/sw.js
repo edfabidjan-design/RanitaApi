@@ -1,7 +1,7 @@
-// Service Worker désactivé complètement
 self.addEventListener('install', e => {
     self.skipWaiting();
 });
+
 self.addEventListener('activate', e => {
     e.waitUntil(
         caches.keys()
@@ -9,7 +9,13 @@ self.addEventListener('activate', e => {
             .then(() => self.clients.claim())
     );
 });
+
 self.addEventListener('fetch', e => {
-    // Toujours aller sur le réseau, jamais le cache
+    // Ne pas intercepter les requêtes cross-origin (Railway API)
+    if (e.request.url.startsWith('http') &&
+        !e.request.url.includes('ranita-shop.com')) {
+        return; // Laisser passer sans intervention
+    }
+    // Pour les requêtes same-origin, aller directement au réseau
     e.respondWith(fetch(e.request));
 });
