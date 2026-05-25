@@ -2669,7 +2669,7 @@
         z-index:9999;
         transition:right .5s cubic-bezier(.4,0,.2,1);
     ">
-        <button onclick="closeReferralToast()" ontouchend="closeReferralToast()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:none;color:white;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">×</button>
+        <button id="toastCloseBtn" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;z-index:10000;">×</button>
         <div style="font-size:11px;font-weight:600;opacity:.85;margin-bottom:6px;">🎁 Crédit parrainage disponible</div>
         <div style="font-size:22px;font-weight:800;margin-bottom:4px;" id="toastCreditAmount">900 F CFA</div>
         <div style="font-size:12px;opacity:.85;margin-bottom:14px;line-height:1.4;">Sera déduit automatiquement de votre prochaine commande !</div>
@@ -2677,6 +2677,21 @@
     </div>
 
     <script>
+        function closeReferralToast() {
+            var toast = document.getElementById('referralToast');
+            if (toast) toast.style.right = '-340px';
+        }
+
+        var _toastBtn = document.getElementById('toastCloseBtn');
+        if (_toastBtn) {
+            _toastBtn.addEventListener('click', closeReferralToast);
+            _toastBtn.addEventListener('touchend', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeReferralToast();
+            });
+        }
+
         (function () {
             var client = JSON.parse(localStorage.getItem('client') || 'null');
             if (!client) return;
@@ -2689,16 +2704,11 @@
                     setTimeout(function () {
                         var toast = document.getElementById('referralToast');
                         if (toast) toast.style.right = '16px';
-                        setTimeout(function () { closeReferralToast(); }, 60000);
+                        setTimeout(closeReferralToast, 60000);
                     }, 3000);
                 })
                 .catch(function () { });
         })();
-
-        function closeReferralToast() {
-            var toast = document.getElementById('referralToast');
-            if (toast) toast.style.right = '-340px';
-        }
     </script>
 
     <script src="/whatsapp-widget.js"></script>
