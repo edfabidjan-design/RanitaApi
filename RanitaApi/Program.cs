@@ -932,6 +932,24 @@ catch (Exception ex) { Console.WriteLine("FlashSaleRequests error: " + ex.Messag
 
 
 
+// ── Wishlists table ────────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""Wishlists"" (
+            ""Id""        SERIAL PRIMARY KEY,
+            ""ClientId""  INT NOT NULL REFERENCES ""Clients""(""Id"") ON DELETE CASCADE,
+            ""ProductId"" INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
+            ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW(),
+            UNIQUE(""ClientId"", ""ProductId"")
+        );
+    ");
+    Console.WriteLine("Wishlists OK");
+}
+catch (Exception ex) { Console.WriteLine("Wishlists error: " + ex.Message); }
+
 
 
 

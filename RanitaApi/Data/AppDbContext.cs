@@ -31,6 +31,7 @@ namespace RanitaApi.Data
         public DbSet<SiteEvent> SiteEvents { get; set; }
         public DbSet<FlashSale> FlashSales { get; set; }
         public DbSet<FlashSaleRequest> FlashSaleRequests { get; set; }
+        public DbSet<Wishlist> Wishlists { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
