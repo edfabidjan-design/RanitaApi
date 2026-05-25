@@ -709,12 +709,12 @@
         color:white;border-radius:16px;padding:18px 20px;
         box-shadow:0 8px 32px rgba(16,185,129,.35);z-index:9999;
         transition:right .5s cubic-bezier(.4,0,.2,1);">
-        <button onclick="closeReferralToast()" style="
-            position:absolute;top:10px;right:12px;
-            background:rgba(255,255,255,.2);border:none;
-            color:white;width:24px;height:24px;border-radius:50%;
-            cursor:pointer;font-size:14px;display:flex;
-            align-items:center;justify-content:center;">
+        <button onclick="closeReferralToast()" ontouchend="this.onclick()" style="
+    position:absolute;top:10px;right:12px;
+    background:rgba(255,255,255,.2);border:none;
+    color:white;width:24px;height:24px;border-radius:50%;
+    cursor:pointer;font-size:14px;display:flex;
+    align-items:center;justify-content:center;">
             ×
         </button>
         <div style="font-size:11px;font-weight:600;opacity:.85;margin-bottom:6px;">
