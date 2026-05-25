@@ -1701,44 +1701,105 @@
             }
         }
 
-        /* ── FIX BANNIÈRE ÉVÉNEMENT MOBILE ── */
+        /* ── FIX SLIDER + EVENT MOBILE ── */
         @media(max-width: 768px) {
-            #eventBanner > div > div[style*="grid-template-columns"] {
-                display: flex !important;
-                flex-direction: column !important;
-                min-height: auto !important;
+
+            /* Promo bar cachée */
+            .promo-bar {
+                display: none !important;
             }
 
-            #eventBanner > div > div > div:first-child {
-                padding: 24px 20px !important;
+            /* Badge % slider */
+            .slide-disc {
+                width: 46px !important;
+                height: 46px !important;
+                font-size: 13px !important;
+                top: 8px !important;
+                right: 8px !important;
             }
 
-            #eventBanner > div > div > div:last-child {
-                min-height: 180px !important;
-                max-height: 220px !important;
+            /* Slide plus compact */
+            .slide {
+                padding: 24px 16px 36px !important;
+                min-height: 200px !important;
             }
 
-            #eventBanner > div > div [style*="font-size:38px"] {
-                font-size: 24px !important;
-                line-height: 1.2 !important;
-            }
-        }
-
-        /* ── FIX HAUTEUR IMAGE BANNIÈRE EVENT MOBILE ── */
-        @media(max-width: 768px) {
-            #eventBanner > div > div > div:last-child {
-                min-height: 140px !important;
-                max-height: 140px !important;
-                overflow: hidden !important;
+            .slide-badge {
+                font-size: 10px !important;
+                padding: 3px 10px !important;
+                margin-bottom: 10px !important;
             }
 
-                #eventBanner > div > div > div:last-child img {
-                    height: 140px !important;
-                    width: 100% !important;
-                    object-fit: cover !important;
-                    object-position: center top !important;
-                    position: relative !important;
+            .slide h2 {
+                font-size: 22px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .slide p {
+                font-size: 12px !important;
+                margin-bottom: 14px !important;
+            }
+
+            .slide-cta {
+                padding: 10px 16px !important;
+                font-size: 13px !important;
+            }
+
+            /* Bannière événement — colonne unique */
+            #eventBanner > div {
+                padding: 12px 12px 0 !important;
+            }
+
+                #eventBanner > div > div {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    min-height: auto !important;
+                    border-radius: 12px !important;
                 }
+
+                    #eventBanner > div > div > div:first-child {
+                        padding: 18px 16px !important;
+                        gap: 8px !important;
+                        min-height: auto !important;
+                        max-height: none !important;
+                    }
+
+                        #eventBanner > div > div > div:first-child > div:nth-child(2) {
+                            font-size: 20px !important;
+                            line-height: 1.2 !important;
+                        }
+
+                        #eventBanner > div > div > div:first-child > div:nth-child(3) {
+                            font-size: 13px !important;
+                        }
+
+                        #eventBanner > div > div > div:first-child > a {
+                            padding: 10px 16px !important;
+                            font-size: 13px !important;
+                        }
+                    /* Image événement */
+                    #eventBanner > div > div > div:last-child {
+                        min-height: 160px !important;
+                        max-height: 160px !important;
+                        overflow: hidden !important;
+                        position: relative !important;
+                    }
+
+                        #eventBanner > div > div > div:last-child img {
+                            width: 100% !important;
+                            height: 160px !important;
+                            object-fit: cover !important;
+                            object-position: center !important;
+                            position: absolute !important;
+                            inset: 0 !important;
+                        }
+                        /* Badge JUSQU'À */
+                        #eventBanner > div > div > div:last-child > div[style*="position:absolute"] {
+                            font-size: 14px !important;
+                            padding: 6px 14px !important;
+                            bottom: 10px !important;
+                            left: 10px !important;
+                        }
         }
         /* ── 600px ─── */
         @media(max-width: 600px) {
