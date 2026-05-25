@@ -760,9 +760,21 @@
 
             #tabs-bar {
                 overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch;
+                -webkit-overflow-scrolling: touch !important;
                 flex-wrap: nowrap !important;
+                scrollbar-width: none !important;
+                width: 100% !important;
+                display: flex !important;
             }
+
+                #tabs-bar::-webkit-scrollbar {
+                    display: none;
+                }
+
+                #tabs-bar button {
+                    flex-shrink: 0 !important;
+                    white-space: nowrap !important;
+                }
 
             .modal {
                 padding: 16px;
@@ -798,7 +810,20 @@
             .dashboard {
                 overflow-x: hidden;
             }
+            .dash-header > div:last-child {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                width: 100%;
+            }
 
+                .dash-header > div:last-child button,
+                .dash-header > div:last-child span.badge {
+                    flex: 1 1 auto;
+                    min-width: 120px;
+                    text-align: center;
+                    justify-content: center;
+                }
         }
     </style>
 </head>
