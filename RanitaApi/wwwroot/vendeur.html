@@ -731,7 +731,7 @@
 
         @media (max-width: 600px) {
             body {
-                padding-top: 56px;
+                padding-top: 12px;
             }
 
             .dashboard {
@@ -776,6 +776,29 @@
             .form-row {
                 grid-template-columns: 1fr !important;
             }
+            .my-product {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .my-product-name {
+                white-space: normal;
+                word-break: break-word;
+            }
+
+            .my-product-info {
+                min-width: 0;
+                flex: 1 1 100%;
+            }
+
+            .my-product-price {
+                font-size: 13px;
+            }
+
+            .dashboard {
+                overflow-x: hidden;
+            }
+
         }
     </style>
 </head>
