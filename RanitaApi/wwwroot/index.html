@@ -1801,6 +1801,26 @@
                             left: 10px !important;
                         }
         }
+        /* Badge % sur slide — plus petit et repositionné */
+        .slide-disc {
+            width: 42px !important;
+            height: 42px !important;
+            font-size: 12px !important;
+            top: 10px !important;
+            right: 10px !important;
+            position: absolute !important;
+        }
+
+        /* Image event — hauteur réduite pour voir le texte */
+        #eventBanner > div > div > div:last-child {
+            min-height: 120px !important;
+            max-height: 120px !important;
+        }
+
+            #eventBanner > div > div > div:last-child img {
+                height: 120px !important;
+                object-position: top !important;
+            }
         /* ── 600px ─── */
         @media(max-width: 600px) {
             .flash-header {
