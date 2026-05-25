@@ -411,7 +411,8 @@
 
         .slide {
             min-width: 100%;
-            padding: 60px 28px;
+            padding: 80px 28px;
+            min-height: 420px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2574,12 +2575,13 @@
                     : '<div class="slide-img-placeholder">' + d.icon + '</div>';
                 var discH = sl.disc ? '<div class="slide-disc">' + sl.disc + '<small>' + sl.discL + '</small></div>' : '';
                 var bgHtml = sl.img ? '<img class="slide-bg" src="' + sl.img + '" alt="">' : '';
+                var imgWrap = sl.img ? '<div class="slide-img-wrap"><img src="' + sl.img + '" alt=""></div>' : '<div class="slide-img-placeholder">' + d.icon + '</div>';
                 el.innerHTML = bgHtml +
                     '<div class="slide-inner"><div>' +
                     '<div class="slide-badge" style="background:' + d.bc + ';border-color:' + d.bb + ';color:' + d.bt + ';">' + sl.badge + '</div>' +
                     '<h2>' + sl.title + '</h2><p>' + sl.sub + '</p>' +
                     '<a href="' + sl.link + '" class="slide-cta" style="background:' + d.btnBg + ';">' + sl.cta + '</a>' +
-                    '</div></div>' + discH;
+                    '</div>' + imgWrap + '</div>' + discH;
                 track.appendChild(el);
             });
             slides.forEach(function (_, i) {
