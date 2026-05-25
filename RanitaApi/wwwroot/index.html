@@ -2280,13 +2280,17 @@
             window.toggleMenu = function () { var m = document.getElementById('cMenu'); if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none'; };
             window.doLogout = function () { localStorage.removeItem('client'); location.reload(); };
             document.addEventListener('click', function (e) { var m = document.getElementById('cMenu'); if (m && !e.target.closest('#authNav')) m.style.display = 'none'; });
-        })();
 
-        var mobAuth = document.getElementById('mobAuthIcon');
-        if (mobAuth && client) {
-            mobAuth.href = 'client-orders.html';
-            mobAuth.innerHTML = '<div style="background:#10b981;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">' + (client.name ? client.name[0].toUpperCase() : '?') + '</div>';
-        }
+
+            var mobAuth = document.getElementById('mobAuthIcon');
+            if (mobAuth && client) {
+                mobAuth.href = 'client-orders.html';
+                mobAuth.innerHTML = '<div style="background:#10b981;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">' + (client.name ? client.name[0].toUpperCase() : '?') + '</div>';
+            }
+        })();
+       
+
+
     </script>
 
     <!-- Timer flash -->
