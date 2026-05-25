@@ -2578,11 +2578,23 @@
             setTimeout(function () { btn.textContent = '+ Panier'; btn.style.background = ''; }, 1200);
         }
         function wsh(btn, id) {
+            var client = JSON.parse(localStorage.getItem('client') || 'null');
+            if (!client) { location.href = 'login.html'; return; }
+
             var on = btn.textContent === '♥';
-            btn.textContent = on ? '♡' : '♥'; btn.style.color = on ? '' : 'var(--red)'; btn.style.borderColor = on ? '' : 'var(--red)';
-            var favs = JSON.parse(localStorage.getItem('wishlist') || '[]');
-            if (on) favs = favs.filter(function (x) { return x !== id; }); else if (!favs.includes(id)) favs.push(id);
-            localStorage.setItem('wishlist', JSON.stringify(favs));
+            btn.textContent = on ? '♡' : '♥';
+            btn.style.color = on ? '' : 'var(--red)';
+            btn.style.borderColor = on ? '' : 'var(--red)';
+
+            if (on) {
+                fetch('/api/wishlist/' + client.id + '/' + id, { method: 'DELETE' }).catch(function () { });
+            } else {
+                fetch('/api/wishlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ clientId: client.id, productId: id })
+                }).catch(function () { });
+            }
         }
         function scrollCats(dir) { var b = document.getElementById('catsBarInner'); if (b) b.scrollBy({ left: dir * 200, behavior: 'smooth' }); }
     </script>
@@ -2821,22 +2833,24 @@
         }
 
         (function () {
+            // Charger les favoris du client
             var client = JSON.parse(localStorage.getItem('client') || 'null');
-            if (!client) return;
-            fetch('/api/client-auth/referral/' + client.id)
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    if (!data.referralCredits || data.referralCredits <= 0) return;
-                    var el = document.getElementById('toastCreditAmount');
-                    if (el) el.textContent = Number(data.referralCredits).toLocaleString('fr-FR') + ' F CFA';
-                    setTimeout(function () {
-                        var toast = document.getElementById('referralToast');
-                        if (toast) toast.style.right = '16px';
-                        setTimeout(closeReferralToast, 60000);
-                    }, 3000);
-                })
-                .catch(function () { });
-        })();
+            if (client) {
+                fetch('/api/wishlist/' + client.id)
+                    .then(function (r) { return r.json(); })
+                    .then(function (favs) {
+                        favs.forEach(function (f) {
+                            var btns = document.querySelectorAll('.w-btn');
+                            btns.forEach(function (btn) {
+                                if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(',' + f.productId + ')')) {
+                                    btn.textContent = '♥';
+                                    btn.style.color = 'var(--red)';
+                                    btn.style.borderColor = 'var(--red)';
+                                }
+                            });
+                        });
+                    }).catch(function () { });
+            }
     </script>
 
     <script src="/whatsapp-widget.js"></script>
