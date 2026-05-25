@@ -664,24 +664,24 @@
                     : '';
 
                 return `
-                                <div class="product-card" onclick="openProductDetails(${p.id})">
-                                  <div class="product-img-list">
-                                    ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
-                                    ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-                                  </div>
-                                  <div class="product-info">
-                                    <span class="product-category">${p.category?.name || ''}</span>
-                                    <h3 class="product-name">${p.name}</h3>
-                                    ${starsHtml}
-                                    <div class="product-prices">
-                                      <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
-                                      ${oldPriceHtml}
-                                      ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
-                                    </div>
-                                    ${stockHtml}
-                                    ${btnHtml}
-                                  </div>
-                                </div>`;
+                                    <div class="product-card" onclick="openProductDetails(${p.id})">
+                                      <div class="product-img-list">
+                                        ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
+                                        ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                                      </div>
+                                      <div class="product-info">
+                                        <span class="product-category">${p.category?.name || ''}</span>
+                                        <h3 class="product-name">${p.name}</h3>
+                                        ${starsHtml}
+                                        <div class="product-prices">
+                                          <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
+                                          ${oldPriceHtml}
+                                          ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                                        </div>
+                                        ${stockHtml}
+                                        ${btnHtml}
+                                      </div>
+                                    </div>`;
             }).join('');
         }
 
@@ -759,5 +759,6 @@
         }
     </script>
 
+    <script src="/whatsapp-widget.js"></script>
 </body>
 </html>
