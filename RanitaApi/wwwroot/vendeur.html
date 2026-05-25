@@ -1083,7 +1083,7 @@
         }
 
         function toggleMenu() { const m = document.getElementById('clientMenu'); if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none'; }
-        function logout() { localStorage.removeItem('seller'); window.location.reload(); }
+        function logout() { localStorage.removeItem('seller'); window.location.href = 'index.html'; }
         document.addEventListener('click', e => { const m = document.getElementById('clientMenu'); if (m && !e.target.closest('#authNav')) m.style.display = 'none'; });
 
         function checkAndStart() {
