@@ -858,8 +858,11 @@
         function filterZones() {
             var input = document.getElementById("customerZoneInput").value.toLowerCase();
             var dropdown = document.getElementById("zoneDropdown");
-            var filtered = zones.filter(function (z) { return z.name.toLowerCase().includes(input); });
-            if (!filtered.length || !input) { dropdown.style.display = "none"; return; }
+            // Afficher toutes les zones si input vide, sinon filtrer
+            var filtered = input
+                ? zones.filter(function (z) { return z.name.toLowerCase().includes(input); })
+                : zones;
+            if (!filtered.length) { dropdown.style.display = "none"; return; }
             dropdown.innerHTML = filtered.map(function (z) {
                 return '<div class="zone-item" onclick="selectZone(\'' + z.name + '\',' + z.fee + ')">' +
                     '<span class="zone-name">' + z.name + '</span>' +
