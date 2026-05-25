@@ -1466,10 +1466,10 @@
         /* ══            RESPONSIVE BREAKPOINTS               ══ */
         /* ═══════════════════════════════════════════════════════ */
 
-        /* ── 1280px : léger resserrement ─── */
+        /* ── 1280px ─── */
         @media(max-width: 1280px) {
             .big-cats-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(4,1fr);
                 gap: 14px;
             }
         }
@@ -1477,7 +1477,7 @@
         /* ── 1024px ─── */
         @media(max-width: 1024px) {
             .big-cats-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2,1fr);
                 gap: 16px;
             }
 
@@ -1486,7 +1486,7 @@
             }
 
             .trust-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2,1fr);
             }
 
             .trust-inner {
@@ -1520,87 +1520,227 @@
                 }
         }
 
-        /* ── 768px : switch vers mobile ─── */
+        /* ── 768px : MOBILE ─── */
         @media(max-width: 768px) {
+
+            /* Variables */
             :root {
-                --promo-h: 0px; /* promo masquée sur mobile */
+                --promo-h: 0px;
             }
 
-            /* Header desktop → caché */
+            /* Headers */
+            .promo-bar {
+                display: none !important;
+            }
+
             .site-header {
                 display: none;
             }
 
-            /* Header mobile → visible */
             .mob-header {
                 display: flex;
             }
 
-            /* Nav bas → visible */
             .mob-nav {
                 display: block;
             }
 
-            /* body padding pour la nav bas */
             body {
                 padding-bottom: 70px;
             }
 
-            /* Hero : margin = hauteur header mobile seulement */
+            /* Positions */
             .hero-slider {
                 margin-top: var(--mob-header-h);
             }
 
-            /* Cats-bar : colle sous le header mobile */
             .cats-bar {
                 top: var(--mob-header-h);
             }
 
-            /* Slider */
+            /* ── SLIDER PLEIN ÉCRAN style Jumia ── */
             .slide {
-                padding: 36px 16px;
+                min-height: 260px;
+                height: 260px;
+                padding: 0 !important;
+                display: flex;
+                align-items: flex-end;
+                justify-content: flex-start;
+                position: relative;
+                overflow: hidden;
             }
 
-            .slide-inner {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
+                /* Overlay dégradé bas */
+                .slide::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(to top, rgba(0,0,0,.7) 0%, rgba(0,0,0,.2) 50%, transparent 100%);
+                    pointer-events: none;
+                    z-index: 1;
+                }
 
+                /* Image de fond — si slide-bg existe */
+                .slide .slide-bg {
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                    z-index: 0;
+                }
+
+            /* Masquer image desktop */
             .slide-img-wrap {
-                display: none;
+                display: none !important;
             }
 
             .slide-img-placeholder {
-                display: none;
+                display: none !important;
+            }
+
+            /* Contenu slide */
+            .slide-inner {
+                position: relative;
+                z-index: 2;
+                width: 100%;
+                grid-template-columns: 1fr !important;
+                gap: 0 !important;
+                padding: 16px 16px 24px;
+                display: flex !important;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .slide-badge {
+                font-size: 10px !important;
+                padding: 3px 10px !important;
+                margin-bottom: 6px !important;
+                background: rgba(255,255,255,.2) !important;
+                border-color: rgba(255,255,255,.3) !important;
+                color: white !important;
             }
 
             .slide h2 {
-                font-size: 26px;
+                font-size: 22px !important;
+                color: white !important;
+                text-shadow: 0 2px 8px rgba(0,0,0,.5);
+                margin-bottom: 6px !important;
+                line-height: 1.2 !important;
             }
 
             .slide p {
-                font-size: 13px;
-                margin-bottom: 18px;
+                font-size: 12px !important;
+                color: rgba(255,255,255,.85) !important;
+                margin-bottom: 10px !important;
+                display: block !important;
             }
 
             .slide-cta {
-                padding: 12px 20px;
-                font-size: 13px;
+                padding: 10px 18px !important;
+                font-size: 13px !important;
             }
+
+            /* Badge réduction */
+            .slide-disc {
+                position: absolute !important;
+                top: 12px !important;
+                right: 12px !important;
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 13px !important;
+                z-index: 3 !important;
+            }
+
+            /* Dots */
+            .slider-nav {
+                bottom: 8px;
+            }
+
+            .slider-dot {
+                width: 6px;
+                height: 6px;
+                background: rgba(255,255,255,.5);
+            }
+
+                .slider-dot.active {
+                    background: white;
+                    width: 18px;
+                    border-radius: 3px;
+                }
 
             .slider-arrow {
                 display: none;
             }
 
-            /* Grid produits → 2 colonnes */
+            /* ── BANNIÈRE ÉVÉNEMENT ── */
+            #eventBanner > div {
+                padding: 12px 12px 0 !important;
+            }
+
+                #eventBanner > div > div {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    min-height: auto !important;
+                    border-radius: 12px !important;
+                    overflow: hidden !important;
+                }
+
+                    #eventBanner > div > div > div:first-child {
+                        padding: 18px 16px !important;
+                        gap: 8px !important;
+                        min-height: auto !important;
+                        max-height: none !important;
+                    }
+
+                        #eventBanner > div > div > div:first-child > div:nth-child(2) {
+                            font-size: 20px !important;
+                            line-height: 1.2 !important;
+                        }
+
+                        #eventBanner > div > div > div:first-child > div:nth-child(3) {
+                            font-size: 13px !important;
+                        }
+
+                        #eventBanner > div > div > div:first-child > a {
+                            padding: 10px 16px !important;
+                            font-size: 13px !important;
+                        }
+
+                    #eventBanner > div > div > div:last-child {
+                        min-height: 180px !important;
+                        max-height: 180px !important;
+                        overflow: hidden !important;
+                        position: relative !important;
+                        flex-shrink: 0;
+                    }
+
+                        #eventBanner > div > div > div:last-child img {
+                            width: 100% !important;
+                            height: 180px !important;
+                            object-fit: cover !important;
+                            object-position: center !important;
+                            position: absolute !important;
+                            inset: 0 !important;
+                        }
+
+                        #eventBanner > div > div > div:last-child > div {
+                            font-size: 14px !important;
+                            padding: 6px 14px !important;
+                            bottom: 10px !important;
+                            left: 10px !important;
+                        }
+
+            /* Grilles */
             .products-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2,1fr);
                 gap: 10px;
             }
 
-            /* Catégories phares → 2 colonnes */
             .big-cats-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2,1fr);
                 gap: 12px;
             }
 
@@ -1617,9 +1757,8 @@
                 gap: 6px;
             }
 
-            /* Trust 2 colonnes */
             .trust-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2,1fr);
                 gap: 12px;
             }
 
@@ -1661,7 +1800,7 @@
                 height: 130px;
             }
 
-            /* Section title */
+            /* Sections */
             .sec-title {
                 font-size: 17px;
             }
@@ -1687,140 +1826,8 @@
                     flex-wrap: wrap;
                     gap: 4px;
                 }
-
-            /* Bannière event */
-            .event-inner {
-                padding: 12px 12px 0;
-            }
         }
 
-        /* ── FIX PROMO-BAR MOBILE ── */
-        @media(max-width: 768px) {
-            .promo-bar {
-                display: none !important;
-            }
-        }
-
-        /* ── FIX SLIDER + EVENT MOBILE ── */
-        @media(max-width: 768px) {
-
-            /* Promo bar cachée */
-            .promo-bar {
-                display: none !important;
-            }
-
-            /* Badge % slider */
-            .slide-disc {
-                width: 46px !important;
-                height: 46px !important;
-                font-size: 13px !important;
-                top: 8px !important;
-                right: 8px !important;
-            }
-
-            /* Slide plus compact */
-            .slide {
-                padding: 24px 16px 36px !important;
-                min-height: 200px !important;
-            }
-
-            .slide-badge {
-                font-size: 10px !important;
-                padding: 3px 10px !important;
-                margin-bottom: 10px !important;
-            }
-
-            .slide h2 {
-                font-size: 22px !important;
-                margin-bottom: 8px !important;
-            }
-
-            .slide p {
-                font-size: 12px !important;
-                margin-bottom: 14px !important;
-            }
-
-            .slide-cta {
-                padding: 10px 16px !important;
-                font-size: 13px !important;
-            }
-
-            /* Bannière événement — colonne unique */
-            #eventBanner > div {
-                padding: 12px 12px 0 !important;
-            }
-
-                #eventBanner > div > div {
-                    display: flex !important;
-                    flex-direction: column !important;
-                    min-height: auto !important;
-                    border-radius: 12px !important;
-                }
-
-                    #eventBanner > div > div > div:first-child {
-                        padding: 18px 16px !important;
-                        gap: 8px !important;
-                        min-height: auto !important;
-                        max-height: none !important;
-                    }
-
-                        #eventBanner > div > div > div:first-child > div:nth-child(2) {
-                            font-size: 20px !important;
-                            line-height: 1.2 !important;
-                        }
-
-                        #eventBanner > div > div > div:first-child > div:nth-child(3) {
-                            font-size: 13px !important;
-                        }
-
-                        #eventBanner > div > div > div:first-child > a {
-                            padding: 10px 16px !important;
-                            font-size: 13px !important;
-                        }
-                    /* Image événement */
-                    #eventBanner > div > div > div:last-child {
-                        min-height: 160px !important;
-                        max-height: 160px !important;
-                        overflow: hidden !important;
-                        position: relative !important;
-                    }
-
-                        #eventBanner > div > div > div:last-child img {
-                            width: 100% !important;
-                            height: 160px !important;
-                            object-fit: cover !important;
-                            object-position: center !important;
-                            position: absolute !important;
-                            inset: 0 !important;
-                        }
-                        /* Badge JUSQU'À */
-                        #eventBanner > div > div > div:last-child > div[style*="position:absolute"] {
-                            font-size: 14px !important;
-                            padding: 6px 14px !important;
-                            bottom: 10px !important;
-                            left: 10px !important;
-                        }
-        }
-        /* Badge % sur slide — plus petit et repositionné */
-        .slide-disc {
-            width: 42px !important;
-            height: 42px !important;
-            font-size: 12px !important;
-            top: 10px !important;
-            right: 10px !important;
-            position: absolute !important;
-        }
-
-        /* Image event — hauteur réduite pour voir le texte */
-        #eventBanner > div > div > div:last-child {
-            min-height: 120px !important;
-            max-height: 120px !important;
-        }
-
-            #eventBanner > div > div > div:last-child img {
-                height: 120px !important;
-                object-position: top !important;
-            }
         /* ── 600px ─── */
         @media(max-width: 600px) {
             .flash-header {
@@ -1851,7 +1858,6 @@
                 font-size: 14px;
             }
 
-            /* Cacher la description sur petits écrans */
             .bc-desc {
                 display: none;
             }
@@ -1861,7 +1867,6 @@
                 font-size: 12px;
             }
 
-            /* Trust : garder 2 colonnes mais plus compact */
             .trust-item {
                 gap: 8px;
             }
@@ -1879,16 +1884,15 @@
 
         /* ── 480px ─── */
         @media(max-width: 480px) {
-            .slide h2 {
-                font-size: 22px;
+            .slide {
+                height: 220px !important;
+                min-height: 220px !important;
             }
 
-            .slide p {
-                display: none;
-            }
-            /* masquer le sous-titre pour gagner de la place */
+                .slide h2 {
+                    font-size: 20px !important;
+                }
 
-            /* Produits phares : cards plus étroites */
             .f-card {
                 min-width: 140px;
                 max-width: 140px;
@@ -1898,22 +1902,10 @@
                 height: 115px;
             }
 
-            /* Promo bar : texte court */
-            .promo-bar {
-                font-size: 11px;
-                padding: 6px 36px 6px 12px;
-            }
-
-            .promo-bar-pill {
-                display: none;
-            }
-
-            /* Sections */
             .sec {
                 padding: 20px 12px;
             }
 
-            /* P-card image moins haute */
             .p-img {
                 height: 140px;
             }
@@ -1922,7 +1914,6 @@
                 height: 140px;
             }
 
-            /* Ref section */
             .ref-section {
                 padding: 24px 12px;
             }
@@ -1940,7 +1931,6 @@
                 font-size: 13px;
             }
 
-            /* Trust pills wrap */
             .pay-pills {
                 gap: 4px;
             }
@@ -1951,7 +1941,7 @@
             }
         }
 
-        /* ── 360px : très petits écrans ─── */
+        /* ── 360px ─── */
         @media(max-width: 360px) {
             .mob-logo {
                 font-size: 13px;
@@ -1983,7 +1973,7 @@
 
             .mob-nav-item {
                 font-size: 8px;
-                padding: 4px 4px;
+                padding: 4px;
             }
         }
     </style>
