@@ -2585,7 +2585,9 @@
             all.forEach(function (sl) {
                 var d = sl.def;
                 var el = document.createElement('div'); el.className = 'slide'; el.style.background = d.bg;
-                var imgH = sl.img ? '<div class="slide-img-wrap"><img src="' + sl.img + '" alt=""></div>' : '<div class="slide-img-placeholder">' + d.icon + '</div>';
+                var imgH = sl.img
+                    ? '<img class="slide-bg" src="' + sl.img + '" alt="">' + '<div class="slide-img-wrap"><img src="' + sl.img + '" alt=""></div>'
+                    : '<div class="slide-img-placeholder">' + d.icon + '</div>';
                 var discH = sl.disc ? '<div class="slide-disc">' + sl.disc + '<small>' + sl.discL + '</small></div>' : '';
                 el.innerHTML = '<div class="slide-inner"><div>' + '<div class="slide-badge" style="background:' + d.bc + ';border-color:' + d.bb + ';color:' + d.bt + ';">' + sl.badge + '</div>' + '<h2>' + sl.title + '</h2><p>' + sl.sub + '</p>' + '<a href="' + sl.link + '" class="slide-cta" style="background:' + d.btnBg + ';">' + sl.cta + '</a>' + '</div>' + imgH + '</div>' + discH;
                 track.appendChild(el);
