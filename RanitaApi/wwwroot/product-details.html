@@ -1384,7 +1384,7 @@
                 (globalStock <= 0
                     ? '<button class="btn-add-cart desktop-only" disabled>Rupture de stock</button>'
                     : '<button class="btn-add-cart desktop-only" id="addBtn" onclick="addToCart()">🛒 Ajouter au panier</button>') +
-            '<a href="' + waLink + '" target="_blank" class="btn-share-wa">📲 Commander via WhatsApp</a>' +
+                '<a href="' + waLink + '" target="_blank" class="btn-share-wa">📲 Commander via WhatsApp</a>' +
                 '<div class="trust-badges">' +
                 '<div class="trust-badge"><div class="trust-badge-icon">🚚</div><div>Livraison 24–48h</div></div>' +
                 '<div class="trust-badge"><div class="trust-badge-icon">↩️</div><div>Retour 7 jours</div></div>' +
@@ -1436,5 +1436,6 @@
         loadProduct().then(() => { loadReviews(); loadSellerInfo(); });
     </script>
     <script src="/cart-badge.js"></script>
+    <script src="/whatsapp-widget.js"></script>
 </body>
 </html>
