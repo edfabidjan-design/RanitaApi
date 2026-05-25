@@ -1826,7 +1826,31 @@
                     flex-wrap: wrap;
                     gap: 4px;
                 }
+
+            /* Image bg — couvre tout le slide */
+            .slide .slide-bg {
+                position: absolute !important;
+                inset: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                object-position: center !important;
+                z-index: 0 !important;
+                display: block !important;
+            }
+
+            /* Masquer la version desktop de l'image */
+            .slide .slide-img-wrap {
+                display: none !important;
+            }
+
+            /* Le contenu texte par-dessus */
+            .slide .slide-inner {
+                position: relative !important;
+                z-index: 2 !important;
+            }
         }
+
 
         /* ── 600px ─── */
         @media(max-width: 600px) {
