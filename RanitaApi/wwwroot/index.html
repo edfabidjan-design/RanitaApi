@@ -1462,6 +1462,11 @@
             padding: 20px 20px 0;
         }
 
+        .slide-bg {
+            display: none;
+        }
+
+
         /* ═══════════════════════════════════════════════════════ */
         /* ══            RESPONSIVE BREAKPOINTS               ══ */
         /* ═══════════════════════════════════════════════════════ */
@@ -1560,8 +1565,8 @@
 
             /* ── SLIDER PLEIN ÉCRAN style Jumia ── */
             .slide {
-                min-height: 220px;
-                height: 220px;
+                min-height: 260px;
+                height: 260px;
                 padding: 0 !important;
                 display: flex;
                 align-items: flex-end;
@@ -1863,8 +1868,8 @@
         /* ── 480px ─── */
         @media(max-width: 480px) {
             .slide {
-                height: 190px !important;
-                min-height: 190px !important;
+                height: 220px !important;
+                min-height: 220px !important;
             }
 
                 .slide h2 {
@@ -2711,7 +2716,19 @@
     <script src="/install-prompt.js"></script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"Ranita Market","url":"https://www.ranita-shop.com","description":"Boutique en ligne en Côte d'Ivoire","address":{"@type":"PostalAddress","addressLocality":"Abidjan","addressCountry":"CI"},"openingHours":"Mo-Su 08:00-20:00"}</script>
     <script src="/cart-badge.js"></script>
-    <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.addEventListener('message', function (e) { if (e.data === 'reload') location.reload(true); }); }</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', function (e) {
+                if (e.data === 'reload') location.reload(true);
+            });
+        }
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                loadSiteSettings();
+                loadProducts();
+            }
+        });
+    </script>
 
     <!-- ── TOAST CRÉDIT PARRAINAGE ──────────────────────────── -->
     <div id="referralToast" style="
