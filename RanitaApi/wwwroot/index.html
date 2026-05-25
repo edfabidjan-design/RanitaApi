@@ -1572,14 +1572,27 @@
 
             /* ── SLIDER PLEIN ÉCRAN style Jumia ── */
             .slide {
-                min-width: 100%;
-                padding: 80px 60px;
-                min-height: 420px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                overflow: hidden;
+                min-width: 100% !important;
+                height: 240px !important;
+                min-height: 240px !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: flex-end !important;
+                justify-content: flex-start !important;
+            }
+
+            .slide-inner {
+                position: relative !important;
+                z-index: 2 !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 6px !important;
+                padding: 16px 16px 24px !important;
+                grid-template-columns: none !important;
+                max-width: 100% !important;
+                margin: 0 !important;
             }
 
                 /* Overlay dégradé bas */
@@ -1612,17 +1625,7 @@
                 display: none !important;
             }
 
-            /* Contenu slide */
-            .slide-inner {
-                width: 100%;
-                display: grid;
-                grid-template-columns: 1fr 550px;
-                gap: 16px;
-                align-items: center;
-                position: relative;
-                z-index: 1;
-                padding: 0 60px;
-            }
+
 
             .slide-badge {
                 font-size: 10px !important;
