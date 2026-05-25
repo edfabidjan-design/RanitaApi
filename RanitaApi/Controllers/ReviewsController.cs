@@ -124,7 +124,31 @@ namespace RanitaApi.Controllers
             await _context.SaveChangesAsync();
             return Ok("Avis approuvé");
         }
+
+        [HttpGet("recent")]
+        public async Task<IActionResult> GetRecentReviews([FromQuery] int limit = 6)
+        {
+            var reviews = await _context.Reviews
+                .Include(r => r.Client)
+                .Include(r => r.Product)
+                .Where(r => r.Approuve && r.Commentaire != null && r.Commentaire != "")
+                .OrderByDescending(r => r.CreatedAt)
+                .Take(limit)
+                .Select(r => new {
+                    r.Id,
+                    r.Note,
+                    r.Commentaire,
+                    r.CreatedAt,
+                    client = r.Client != null ? r.Client.FullName : "Client",
+                    productName = r.Product != null ? r.Product.Name : null
+                })
+                .ToListAsync();
+
+            return Ok(reviews);
+        }
     }
+
+
 
     public class CreateReviewDto
     {
