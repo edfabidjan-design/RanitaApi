@@ -1319,7 +1319,8 @@
         function maskName(n) {
             if (!n) return 'Client';
             var p = n.trim().split(' ');
-            return p.length === 1 ? p[0].charAt(0) + '***' : p[0] + ' ' + p[1].charAt(0) + '***';
+            if (p.length === 1) return p[0].charAt(0) + '***';
+            return p[0].charAt(0) + '***' + ' ' + p[1].charAt(0) + '***';
         }
 
         // ── Avis ──
@@ -1501,7 +1502,7 @@
                         '<div class="p-img">' + (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
                         (disc ? '<span class="bdg bdg-r">-' + disc + '%</span>' : '') + '</div>' +
                         '<div class="p-info"><div class="p-cat">' + (p.category?.name || '') + '</div>' +
-                        '<div class="p-name">' + p.name + '</div>' +
+                        '<div class="p-name" style="-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">' + p.name + '</div>' +
                         '<div class="p-row"><span class="p-price">' + Number(p.price).toLocaleString() + ' F</span>' +
                         (p.oldPrice ? '<span class="p-old">' + Number(p.oldPrice).toLocaleString() + ' F</span>' : '') + '</div></div></div>';
                 }).join('');
@@ -1528,7 +1529,7 @@
                         '<div class="p-name">' + p.name + '</div>' +
                         '<div class="p-row"><span class="p-price">' + Number(p.price).toLocaleString() + ' F</span>' +
                         (p.oldPrice ? '<span class="p-old">' + Number(p.oldPrice).toLocaleString() + ' F</span>' : '') +
-                        '</div></div></div>';
+                        '</div>'
                 }).join('');
             } catch (e) { }
         }
