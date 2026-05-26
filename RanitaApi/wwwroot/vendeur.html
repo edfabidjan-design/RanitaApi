@@ -1088,7 +1088,8 @@
 
         function checkAndStart() {
             const seller = JSON.parse(localStorage.getItem('seller') || 'null');
-            if (!seller) { window.location.href = 'vendeur-login.html'; return; }
+            const client = JSON.parse(localStorage.getItem('client') || 'null');
+            if (!seller && !client) { window.location.href = 'vendeur-login.html'; return; }
             if (document.getElementById('page-dashboard').classList.contains('active')) return;
             loadSellerStatus();
         }
