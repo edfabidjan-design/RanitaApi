@@ -2447,6 +2447,7 @@
             });
             renderFiltered(f);
             // Scroll vers les produits
+            console.log('pid reçu:', pid, typeof pid);
             setTimeout(function () { var el = document.getElementById('bestsellers-grid'); if (el) { var top = el.getBoundingClientRect().top + window.pageYOffset - 100; window.scrollTo({ top: top, behavior: 'smooth' }); } }, 100);
         }
 
