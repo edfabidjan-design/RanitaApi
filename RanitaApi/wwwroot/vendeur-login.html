@@ -24,7 +24,13 @@
 
         <form id="loginForm">
             <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Mot de passe" required>
+
+            <!-- Après -->
+            <div style="position:relative;">
+                <input type="password" id="password" placeholder="Mot de passe" required style="width:100%;padding-right:44px;">
+                <button type="button" onclick="togglePwd()" id="eyeBtn" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#6b7280;">👁</button>
+            </div>
+
             <button type="submit" id="btn-login">Se connecter →</button>
         </form>
 
@@ -54,6 +60,12 @@
             el.style.display = 'block';
         }
 
+        function togglePwd() {
+            const pwd = document.getElementById('password');
+            const btn = document.getElementById('eyeBtn');
+            if (pwd.type === 'password') { pwd.type = 'text'; btn.textContent = '🙈'; }
+            else { pwd.type = 'password'; btn.textContent = '👁'; }
+        }
         async function registerSellerPush(sellerId) {
             if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
             try {
