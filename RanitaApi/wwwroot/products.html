@@ -517,7 +517,18 @@
         <section class="products-toolbar">
             <input type="text" id="searchInput" placeholder="🔍 Rechercher un produit…" />
             <select id="categoryFilter"><option value="">Toutes les catégories</option></select>
+            <select id="sortFilter">
+                <option value="">Trier par</option>
+                <option value="price-asc">Prix croissant</option>
+                <option value="price-desc">Prix décroissant</option>
+                <option value="new">Nouveautés</option>
+                <option value="promo">Promotions</option>
+            </select>
         </section>
+
+        <div id="paginationBar" style="display:flex;justify-content:center;gap:8px;margin-top:24px;flex-wrap:wrap;"></div>
+        <div id="suggestions" style="position:relative;margin-top:-20px;margin-bottom:8px;display:none;background:white;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:100;max-height:200px;overflow-y:auto;"></div>
+
         <div id="productsGrid">
             <div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
             <div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton skel-line lg"></div><div class="skeleton skel-line sm"></div><div class="skeleton skel-btn"></div></div>
@@ -545,7 +556,10 @@
         const productsGrid = document.getElementById("productsGrid");
         const searchInput = document.getElementById("searchInput");
         const categoryFilter = document.getElementById("categoryFilter");
+        const sortFilter = document.getElementById('sortFilter');
         const productsCount = document.getElementById("productsCount");
+        const PAGE_SIZE = 20;
+        let currentPage = 1;
 
         async function loadReviews() {
             try {
@@ -574,7 +588,7 @@
                         categoryFilter.innerHTML += `<option value="${parent.id}">📁 ${parent.name}</option>`;
                     }
                 });
-            } catch (e) { console.error("Erreur catégories", e); }
+            } catch (e) { }
         }
 
         async function loadProducts() {
@@ -615,32 +629,54 @@
 
         function openProductDetails(id) { window.location.href = `product-details.html?id=${id}`; }
         function calcDiscount(price, oldPrice) { if (!oldPrice || oldPrice <= price) return null; return Math.round((1 - price / oldPrice) * 100); }
+        function goPage(p) { currentPage = p; renderProducts(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         function renderProducts() {
+            currentPage = currentPage || 1;
             const search = searchInput.value.toLowerCase();
             const selectedCategory = categoryFilter.value;
+
             const filtered = allProducts.filter(p => {
                 const matchSearch = p.name.toLowerCase().includes(search) || (p.shortDescription || "").toLowerCase().includes(search);
                 const matchCategory = !selectedCategory || String(p.categoryId) === selectedCategory;
                 return matchSearch && matchCategory;
             });
 
-            productsCount.textContent = `${filtered.length} produit${filtered.length !== 1 ? 's' : ''} trouvé${filtered.length !== 1 ? 's' : ''}`;
+            const sorted = [...filtered].sort(function (a, b) {
+                const s = sortFilter.value;
+                if (s === 'price-asc') return a.price - b.price;
+                if (s === 'price-desc') return b.price - a.price;
+                if (s === 'new') return b.id - a.id;
+                if (s === 'promo') return (b.oldPrice ? 1 : 0) - (a.oldPrice ? 1 : 0);
+                return 0;
+            });
 
-            if (filtered.length === 0) {
+            const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+            if (currentPage > totalPages) currentPage = 1;
+            const paginated = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+            productsCount.textContent = `${sorted.length} produit${sorted.length !== 1 ? 's' : ''} trouvé${sorted.length !== 1 ? 's' : ''}`;
+
+            const bar = document.getElementById('paginationBar');
+            if (totalPages <= 1) { bar.innerHTML = ''; }
+            else {
+                bar.innerHTML = Array.from({ length: totalPages }, function (_, i) {
+                    return '<button onclick="goPage(' + (i + 1) + ')" style="padding:8px 14px;border-radius:8px;border:1px solid ' + (currentPage === i + 1 ? '#10b981' : '#e5e7eb') + ';background:' + (currentPage === i + 1 ? '#10b981' : 'white') + ';color:' + (currentPage === i + 1 ? 'white' : '#374151') + ';font-weight:700;cursor:pointer;font-size:13px;">' + (i + 1) + '</button>';
+                }).join('');
+            }
+
+            if (sorted.length === 0) {
                 productsGrid.innerHTML = `<div class="empty-state"><span>🔍</span><p>Aucun produit trouvé.</p></div>`;
                 return;
             }
 
-            productsGrid.innerHTML = filtered.map(p => {
+            productsGrid.innerHTML = paginated.map(p => {
                 const imgUrl = p.imageUrl ? p.imageUrl.replace('/upload/', '/upload/w_400,h_400,c_fill,q_auto,f_auto/') : '';
                 const discount = calcDiscount(p.price, p.oldPrice);
-
                 let stockHtml = '';
                 if (p.stock === 0) stockHtml = `<span class="product-stock out">Rupture de stock</span>`;
                 else if (p.stock <= 5) stockHtml = `<span class="product-stock low">⚠ Plus que ${p.stock} en stock</span>`;
                 else stockHtml = `<span class="product-stock">Stock : ${p.stock}</span>`;
-
                 const notes = reviewsMap[p.id];
                 let starsHtml = '';
                 if (notes && notes.length > 0) {
@@ -648,7 +684,6 @@
                     const full = Math.round(avg);
                     starsHtml = `<div class="stars-row"><span class="s">${'★'.repeat(full)}${'☆'.repeat(5 - full)}</span><span class="sc">${avg} (${notes.length})</span></div>`;
                 }
-
                 let btnHtml = '';
                 if (p.stock <= 0) {
                     btnHtml = `<button class="btn-disabled" disabled onclick="event.stopPropagation()">Rupture de stock</button>`;
@@ -657,41 +692,52 @@
                 } else {
                     btnHtml = `<button class="btn-buy" data-id="${p.id}" onclick="event.stopPropagation();addToCart(${p.id})">🛒 Ajouter au panier</button>`;
                 }
-
-                /* Prix barré — flex-shrink:0 pour ne pas couper */
-                const oldPriceHtml = p.oldPrice && p.oldPrice > p.price
-                    ? `<span class="price-old">${Number(p.oldPrice).toLocaleString('fr-FR')} F</span>`
-                    : '';
-
-                return `
-                                        <div class="product-card" onclick="openProductDetails(${p.id})">
-<div class="product-img-list">
-    ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
-    ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-    <button class="wsh-btn" id="wsh-${p.id}" onclick="event.stopPropagation();wshToggle(${p.id})" style="position:absolute;top:8px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#9ca3af;z-index:2;transition:all .2s;">♡</button>
-</div>
-                                          <div class="product-info">
-                                            <span class="product-category">${p.category?.name || ''}</span>
-                                            <h3 class="product-name">${p.name}</h3>
-                                            ${starsHtml}
-                                            <div class="product-prices">
-                                              <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
-                                              ${oldPriceHtml}
-                                              ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
-                                            </div>
-                                            ${stockHtml}
-                                            ${btnHtml}
-                                          </div>
-                                        </div>`;
+                const oldPriceHtml = p.oldPrice && p.oldPrice > p.price ? `<span class="price-old">${Number(p.oldPrice).toLocaleString('fr-FR')} F</span>` : '';
+                return `<div class="product-card" onclick="openProductDetails(${p.id})">
+                <div class="product-img-list">
+                    ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
+                    ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                    <button class="wsh-btn" id="wsh-${p.id}" onclick="event.stopPropagation();wshToggle(${p.id})" style="position:absolute;top:8px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#9ca3af;z-index:2;transition:all .2s;">♡</button>
+                </div>
+                <div class="product-info">
+                    <span class="product-category">${p.category?.name || ''}</span>
+                    <h3 class="product-name">${p.name}</h3>
+                    ${starsHtml}
+                    <div class="product-prices">
+                        <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
+                        ${oldPriceHtml}
+                        ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                    </div>
+                    ${stockHtml}
+                    ${btnHtml}
+                </div>
+            </div>`;
             }).join('');
         }
 
-        searchInput.addEventListener("input", renderProducts);
-        categoryFilter.addEventListener("change", renderProducts);
+        searchInput.addEventListener('input', function () {
+            currentPage = 1;
+            renderProducts();
+            var q = searchInput.value.toLowerCase().trim();
+            var sug = document.getElementById('suggestions');
+            if (q.length < 2) { sug.style.display = 'none'; return; }
+            var matches = allProducts.filter(function (p) { return p.name.toLowerCase().includes(q); }).slice(0, 6);
+            if (!matches.length) { sug.style.display = 'none'; return; }
+            sug.style.display = 'block';
+            sug.innerHTML = matches.map(function (p) {
+                return '<div onclick="searchInput.value=\'' + p.name.replace(/'/g, "\\'") + '\';document.getElementById(\'suggestions\').style.display=\'none\';renderProducts();" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background=\'#f9fafb\'" onmouseout="this.style.background=\'\'"><img src="' + (p.imageUrl || '') + '" style="width:32px;height:32px;object-fit:cover;border-radius:4px;">' + p.name + '</div>';
+            }).join('');
+        });
+
+        categoryFilter.addEventListener('change', function () { currentPage = 1; renderProducts(); });
+        sortFilter.addEventListener('change', function () { currentPage = 1; renderProducts(); });
+        document.addEventListener('click', function (e) {
+            if (!searchInput.contains(e.target)) document.getElementById('suggestions').style.display = 'none';
+        });
+
         loadCategories();
         loadProducts();
         updateCartCount();
-
 
         // Wishlist
         var _wishIds = [];
@@ -772,10 +818,7 @@
             var btn = document.getElementById('toastCloseBtn');
             if (btn) {
                 btn.addEventListener('click', closeReferralToast);
-                btn.addEventListener('touchend', function (e) {
-                    e.preventDefault();
-                    closeReferralToast();
-                });
+                btn.addEventListener('touchend', function (e) { e.preventDefault(); closeReferralToast(); });
             }
         });
         (function () {
@@ -792,17 +835,9 @@
                         if (toast) toast.style.right = '16px';
                         setTimeout(closeReferralToast, 60000);
                     }, 3000);
-                })
-                .catch(function () { });
+                }).catch(function () { });
         })();
     </script>
-
-    function closeReferralToast() {
-    var toast = document.getElementById('referralToast');
-    if (toast) toast.style.right = '-340px';
-    }
-    </script>
-
     <script src="/whatsapp-widget.js"></script>
 </body>
 </html>
