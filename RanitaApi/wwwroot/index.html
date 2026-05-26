@@ -2437,11 +2437,13 @@
         }
 
         function filterCatById(el, pid, nm) {
-            document.querySelectorAll('.cat-tab').forEach(function (x) { x.classList.remove('active'); }); el.classList.add('active');
+            document.querySelectorAll('.cat-tab').forEach(function (x) { x.classList.remove('active'); });
+            el.classList.add('active');
             var active = allProducts.filter(function (p) { return p.isActive !== false; });
-            var f = active.filter(function (p) { var c = p.category; if (!c) return false; return c.parentId === pid || c.id === pid || (c.name || '').toLowerCase().includes(nm.slice(0, 4)); });
-            console.log('pid:', pid, 'total produits:', active.length, 'filtrés:', f.length);
-            console.log('sample:', active.slice(0, 2).map(p => ({ cat: p.category?.name, parentId: p.category?.parentId })));
+            var f = active.filter(function (p) {
+                var catName = (p.category?.name || p.category || '').toLowerCase();
+                return catName.includes(nm.slice(0, 4));
+            });
             renderFiltered(f);
         }
 
