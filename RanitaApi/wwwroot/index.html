@@ -2446,6 +2446,8 @@
                 return cat.id === pid || cat.parentId === pid;
             });
             renderFiltered(f);
+            // Scroll vers les produits
+            document.getElementById('flash-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function filterCat(el, key) {
@@ -2453,6 +2455,7 @@
             var active = allProducts.filter(function (p) { return p.isActive !== false; });
             var f = key === 'all' ? active : active.filter(function (p) { var n = (p.category?.name || '').toLowerCase(); return n === key || n.includes(key); });
             renderFiltered(f);
+            document.getElementById('flash-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function renderFiltered(f) {
