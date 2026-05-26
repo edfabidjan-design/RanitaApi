@@ -865,6 +865,38 @@
             margin: 0 auto 16px;
         }
 
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.9);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+
+            .lightbox.open {
+                display: flex;
+            }
+
+            .lightbox img {
+                max-width: 90vw;
+                max-height: 90vh;
+                object-fit: contain;
+                border-radius: 8px;
+            }
+
+        .lightbox-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -1203,10 +1235,13 @@
                 if (stockEl) { stockEl.textContent = "Rupture de stock"; stockEl.className = "stock-info out"; }
                 if (addBtn) { addBtn.disabled = true; addBtn.textContent = "Rupture de stock"; }
                 if (stickyBtn) { stickyBtn.disabled = true; stickyBtn.textContent = 'Rupture de stock'; }
+
             } else if (stock <= 5) {
-                if (stockEl) { stockEl.textContent = '⚠️ Plus que ' + stock + ' en stock'; stockEl.className = "stock-info low"; }
-                if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; }
-                if (stickyBtn) { stickyBtn.disabled = false; stickyBtn.textContent = '🛒 Ajouter'; }
+                if (stockEl) {
+                    stockEl.innerHTML = '🔥 <strong>Plus que ' + stock + '</strong> en stock — commandez vite !';
+                    stockEl.className = "stock-info low";
+                }
+
             } else {
                 if (stockEl) { stockEl.textContent = 'En stock (' + stock + ' disponibles)'; stockEl.className = "stock-info"; }
                 if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; }
@@ -1273,7 +1308,11 @@
             if (allReviews.length > 0) {
                 var avg = (allReviews.reduce((s, r) => s + r.note, 0) / allReviews.length).toFixed(1);
                 var rs = document.getElementById('ratingSummary');
-                if (rs) rs.innerHTML = '<span class="stars-inline">' + '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg)) + '</span><span>' + avg + ' (' + allReviews.length + ' avis)</span>';
+                if (rs) rs.innerHTML =
+                    '<span class="stars-inline">' + '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg)) + '</span>' +
+                    '<span style="font-weight:700;color:#111827;">' + avg + '</span>' +
+                    '<span style="color:#6b7280;">(' + allReviews.length + ' avis)</span>' +
+                    '<span style="margin-left:8px;background:#ecfdf5;color:#059669;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid #d1fae5;">🛡️ Retour 7j gratuit</span>';
             }
         }
 
@@ -1336,7 +1375,7 @@
             var galleryHTML = '<div class="gallery-main" id="galleryMain">' +
                 (flashPrice ? '<div class="img-flash-badge">⚡ Prix Flash</div>' : '') +
                 '<img id="mainImg" src="' + images[0] + '" alt="' + currentProduct.name + '">' +
-                (images.length > 1 ? '<div class="gallery-arrows"><button class="gallery-arrow-btn" onclick="setGalleryImg(galleryIdx-1)">‹</button><button class="gallery-arrow-btn" onclick="setGalleryImg(galleryIdx+1)">›</button></div>' : '') +
+                (images.length > 1 ? '<div class="gallery-arrows"><button class="gallery-arrow-btn" onclick="openLightbox()">‹</button><button class="gallery-arrow-btn" onclick="setGalleryImg(galleryIdx+1)">›</button></div>' : '') +
                 '</div>' +
                 (images.length > 1 ? '<div class="gallery-dots">' + images.map((_, i) => '<div class="g-dot' + (i === 0 ? ' active' : '') + '" onclick="setGalleryImg(' + i + ')"></div>').join('') + '</div>' : '') +
                 (images.length > 1 ? '<div class="gallery-thumbs">' + images.map((url, i) => '<div class="gallery-thumb' + (i === 0 ? ' active' : '') + '" onclick="setGalleryImg(' + i + ')"><img src="' + url + '" alt="' + currentProduct.name + ' ' + (i + 1) + '"></div>').join('') + '</div>' : '');
@@ -1398,7 +1437,7 @@
 
                 // Avis
                 '<div class="section-below"><div class="section-title">⭐ Avis clients</div><div id="reviewsList"><p style="color:#9ca3af;font-size:14px;padding:16px 0;">Chargement des avis...</p></div></div>';
-
+            '<div class="section-below"><div class="section-title">📦 Produits similaires</div><div id="similarProducts" class="products-grid"></div></div>'
             // Sticky CTA init
             var sp = document.getElementById('stickyPrice');
             var sop = document.getElementById('stickyOldPrice');
@@ -1419,6 +1458,47 @@
             updateStockDisplay();
         }
 
+        function openLightbox() {
+            document.getElementById('lightboxImg').src = galleryImages[galleryIdx];
+            document.getElementById('lightbox').classList.add('open');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+        }
+
+        async function loadSimilarProducts() {
+            try {
+                var catId = currentProduct.categoryId;
+                if (!catId) return;
+                var res = await fetch(API_BASE + '/products?category=' + catId);
+                var products = await res.json();
+                var similar = products.filter(p => p.id !== currentProduct.id && p.isActive !== false).slice(0, 4);
+                var el = document.getElementById('similarProducts');
+                if (!el || !similar.length) return;
+                el.innerHTML = similar.map(p => {
+                    var img = p.imageUrl || '';
+                    var disc = p.oldPrice && p.oldPrice > p.price ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
+                    return '<div class="p-card" onclick="location.href=\'product-details.html?id=' + p.id + '\'" style="cursor:pointer;">' +
+                        '<div class="p-img">' + (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
+                        (disc ? '<span class="bdg bdg-r">-' + disc + '%</span>' : '') + '</div>' +
+                        '<div class="p-info"><div class="p-cat">' + (p.category?.name || '') + '</div>' +
+                        '<div class="p-name">' + p.name + '</div>' +
+                        '<div class="p-row"><span class="p-price">' + Number(p.price).toLocaleString() + ' F</span>' +
+                        (p.oldPrice ? '<span class="p-old">' + Number(p.oldPrice).toLocaleString() + ' F</span>' : '') + '</div></div></div>';
+                }).join('');
+            } catch (e) { }
+        }
+
+
+        function openLightbox() {
+            document.getElementById('lightboxImg').src = galleryImages[galleryIdx];
+            document.getElementById('lightbox').classList.add('open');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+        }
+
+
         async function loadSellerInfo() {
             try {
                 var res = await fetch(API_BASE + '/sellers/product/' + productId);
@@ -1433,9 +1513,16 @@
             } catch (e) { }
         }
 
-        loadProduct().then(() => { loadReviews(); loadSellerInfo(); });
+        loadProduct().then(() => { loadReviews(); loadSellerInfo(); loadSimilarProducts(); });
     </script>
     <script src="/cart-badge.js"></script>
     <script src="/whatsapp-widget.js"></script>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">×</span>
+        <img id="lightboxImg" src="" alt="">
+    </div>
+
+
 </body>
 </html>
