@@ -63,7 +63,7 @@ namespace RanitaApi.Controllers
                 p.Slug,
                 p.MetaDescription,
                 Attributes = p.Attributes ?? "{}",
-                Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name },
+                Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name, p.Category.ParentId },
                 Variants = p.Variants?.Select(v => new { v.Id, v.Combination, v.Stock, v.Price })
             });
 

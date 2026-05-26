@@ -2441,8 +2441,9 @@
             el.classList.add('active');
             var active = allProducts.filter(function (p) { return p.isActive !== false; });
             var f = active.filter(function (p) {
-                var catName = (p.category?.name || p.category || '').toLowerCase();
-                return catName.includes(nm.slice(0, 4));
+                var cat = p.category;
+                if (!cat) return false;
+                return cat.id === pid || cat.parentId === pid;
             });
             renderFiltered(f);
         }
