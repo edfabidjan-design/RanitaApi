@@ -406,7 +406,7 @@
                     document.getElementById('shop-name').textContent = 'Ranita Market';
                     document.getElementById('shop-desc').textContent = 'Boutique officielle — Les meilleurs produits livrés partout en Côte d\'Ivoire';
                     try {
-                        const res = await fetch(`${API}/products`);
+                        const res = await fetch(`${API}/products/admin-only`);
                         const products = await res.json();
                         const active = products.filter(p => p.isActive !== false);
                         document.getElementById('shop-total').textContent = active.length;

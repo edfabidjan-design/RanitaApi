@@ -332,9 +332,43 @@ namespace RanitaApi.Controllers
             return Ok("Supprimé");
         }
 
+        // GET /api/products/admin-only
+        [HttpGet("admin-only")]
+        public async Task<IActionResult> GetAdminOnly()
+        {
+            var sellerProductIds = await _context.SellerProducts
+                .Where(sp => sp.ProductId != null)
+                .Select(sp => sp.ProductId.Value)
+                .ToListAsync();
 
+            var products = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Variants)
+                .Where(p => p.IsActive && !sellerProductIds.Contains(p.Id))
+                .ToListAsync();
+
+            var result = products.Select(p => new {
+                p.Id,
+                p.Name,
+                p.Price,
+                p.OldPrice,
+                Stock = p.Variants != null && p.Variants.Any()
+                    ? p.Variants.Sum(v => v.Stock) : p.Stock,
+                p.ShortDescription,
+                p.ImageUrl,
+                p.Images,
+                p.CategoryId,
+                p.Brand,
+                p.IsActive,
+                Category = p.Category == null ? null : new { p.Category.Id, p.Category.Name, p.Category.ParentId },
+                Variants = p.Variants?.Select(v => new { v.Id, v.Combination, v.Stock, v.Price })
+            });
+
+            return Ok(result);
+        }
 
 
     }
+
 
 }
