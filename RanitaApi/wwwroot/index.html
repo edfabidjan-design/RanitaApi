@@ -2447,7 +2447,7 @@
             });
             renderFiltered(f);
             // Scroll vers les produits
-            document.getElementById('flash-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(function () { var el = document.getElementById('bestsellers-grid'); if (el) { var top = el.getBoundingClientRect().top + window.pageYOffset - 100; window.scrollTo({ top: top, behavior: 'smooth' }); } }, 100);
         }
 
         function filterCat(el, key) {
@@ -2455,7 +2455,7 @@
             var active = allProducts.filter(function (p) { return p.isActive !== false; });
             var f = key === 'all' ? active : active.filter(function (p) { var n = (p.category?.name || '').toLowerCase(); return n === key || n.includes(key); });
             renderFiltered(f);
-            document.getElementById('flash-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(function () { var el = document.getElementById('bestsellers-grid'); if (el) { var top = el.getBoundingClientRect().top + window.pageYOffset - 100; window.scrollTo({ top: top, behavior: 'smooth' }); } }, 100);
         }
 
         function renderFiltered(f) {
