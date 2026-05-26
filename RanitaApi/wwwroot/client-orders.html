@@ -434,7 +434,8 @@
 
             const subtotal = o.items.reduce((s, i) => s + i.price * i.quantity, 0);
             const shipping = o.shippingFee ?? 0;  // ?? au lieu de ||
-            const referralDiscount = Math.max(0, subtotal + shipping - o.total);
+            const referralDiscount = o.referralCreditUsed ?? 0;
+            const promoDiscount = o.promoDiscount ?? 0;
 
             // Affichage livraison — même logique que le checkout
             const shippingLabel = shipping === 0
@@ -476,6 +477,11 @@ ${referralDiscount > 0 ? `
 <div class="modal-total-row" style="color:#10b981;font-weight:700;">
     <span>🎁 Crédit parrainage</span>
     <span>- ${Number(referralDiscount).toLocaleString()} FCFA</span>
+</div>` : ''}
+${promoDiscount > 0 ? `
+<div class="modal-total-row" style="color:#10b981;font-weight:700;">
+    <span>🎟️ Code promo${o.promoCode ? ' (' + o.promoCode + ')' : ''}</span>
+    <span>- ${Number(promoDiscount).toLocaleString()} FCFA</span>
 </div>` : ''}
                     <div class="modal-total-row grand">
                         <span>Total</span>

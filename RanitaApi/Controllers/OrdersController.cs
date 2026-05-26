@@ -192,6 +192,10 @@ namespace RanitaApi.Controllers
             order.Total = total;
             order.ShippingFee = effectiveShipping;
 
+            order.PromoDiscount = dto.PromoDiscount;
+            order.PromoCode = dto.PromoCode;
+            order.ReferralCreditUsed = creditUsed;
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 

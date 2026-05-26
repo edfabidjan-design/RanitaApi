@@ -18,5 +18,8 @@
 
         public List<OrderItem> Items { get; set; } = new();
         public decimal ShippingFee { get; set; } = 0;
+        public decimal PromoDiscount { get; set; } = 0;
+        public string? PromoCode { get; set; }
+        public decimal ReferralCreditUsed { get; set; } = 0;
     }
 }

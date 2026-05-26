@@ -979,6 +979,27 @@ catch (Exception ex) { Console.WriteLine("PromoCodes error: " + ex.Message); }
 
 
 
+// ── Colonnes PromoDiscount / PromoCode / ReferralCreditUsed sur Orders ──
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        ALTER TABLE ""Orders""
+        ADD COLUMN IF NOT EXISTS ""PromoDiscount""      NUMERIC(18,2) NOT NULL DEFAULT 0;
+    ");
+    db.Database.ExecuteSqlRaw(@"
+        ALTER TABLE ""Orders""
+        ADD COLUMN IF NOT EXISTS ""PromoCode""          TEXT NULL;
+    ");
+    db.Database.ExecuteSqlRaw(@"
+        ALTER TABLE ""Orders""
+        ADD COLUMN IF NOT EXISTS ""ReferralCreditUsed"" NUMERIC(18,2) NOT NULL DEFAULT 0;
+    ");
+    Console.WriteLine("Orders discount columns OK");
+}
+catch (Exception ex) { Console.WriteLine("Orders discount columns error: " + ex.Message); }
+
 
 
 

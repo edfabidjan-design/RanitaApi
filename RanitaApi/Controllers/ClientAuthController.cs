@@ -191,6 +191,10 @@ public class ClientAuthController : ControllerBase
             o.ShippingFee,
             o.Status,
             o.CreatedAt,
+
+            o.PromoDiscount,
+            o.PromoCode,
+            o.ReferralCreditUsed,
             Items = o.Items.Select(i => new
             {
                 i.Id,
