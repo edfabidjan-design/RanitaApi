@@ -1378,7 +1378,7 @@
             var galleryHTML = '<div class="gallery-main" id="galleryMain" onclick="openLightbox()">' +
                 (flashPrice ? '<div class="img-flash-badge">⚡ Prix Flash</div>' : '') +
                 '<img id="mainImg" src="' + images[0] + '" alt="' + currentProduct.name + '">' +
-                (images.length > 1 ? '<div class="gallery-arrows"><button class="gallery-arrow-btn" onclick="openLightbox()"">‹</button><button class="gallery-arrow-btn" onclick="setGalleryImg(galleryIdx+1)">›</button></div>' : '') +
+                (images.length > 1 ? '<div class="gallery-arrows"><button class="gallery-arrow-btn" onclick="event.stopPropagation();setGalleryImg(galleryIdx-1)">‹</button><button class="gallery-arrow-btn" onclick="event.stopPropagation();setGalleryImg(galleryIdx+1)">›</button></div>' : '') +
                 '</div>' +
                 (images.length > 1 ? '<div class="gallery-dots">' + images.map((_, i) => '<div class="g-dot' + (i === 0 ? ' active' : '') + '" onclick="setGalleryImg(' + i + ')"></div>').join('') + '</div>' : '') +
                 (images.length > 1 ? '<div class="gallery-thumbs">' + images.map((url, i) => '<div class="gallery-thumb' + (i === 0 ? ' active' : '') + '" onclick="setGalleryImg(' + i + ')"><img src="' + url + '" alt="' + currentProduct.name + ' ' + (i + 1) + '"></div>').join('') + '</div>' : '');
@@ -1439,9 +1439,8 @@
                 (currentProduct.description ? '<div class="section-below"><div class="section-title">Description du produit</div><div class="description-content">' + currentProduct.description + '</div></div>' : '') +
 
                 // Avis
-                '<div class="section-below"><div class="section-title">⭐ Avis clients</div><div id="reviewsList"><p style="color:#9ca3af;font-size:14px;padding:16px 0;">Chargement des avis...</p></div></div>';
-            '<div class="section-below"><div class="section-title">📦 Produits similaires</div><div id="similarProducts" class="products-grid"></div></div>';
-            '<div class="section-below"><div class="section-title">📦 Produits similaires</div><div id="similarProducts" class="products-grid"></div></div>'
+                '<div class="section-below"><div class="section-title">⭐ Avis clients</div><div id="reviewsList"><p style="color:#9ca3af;font-size:14px;padding:16px 0;">Chargement des avis...</p></div></div>' +
+                '<div class="section-below"><div class="section-title">📦 Produits similaires</div><div id="similarProducts" class="products-grid"></div></div>';
             // Sticky CTA init
             var sp = document.getElementById('stickyPrice');
             var sop = document.getElementById('stickyOldPrice');
