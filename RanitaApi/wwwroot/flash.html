@@ -109,9 +109,16 @@
 
         .flash-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
+            grid-template-columns: repeat(4, 240px);
             gap: 20px;
             justify-content: start;
+        }
+
+        @media(max-width:768px) {
+            .flash-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
         }
 
         .flash-card {
@@ -260,22 +267,7 @@
                 margin-bottom: 24px;
             }
 
-        @media(max-width:768px) {
-            .flash-hero h1 {
-                font-size: 24px;
-            }
 
-            .t-block-big {
-                font-size: 22px;
-                padding: 6px 10px;
-                min-width: 44px;
-            }
-
-            .flash-grid {
-                grid-template-columns: repeat(2,1fr);
-                gap: 12px;
-            }
-        }
     </style>
 </head>
 <body>
