@@ -751,10 +751,12 @@
 
                 // Variante : affichage propre, tronqué si trop long
                 var variantParts = item.variant ? item.variant.split(' / ') : [];
+                var visibleParts = variantParts.slice(0, 2);
+                var remaining = variantParts.length - 2;
                 var variantHTML = variantParts.length
-                    ? variantParts.map(function (v) {
+                    ? visibleParts.map(function (v) {
                         return '<span class="cart-variant">' + v.trim() + '</span>';
-                    }).join(' ')
+                    }).join(' ') + (remaining > 0 ? ' <span class="cart-variant" style="background:#f3f4f6;color:#6b7280;border-color:#e5e7eb;">+' + remaining + '</span>' : '')
                     : '';
 
                 return '<div class="cart-item">' +
