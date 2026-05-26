@@ -2468,12 +2468,19 @@
         }
 
         function renderFiltered(f) {
-            var flash = f.filter(function (p) { return p.oldPrice && p.oldPrice > p.price; }).slice(0, 6);
-            var fill = flash.length ? flash : f.slice(0, 6);
-            var ids = new Set(fill.map(function (p) { return p.id; }));
-            var best = f.filter(function (p) { return !ids.has(p.id); }).slice(0, 4);
-            document.getElementById('flash-grid').innerHTML = fill.length ? fill.map(buildCard).join('') : '<p style="grid-column:1/-1;text-align:center;color:var(--t3);padding:40px;">Aucun produit.</p>';
-            document.getElementById('bestsellers-grid').innerHTML = best.length ? best.map(buildCard).join('') : '<p style="grid-column:1/-1;text-align:center;color:var(--t3);padding:24px;">—</p>';
+            var fill = f.slice(0, 8);
+            var rest = f.slice(8, 12);
+
+            document.getElementById('flash-grid').innerHTML = fill.length
+                ? fill.map(buildCard).join('')
+                : '<p style="grid-column:1/-1;text-align:center;color:var(--t3);padding:40px;">Aucun produit dans cette catégorie.</p>';
+
+            // Forcer l'affichage de la section flash
+            document.querySelector('.flash-section').style.display = 'block';
+
+            document.getElementById('bestsellers-grid').innerHTML = rest.length
+                ? rest.map(buildCard).join('')
+                : '<p style="grid-column:1/-1;text-align:center;color:var(--t3);padding:24px;">—</p>';
         }
 
         async function loadSiteSettings() {
