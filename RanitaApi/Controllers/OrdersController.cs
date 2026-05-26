@@ -178,6 +178,16 @@ namespace RanitaApi.Controllers
 
             total += effectiveShipping;
             var creditUsed = Math.Min(dto.ReferralCreditUsed, total);
+
+            total = Math.Max(0, total - dto.PromoDiscount);
+            order.Total = total;
+            if (dto.PromoCodeId.HasValue)
+            {
+                var promo = await _context.PromoCodes.FindAsync(dto.PromoCodeId.Value);
+                if (promo != null) promo.UsedCount++;
+            }
+
+
             total = Math.Max(0, total - creditUsed);
             order.Total = total;
             order.ShippingFee = effectiveShipping;
@@ -735,6 +745,9 @@ namespace RanitaApi.Controllers
         public List<OrderItemDto> Items { get; set; } = new();
         public decimal ReferralCreditUsed { get; set; } = 0;
         public decimal? FlashPrice { get; set; }
+        public string? PromoCode { get; set; }
+        public decimal PromoDiscount { get; set; } = 0;
+        public int? PromoCodeId { get; set; }
     }
 
     public class OrderItemDto

@@ -719,6 +719,18 @@
                 <div class="rc-sub">Ce montant sera automatiquement déduit de votre commande</div>
             </div>
 
+            <div style="margin-bottom:16px;">
+                <div style="display:flex;gap:8px;">
+                    <input type="text" id="promoInput" placeholder="🎟️ Code promo"
+                           style="flex:1;height:46px;padding:0 14px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;text-transform:uppercase;font-family:inherit;">
+                    <button type="button" onclick="applyPromo()"
+                            style="background:#10b981;color:white;border:none;padding:0 18px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;white-space:nowrap;">
+                        Appliquer
+                    </button>
+                </div>
+                <div id="promoMsg" style="font-size:12px;margin-top:6px;"></div>
+            </div>
+
             <form id="checkoutForm">
                 <input type="text" id="customerName" placeholder="Nom complet" required>
                 <input type="tel" id="customerPhone" placeholder="Téléphone (ex: 0707000000)" required>
@@ -775,6 +787,13 @@
                         <span>🎁 Crédit parrainage</span>
                         <span id="referralCreditDisplay"></span>
                     </div>
+
+                    <div class="summary-line credit" id="promoLine" style="display:none;">
+                        <span>🎟️ Code promo</span>
+                        <span id="promoDisplay"></span>
+                    </div>
+
+
                     <div class="summary-line total">
                         <span>Total à payer</span>
                         <span id="grandTotalDisplay">—</span>
@@ -902,7 +921,8 @@
             var isFree = subtotal >= FREE_SHIPPING_THRESHOLD;
             var shipping = isFree ? 0 : SHIPPING_FEE;
             var creditUsed = Math.min(REFERRAL_CREDIT, subtotal + shipping);
-            var grandTotal = Math.max(0, subtotal + shipping - creditUsed);
+       
+            var grandTotal = Math.max(0, subtotal + shipping - creditUsed - PROMO_DISCOUNT);
 
             document.getElementById("subtotalDisplay").textContent = Number(subtotal).toLocaleString('fr-FR') + " F";
             document.getElementById("shippingDisplay").textContent = isFree
@@ -916,6 +936,14 @@
                 creditDisplay.textContent = "- " + Number(creditUsed).toLocaleString('fr-FR') + " F";
             } else { creditLine.style.display = "none"; }
 
+
+            // Dans updateTotals()
+            var promoLine = document.getElementById('promoLine');
+            if (PROMO_DISCOUNT > 0 && promoLine) {
+                promoLine.style.display = 'flex';
+                document.getElementById('promoDisplay').textContent = '- ' + Number(PROMO_DISCOUNT).toLocaleString('fr-FR') + ' F';
+            }
+
             document.getElementById("grandTotalDisplay").textContent = Number(grandTotal).toLocaleString('fr-FR') + " F";
             window._finalShipping = shipping;
             window._creditUsed = creditUsed;
@@ -924,6 +952,37 @@
             // Mettre à jour le lien WhatsApp
             updateWaLink(subtotal, shipping, grandTotal);
         }
+
+
+        var PROMO_DISCOUNT = 0;
+        var PROMO_CODE_ID = null;
+
+        async function applyPromo() {
+            var code = document.getElementById('promoInput').value.trim();
+            var msg = document.getElementById('promoMsg');
+            if (!code) return;
+            var subtotal = cart.reduce(function (s, i) { return s + i.price * (i.quantity || 1); }, 0);
+            try {
+                var res = await fetch('/api/promo/apply', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code, orderTotal: subtotal })
+                });
+                var data = await res.json();
+                if (!res.ok) {
+                    msg.textContent = '❌ ' + data.message;
+                    msg.style.color = '#ef4444';
+                    PROMO_DISCOUNT = 0; PROMO_CODE_ID = null;
+                } else {
+                    PROMO_DISCOUNT = data.discount;
+                    PROMO_CODE_ID = data.codeId;
+                    msg.textContent = '✅ Code appliqué ! -' + Number(data.discount).toLocaleString('fr-FR') + ' FCFA';
+                    msg.style.color = '#10b981';
+                }
+                updateTotals();
+            } catch (e) { msg.textContent = '❌ Erreur réseau'; msg.style.color = '#ef4444'; }
+        }
+
 
         function updateWaLink(subtotal, shipping, grandTotal) {
             var lines = cart.map(function (item) {
@@ -999,6 +1058,11 @@
                 paymentMethod: selectedPayment,
                 shippingFee: window._finalShipping ?? SHIPPING_FEE,
                 referralCreditUsed: window._creditUsed || 0,
+
+                promoCode: document.getElementById('promoInput').value.trim() || null,
+                promoDiscount: PROMO_DISCOUNT,
+                promoCodeId: PROMO_CODE_ID,
+
                 items: cart.map(function (item) {
                     return {
                         productId: item.id,
@@ -1008,6 +1072,7 @@
                         unitPrice: item.price
                     };
                 })
+
             };
 
             var btn = document.getElementById('submitBtn');

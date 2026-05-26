@@ -952,5 +952,35 @@ catch (Exception ex) { Console.WriteLine("Wishlists error: " + ex.Message); }
 
 
 
+// ── PromoCodes table ───────────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""PromoCodes"" (
+            ""Id""         SERIAL PRIMARY KEY,
+            ""Code""       TEXT NOT NULL DEFAULT '',
+            ""Type""       TEXT NOT NULL DEFAULT 'percent',
+            ""Value""      NUMERIC(18,2) NOT NULL DEFAULT 0,
+            ""MinOrder""   NUMERIC(18,2) NULL,
+            ""MaxUses""    INT NULL,
+            ""UsedCount""  INT NOT NULL DEFAULT 0,
+            ""ExpiresAt""  TIMESTAMP NULL,
+            ""IsActive""   BOOLEAN NOT NULL DEFAULT TRUE,
+            ""CreatedAt""  TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+    Console.WriteLine("PromoCodes OK");
+}
+catch (Exception ex) { Console.WriteLine("PromoCodes error: " + ex.Message); }
+
+
+
+
+
+
+
+
 
 app.Run();
