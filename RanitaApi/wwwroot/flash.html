@@ -47,22 +47,22 @@
 
         .flash-hero {
             background: var(--dk);
-            padding: 40px 20px;
+            padding: 20px 20px; /* réduit de 40px à 20px */
             text-align: center;
             border-bottom: 3px solid var(--flash);
         }
 
             .flash-hero h1 {
-                font-size: 32px;
+                font-size: 24px; /* réduit */
                 font-weight: 800;
                 color: var(--dkt);
-                margin-bottom: 8px;
+                margin-bottom: 4px;
             }
 
             .flash-hero p {
-                font-size: 14px;
+                font-size: 13px;
                 color: var(--dkt2);
-                margin-bottom: 24px;
+                margin-bottom: 12px;
             }
 
         .flash-timer-big {
@@ -119,6 +119,8 @@
             cursor: pointer;
             transition: all .25s;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
             .flash-card:hover {
@@ -128,7 +130,7 @@
             }
 
         .flash-card-img {
-            height: 200px;
+            height: 160px;
             background: var(--w3);
             display: flex;
             align-items: center;
@@ -157,7 +159,10 @@
         }
 
         .flash-card-body {
-            padding: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
         .flash-card-name {
@@ -224,6 +229,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: opacity .2s;
+            margin-top: auto;
         }
 
             .flash-add-btn:hover {
