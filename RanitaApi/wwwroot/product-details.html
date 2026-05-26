@@ -1242,6 +1242,9 @@
                     stockEl.className = "stock-info low";
                 }
 
+                var barHTML = '<div style="margin-top:6px;background:#f3f4f6;border-radius:999px;height:6px;overflow:hidden;"><div style="background:#f97316;height:100%;border-radius:999px;width:' + Math.round((stock / 10) * 100) + '%;transition:width .5s;"></div></div>';
+                if (stockEl) stockEl.innerHTML += barHTML;
+
             } else {
                 if (stockEl) { stockEl.textContent = 'En stock (' + stock + ' disponibles)'; stockEl.className = "stock-info"; }
                 if (addBtn) { addBtn.disabled = false; addBtn.textContent = "🛒 Ajouter au panier"; }
