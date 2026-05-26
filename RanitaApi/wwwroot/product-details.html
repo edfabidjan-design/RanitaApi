@@ -1020,15 +1020,19 @@
                 font-size: 18px;
             }
         }
-
         #similarProducts {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 190px));
+            grid-template-columns: repeat(6, 1fr);
             gap: 14px;
-            justify-content: start;
             overflow: hidden;
         }
 
+        @media(max-width: 768px) {
+            #similarProducts {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
             #similarProducts .p-card {
                 width: 100%;
             }
@@ -1498,7 +1502,7 @@
                 var products = await res.json();
                 var similar = products.filter(function (p) {
                     return p.categoryId === catId && p.id !== parseInt(productId) && p.isActive !== false;
-                }).slice(0, 4);
+                }).slice(0, 6);
                 var el = document.getElementById('similarProducts');
                 if (!el || !similar.length) { if (el) el.innerHTML = '<p style="color:#9ca3af;">Aucun produit similaire.</p>'; return; }
                 el.innerHTML = similar.map(function (p) {
