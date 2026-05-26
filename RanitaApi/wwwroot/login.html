@@ -102,10 +102,12 @@
                     })
                 });
 
-                const data = await res.json();
+           
 
-                if (!res.ok) {
-                    showError(data.message || 'Email ou mot de passe incorrect');
+                let data = {};
+                try { data = await res.json(); } catch (e) {
+                    const text = await res.text().catch(() => '');
+                    showError(text || 'Email ou mot de passe incorrect');
                     btn.disabled = false; btn.textContent = 'Se connecter';
                     return;
                 }
