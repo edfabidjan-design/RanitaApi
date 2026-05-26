@@ -1544,15 +1544,22 @@
         async function loadSellerInfo() {
             try {
                 var res = await fetch(API_BASE + '/sellers/product/' + productId);
-                var data = res.ok ? await res.json() : null;
                 var badge = document.getElementById('seller-badge');
                 if (!badge) return;
-                var name = data?.shopName || 'Ranita Market';
-                var link = data?.sellerId ? 'boutique.html?id=' + data.sellerId : null;
-                badge.innerHTML = link
-                    ? '<a href="' + link + '" style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">🏪 ' + name + '</a>'
-                    : '<span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #d1fae5;">🏪 ' + name + '</span>';
-            } catch (e) { }
+                if (!res.ok || !res) {
+                    badge.innerHTML = '<a href="boutique.html?id=ranita" style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">🏪 Ranita Market</a>';
+                    return;
+                }
+                var data = await res.json();
+                if (!data?.sellerId) {
+                    badge.innerHTML = '<a href="boutique.html?id=ranita" style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">🏪 Ranita Market</a>';
+                    return;
+                }
+                badge.innerHTML = '<a href="boutique.html?id=' + data.sellerId + '" style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">🏪 ' + data.shopName + '</a>';
+            } catch (e) {
+                var badge = document.getElementById('seller-badge');
+                if (badge) badge.innerHTML = '<a href="boutique.html?id=ranita" style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#059669;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid #d1fae5;">🏪 Ranita Market</a>';
+            }
         }
 
         loadProduct().then(() => { loadReviews(); loadSellerInfo(); loadSimilarProducts(); });

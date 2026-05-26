@@ -396,7 +396,29 @@
             if (m && !e.target.closest('#authNav')) m.style.display = 'none';
         });
 
-        async function loadShop(sellerId) {
+        
+
+            async function loadShop(sellerId) {
+                if (sellerId === 'ranita') {
+                    document.title = 'Ranita Market — Boutique officielle';
+                    document.getElementById('shop-avatar').textContent = '🛒';
+                    document.getElementById('shop-avatar').style.background = 'linear-gradient(135deg,#10b981,#059669)';
+                    document.getElementById('shop-name').textContent = 'Ranita Market';
+                    document.getElementById('shop-desc').textContent = 'Boutique officielle — Les meilleurs produits livrés partout en Côte d\'Ivoire';
+                    try {
+                        const res = await fetch(`${API}/products`);
+                        const products = await res.json();
+                        const active = products.filter(p => p.isActive !== false);
+                        document.getElementById('shop-total').textContent = active.length;
+                        document.getElementById('products-title').textContent = `${active.length} produit(s)`;
+                        allProducts = active;
+                        renderProducts(active);
+                    } catch (e) {
+                        document.getElementById('products-grid').innerHTML = '<div class="empty-state"><p>Erreur de chargement</p></div>';
+                    }
+                    return;
+                }
+            // ... reste du code existant
             try {
                 const res = await fetch(`${API}/sellers/${sellerId}/public`);
                 if (!res.ok) throw new Error('Boutique introuvable');
