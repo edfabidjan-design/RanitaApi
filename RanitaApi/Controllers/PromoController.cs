@@ -34,7 +34,7 @@ public class PromoController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] PromoCode dto)
     {
-        dto.CreatedAt = DateTime.UtcNow; dto.UsedCount = 0;
+        dto.UsedCount = 0;
         _db.PromoCodes.Add(dto); await _db.SaveChangesAsync(); return Ok(dto);
     }
 
