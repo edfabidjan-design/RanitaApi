@@ -1490,48 +1490,27 @@
             try {
                 var catId = currentProduct.categoryId;
                 if (!catId) return;
-                var res = await fetch(API_BASE + '/products?category=' + catId);
-                var products = await res.json();
-                var similar = products.filter(p => p.id !== currentProduct.id && p.isActive !== false).slice(0, 4);
-                var el = document.getElementById('similarProducts');
-                if (!el || !similar.length) return;
-                el.innerHTML = similar.map(p => {
-                    var img = p.imageUrl || '';
-                    var disc = p.oldPrice && p.oldPrice > p.price ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
-                    return '<div class="p-card" onclick="location.href=\'product-details.html?id=' + p.id + '\'" style="cursor:pointer;">' +
-                        '<div class="p-img">' + (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
-                        (disc ? '<span class="bdg bdg-r">-' + disc + '%</span>' : '') + '</div>' +
-                        '<div class="p-info"><div class="p-cat">' + (p.category?.name || '') + '</div>' +
-                        '<div class="p-name" style="-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;">' + p.name + '</div>' +
-                        '<div class="p-row"><span class="p-price">' + Number(p.price).toLocaleString() + ' F</span>' +
-                        (p.oldPrice ? '<span class="p-old">' + Number(p.oldPrice).toLocaleString() + ' F</span>' : '') + '</div></div></div>';
-                }).join('');
-            } catch (e) { }
-        }
-
-
-        async function loadSimilarProducts() {
-            try {
-                var catId = currentProduct.categoryId;
-                if (!catId) return;
                 var res = await fetch(API_BASE + '/products');
                 var products = await res.json();
-                var similar = products.filter(p => p.categoryId === catId && p.id !== parseInt(productId) && p.isActive !== false).slice(0, 4);
+                var similar = products.filter(function (p) {
+                    return p.categoryId === catId && p.id !== parseInt(productId) && p.isActive !== false;
+                }).slice(0, 4);
                 var el = document.getElementById('similarProducts');
-                if (!el || !similar.length) return;
-                el.innerHTML = similar.map(p => {
+                if (!el || !similar.length) { if (el) el.innerHTML = '<p style="color:#9ca3af;">Aucun produit similaire.</p>'; return; }
+                el.innerHTML = similar.map(function (p) {
                     var img = p.imageUrl || '';
                     var disc = p.oldPrice && p.oldPrice > p.price ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
                     return '<div class="p-card" onclick="location.href=\'product-details.html?id=' + p.id + '\'" style="cursor:pointer;">' +
                         '<div class="p-img">' + (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div class="p-ph">🛍️</div>') +
                         (disc ? '<span class="bdg bdg-r">-' + disc + '%</span>' : '') + '</div>' +
-                        '<div class="p-info"><div class="p-cat">' + (p.category?.name || '') + '</div>' +
-                        '<div class="p-name">' + p.name + '</div>' +
+                        '<div class="p-info">' +
+                        '<div class="p-cat">' + (p.category?.name || '') + '</div>' +
+                        '<div class="p-name" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + p.name + '</div>' +
                         '<div class="p-row"><span class="p-price">' + Number(p.price).toLocaleString() + ' F</span>' +
                         (p.oldPrice ? '<span class="p-old">' + Number(p.oldPrice).toLocaleString() + ' F</span>' : '') +
-                        '</div>'
+                        '</div></div></div>';
                 }).join('');
-            } catch (e) { }
+            } catch (e) { console.error('similar:', e); }
         }
 
         function openLightbox() {
