@@ -123,7 +123,7 @@
                 await registerClientPush(data.id);
                 window.location.href = redirect || "products.html";
             } catch (e) {
-                showError('Erreur réseau — réessayez');
+                showError('Erreur: ' + e.message);
                 btn.disabled = false; btn.textContent = 'Se connecter';
             }
         });
