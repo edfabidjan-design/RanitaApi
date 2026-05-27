@@ -668,6 +668,28 @@
                         <label>Description hors campagne</label>
                         <textarea id="referral_fallback_desc" placeholder="Rejoignez nos vendeurs..."></textarea>
                     </div>
+
+
+                    <!-- Aperçu carte homepage -->
+                    <div id="ppcPreview" style="display:none;margin-top:20px;border-top:1px solid #f3f4f6;padding-top:20px;">
+                        <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">👁 Aperçu sur la homepage</div>
+                        <div style="background:linear-gradient(135deg,#1a0a2e,#2d1060);border-radius:16px;padding:20px;display:flex;align-items:center;gap:20px;max-width:500px;">
+                            <div id="ppcPreviewImg" style="width:80px;height:80px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;overflow:hidden;">📦</div>
+                            <div style="flex:1;">
+                                <div style="font-size:10px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">🎯 OFFRE SPÉCIALE</div>
+                                <div id="ppcPreviewName" style="font-size:15px;font-weight:800;color:white;margin-bottom:6px;">Nom du produit</div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <div style="background:rgba(139,92,246,.3);border:1px solid rgba(139,92,246,.5);border-radius:8px;padding:6px 14px;">
+                                        <span id="ppcPreviewCode" style="font-size:14px;font-weight:800;color:#c4b5fd;letter-spacing:2px;">CODE</span>
+                                    </div>
+                                    <div id="ppcPreviewDiscount" style="background:#8b5cf6;color:white;font-size:13px;font-weight:800;padding:6px 12px;border-radius:8px;">-20%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                     <div class="field">
                         <label>Texte bouton</label>
                         <input type="text" id="referral_fallback_btn" placeholder="Devenir vendeur →">
@@ -1256,6 +1278,21 @@
         <div style="font-size:13px;color:#6b7280;">Prix : <strong>${Number(price).toLocaleString()} F</strong></div></div>
         <button onclick="document.getElementById('ppc_product_id').value='';document.getElementById('ppc_selected_wrap').style.display='none';"
             style="margin-left:auto;background:#fee2e2;color:#ef4444;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">✕</button>`;
+
+            // Mise à jour aperçu
+            document.getElementById('ppcPreview').style.display = 'block';
+            document.getElementById('ppcPreviewName').textContent = name;
+            document.getElementById('ppcPreviewImg').innerHTML = img
+                ? `<img src="${img}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`
+                : '📦';
+
+
+            document.getElementById('ppc_code').oninput = function () {
+                document.getElementById('ppcPreviewCode').textContent = this.value.toUpperCase() || 'CODE';
+            };
+            document.getElementById('ppc_discount').oninput = function () {
+                document.getElementById('ppcPreviewDiscount').textContent = '-' + (this.value || '0') + '%';
+            };
         }
 
         async function ppcSave() {
