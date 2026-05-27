@@ -54,10 +54,12 @@ public class ProductPromoCodesController : ControllerBase
     {
         try
         {
+            var startDate = dto.StartDate.HasValue ? DateTime.SpecifyKind(dto.StartDate.Value, DateTimeKind.Utc) : (DateTime?)null;
+            var endDate = dto.EndDate.HasValue ? DateTime.SpecifyKind(dto.EndDate.Value, DateTimeKind.Utc) : (DateTime?)null;
             await _db.Database.ExecuteSqlRawAsync(@"
-                INSERT INTO ""ProductPromoCodes"" (""Code"", ""ProductId"", ""Discount"", ""StartDate"", ""EndDate"", ""IsActive"", ""CreatedAt"")
-                VALUES ({0}, {1}, {2}, {3}, {4}, {5}, NOW())
-            ", dto.Code.ToUpper(), dto.ProductId, dto.Discount, (object?)dto.StartDate ?? DBNull.Value, (object?)dto.EndDate ?? DBNull.Value, dto.IsActive);
+            INSERT INTO ""ProductPromoCodes"" (""Code"", ""ProductId"", ""Discount"", ""StartDate"", ""EndDate"", ""IsActive"", ""CreatedAt"")
+            VALUES ({0}, {1}, {2}, {3}, {4}, {5}, NOW())
+        ", dto.Code.ToUpper(), dto.ProductId, dto.Discount, (object?)startDate ?? DBNull.Value, (object?)endDate ?? DBNull.Value, dto.IsActive);
             return Ok(new { success = true });
         }
         catch (Exception ex) { return StatusCode(500, ex.Message); }
@@ -68,10 +70,12 @@ public class ProductPromoCodesController : ControllerBase
     {
         try
         {
+            var startDate = dto.StartDate.HasValue ? DateTime.SpecifyKind(dto.StartDate.Value, DateTimeKind.Utc) : (DateTime?)null;
+            var endDate = dto.EndDate.HasValue ? DateTime.SpecifyKind(dto.EndDate.Value, DateTimeKind.Utc) : (DateTime?)null;
             await _db.Database.ExecuteSqlRawAsync(@"
-                UPDATE ""ProductPromoCodes"" SET ""Code""={0}, ""ProductId""={1}, ""Discount""={2}, 
-                ""StartDate""={3}, ""EndDate""={4}, ""IsActive""={5} WHERE ""Id""={6}
-            ", dto.Code.ToUpper(), dto.ProductId, dto.Discount, (object?)dto.StartDate ?? DBNull.Value, (object?)dto.EndDate ?? DBNull.Value, dto.IsActive, id);
+            UPDATE ""ProductPromoCodes"" SET ""Code""={0}, ""ProductId""={1}, ""Discount""={2}, 
+            ""StartDate""={3}, ""EndDate""={4}, ""IsActive""={5} WHERE ""Id""={6}
+        ", dto.Code.ToUpper(), dto.ProductId, dto.Discount, (object?)startDate ?? DBNull.Value, (object?)endDate ?? DBNull.Value, dto.IsActive, id);
             return Ok(new { success = true });
         }
         catch (Exception ex) { return StatusCode(500, ex.Message); }
