@@ -2480,8 +2480,25 @@
             try {
                 var res = await fetch('/api/site-settings'); if (!res.ok) return;
                 var s = await res.json();
-                if (s.promo_bar_text) { var e = document.getElementById('promoBarText'); if (e) e.textContent = s.promo_bar_text; }
-                if (s.promo_bar_link) { var e = document.getElementById('promoBarLink'); if (e) e.href = s.promo_bar_link; }
+                var pill = document.getElementById('promoBarPill');
+                var barText = document.getElementById('promoBarText');
+                var barLink = document.getElementById('promoBarLink');
+
+                var today2 = new Date(); today2.setHours(0, 0, 0, 0);
+                var ps2 = s.promo_bar_start ? new Date(s.promo_bar_start) : null;
+                var pe2 = s.promo_bar_end ? new Date(s.promo_bar_end) : null;
+                var campaignActive = !s.promo_bar_hide === 'true'
+                    && !(ps2 && today2 < ps2)
+                    && !(pe2 && today2 > pe2);
+
+                if (campaignActive) {
+                    if (pill) pill.textContent = '🎟️ PROMO';
+                    if (barText && s.promo_bar_text) barText.textContent = s.promo_bar_text;
+                    if (barLink && s.promo_bar_link) {
+                        barLink.href = s.promo_bar_link;
+                        barLink.textContent = 'Vendre →';
+                    }
+                }
 
                 var promoEl = document.getElementById('promoBar');
                 if (promoEl) {
