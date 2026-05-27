@@ -39,6 +39,19 @@ namespace RanitaApi.Data
 
 
 
+
+            modelBuilder.Entity<ProductPromoCode>(entity =>
+            {
+                entity.ToTable("ProductPromoCodes");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Code).HasMaxLength(50).IsRequired();
+                entity.HasOne(e => e.Product)
+                      .WithMany()
+                      .HasForeignKey(e => e.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
             modelBuilder.Entity<FlashSaleRequest>(entity =>
             {
                 entity.Property(f => f.FlashPrice).HasPrecision(18, 2);
