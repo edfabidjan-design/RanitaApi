@@ -2879,7 +2879,13 @@
         })();
     </script>
 
-
+    <!-- ── TOAST PROMO MOBILE ── -->
+    <div id="promoToast" style="display:none;position:fixed;bottom:80px;left:12px;right:12px;background:linear-gradient(135deg,#111827,#1f2937);border:1px solid rgba(16,185,129,.3);color:white;border-radius:16px;padding:16px 18px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:9998;transition:opacity .4s,transform .4s;opacity:0;transform:translateY(20px);">
+        <button onclick="closePromoToast()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,.1);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;">×</button>
+        <div style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;" id="promoToastPill">🎟️ CODE PROMO</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:10px;" id="promoToastText">Code RANITA10 : -10% dès 5 000 F</div>
+        <a href="products.html" id="promoToastLink" style="display:inline-block;background:#10b981;color:white;padding:8px 16px;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none;">Voir les offres →</a>
+    </div>
 
 
     <script src="/whatsapp-widget.js"></script>
@@ -2910,6 +2916,9 @@
                 setTimeout(function () { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; setTimeout(closePromoToast, 6000); }, 3000);
             }
         }
+
+
     </script>
+
 </body>
 </html>
