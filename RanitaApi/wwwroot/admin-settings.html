@@ -1074,6 +1074,20 @@
                     </div>
                 </div>
 
+                <div class="field full">
+                    <label>Couleur thème</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;" id="ppcColorRow">
+                        <div onclick="ppcPickColor(this)" data-c="linear-gradient(135deg,#1a0a2e,#2d1060)" style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a0a2e,#2d1060);cursor:pointer;border:3px solid #111827;"></div>
+                        <div onclick="ppcPickColor(this)" data-c="linear-gradient(135deg,#0a1628,#0d1f3c)" style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#0a1628,#0d1f3c);cursor:pointer;border:3px solid transparent;"></div>
+                        <div onclick="ppcPickColor(this)" data-c="linear-gradient(135deg,#0a1a12,#0d2416)" style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#0a1a12,#0d2416);cursor:pointer;border:3px solid transparent;"></div>
+                        <div onclick="ppcPickColor(this)" data-c="linear-gradient(135deg,#1a0808,#3d0a0a)" style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a0808,#3d0a0a);cursor:pointer;border:3px solid transparent;"></div>
+                        <div onclick="ppcPickColor(this)" data-c="linear-gradient(135deg,#1a1000,#2d1e00)" style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a1000,#2d1e00);cursor:pointer;border:3px solid transparent;"></div>
+                        <div onclick="ppcPickColor(this)" data-c="linear-gradient(135deg,#0d1117,#161b22)" style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#0d1117,#161b22);cursor:pointer;border:3px solid transparent;"></div>
+                    </div>
+                    <input type="hidden" id="ppc_color" value="linear-gradient(135deg,#1a0a2e,#2d1060)">
+                </div>
+
+
 
                 <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
                     <button onclick="ppcCloseForm()" style="background:#f3f4f6;color:#374151;border:none;padding:11px 24px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">Annuler</button>
@@ -1234,7 +1248,15 @@
         }
 
 
-
+        function ppcPickColor(chip) {
+            document.querySelectorAll('#ppcColorRow div[data-c]').forEach(c => c.style.borderColor = 'transparent');
+            chip.style.borderColor = '#10b981';
+            document.getElementById('ppc_color').value = chip.dataset.c;
+            // Mise à jour aperçu
+            var bg = document.querySelector('#ppcPreview > div > div:first-child');
+            // update preview bg
+            document.getElementById('ppcPreview').querySelector('[style*="linear-gradient"]').style.background = chip.dataset.c;
+        }
 
         // ── CODES PROMO PRODUIT ───────────────────────────────────────
         let ppcCodes = [];
@@ -1249,6 +1271,9 @@
             document.getElementById('ppc_search_results').innerHTML = '';
             document.getElementById('ppcForm').classList.add('open');
             document.getElementById('ppcForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            document.getElementById('ppc_color').value = 'linear-gradient(135deg,#1a0a2e,#2d1060)';
+            document.querySelectorAll('#ppcColorRow div[data-c]').forEach((c, i) => c.style.borderColor = i === 0 ? '#10b981' : 'transparent');
         }
 
         function ppcCloseForm() { document.getElementById('ppcForm').classList.remove('open'); }
@@ -1311,12 +1336,17 @@
             if (!discount) { alert('La réduction est obligatoire.'); return; }
             const btn = document.getElementById('ppcBtnSave'); btn.disabled = true; btn.textContent = '⏳...';
             const id = document.getElementById('ppc_id').value;
+
+
             const payload = {
                 code, productId, discount,
                 startDate: document.getElementById('ppc_start').value || null,
                 endDate: document.getElementById('ppc_end').value || null,
-                isActive: document.getElementById('ppc_active').value === 'true'
+                isActive: document.getElementById('ppc_active').value === 'true',
+                color: document.getElementById('ppc_color').value  // ← AJOUTE
             };
+
+
             try {
                 const url = id ? `${API}/product-promo-codes/${id}` : `${API}/product-promo-codes`;
                 const method = id ? 'PUT' : 'POST';

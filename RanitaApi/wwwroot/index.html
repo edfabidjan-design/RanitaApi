@@ -2525,12 +2525,17 @@
                 var card = document.getElementById('productPromoCard');
                 if (!section) return;
 
-                // Image en fond
+                // Image en fond + couleur
                 var bg = document.getElementById('productPromoBg');
-                if (promo.productImage && bg) {
-                    bg.style.backgroundImage = 'url(' + promo.productImage + ')';
-                    bg.style.backgroundSize = 'cover';
-                    bg.style.backgroundPosition = 'center';
+                if (bg) {
+                    if (promo.color) {
+                        bg.style.background = promo.color;
+                    }
+                    if (promo.productImage) {
+                        bg.style.backgroundImage = 'url(' + promo.productImage + ')';
+                        bg.style.backgroundSize = 'cover';
+                        bg.style.backgroundPosition = 'center';
+                    }
                 }
 
                 document.getElementById('productPromoName').textContent = promo.productName;
@@ -2547,7 +2552,6 @@
                 section.style.display = 'block';
             } catch (e) { }
         }
-
 
         function goFlash(productId, flashPrice, flashSaleId, stockLeft, variantId) {
             var url = 'product-details.html?id=' + productId + '&fp=' + flashPrice + '&fid=' + flashSaleId + '&fsl=' + stockLeft;

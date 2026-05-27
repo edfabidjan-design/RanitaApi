@@ -1027,4 +1027,15 @@ catch (Exception ex) { Console.WriteLine("ProductPromoCodes error: " + ex.Messag
 
 
 
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""ProductPromoCodes"" ADD COLUMN IF NOT EXISTS ""Color"" TEXT NULL;");
+    Console.WriteLine("ProductPromoCodes.Color OK");
+}
+catch (Exception ex) { Console.WriteLine("ProductPromoCodes.Color error: " + ex.Message); }
+
+
 app.Run();
