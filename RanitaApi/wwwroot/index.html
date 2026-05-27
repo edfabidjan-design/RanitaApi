@@ -2101,21 +2101,32 @@
 
 
     <!-- ══ OFFRE SPÉCIALE PRODUIT ══════════════════════════════════ -->
-    <div id="productPromoSection" style="display:none;background:var(--dk);padding:32px 20px;">
+    <div id="productPromoSection" style="display:none;padding:32px 20px;background:var(--dk);">
         <div style="max-width:1280px;margin:0 auto;">
-            <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">🎯 Offre spéciale</div>
-            <div id="productPromoCard" style="background:linear-gradient(135deg,#1a0a2e,#2d1060);border-radius:20px;padding:28px;display:flex;align-items:center;gap:24px;cursor:pointer;transition:transform .2s;max-width:600px;"
-                 onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
-                <div id="productPromoImg" style="width:100px;height:100px;border-radius:14px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;overflow:hidden;">📦</div>
-                <div style="flex:1;min-width:0;">
-                    <div id="productPromoName" style="font-size:17px;font-weight:800;color:white;margin-bottom:10px;line-height:1.3;"></div>
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                        <div style="background:rgba(139,92,246,.3);border:1px solid rgba(139,92,246,.5);border-radius:10px;padding:8px 18px;">
-                            <span id="productPromoCode" style="font-size:16px;font-weight:800;color:#c4b5fd;letter-spacing:3px;"></span>
+            <div id="productPromoCard" style="position:relative;border-radius:20px;overflow:hidden;min-height:380px;cursor:pointer;display:flex;align-items:flex-end;"
+                 onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform='scale(1)'"
+                 style="transition:transform .3s;">
+
+                <!-- Image fond -->
+                <div id="productPromoBg" style="position:absolute;inset:0;background:linear-gradient(135deg,#1a0a2e,#2d1060);"></div>
+
+                <!-- Overlay dégradé -->
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.4) 50%,rgba(0,0,0,.1) 100%);z-index:1;"></div>
+
+                <!-- Badge réduction -->
+                <div id="productPromoDiscBadge" style="position:absolute;top:24px;right:24px;background:#8b5cf6;color:white;font-size:28px;font-weight:800;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 4px 20px rgba(139,92,246,.5);"></div>
+
+                <!-- Contenu bas -->
+                <div style="position:relative;z-index:2;padding:36px 40px;width:100%;">
+                    <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">🎯 Offre Spéciale</div>
+                    <div id="productPromoName" style="font-size:32px;font-weight:800;color:white;margin-bottom:16px;line-height:1.2;max-width:700px;text-shadow:0 2px 12px rgba(0,0,0,.5);"></div>
+                    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                        <div style="background:rgba(139,92,246,.25);border:2px solid rgba(139,92,246,.6);backdrop-filter:blur(8px);border-radius:12px;padding:12px 24px;">
+                            <span id="productPromoCode" style="font-size:22px;font-weight:800;color:#e9d5ff;letter-spacing:4px;"></span>
                         </div>
-                        <div id="productPromoDiscount" style="background:#8b5cf6;color:white;font-size:14px;font-weight:800;padding:8px 14px;border-radius:10px;"></div>
+                        <div style="font-size:15px;color:rgba(255,255,255,.75);">← Utilisez ce code au checkout</div>
                     </div>
-                    <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;" id="productPromoExpiry"></div>
+                    <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:12px;" id="productPromoExpiry"></div>
                 </div>
             </div>
         </div>
@@ -2468,18 +2479,26 @@
                 var section = document.getElementById('productPromoSection');
                 var card = document.getElementById('productPromoCard');
                 if (!section) return;
+
+                // Image en fond
+                var bg = document.getElementById('productPromoBg');
+                if (promo.productImage && bg) {
+                    bg.style.backgroundImage = 'url(' + promo.productImage + ')';
+                    bg.style.backgroundSize = 'cover';
+                    bg.style.backgroundPosition = 'center';
+                }
+
                 document.getElementById('productPromoName').textContent = promo.productName;
                 document.getElementById('productPromoCode').textContent = promo.code;
-                document.getElementById('productPromoDiscount').textContent = '-' + promo.discount + '%';
-                var img = document.getElementById('productPromoImg');
-                if (promo.productImage) {
-                    img.innerHTML = '<img src="' + promo.productImage + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">';
-                }
+                document.getElementById('productPromoDiscBadge').textContent = '-' + promo.discount + '%';
+
                 if (promo.endDate) {
                     var d = new Date(promo.endDate);
-                    document.getElementById('productPromoExpiry').textContent = '⏳ Valable jusqu\'au ' + d.toLocaleDateString('fr-FR');
+                    document.getElementById('productPromoExpiry').textContent = '⏳ Offre valable jusqu\'au ' + d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
                 }
+
                 card.onclick = function () { location.href = 'product-details.html?id=' + promo.productId; };
+                card.style.transition = 'transform .3s';
                 section.style.display = 'block';
             } catch (e) { }
         }
@@ -2607,7 +2626,7 @@
         }
 
 
-  
+
         window.addEventListener('pageshow', function (e) { if (e.persisted) { loadSiteSettings(); } });
         document.addEventListener('DOMContentLoaded', function () {
             loadSiteSettings();
