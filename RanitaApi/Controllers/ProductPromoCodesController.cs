@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Utilities.Collections;
 using RanitaApi.Data;
 using RanitaApi.Models;
-using System.Drawing;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+
+
 
 [ApiController]
 [Route("api/product-promo-codes")]
