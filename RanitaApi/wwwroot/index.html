@@ -2097,6 +2097,33 @@
         </div>
     </div>
 
+
+
+
+    <!-- ══ OFFRE SPÉCIALE PRODUIT ══════════════════════════════════ -->
+    <div id="productPromoSection" style="display:none;background:var(--dk);padding:32px 20px;">
+        <div style="max-width:1280px;margin:0 auto;">
+            <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">🎯 Offre spéciale</div>
+            <div id="productPromoCard" style="background:linear-gradient(135deg,#1a0a2e,#2d1060);border-radius:20px;padding:28px;display:flex;align-items:center;gap:24px;cursor:pointer;transition:transform .2s;max-width:600px;"
+                 onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div id="productPromoImg" style="width:100px;height:100px;border-radius:14px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;overflow:hidden;">📦</div>
+                <div style="flex:1;min-width:0;">
+                    <div id="productPromoName" style="font-size:17px;font-weight:800;color:white;margin-bottom:10px;line-height:1.3;"></div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <div style="background:rgba(139,92,246,.3);border:1px solid rgba(139,92,246,.5);border-radius:10px;padding:8px 18px;">
+                            <span id="productPromoCode" style="font-size:16px;font-weight:800;color:#c4b5fd;letter-spacing:3px;"></span>
+                        </div>
+                        <div id="productPromoDiscount" style="background:#8b5cf6;color:white;font-size:14px;font-weight:800;padding:8px 14px;border-radius:10px;"></div>
+                    </div>
+                    <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;" id="productPromoExpiry"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <!-- ══ 6. CATÉGORIES PHARES ══════════════════════════════════ -->
     <div class="big-cats-section">
         <div class="sec" style="padding-bottom:0;">
@@ -2430,6 +2457,34 @@
             } catch (e) { if (flashSection) flashSection.style.display = 'none'; }
         }
 
+
+
+
+        async function loadProductPromo() {
+            try {
+                var res = await fetch('/api/product-promo-codes/active');
+                var promo = await res.json();
+                if (!promo) return;
+                var section = document.getElementById('productPromoSection');
+                var card = document.getElementById('productPromoCard');
+                if (!section) return;
+                document.getElementById('productPromoName').textContent = promo.productName;
+                document.getElementById('productPromoCode').textContent = promo.code;
+                document.getElementById('productPromoDiscount').textContent = '-' + promo.discount + '%';
+                var img = document.getElementById('productPromoImg');
+                if (promo.productImage) {
+                    img.innerHTML = '<img src="' + promo.productImage + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">';
+                }
+                if (promo.endDate) {
+                    var d = new Date(promo.endDate);
+                    document.getElementById('productPromoExpiry').textContent = '⏳ Valable jusqu\'au ' + d.toLocaleDateString('fr-FR');
+                }
+                card.onclick = function () { location.href = 'product-details.html?id=' + promo.productId; };
+                section.style.display = 'block';
+            } catch (e) { }
+        }
+
+
         function goFlash(productId, flashPrice, flashSaleId, stockLeft, variantId) {
             var url = 'product-details.html?id=' + productId + '&fp=' + flashPrice + '&fid=' + flashSaleId + '&fsl=' + stockLeft;
             if (variantId !== null && variantId !== undefined && variantId !== 'null') url += '&fvid=' + variantId;
@@ -2552,8 +2607,13 @@
         }
 
 
-        document.addEventListener('DOMContentLoaded', function () { loadSiteSettings(); loadProducts(); });
+  
         window.addEventListener('pageshow', function (e) { if (e.persisted) { loadSiteSettings(); } });
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSiteSettings();
+            loadProducts();
+            loadProductPromo(); // ← AJOUTE
+        });
 
         async function loadCurrentEvent() {
             try {

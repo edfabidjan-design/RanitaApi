@@ -58,24 +58,75 @@ public class ProductPromoCodesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ProductPromoCode dto)
     {
-        _db.ProductPromoCodes.Add(dto);
-        await _db.SaveChangesAsync();
-        return Ok(new { success = true });
+        try
+        {
+            var code = new ProductPromoCode
+            {
+                Code = dto.Code.ToUpper(),
+                ProductId = dto.ProductId,
+                Discount = dto.Discount,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                IsActive = dto.IsActive,
+                CreatedAt = DateTime.UtcNow
+            };
+            _db.ProductPromoCodes.Add(code);
+            await _db.SaveChangesAsync();
+            return Ok(new { success = true, id = code.Id });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var codes = await _db.ProductPromoCodes.Include(p => p.Product).OrderByDescending(p => p.Id).ToListAsync();
-        return Ok(codes.Select(c => new {
-            c.Id,
-            c.Code,
-            c.Discount,
-            c.StartDate,
-            c.EndDate,
-            c.IsActive,
-            ProductName = c.Product.Name
-        }));
+        try
+        {
+            var codes = await _db.ProductPromoCodes
+                .Include(p => p.Product)
+                .OrderByDescending(p => p.Id)
+                .ToListAsync();
+            return Ok(codes.Select(c => new {
+                c.Id,
+                c.Code,
+                c.Discount,
+                c.StartDate,
+                c.EndDate,
+                c.IsActive,
+                c.ProductId,
+                ProductName = c.Product != null ? c.Product.Name : "—"
+            }));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] ProductPromoCode dto)
+    {
+        try
+        {
+            var code = await _db.ProductPromoCodes.FindAsync(id);
+            if (code == null) return NotFound();
+            code.Code = dto.Code.ToUpper();
+            code.ProductId = dto.ProductId;
+            code.Discount = dto.Discount;
+            code.StartDate = dto.StartDate;
+            code.EndDate = dto.EndDate;
+            code.IsActive = dto.IsActive;
+            await _db.SaveChangesAsync();
+            return Ok(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
