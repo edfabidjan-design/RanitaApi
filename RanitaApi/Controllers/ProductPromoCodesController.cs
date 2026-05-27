@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Utilities.Collections;
 using RanitaApi.Data;
 using RanitaApi.Models;
 
@@ -20,8 +19,11 @@ public class ProductPromoCodesController : ControllerBase
         {
             var now = DateTime.UtcNow;
             var result = await _db.Database.SqlQueryRaw<ProductPromoCodeDto>(@"
-                SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"",
-                       pr.""Name"" as ""ProductName"", pr.""ImageUrl"" as ""ProductImage"", pr.""Price"" as ""ProductPrice"" as p.""Color""
+// GetActive() — remplace le SELECT par :
+SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"",
+       pr.""Name"" as ""ProductName"", pr.""ImageUrl"" as ""ProductImage"", 
+       pr.""Price"" as ""ProductPrice"", p.""Color""
+
                 FROM ""ProductPromoCodes"" p
                 JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId""
                 WHERE p.""IsActive"" = TRUE
@@ -41,8 +43,10 @@ public class ProductPromoCodesController : ControllerBase
         try
         {
             var result = await _db.Database.SqlQueryRaw<ProductPromoCodeListDto>(@"
-                SELECT p.""Id"", p.""Code"", p.""Discount"", p.""StartDate"", p.""EndDate"", 
-                       p.""IsActive"", p.""ProductId"", pr.""Name"" as ""ProductName"" as p.""Color""
+// GetAll() — remplace le SELECT par :
+SELECT p.""Id"", p.""Code"", p.""Discount"", p.""StartDate"", p.""EndDate"", 
+       p.""IsActive"", p.""ProductId"", pr.""Name"" as ""ProductName"", p.""Color""
+
                 FROM ""ProductPromoCodes"" p
                 JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId""
                 ORDER BY p.""Id"" DESC
