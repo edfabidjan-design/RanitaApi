@@ -2159,21 +2159,21 @@
                 <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.4) 50%,rgba(0,0,0,.1) 100%);z-index:1;"></div>
 
                 <!-- Badge réduction -->
-                <div id="productPromoDiscBadge" style="position:absolute;top:24px;right:24px;background:#8b5cf6;color:white;font-size:28px;font-weight:800;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 4px 20px rgba(139,92,246,.5);"></div>
+                <div id="productPromoDiscBadge" style="position:absolute;top:24px;right:24px;background:#8b5cf6;color:white;font-size:28px;font-weight:800;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 4px 20px rgba(139,92,246,.5);">
 
-                <!-- Contenu bas -->
-                <div style="position:relative;z-index:2;padding:36px 40px;width:100%;">
-                    <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">🎯 Offre Spéciale</div>
-                    <div id="productPromoName" style="font-size:32px;font-weight:800;color:white;margin-bottom:16px;line-height:1.2;max-width:700px;text-shadow:0 2px 12px rgba(0,0,0,.5);"></div>
-                    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-                        <div style="background:rgba(139,92,246,.25);border:2px solid rgba(139,92,246,.6);backdrop-filter:blur(8px);border-radius:12px;padding:12px 24px;">
-                            <span id="productPromoCode" style="font-size:22px;font-weight:800;color:#e9d5ff;letter-spacing:4px;"></span>
+                    <!-- Contenu bas -->
+                    <div style="position:relative;z-index:2;padding:36px 40px;width:100%;">
+                        <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">🎯 Offre Spéciale</div>
+                        <div id="productPromoName" style="font-size:32px;font-weight:800;color:white;margin-bottom:16px;line-height:1.2;max-width:700px;text-shadow:0 2px 12px rgba(0,0,0,.5);"></div>
+                        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                            <div style="background:rgba(139,92,246,.25);border:2px solid rgba(139,92,246,.6);backdrop-filter:blur(8px);border-radius:12px;padding:12px 24px;">
+                                <span id="productPromoCode" style="font-size:22px;font-weight:800;color:#e9d5ff;letter-spacing:4px;"></span>
+                            </div>
+                            <div style="font-size:15px;color:rgba(255,255,255,.75);">← Utilisez ce code au checkout</div>
                         </div>
-                        <div style="font-size:15px;color:rgba(255,255,255,.75);">← Utilisez ce code au checkout</div>
+                        <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:12px;" id="productPromoExpiry"></div>
                     </div>
-                    <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:12px;" id="productPromoExpiry"></div>
                 </div>
-            </div>
         </div>
     </div>
 
@@ -2490,6 +2490,16 @@
                 var sales = await res.json();
                 if (!sales || !sales.length) { if (flashSection) flashSection.style.display = 'none'; return; }
                 if (flashSection) flashSection.style.display = 'block';
+
+                // Après la ligne section.style.display = 'block';
+                if (promo.color) {
+                    var c = promo.color.match(/#[a-fA-F0-9]{6}/g);
+                    var mainColor = c ? c[1] || c[0] : '#8b5cf6';
+                    document.getElementById('productPromoDiscBadge').style.background = mainColor;
+                    document.getElementById('productPromoDiscBadge').style.boxShadow = '0 4px 20px ' + mainColor + '80';
+                }
+
+
                 startFlashTimer(sales[0].endDate);
                 grid.innerHTML = sales.map(function (s) {
                     var p = s.product;
@@ -2541,6 +2551,13 @@
                 document.getElementById('productPromoName').textContent = promo.productName;
                 document.getElementById('productPromoCode').textContent = promo.code;
                 document.getElementById('productPromoDiscBadge').textContent = '-' + promo.discount + '%';
+
+                if (promo.color) {
+                    var c = promo.color.match(/#[a-fA-F0-9]{6}/g);
+                    var mainColor = c ? (c[1] || c[0]) : '#8b5cf6';
+                    document.getElementById('productPromoDiscBadge').style.background = mainColor;
+                    document.getElementById('productPromoDiscBadge').style.boxShadow = '0 4px 20px ' + mainColor + '80';
+                }
 
                 if (promo.endDate) {
                     var d = new Date(promo.endDate);
