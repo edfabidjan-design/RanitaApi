@@ -157,7 +157,7 @@
             padding: 14px 16px;
             display: grid;
             grid-template-columns: 80px 1fr auto auto;
-            align-items: center;
+            align-items: start;
             gap: 14px;
             margin-bottom: 10px;
             box-shadow: 0 1px 6px rgba(0,0,0,.05);
@@ -521,6 +521,26 @@
             justify-content: center;
             margin-top: -16px;
             box-shadow: 0 4px 16px rgba(16,185,129,.4);
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 1px 6px rgba(0,0,0,.05);
+            border: 1px solid var(--wb);
+            display: flex; /* AJOUTE */
+            flex-direction: column; /* AJOUTE */
+            gap: 8px; /* AJOUTE */
+        }
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: var(--w3);
+            flex-shrink: 0;
+            align-self: start; /* AJOUTE */
         }
 
         /* ── RESPONSIVE ── */
