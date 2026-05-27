@@ -93,26 +93,32 @@ public class ProductPromoCodesController : ControllerBase
         {
             var now = DateTime.UtcNow;
             var result = await _db.Database.SqlQueryRaw<ProductPromoCodeDto>(@"
-                SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"",
-                       pr.""Name"" as ""ProductName"", pr.""ImageUrl"" as ""ProductImage"", pr.""Price"" as ""ProductPrice""
-                FROM ""ProductPromoCodes"" p
-                JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId""
-                WHERE UPPER(p.""Code"") = UPPER({0}) AND p.""IsActive"" = TRUE
-                  AND (p.""StartDate"" IS NULL OR p.""StartDate"" <= {1})
-                  AND (p.""EndDate"" IS NULL OR p.""EndDate"" >= {1})
-            ", dto.Code, now).ToListAsync();
+            SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"",
+                   pr.""Name"" as ""ProductName"", pr.""ImageUrl"" as ""ProductImage"", 
+                   pr.""Price"" as ""ProductPrice"", p.""Color""
+            FROM ""ProductPromoCodes"" p
+            JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId""
+            WHERE UPPER(p.""Code"") = UPPER({0}) AND p.""IsActive"" = TRUE
+              AND (p.""StartDate"" IS NULL OR p.""StartDate"" <= {1})
+              AND (p.""EndDate"" IS NULL OR p.""EndDate"" >= {1})
+        ", dto.Code, now).ToListAsync();
+
             var code = result.FirstOrDefault();
             if (code == null) return Ok(new { valid = false, message = "Code invalide ou expiré" });
+
             bool inCart = dto.CartItems.Any(i => i.ProductId == code.ProductId);
             if (!inCart) return Ok(new { valid = false, message = "Ce code est valable uniquement pour " + code.ProductName });
-            decimal discountAmount = dto.CartItems.Where(i => i.ProductId == code.ProductId).Sum(i => i.Price * i.Quantity * code.Discount / 100m);
+
+            decimal discountAmount = dto.CartItems
+                .Where(i => i.ProductId == code.ProductId)
+                .Sum(i => i.Price * i.Quantity * code.Discount / 100m);
+
             return Ok(new { valid = true, discount = code.Discount, discountAmount, productId = code.ProductId, productName = code.ProductName });
         }
         catch (Exception ex) { return StatusCode(500, ex.Message); }
     }
-}
 
-public class ProductPromoCodeDto
+    public class ProductPromoCodeDto
 {
     public int Id { get; set; }
     public string Code { get; set; } = "";
