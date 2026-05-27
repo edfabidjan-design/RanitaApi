@@ -70,12 +70,8 @@ SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"",
         {
             var startDate = dto.StartDate.HasValue ? DateTime.SpecifyKind(dto.StartDate.Value, DateTimeKind.Utc) : (DateTime?)null;
             var endDate = dto.EndDate.HasValue ? DateTime.SpecifyKind(dto.EndDate.Value, DateTimeKind.Utc) : (DateTime?)null;
-            await _db.Database.ExecuteSqlRawAsync(@"
-
-    UPDATE ""ProductPromoCodes"" SET ""Code"" ={ 0}, ""ProductId"" ={ 1}, ""Discount"" ={ 2}, 
-    ""StartDate"" ={ 3}, ""EndDate"" ={ 4}, ""IsActive"" ={ 5}, ""Color"" ={ 6}
-            WHERE ""Id"" ={ 7}
-            ", dto.Code.ToUpper(), dto.ProductId, dto.Discount, (object?)startDate ?? DBNull.Value, (object?)endDate ?? DBNull.Value, dto.IsActive, (object?)dto.Color ?? DBNull.Value, id);
+            await _db.Database.ExecuteSqlRawAsync(@"UPDATE ""ProductPromoCodes"" SET ""Code""={0}, ""ProductId""={1}, ""Discount""={2}, ""StartDate""={3}, ""EndDate""={4}, ""IsActive""={5}, ""Color""={6} WHERE ""Id""={7}",
+                dto.Code.ToUpper(), dto.ProductId, dto.Discount, (object?)startDate ?? DBNull.Value, (object?)endDate ?? DBNull.Value, dto.IsActive, (object?)dto.Color ?? DBNull.Value, id);
             return Ok(new { success = true });
         }
         catch (Exception ex) { return StatusCode(500, ex.Message); }

@@ -1415,6 +1415,18 @@
             document.getElementById('ppc_product_display').innerHTML = `<div style="font-size:14px;font-weight:700;color:#111827;">${p.productName}</div>`;
             document.getElementById('ppcForm').classList.add('open');
             document.getElementById('ppcForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('ppcPreview').style.display = 'block';
+            document.getElementById('ppcPreviewName').textContent = p.productName || '';
+            document.getElementById('ppcPreviewCode').textContent = p.code;
+            document.getElementById('ppcPreviewDiscount').textContent = '-' + p.discount + '%';
+            // Restaurer couleur
+            if (p.color) {
+                document.getElementById('ppc_color').value = p.color;
+                document.querySelectorAll('#ppcColorRow div[data-c]').forEach(c => {
+                    c.style.borderColor = c.dataset.c === p.color ? '#10b981' : 'transparent';
+                });
+                document.getElementById('ppcPreview').querySelector('[style*="linear-gradient"]').style.background = p.color;
+            }
         }
 
         async function ppcToggle(id) {
