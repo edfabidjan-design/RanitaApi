@@ -2911,7 +2911,7 @@
 
         async function initPromoPopup() {
             // Une seule fois par session
-            if (sessionStorage.getItem('ranita_popup_shown')) return;
+           // if (sessionStorage.getItem('ranita_popup_shown')) return;
 
             try {
                 var res = await fetch('/api/product-promo-codes/active');
@@ -2967,7 +2967,7 @@
                     overlay.style.opacity = '0';
                     overlay.style.transition = 'opacity .4s';
                     setTimeout(function () { overlay.style.opacity = '1'; }, 10);
-                    sessionStorage.setItem('ranita_popup_shown', '1');
+                   // sessionStorage.setItem('ranita_popup_shown', '1');
                 }, 4000);
 
             } catch (e) { }
