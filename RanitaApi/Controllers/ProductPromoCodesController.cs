@@ -119,37 +119,38 @@ public class ProductPromoCodesController : ControllerBase
     }
 
     public class ProductPromoCodeDto
-{
-    public int Id { get; set; }
-    public string Code { get; set; } = "";
-    public int Discount { get; set; }
-    public DateTime? EndDate { get; set; }
-    public int ProductId { get; set; }
-    public string ProductName { get; set; } = "";
-    public string ProductImage { get; set; } = "";
-    public decimal ProductPrice { get; set; }
-    public string? Color { get; set; }
+    {
+        public int Id { get; set; }
+        public string Code { get; set; } = "";
+        public int Discount { get; set; }
+        public DateTime? EndDate { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = "";
+        public string ProductImage { get; set; } = "";
+        public decimal ProductPrice { get; set; }
+        public string? Color { get; set; }
+    }
+    public class ProductPromoCodeListDto
+    {
+        public int Id { get; set; }
+        public string Code { get; set; } = "";
+        public int Discount { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public bool IsActive { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = "";
+    }
+    public class ProductPromoCodeInput
+    {
+        public string Code { get; set; } = "";
+        public int ProductId { get; set; }
+        public int Discount { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public bool IsActive { get; set; } = true;
+        public string? Color { get; set; }
+    }
+    public class ValidatePromoDto { public string Code { get; set; } = ""; public List<CartItemDto> CartItems { get; set; } = new(); }
+    public class CartItemDto { public int ProductId { get; set; } public decimal Price { get; set; } public int Quantity { get; set; } }
 }
-public class ProductPromoCodeListDto
-{
-    public int Id { get; set; }
-    public string Code { get; set; } = "";
-    public int Discount { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public bool IsActive { get; set; }
-    public int ProductId { get; set; }
-    public string ProductName { get; set; } = "";
-}
-public class ProductPromoCodeInput
-{
-    public string Code { get; set; } = "";
-    public int ProductId { get; set; }
-    public int Discount { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public bool IsActive { get; set; } = true;
-    public string? Color { get; set; }
-}
-public class ValidatePromoDto { public string Code { get; set; } = ""; public List<CartItemDto> CartItems { get; set; } = new(); }
-public class CartItemDto { public int ProductId { get; set; } public decimal Price { get; set; } public int Quantity { get; set; } }
