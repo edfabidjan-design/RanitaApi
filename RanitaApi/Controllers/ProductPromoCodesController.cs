@@ -18,20 +18,7 @@ public class ProductPromoCodesController : ControllerBase
         try
         {
             var now = DateTime.UtcNow;
-            var result = await _db.Database.SqlQueryRaw<ProductPromoCodeDto>(@"
-// GetActive() — remplace le SELECT par :
-SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"",
-       pr.""Name"" as ""ProductName"", pr.""ImageUrl"" as ""ProductImage"", 
-       pr.""Price"" as ""ProductPrice"", p.""Color""
-
-                FROM ""ProductPromoCodes"" p
-                JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId""
-                WHERE p.""IsActive"" = TRUE
-                  AND (p.""StartDate"" IS NULL OR p.""StartDate"" <= {0})
-                  AND (p.""EndDate"" IS NULL OR p.""EndDate"" >= {0})
-                ORDER BY p.""Id"" DESC
-                LIMIT 1
-            ", now).ToListAsync();
+            var result = await _db.Database.SqlQueryRaw<ProductPromoCodeDto>(@"SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"", pr.""Name"" as ""ProductName"", pr.""ImageUrl"" as ""ProductImage"", pr.""Price"" as ""ProductPrice"", p.""Color"" FROM ""ProductPromoCodes"" p JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId"" WHERE p.""IsActive"" = TRUE AND (p.""StartDate"" IS NULL OR p.""StartDate"" <= {0}) AND (p.""EndDate"" IS NULL OR p.""EndDate"" >= {0}) ORDER BY p.""Id"" DESC LIMIT 1", now).ToListAsync();
             return Ok(result.FirstOrDefault());
         }
         catch (Exception ex) { return StatusCode(500, ex.Message); }
