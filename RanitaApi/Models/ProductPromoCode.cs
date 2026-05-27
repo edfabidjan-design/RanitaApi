@@ -13,5 +13,6 @@ public class ProductPromoCode
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public bool IsActive { get; set; } = true;
+    public string? Color { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
