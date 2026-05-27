@@ -38,7 +38,7 @@
             overflow-x: hidden;
         }
 
-        /* ── HEADER DESKTOP ── */
+        /* HEADER DESKTOP */
         .site-header {
             position: fixed;
             top: 0;
@@ -84,7 +84,7 @@
                     color: var(--g);
                 }
 
-        /* ── HEADER MOBILE ── */
+        /* HEADER MOBILE */
         .mob-header {
             display: none;
             position: fixed;
@@ -125,7 +125,7 @@
                 height: 22px;
             }
 
-        /* ── LAYOUT ── */
+        /* LAYOUT */
         .cart-page {
             max-width: 960px;
             margin: 0 auto;
@@ -150,14 +150,13 @@
             border-radius: 999px;
         }
 
-        /* ── ITEM PANIER ── */
-        /* ── ITEM PANIER ── */
+        /* ITEM PANIER */
         .cart-item {
             background: white;
             border-radius: 14px;
             padding: 14px 16px;
             display: grid;
-            grid-template-columns: 90px 1fr auto auto; /* 80 → 90 */
+            grid-template-columns: 90px 1fr auto auto;
             align-items: start;
             gap: 14px;
             margin-bottom: 10px;
@@ -166,21 +165,18 @@
             transition: box-shadow .2s;
         }
 
-        .cart-item-img {
-            width: 90px; /* 80 → 90 */
-            height: 90px;
-            object-fit: cover;
-            border-radius: 10px;
-            background: var(--w3);
-            flex-shrink: 0;
-            align-self: start;
-        }
-
             .cart-item:hover {
                 box-shadow: 0 4px 16px rgba(0,0,0,.08);
             }
 
-
+        .cart-item-img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: var(--w3);
+            display: block;
+        }
 
         .cart-info {
             min-width: 0;
@@ -191,14 +187,12 @@
                 font-weight: 700;
                 margin-bottom: 4px;
                 line-height: 1.35;
-                /* Tronquer le nom long */
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
 
-        /* Variante — pill propre au lieu de texte brut vert */
         .cart-variant {
             display: inline-flex;
             align-items: center;
@@ -210,8 +204,6 @@
             border: 1px solid #a7f3d0;
             padding: 2px 8px;
             border-radius: 6px;
-            margin-bottom: 5px;
-            max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -221,6 +213,7 @@
             font-size: 12px;
             color: var(--t2);
             margin-bottom: 2px;
+            margin-top: 4px;
         }
 
         .cart-subtotal {
@@ -229,7 +222,7 @@
             color: var(--t);
         }
 
-        /* Contrôles quantité */
+        /* Quantité */
         .qty-controls {
             display: flex;
             align-items: center;
@@ -265,7 +258,7 @@
             font-weight: 700;
         }
 
-        /* Bouton supprimer */
+        /* Supprimer */
         .btn-remove {
             background: none;
             border: none;
@@ -286,7 +279,7 @@
                 color: var(--red);
             }
 
-        /* ── BANNIÈRES LIVRAISON ── */
+        /* BANNIÈRES */
         .shipping-banner {
             background: #f0fdf4;
             border: 1px solid #a7f3d0;
@@ -324,8 +317,14 @@
             transition: width .5s;
         }
 
-        /* ── RÉCAPITULATIF ── */
-
+        /* RÉCAP */
+        .cart-summary {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 1px 6px rgba(0,0,0,.05);
+            border: 1px solid var(--wb);
+        }
 
         .summary-row {
             display: flex;
@@ -333,13 +332,9 @@
             align-items: center;
             font-size: 14px;
             color: var(--t2);
-            padding: 4px 0; /* remplace margin-bottom:10px */
+            padding: 6px 0;
+            border-bottom: 1px solid var(--w3);
         }
-
-            .summary-row span:last-child {
-                font-weight: 600;
-                color: var(--t);
-            }
 
         .summary-total {
             display: flex;
@@ -348,9 +343,7 @@
             font-size: 20px;
             font-weight: 800;
             color: var(--t);
-            padding-top: 12px;
-            border-top: 2px solid var(--w3);
-            margin-bottom: 18px;
+            padding: 14px 0 18px;
         }
 
         .btn-checkout {
@@ -377,7 +370,6 @@
                 transform: translateY(-1px);
             }
 
-        /* WhatsApp commander */
         .btn-wa-order {
             display: flex;
             align-items: center;
@@ -434,7 +426,7 @@
                 color: var(--g);
             }
 
-        /* Panier vide */
+        /* PANIER VIDE */
         .empty-cart {
             text-align: center;
             padding: 60px 20px;
@@ -470,7 +462,7 @@
                 background: var(--gd);
             }
 
-        /* ── NAV MOBILE BAS ── */
+        /* NAV MOBILE BAS */
         .mob-nav {
             display: none;
             position: fixed;
@@ -526,27 +518,7 @@
             box-shadow: 0 4px 16px rgba(16,185,129,.4);
         }
 
-        .cart-summary {
-            background: white;
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: 0 1px 6px rgba(0,0,0,.05);
-            border: 1px solid var(--wb);
-            display: flex; /* AJOUTE */
-            flex-direction: column; /* AJOUTE */
-            gap: 8px; /* AJOUTE */
-        }
-        .cart-item-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 10px;
-            background: var(--w3);
-            flex-shrink: 0;
-            align-self: start; /* AJOUTE */
-        }
-
-        /* ── RESPONSIVE ── */
+        /* RESPONSIVE */
         @media(max-width: 768px) {
             .site-header {
                 display: none;
@@ -573,45 +545,31 @@
             }
 
             .cart-item {
-                grid-template-columns: 90px 1fr auto auto; /* 80px → 90px */
-                align-items: start;
+                grid-template-columns: 80px 1fr auto;
+                grid-template-rows: auto auto;
+                gap: 10px;
             }
 
             .cart-item-img {
-                width: 90px; /* 80px → 90px */
-                height: 90px;
-                object-fit: cover;
-                border-radius: 10px;
-                background: var(--w3);
-                align-self: start;
-            }
-
-            /* Quantité + supprimer sur la 2e ligne */
-            .qty-controls {
-                grid-column: 2;
-                justify-self: start;
-            }
-
-            .btn-remove {
-                grid-column: 2;
-                justify-self: end;
-                grid-row: 2;
-            }
-
-            /* Réorganise les éléments */
-            .cart-item-img {
+                width: 80px;
+                height: 80px;
                 grid-row: 1 / 3;
             }
 
             .cart-info {
-                grid-column: 2;
+                grid-column: 2 / 4;
             }
 
-            .cart-item-actions {
+            .qty-controls {
                 grid-column: 2;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                grid-row: 2;
+                justify-self: start;
+            }
+
+            .btn-remove {
+                grid-column: 3;
+                grid-row: 2;
+                justify-self: end;
             }
 
             .cart-summary {
@@ -646,7 +604,6 @@
 </head>
 <body>
 
-    <!-- ── HEADER DESKTOP ── -->
     <header class="site-header">
         <a href="index.html" class="site-logo">🛒 Ranita<span>Market</span></a>
         <nav>
@@ -655,7 +612,6 @@
         </nav>
     </header>
 
-    <!-- ── HEADER MOBILE ── -->
     <nav class="mob-header">
         <a href="index.html" class="mob-logo">🛒 Ranita<span>Market</span></a>
         <a href="products.html" class="mob-icon">
@@ -666,7 +622,6 @@
         </a>
     </nav>
 
-    <!-- ── CONTENU ── -->
     <main class="cart-page">
         <div class="cart-title">
             🛒 Mon panier
@@ -676,7 +631,6 @@
         <div id="cartSummary"></div>
     </main>
 
-    <!-- ── NAV MOBILE BAS ── -->
     <nav class="mob-nav">
         <div class="mob-nav-inner">
             <a href="index.html" class="mob-nav-item">
@@ -707,7 +661,6 @@
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         let freeShippingThreshold = 15000;
 
-        // Mise à jour badge titre
         function updateBadge() {
             var total = cart.reduce(function (s, i) { return s + (i.quantity || i.qty || 1); }, 0);
             var b = document.getElementById('cartCountBadge');
@@ -723,9 +676,7 @@
                 var ps = s.promo_bar_start ? new Date(s.promo_bar_start) : null;
                 var pe = s.promo_bar_end ? new Date(s.promo_bar_end) : null;
                 var hide = s.promo_bar_hide === 'true';
-                var notStarted = ps && today < ps;
-                var expired = pe && today > pe;
-                if (hide || notStarted || expired) {
+                if (hide || (ps && today < ps) || (pe && today > pe)) {
                     freeShippingThreshold = 999999999;
                 } else {
                     freeShippingThreshold = parseInt(s.free_shipping_threshold) || 15000;
@@ -736,18 +687,9 @@
 
         function buildWaMessage(total) {
             var lines = cart.map(function (item) {
-                return '📦 ' + item.name +
-                    (item.variant ? ' (' + item.variant + ')' : '') +
-                    ' x' + (item.quantity || item.qty || 1) +
-                    ' = ' + Number(item.price * (item.quantity || item.qty || 1)).toLocaleString('fr-FR') + ' FCFA';
+                return '📦 ' + item.name + (item.variant ? ' (' + item.variant + ')' : '') + ' x' + (item.quantity || item.qty || 1) + ' = ' + Number(item.price * (item.quantity || item.qty || 1)).toLocaleString('fr-FR') + ' FCFA';
             });
-            return encodeURIComponent(
-                'Bonjour Ranita Market 👋\n\n' +
-                'Je voudrais commander :\n\n' +
-                lines.join('\n') + '\n\n' +
-                '💰 Total : ' + Number(total).toLocaleString('fr-FR') + ' FCFA\n\n' +
-                'Pouvez-vous confirmer la disponibilité et la livraison ?'
-            );
+            return encodeURIComponent('Bonjour Ranita Market 👋\n\nJe voudrais commander :\n\n' + lines.join('\n') + '\n\n💰 Total : ' + Number(total).toLocaleString('fr-FR') + ' FCFA\n\nPouvez-vous confirmer la disponibilité et la livraison ?');
         }
 
         function renderCart() {
@@ -756,12 +698,7 @@
             updateBadge();
 
             if (cart.length === 0) {
-                container.innerHTML =
-                    '<div class="empty-cart">' +
-                    '<div class="empty-icon">🛒</div>' +
-                    '<p>Votre panier est vide.</p>' +
-                    '<a href="products.html" class="btn-shop">Voir les produits</a>' +
-                    '</div>';
+                container.innerHTML = '<div class="empty-cart"><div class="empty-icon">🛒</div><p>Votre panier est vide.</p><a href="products.html" class="btn-shop">Voir les produits</a></div>';
                 summary.innerHTML = "";
                 return;
             }
@@ -775,33 +712,33 @@
                 totalItems += qty;
                 var imgUrl = (item.imageUrl || '').split(',')[0].trim();
 
-                // Variante : affichage propre, tronqué si trop long
                 var variantParts = item.variant ? item.variant.split(' / ') : [];
                 var visibleParts = variantParts.slice(0, 2);
-                var remaining = variantParts.length - 2;
+                var extraCount = variantParts.length - 2;
                 var variantHTML = variantParts.length
-                    ? visibleParts.map(function (v) {
-                        return '<span class="cart-variant">' + v.trim() + '</span>';
-                    }).join(' ') + (remaining > 0 ? ' <span class="cart-variant" style="background:#f3f4f6;color:#6b7280;border-color:#e5e7eb;">+' + remaining + '</span>' : '')
+                    ? '<div style="display:flex;flex-wrap:wrap;gap:4px;margin:4px 0;">'
+                    + visibleParts.map(function (v) { return '<span class="cart-variant">' + v.trim() + '</span>'; }).join('')
+                    + (extraCount > 0 ? '<span class="cart-variant" style="background:#f3f4f6;color:#6b7280;border-color:#e5e7eb;">+' + extraCount + '</span>' : '')
+                    + '</div>'
                     : '';
 
-                return '<div class="cart-item">' +
-                    '<img class="cart-item-img" src="' + imgUrl + '" alt="' + item.name + '" onerror="this.src=\'https://via.placeholder.com/80\'">' +
-                    '<div class="cart-info">' +
-                    '<h3>' + item.name + '</h3>' +
-                    (variantHTML ? '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;">' + variantHTML + '</div>' : '') +
-                    '<div class="cart-price">' + Number(item.price).toLocaleString('fr-FR') + ' FCFA / unité</div>' +
-                    '<div class="cart-subtotal">' + Number(subtotal).toLocaleString('fr-FR') + ' FCFA</div>' +
-                    '</div>' +
-                    '<div class="qty-controls">' +
-                    '<button class="qty-btn" onclick="changeQty(\'' + (item.cartKey || item.id) + '\', -1)">−</button>' +
-                    '<span class="qty-num">' + qty + '</span>' +
-                    '<button class="qty-btn" onclick="changeQty(\'' + (item.cartKey || item.id) + '\', 1)">+</button>' +
-                    '</div>' +
-                    '<button class="btn-remove" onclick="removeItem(\'' + (item.cartKey || item.id) + '\')" title="Supprimer">' +
-                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>' +
-                    '</button>' +
-                    '</div>';
+                return '<div class="cart-item">'
+                    + '<img class="cart-item-img" src="' + imgUrl + '" alt="' + item.name + '" onerror="this.src=\'https://via.placeholder.com/90\'">'
+                    + '<div class="cart-info">'
+                    + '<h3>' + item.name + '</h3>'
+                    + variantHTML
+                    + '<div class="cart-price">' + Number(item.price).toLocaleString('fr-FR') + ' FCFA / unité</div>'
+                    + '<div class="cart-subtotal">' + Number(subtotal).toLocaleString('fr-FR') + ' FCFA</div>'
+                    + '</div>'
+                    + '<div class="qty-controls">'
+                    + '<button class="qty-btn" onclick="changeQty(\'' + (item.cartKey || item.id) + '\', -1)">−</button>'
+                    + '<span class="qty-num">' + qty + '</span>'
+                    + '<button class="qty-btn" onclick="changeQty(\'' + (item.cartKey || item.id) + '\', 1)">+</button>'
+                    + '</div>'
+                    + '<button class="btn-remove" onclick="removeItem(\'' + (item.cartKey || item.id) + '\')" title="Supprimer">'
+                    + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>'
+                    + '</button>'
+                    + '</div>';
             }).join('');
 
             var isFree = total >= freeShippingThreshold;
@@ -819,17 +756,16 @@
 
             var waMsg = buildWaMessage(total);
 
-            summary.innerHTML =
-                shippingBanner +
-                '<div class="cart-summary">' +
-                '<div class="summary-row"><span>Articles (' + totalItems + ')</span><span>' + Number(total).toLocaleString('fr-FR') + ' F</span></div>' +
-                '<div class="summary-row"><span>🚚 Livraison</span><span style="color:' + (isFree ? '#10b981' : '#6b7280') + ';font-weight:' + (isFree ? '700' : '400') + ';">' + (isFree ? '🎉 Gratuite' : 'Calculée selon votre zone') + '</span></div>' +
-                '<div class="summary-total"><span>Sous-total</span><span>' + Number(total).toLocaleString('fr-FR') + ' F</span></div>' +
-                '<a href="checkout.html" class="btn-checkout">✅ Passer la commande</a>' +
-                '<a href="https://wa.me/2250585171297?text=' + waMsg + '" target="_blank" class="btn-wa-order">📲 Commander via WhatsApp</a>' +
-                '<button onclick="clearCart()" class="btn-clear">🗑 Vider le panier</button>' +
-                '<a href="products.html" class="btn-continue">← Continuer les achats</a>' +
-                '</div>';
+            summary.innerHTML = shippingBanner
+                + '<div class="cart-summary">'
+                + '<div class="summary-row"><span>Articles (' + totalItems + ')</span><span>' + Number(total).toLocaleString('fr-FR') + ' F</span></div>'
+                + '<div class="summary-row"><span>🚚 Livraison</span><span style="color:' + (isFree ? '#10b981' : '#6b7280') + ';font-weight:' + (isFree ? '700' : '400') + ';">' + (isFree ? '🎉 Gratuite' : 'Calculée selon votre zone') + '</span></div>'
+                + '<div class="summary-total"><span>Sous-total</span><span>' + Number(total).toLocaleString('fr-FR') + ' F</span></div>'
+                + '<a href="checkout.html" class="btn-checkout">✅ Passer la commande</a>'
+                + '<a href="https://wa.me/2250585171297?text=' + waMsg + '" target="_blank" class="btn-wa-order">📲 Commander via WhatsApp</a>'
+                + '<button onclick="clearCart()" class="btn-clear">🗑 Vider le panier</button>'
+                + '<a href="products.html" class="btn-continue">← Continuer les achats</a>'
+                + '</div>';
 
             localStorage.setItem('cartTotal', total);
             localStorage.setItem('freeShipping', isFree ? '1' : '0');
@@ -868,7 +804,6 @@
 
         loadShippingSettings();
     </script>
-
     <script src="/whatsapp-widget.js"></script>
 </body>
 </html>
