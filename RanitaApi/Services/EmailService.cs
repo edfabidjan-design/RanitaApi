@@ -222,7 +222,8 @@ namespace RanitaApi.Services
         public async Task SendOrderConfirmationToClientAsync(
             string toEmail, string clientName, int orderId,
             decimal total, List<OrderItem> items,
-            decimal shippingFee = 0, decimal referralCreditUsed = 0)
+            decimal shippingFee = 0, decimal referralCreditUsed = 0,
+            decimal promoDiscount = 0, string? promoCode = null)
         {
             var subtotal = items.Sum(i => i.Price * i.Quantity);
             var shippingLabel = shippingFee == 0 ? "🎉 Gratuite !" : shippingFee.ToString("N0") + " FCFA";
@@ -231,6 +232,12 @@ namespace RanitaApi.Services
             <span>🎁 Crédit parrainage</span>
             <span>- {referralCreditUsed.ToString("N0")} FCFA</span>
         </div>" : "";
+
+            var promoLine = promoDiscount > 0 ? $@"
+    <div style='display:flex;justify-content:space-between;font-size:14px;padding:4px 0;color:#10b981;font-weight:700;'>
+        <span>🎟️ Code promo{(promoCode != null ? $" ({promoCode})" : "")}</span>
+        <span>- {promoDiscount.ToString("N0")} FCFA</span>
+    </div>" : "";
 
             var itemsHtml = string.Join("", items.Select(i => $@"
         <tr>
@@ -276,6 +283,7 @@ namespace RanitaApi.Services
             <span>{shippingLabel}</span>
         </div>
         {referralLine}
+        {promoLine}
         <div style='display:flex;justify-content:space-between;font-size:16px;font-weight:800;padding-top:8px;margin-top:4px;border-top:1px solid #f3f4f6;'>
             <span>Total</span>
             <span style='color:#10b981;'>{total.ToString("N0")} FCFA</span>
