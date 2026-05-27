@@ -958,10 +958,15 @@
         var PROMO_CODE_ID = null;
 
         async function applyPromo() {
-            var code = document.getElementById('promoInput').value.trim();
+            var code = document.getElementById('promoInput').value.trim().toUpperCase();
             var msg = document.getElementById('promoMsg');
             if (!code) return;
-            var subtotal = cart.reduce(function (s, i) { return s + i.price * (i.quantity || 1); }, 0);
+
+            var subtotal = cart.reduce(function (s, i) {
+                return s + i.price * (i.quantity || 1);
+            }, 0);
+
+            // Essayer d'abord les codes promo généraux
             try {
                 var res = await fetch('/api/promo/apply', {
                     method: 'POST',
@@ -969,18 +974,45 @@
                     body: JSON.stringify({ code: code, orderTotal: subtotal })
                 });
                 var data = await res.json();
-                if (!res.ok) {
-                    msg.textContent = '❌ ' + data.message;
-                    msg.style.color = '#ef4444';
-                    PROMO_DISCOUNT = 0; PROMO_CODE_ID = null;
-                } else {
+                if (res.ok && data.discount) {
                     PROMO_DISCOUNT = data.discount;
                     PROMO_CODE_ID = data.codeId;
-                    msg.textContent = '✅ Code appliqué ! -' + Number(data.discount).toLocaleString('fr-FR') + ' FCFA';
+                    msg.textContent = '✅ Code appliqué ! -' + Number(data.discount).toLocaleString('fr-FR') + ' F';
                     msg.style.color = '#10b981';
+                    updateTotals();
+                    return;
                 }
-                updateTotals();
-            } catch (e) { msg.textContent = '❌ Erreur réseau'; msg.style.color = '#ef4444'; }
+            } catch (e) { }
+
+            // Essayer ensuite les codes promo produit
+            try {
+                var cartItems = cart.map(function (i) {
+                    return { productId: i.id, price: i.price, quantity: i.quantity || 1 };
+                });
+                var res2 = await fetch('/api/product-promo-codes/validate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code, cartItems: cartItems })
+                });
+                var data2 = await res2.json();
+                if (data2.valid) {
+                    PROMO_DISCOUNT = data2.discountAmount;
+                    PROMO_CODE_ID = null;
+                    msg.textContent = '✅ Code produit appliqué ! -' + Number(data2.discountAmount).toLocaleString('fr-FR') + ' F sur ' + data2.productName;
+                    msg.style.color = '#10b981';
+                    updateTotals();
+                    return;
+                } else {
+                    msg.textContent = '❌ ' + (data2.message || 'Code invalide');
+                    msg.style.color = '#ef4444';
+                    PROMO_DISCOUNT = 0;
+                    PROMO_CODE_ID = null;
+                    updateTotals();
+                }
+            } catch (e) {
+                msg.textContent = '❌ Erreur réseau';
+                msg.style.color = '#ef4444';
+            }
         }
 
 
