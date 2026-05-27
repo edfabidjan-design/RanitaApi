@@ -2894,12 +2894,12 @@
         function closePromoToast() {
             var t = document.getElementById('promoToast');
             if (t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(function () { t.style.display = 'none'; }, 400); }
-            localStorage.setItem('promoToastSeen', Date.now());
+            localStorage.setItem('promoToastSeen_home', Date.now());
         }
         function showPromoToastMobile(s) {
             if (window.innerWidth > 768) return;
-            var seen = localStorage.getItem('promoToastSeen');
-            if (seen && (Date.now() - seen) < 86400000) return; // 24h
+            var seen = localStorage.getItem('promoToastSeen_home');
+            if (seen && (Date.now() - seen) < 86400000) return;
 
             var text = s.promo_bar_fallback || s.promo_bar_text || '';
             if (!text) return;

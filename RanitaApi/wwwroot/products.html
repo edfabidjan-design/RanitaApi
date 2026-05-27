@@ -868,12 +868,12 @@
         function closePromoToast() {
             var t = document.getElementById('promoToast');
             if (t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(function () { t.style.display = 'none'; }, 400); }
-            localStorage.setItem('promoToastSeen', Date.now());
+            localStorage.setItem('promoToastSeen_products', Date.now());
         }
         (function () {
             if (window.innerWidth > 768) return;
-            var seen = localStorage.getItem('promoToastSeen');
-            if (seen && (Date.now() - seen) < 86400000) return; // 24h
+            var seen = localStorage.getItem('promoToastSeen_products');
+            if (seen && (Date.now() - seen) < 86400000) return;
 
             fetch('/api/site-settings').then(function (r) { return r.json(); }).then(function (s) {
                 var text = s.promo_bar_fallback || s.promo_bar_text || '';
