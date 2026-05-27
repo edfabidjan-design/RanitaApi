@@ -2541,12 +2541,27 @@
                 document.getElementById('productPromoCode').textContent = promo.code;
                 document.getElementById('productPromoDiscBadge').textContent = '-' + promo.discount + '%';
 
+                // Extraire la couleur principale
+                var mainColor = '#8b5cf6';
                 if (promo.color) {
                     var c = promo.color.match(/#[a-fA-F0-9]{6}/g);
-                    var mainColor = c ? (c[1] || c[0]) : '#8b5cf6';
-                    document.getElementById('productPromoDiscBadge').style.background = mainColor;
-                    document.getElementById('productPromoDiscBadge').style.boxShadow = '0 4px 20px ' + mainColor + '80';
+                    mainColor = c ? (c[1] || c[0]) : '#8b5cf6';
                 }
+
+                // Badge -25%
+                document.getElementById('productPromoDiscBadge').style.background = mainColor;
+                document.getElementById('productPromoDiscBadge').style.boxShadow = '0 4px 20px ' + mainColor + '80';
+
+                // Fond + bordure code promo
+                var codeBox = document.querySelector('#productPromoCard [style*="backdrop-filter"]');
+                if (codeBox) {
+                    codeBox.style.background = mainColor + '30';
+                    codeBox.style.borderColor = mainColor;
+                }
+
+                // Label Offre Spéciale
+                var label = document.querySelector('#productPromoCard [style*="letter-spacing:1.5px"]');
+                if (label) label.style.color = mainColor;
 
                 if (promo.endDate) {
                     var d = new Date(promo.endDate);
