@@ -1982,6 +1982,51 @@
                 padding: 4px;
             }
         }
+
+
+
+        /* ── OFFRE SPÉCIALE RESPONSIVE ── */
+        @media(max-width:768px) {
+            #productPromoSection {
+                padding: 16px 12px !important;
+            }
+
+            #productPromoCard {
+                min-height: 320px !important;
+                border-radius: 14px !important;
+            }
+
+                #productPromoCard [style*="font-size:32px"] {
+                    font-size: 20px !important;
+                }
+
+                #productPromoCard [style*="font-size:22px"] {
+                    font-size: 16px !important;
+                    letter-spacing: 2px !important;
+                }
+
+                #productPromoCard [style*="padding:36px 40px"] {
+                    padding: 20px 18px !important;
+                }
+
+            #productPromoDiscBadge {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 18px !important;
+                top: 14px !important;
+                right: 14px !important;
+            }
+        }
+
+        @media(max-width:480px) {
+            #productPromoCard {
+                min-height: 280px !important;
+            }
+
+                #productPromoCard [style*="font-size:32px"] {
+                    font-size: 17px !important;
+                }
+        }
     </style>
 </head>
 <body>
@@ -2103,7 +2148,7 @@
     <!-- ══ OFFRE SPÉCIALE PRODUIT ══════════════════════════════════ -->
     <div id="productPromoSection" style="display:none;padding:32px 20px;background:var(--dk);">
         <div style="max-width:1280px;margin:0 auto;">
-            <div id="productPromoCard" style="position:relative;border-radius:20px;overflow:hidden;min-height:460px;cursor:pointer;display:flex;align-items:flex-end;"
+            <div id="productPromoCard" style="position:relative;border-radius:20px;overflow:hidden;min-height:460px;cursor:pointer;display:flex;align-items:flex-end;transition:transform .3s;"
                  onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform='scale(1)'"
                  style="transition:transform .3s;">
 
