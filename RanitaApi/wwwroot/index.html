@@ -1989,9 +1989,9 @@
     <!-- ══ BARRE PROMO (desktop uniquement) ════════════════════ -->
     <div class="promo-bar" id="promoBar">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
-            <span class="promo-bar-pill" id="promoBarPill">🎟️ PROMO</span>
-            <span id="promoBarText">Livraison gratuite dès 15 000 F · Abidjan en 24h · Paiement à la livraison</span>
-            <a href="products.html" id="promoBarLink" style="color:var(--g);font-weight:700;white-space:nowrap;">Voir les offres →</a>
+            <span class="promo-bar-pill" id="promoBarPill" style="display:none;"></span>
+            <span id="promoBarText" style="display:none;"></span>
+            <a href="products.html" id="promoBarLink" style="color:var(--g);font-weight:700;white-space:nowrap;display:none;"></a>
         </div>
         <button class="promo-bar-close" onclick="closePromoBar()">×</button>
     </div>
@@ -2493,6 +2493,9 @@
 
                 if (campaignActive) {
                     if (pill) pill.textContent = '🎟️ PROMO';
+                    if (pill) pill.style.display = 'inline-flex';
+                    if (barText) barText.style.display = 'inline';
+                    if (barLink) barLink.style.display = 'inline';
                     if (barText && s.promo_bar_text) barText.textContent = s.promo_bar_text;
                     if (barLink && s.promo_bar_link) {
                         barLink.href = s.promo_bar_link;
