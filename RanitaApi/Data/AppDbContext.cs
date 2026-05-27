@@ -33,6 +33,7 @@ namespace RanitaApi.Data
         public DbSet<FlashSaleRequest> FlashSaleRequests { get; set; }
         public DbSet<Wishlist> Wishlists { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
+        public DbSet<ProductPromoCode> ProductPromoCodes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

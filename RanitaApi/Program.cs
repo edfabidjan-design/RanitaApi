@@ -1003,5 +1003,28 @@ catch (Exception ex) { Console.WriteLine("Orders discount columns error: " + ex.
 
 
 
+// ── ProductPromoCodes table ────────────────────────────────────
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS ""ProductPromoCodes"" (
+            ""Id"" SERIAL PRIMARY KEY,
+            ""Code"" VARCHAR(50) NOT NULL UNIQUE,
+            ""ProductId"" INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,
+            ""Discount"" INT NOT NULL,
+            ""StartDate"" TIMESTAMP NULL,
+            ""EndDate"" TIMESTAMP NULL,
+            ""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE,
+            ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+    ");
+    Console.WriteLine("ProductPromoCodes OK");
+}
+catch (Exception ex) { Console.WriteLine("ProductPromoCodes error: " + ex.Message); }
+
+
+
 
 app.Run();
