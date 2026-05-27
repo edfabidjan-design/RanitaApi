@@ -36,21 +36,12 @@ SELECT p.""Id"", p.""Code"", p.""Discount"", p.""EndDate"", p.""ProductId"",
         }
         catch (Exception ex) { return StatusCode(500, ex.Message); }
     }
-
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         try
         {
-            var result = await _db.Database.SqlQueryRaw<ProductPromoCodeListDto>(@"
-// GetAll() — remplace le SELECT par :
-SELECT p.""Id"", p.""Code"", p.""Discount"", p.""StartDate"", p.""EndDate"", 
-       p.""IsActive"", p.""ProductId"", pr.""Name"" as ""ProductName"", p.""Color""
-
-                FROM ""ProductPromoCodes"" p
-                JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId""
-                ORDER BY p.""Id"" DESC
-            ").ToListAsync();
+            var result = await _db.Database.SqlQueryRaw<ProductPromoCodeListDto>(@"SELECT p.""Id"", p.""Code"", p.""Discount"", p.""StartDate"", p.""EndDate"", p.""IsActive"", p.""ProductId"", pr.""Name"" as ""ProductName"", p.""Color"" FROM ""ProductPromoCodes"" p JOIN ""Products"" pr ON pr.""Id"" = p.""ProductId"" ORDER BY p.""Id"" DESC").ToListAsync();
             return Ok(result);
         }
         catch (Exception ex) { return StatusCode(500, ex.Message); }
