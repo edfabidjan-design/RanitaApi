@@ -2502,7 +2502,7 @@
                         if (barText && s.promo_bar_text) { barText.textContent = s.promo_bar_text; barText.style.display = 'inline'; }
                         if (barLink) { barLink.href = s.promo_bar_link || 'products.html'; barLink.textContent = 'Voir les offres →'; barLink.style.display = 'inline'; }
                     } else {
-                        var fallbackText = s.promo_bar_fallback || '';
+                        var fallbackText = s.promo_bar_fallback || '🏪 Devenez vendeur sur Ranita Market · Rejoignez nos milliers de clients';
                         var pillText = '🎟️ PROMO';
                         if (fallbackText.includes('vendeur') || fallbackText.includes('Vendeur') || fallbackText.includes('🏪')) {
                             pillText = '🏪 VENDEURS';
