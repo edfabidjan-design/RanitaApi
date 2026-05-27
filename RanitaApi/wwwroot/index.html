@@ -2885,6 +2885,98 @@
 
         function parseImgs(imgs) { try { var a = JSON.parse(imgs || '[]'); return Array.isArray(a) ? a : []; } catch { return imgs ? [imgs] : []; } }
 
+
+
+        // ══ POPUP PROMO PRODUIT ══════════════════════════════════════
+        function closePromoPopup() {
+            var overlay = document.getElementById('promoPopupOverlay');
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity .3s';
+            setTimeout(function () { overlay.style.display = 'none'; }, 300);
+        }
+
+        function copyPromoCode() {
+            var code = document.getElementById('popupCode').textContent;
+            if (!code) return;
+            navigator.clipboard.writeText(code).then(function () {
+                var btn = document.getElementById('popupCopyBtn');
+                btn.textContent = '✅ Copié !';
+                btn.style.background = '#059669';
+                setTimeout(function () {
+                    btn.textContent = '📋 Copier';
+                    btn.style.background = '#10b981';
+                }, 2000);
+            });
+        }
+
+        async function initPromoPopup() {
+            // Une seule fois par session
+            if (sessionStorage.getItem('ranita_popup_shown')) return;
+
+            try {
+                var res = await fetch('/api/product-promo-codes/active');
+                var promo = await res.json();
+                if (!promo || !promo.code) return;
+
+                // Couleurs
+                var colorMap = {
+                    'linear-gradient(135deg,#1a0a2e,#2d1060)': '#8b5cf6',
+                    'linear-gradient(135deg,#0a1628,#1e3a5f)': '#3b82f6',
+                    'linear-gradient(135deg,#0a2a0a,#1a4a1a)': '#10b981',
+                    'linear-gradient(135deg,#2a0a0a,#4a1a1a)': '#ef4444',
+                    'linear-gradient(135deg,#1a1000,#3d2800)': '#f59e0b',
+                    'linear-gradient(135deg,#0d1117,#21262d)': '#6b7280'
+                };
+                var mainColor = (promo.color && colorMap[promo.color]) ? colorMap[promo.color] : '#8b5cf6';
+
+                // Remplir la popup
+                document.getElementById('popupName').textContent = promo.productName;
+                document.getElementById('popupCode').textContent = promo.code;
+                document.getElementById('popupBadge').textContent = '-' + promo.discount + '%';
+                document.getElementById('popupBadge').style.background = mainColor;
+                document.getElementById('popupBadge').style.boxShadow = '0 4px 16px ' + mainColor + '60';
+                document.getElementById('popupCodeBox').style.background = mainColor + '20';
+                document.getElementById('popupCodeBox').style.borderColor = mainColor;
+                document.getElementById('popupCode').style.color = mainColor;
+                document.getElementById('popupCopyBtn').style.background = mainColor;
+                document.getElementById('popupBg').style.background = promo.color || 'linear-gradient(135deg,#0a2a0a,#1a4a1a)';
+
+                // Image produit
+                if (promo.productImage) {
+                    var img = document.getElementById('popupImg');
+                    img.src = promo.productImage;
+                    img.style.display = 'block';
+                }
+
+                // Expiry
+                if (promo.endDate) {
+                    var d = new Date(promo.endDate);
+                    document.getElementById('popupExpiry').textContent = '⏳ Offre valable jusqu\'au ' + d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+                }
+
+                // Bouton voir produit
+                document.getElementById('popupShopBtn').onclick = function () {
+                    closePromoPopup();
+                    location.href = 'product-details.html?id=' + promo.productId;
+                };
+
+                // Afficher après 4 secondes
+                setTimeout(function () {
+                    var overlay = document.getElementById('promoPopupOverlay');
+                    overlay.style.display = 'flex';
+                    overlay.style.opacity = '0';
+                    overlay.style.transition = 'opacity .4s';
+                    setTimeout(function () { overlay.style.opacity = '1'; }, 10);
+                    sessionStorage.setItem('ranita_popup_shown', '1');
+                }, 4000);
+
+            } catch (e) { }
+        }
+
+        // Lancer au chargement
+        initPromoPopup();
+
+
         function buildFeatCarousel() {
             var track = document.getElementById('featuredTrack');
             var dots = document.getElementById('featuredDots');
@@ -3077,6 +3169,75 @@
 
 
     </script>
+
+
+
+
+    <!-- ══ POPUP OFFRE SPÉCIALE ══════════════════════════════════ -->
+    <div id="promoPopupOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+        <div id="promoPopupCard" style="position:relative;background:#0d1117;border-radius:24px;overflow:hidden;width:90%;max-width:480px;box-shadow:0 24px 80px rgba(0,0,0,.6);animation:popupIn .4s cubic-bezier(.175,.885,.32,1.275);">
+
+            <!-- Bouton fermer -->
+            <button onclick="closePromoPopup()" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.1);border:none;width:32px;height:32px;border-radius:50%;color:white;font-size:18px;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;line-height:1;">×</button>
+
+            <!-- Image fond -->
+            <div id="popupBg" style="position:relative;height:200px;background:linear-gradient(135deg,#0a2a0a,#1a4a1a);overflow:hidden;">
+                <img id="popupImg" src="" style="width:100%;height:100%;object-fit:cover;display:none;">
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 60%);"></div>
+                <!-- Badge réduction -->
+                <div id="popupBadge" style="position:absolute;top:16px;left:16px;background:#10b981;color:white;font-size:22px;font-weight:800;padding:8px 16px;border-radius:12px;box-shadow:0 4px 16px rgba(16,185,129,.4);">-25%</div>
+                <!-- Label -->
+                <div style="position:absolute;bottom:16px;left:16px;">
+                    <div style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;">🎯 Offre Spéciale</div>
+                    <div id="popupName" style="font-size:18px;font-weight:800;color:white;line-height:1.2;max-width:340px;text-shadow:0 2px 8px rgba(0,0,0,.5);"></div>
+                </div>
+            </div>
+
+            <!-- Contenu bas -->
+            <div style="padding:24px;">
+                <p style="font-size:14px;color:rgba(255,255,255,.7);margin:0 0 20px;line-height:1.5;">
+                    Utilisez ce code au moment du paiement pour bénéficier de votre réduction.
+                </p>
+
+                <!-- Code promo -->
+                <div id="popupCodeBox" style="background:rgba(16,185,129,.15);border:2px dashed #10b981;border-radius:14px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;cursor:pointer;" onclick="copyPromoCode()">
+                    <div>
+                        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Votre code promo</div>
+                        <div id="popupCode" style="font-size:26px;font-weight:800;color:#10b981;letter-spacing:4px;"></div>
+                    </div>
+                    <div id="popupCopyBtn" style="background:#10b981;color:white;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📋 Copier</div>
+                </div>
+
+                <!-- Expiry -->
+                <div id="popupExpiry" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;"></div>
+
+                <!-- Boutons -->
+                <div style="display:flex;gap:10px;">
+                    <button id="popupShopBtn" onclick="closePromoPopup()" style="flex:1;background:#10b981;color:white;border:none;padding:14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                        🛒 Voir le produit
+                    </button>
+                    <button onclick="closePromoPopup()" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:none;padding:14px 18px;border-radius:12px;font-size:13px;cursor:pointer;">
+                        Plus tard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes popupIn {
+            from {
+                opacity: 0;
+                transform: scale(.85) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+
 
 </body>
 </html>
