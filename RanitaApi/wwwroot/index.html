@@ -2894,11 +2894,13 @@
         function closePromoToast() {
             var t = document.getElementById('promoToast');
             if (t) { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(function () { t.style.display = 'none'; }, 400); }
-            sessionStorage.setItem('promoToastSeen', '1');
+            localStorage.setItem('promoToastSeen', Date.now());
         }
         function showPromoToastMobile(s) {
             if (window.innerWidth > 768) return;
-            if (sessionStorage.getItem('promoToastSeen')) return;
+            var seen = localStorage.getItem('promoToastSeen');
+            if (seen && (Date.now() - seen) < 86400000) return; // 24h
+
             var text = s.promo_bar_fallback || s.promo_bar_text || '';
             if (!text) return;
             var pill = '🎟️ CODE PROMO';
