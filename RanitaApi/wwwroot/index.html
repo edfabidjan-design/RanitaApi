@@ -2544,8 +2544,15 @@
                 // Extraire la couleur principale
                 var mainColor = '#8b5cf6';
                 if (promo.color) {
-                    var c = promo.color.match(/#[a-fA-F0-9]{6}/g);
-                    mainColor = c ? (c[1] || c[0]) : '#8b5cf6';
+                    var colorMap = {
+                        'linear-gradient(135deg,#1a0a2e,#2d1060)': '#8b5cf6',
+                        'linear-gradient(135deg,#0a1628,#1e3a5f)': '#3b82f6',
+                        'linear-gradient(135deg,#0a2a0a,#1a4a1a)': '#10b981',
+                        'linear-gradient(135deg,#2a0a0a,#4a1a1a)': '#ef4444',
+                        'linear-gradient(135deg,#1a1000,#3d2800)': '#f59e0b',
+                        'linear-gradient(135deg,#0d1117,#21262d)': '#6b7280'
+                    };
+                    mainColor = colorMap[promo.color] || '#8b5cf6';
                 }
 
                 // Badge -25%
