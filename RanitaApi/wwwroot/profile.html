@@ -576,8 +576,25 @@
 
                 if (data.referralCode) {
                     document.getElementById('referralCode').textContent = data.referralCode;
-                    document.getElementById('referralCard').style.display = 'block';
+
+                    // Vérifier si la campagne est active
+                    try {
+                        var sr = await fetch('/api/site-settings');
+                        var settings = await sr.json();
+                        var today = new Date(); today.setHours(0, 0, 0, 0);
+                        var start = settings.referral_start ? new Date(settings.referral_start) : null;
+                        var end = settings.referral_end ? new Date(settings.referral_end) : null;
+                        var active = (!start || today >= start) && (!end || today <= end);
+
+                        if (active) {
+                            document.getElementById('referralCard').style.display = 'block';
+                        }
+                        // Si campagne expirée → on n'affiche pas le bloc
+                    } catch (e) {
+                        // En cas d'erreur API, on n'affiche pas non plus
+                    }
                 }
+
             } catch(e) {
                 document.getElementById('statCredits').textContent = '0';
                 document.getElementById('statReferrals').textContent = '0';
