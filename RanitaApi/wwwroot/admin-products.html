@@ -179,6 +179,16 @@
 
         <hr>
 
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <span id="adminProductsCount" style="font-size:14px;color:#6b7280;font-weight:600;"></span>
+            <input type="text" placeholder="🔍 Rechercher un produit..."
+                   oninput="adminSearchTerm=this.value;adminCurrentPage=1;renderAdminProducts()"
+                   style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;width:280px;outline:none;">
+        </div>
+        <div id="adminPaginationBar" style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap;"></div>
+
+
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead>
@@ -186,6 +196,7 @@
                 </thead>
                 <tbody id="productsTable"></tbody>
             </table>
+            <div id="adminPaginationBar" style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap;"></div>
         </div>
     </div>
 
@@ -293,25 +304,94 @@
             document.getElementById(`attr_${attrName}`).value = Array.from(checked).map(cb => cb.value).join(',');
         }
 
+        let adminAllProducts = [];
+        let adminCurrentPage = 1;
+        const ADMIN_PAGE_SIZE = 20;
+        let adminSearchTerm = '';
+
         async function loadProducts() {
             const res = await fetch(`${API_BASE}/products`);
-            const products = await res.json();
-            document.getElementById("productsTable").innerHTML = products.map(p => `
-                            <tr>
-                                <td>${p.id}</td><td>${p.name}</td>
-                                <td>${Number(p.price).toLocaleString()} FCFA</td>
-                                <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
-                                <td>${p.stock}</td><td>${p.category?.name || "—"}</td>
-                                <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
-                                <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
-                                <td>
-                                    <div style="display:flex;flex-direction:column;gap:6px;">
-                                        <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">✏️ Modifier</button>
-                                        <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">📋 Dupliquer</button>
-                                        <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">🗑️ Supprimer</button>
-                                    </div>
-                                </td>
-                            </tr>`).join('');
+            adminAllProducts = await res.json();
+            renderAdminProducts();
+        }
+
+        function renderAdminProducts() {
+            const filtered = adminAllProducts.filter(p =>
+                p.name.toLowerCase().includes(adminSearchTerm.toLowerCase()) ||
+                String(p.id).includes(adminSearchTerm)
+            );
+
+            const totalPages = Math.ceil(filtered.length / ADMIN_PAGE_SIZE);
+            if (adminCurrentPage > totalPages) adminCurrentPage = 1;
+
+            const paginated = filtered.slice(
+                (adminCurrentPage - 1) * ADMIN_PAGE_SIZE,
+                adminCurrentPage * ADMIN_PAGE_SIZE
+            );
+
+            // Compteur
+            document.getElementById('adminProductsCount').textContent =
+                filtered.length + ' produit' + (filtered.length !== 1 ? 's' : '') +
+                (totalPages > 1 ? ' — Page ' + adminCurrentPage + '/' + totalPages : '');
+
+            // Tableau
+            document.getElementById("productsTable").innerHTML = paginated.map(p => `
+        <tr>
+            <td>${p.id}</td>
+            <td>${p.name}</td>
+            <td>${Number(p.price).toLocaleString()} FCFA</td>
+            <td>${p.oldPrice ? `<s>${Number(p.oldPrice).toLocaleString()} FCFA</s>` : "—"}</td>
+            <td>${p.stock}</td>
+            <td>${p.category?.name || "—"}</td>
+            <td>${p.isActive ? '✅ Actif' : '❌ Inactif'}</td>
+            <td>${p.imageUrl ? `<img src="${p.imageUrl}" width="60" style="border-radius:6px;">` : "—"}</td>
+            <td>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <button onclick="editProduct(${p.id})" style="background:#3b82f6;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">✏️ Modifier</button>
+                    <button onclick="duplicateProduct(${p.id})" style="background:#f59e0b;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">📋 Dupliquer</button>
+                    <button onclick="deleteProduct(${p.id})" style="background:#ef4444;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;">🗑️ Supprimer</button>
+                </div>
+            </td>
+        </tr>`).join('');
+
+            // Pagination
+            var bar = document.getElementById('adminPaginationBar');
+            if (totalPages <= 1) { bar.innerHTML = ''; return; }
+
+            var pages = [];
+            pages.push('<button onclick="adminGoPage(' + (adminCurrentPage - 1) + ')" ' +
+                (adminCurrentPage === 1 ? 'disabled' : '') +
+                ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:#374151;font-weight:700;cursor:pointer;' +
+                (adminCurrentPage === 1 ? 'opacity:.4;cursor:not-allowed;' : '') + '">← Préc</button>');
+
+            for (var i = 1; i <= totalPages; i++) {
+                var isActive = adminCurrentPage === i;
+                if (i === 1 || i === totalPages || (i >= adminCurrentPage - 1 && i <= adminCurrentPage + 1)) {
+                    pages.push('<button onclick="adminGoPage(' + i + ')" style="padding:8px 14px;border-radius:8px;border:1px solid ' +
+                        (isActive ? '#10b981' : '#e5e7eb') + ';background:' +
+                        (isActive ? '#10b981' : 'white') + ';color:' +
+                        (isActive ? 'white' : '#374151') + ';font-weight:700;cursor:pointer;">' + i + '</button>');
+                } else if (i === adminCurrentPage - 2 || i === adminCurrentPage + 2) {
+                    pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
+                }
+            }
+
+            pages.push('<button onclick="adminGoPage(' + (adminCurrentPage + 1) + ')" ' +
+                (adminCurrentPage === totalPages ? 'disabled' : '') +
+                ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:#374151;font-weight:700;cursor:pointer;' +
+                (adminCurrentPage === totalPages ? 'opacity:.4;cursor:not-allowed;' : '') + '">Suiv →</button>');
+
+            bar.innerHTML = pages.join('');
+        }
+
+        function adminGoPage(p) {
+            var total = Math.ceil(adminAllProducts.filter(x =>
+                x.name.toLowerCase().includes(adminSearchTerm.toLowerCase())
+            ).length / ADMIN_PAGE_SIZE);
+            if (p < 1 || p > total) return;
+            adminCurrentPage = p;
+            renderAdminProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function duplicateProduct(id) {
