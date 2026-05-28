@@ -32,7 +32,24 @@ namespace RanitaApi.Controllers
 
             var existing = await _db.Sellers.FirstOrDefaultAsync(s => s.ClientId == clientId);
             if (existing != null)
+            {
+                if (existing.Status == "Rejected")
+                {
+                    // Mettre à jour la demande existante plutôt qu'en créer une nouvelle
+                    existing.ShopName = dto.ShopName.Trim();
+                    existing.ShopDescription = dto.ShopDescription?.Trim();
+                    existing.PhoneNumber = dto.PhoneNumber.Trim();
+                    existing.NationalIdNumber = dto.NationalIdNumber.Trim();
+                    existing.PaymentMethod = dto.PaymentMethod;
+                    existing.PaymentDetails = dto.PaymentDetails;
+                    existing.Status = "Pending";
+                    existing.RejectionReason = null;
+                    existing.UpdatedAt = DateTime.UtcNow;
+                    await _db.SaveChangesAsync();
+                    return Ok(new { message = "Nouvelle demande envoyée, en attente de validation", sellerId = existing.Id });
+                }
                 return BadRequest(new { message = "Vous avez déjà soumis une demande de boutique", status = existing.Status });
+            }
 
             var seller = new Seller
             {
