@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Authorization;
 using RanitaApi.Data;
 using RanitaApi.DTO;
 using RanitaApi.Models;
@@ -13,26 +14,24 @@ public class ClientAuthController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly EmailService _emailService;
+    private readonly JwtService _jwt;
 
-    // Hash BCrypt utilisé pour le timing-attack fix (email inexistant)
-    // Généré une seule fois au démarrage, jamais exposé
     private static readonly string _dummyHash =
         BCrypt.Net.BCrypt.HashPassword("dummy-timing-protection", workFactor: 12);
 
-    public ClientAuthController(AppDbContext context, EmailService emailService)
+    public ClientAuthController(AppDbContext context, EmailService emailService, JwtService jwt)
     {
         _context = context;
         _emailService = emailService;
+        _jwt = jwt;
     }
 
-    // ── Hachage BCrypt (workFactor 12 = ~250ms, bon équilibre sécurité/perf) ──
     string HashPassword(string password)
         => BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
 
     bool VerifyPassword(string password, string hash)
         => BCrypt.Net.BCrypt.Verify(password, hash);
 
-    // ── OTP cryptographiquement sûr (remplace System.Random) ──────────────
     string GenerateCode()
     {
         var bytes = new byte[4];
@@ -41,7 +40,6 @@ public class ClientAuthController : ControllerBase
         return value.ToString();
     }
 
-    // ── Code parrainage unique ex: KALIM4821 ───────────────────────────────
     string GenerateReferralCode(string fullName)
     {
         var first = fullName.Split(' ')[0].ToUpper();
@@ -67,11 +65,10 @@ public class ClientAuthController : ControllerBase
             FullName = dto.FullName,
             Email = dto.Email,
             Phone = dto.Phone,
-            PasswordHash = HashPassword(dto.Password),   // ✅ BCrypt
+            PasswordHash = HashPassword(dto.Password),
             ReferralCode = GenerateReferralCode(dto.FullName)
         };
 
-        // Parrainage si code fourni
         if (!string.IsNullOrEmpty(dto.ReferralCode))
         {
             var parrain = await _context.Clients
@@ -94,7 +91,7 @@ public class ClientAuthController : ControllerBase
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    // LOGIN — timing-attack safe + migration silencieuse SHA256 → BCrypt
+    // LOGIN — retourne un JWT ✅
     // ══════════════════════════════════════════════════════════════════════
     [HttpPost("login")]
     [EnableRateLimiting("auth")]
@@ -103,9 +100,7 @@ public class ClientAuthController : ControllerBase
         var client = await _context.Clients
             .FirstOrDefaultAsync(x => x.Email == dto.Email);
 
-        // Anti-timing-attack : on effectue toujours une vérification,
-        // même si l'email n'existe pas, pour que le temps de réponse
-        // soit identique qu'il y ait un compte ou non.
+        // Anti-timing-attack
         if (client == null)
         {
             BCrypt.Net.BCrypt.Verify(dto.Password, _dummyHash);
@@ -114,19 +109,15 @@ public class ClientAuthController : ControllerBase
 
         bool isValid;
 
-        // ── Migration silencieuse SHA-256 → BCrypt ─────────────────────
-        // Les anciens hash sont marqués "LEGACY:SHA256:<hash>" dans Program.cs
+        // Migration silencieuse SHA-256 → BCrypt
         if (client.PasswordHash.StartsWith("LEGACY:SHA256:"))
         {
             var oldHash = client.PasswordHash["LEGACY:SHA256:".Length..];
             var inputHash = Convert.ToBase64String(
-                System.Security.Cryptography.SHA256.HashData(
-                    System.Text.Encoding.UTF8.GetBytes(dto.Password)
-                )
+                SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(dto.Password))
             );
             isValid = oldHash == inputHash;
 
-            // Si mot de passe correct → re-hacher en BCrypt immédiatement
             if (isValid)
             {
                 client.PasswordHash = HashPassword(dto.Password);
@@ -136,15 +127,18 @@ public class ClientAuthController : ControllerBase
         }
         else
         {
-            // Hash BCrypt standard
             isValid = VerifyPassword(dto.Password, client.PasswordHash);
         }
 
         if (!isValid)
             return Unauthorized("Identifiants invalides");
 
+        // ✅ Génère le token JWT
+        var token = _jwt.GenerateClientToken(client.Id, client.Email);
+
         return Ok(new
         {
+            token,                              // ✅ JWT à stocker côté client
             id = client.Id,
             name = client.FullName,
             email = client.Email,
@@ -165,25 +159,19 @@ public class ClientAuthController : ControllerBase
         var client = await _context.Clients
             .FirstOrDefaultAsync(x => x.Email == dto.Email);
 
-        // Réponse identique que le compte existe ou non (anti-enumération)
         if (client == null)
             return Ok("Si le compte existe, un code a été envoyé.");
 
         if (client.ResetCodeExpiresAt.HasValue &&
             client.ResetCodeExpiresAt.Value > DateTime.UtcNow.AddMinutes(9))
-        {
             return BadRequest("Veuillez patienter avant de redemander un code.");
-        }
 
-        var code = GenerateCode();   // ✅ OTP cryptographique
+        var code = GenerateCode();
         client.ResetCode = code;
         client.ResetCodeExpiresAt = DateTime.UtcNow.AddMinutes(10);
         await _context.SaveChangesAsync();
 
-        try
-        {
-            await _emailService.SendResetCodeAsync(client.Email, code);
-        }
+        try { await _emailService.SendResetCodeAsync(client.Email, code); }
         catch (Exception ex)
         {
             Console.WriteLine("BREVO ERROR: " + ex.ToString());
@@ -207,7 +195,7 @@ public class ClientAuthController : ControllerBase
         if (client.ResetCode != dto.Code) return BadRequest("Code invalide");
         if (client.ResetCodeExpiresAt < DateTime.UtcNow) return BadRequest("Code expiré");
 
-        client.PasswordHash = HashPassword(dto.NewPassword);   // ✅ BCrypt
+        client.PasswordHash = HashPassword(dto.NewPassword);
         client.ResetCode = null;
         client.ResetCodeExpiresAt = null;
         await _context.SaveChangesAsync();
@@ -219,8 +207,13 @@ public class ClientAuthController : ControllerBase
     // PARRAINAGE
     // ══════════════════════════════════════════════════════════════════════
     [HttpGet("referral/{clientId}")]
+    [Authorize]   // ✅ Protégé — token requis
     public async Task<IActionResult> GetReferral(int clientId)
     {
+        // Vérifie que le client ne consulte que ses propres données
+        if (User.GetClientId() != clientId)
+            return Forbid();
+
         var client = await _context.Clients.FindAsync(clientId);
         if (client == null) return NotFound();
 
@@ -254,11 +247,16 @@ public class ClientAuthController : ControllerBase
         => Redirect($"/register.html?ref={code}");
 
     // ══════════════════════════════════════════════════════════════════════
-    // COMMANDES CLIENT
+    // COMMANDES CLIENT — protégé ✅
     // ══════════════════════════════════════════════════════════════════════
     [HttpGet("orders/{clientId}")]
+    [Authorize]
     public async Task<IActionResult> GetClientOrders(int clientId)
     {
+        // Un client ne peut voir que SES commandes
+        if (User.GetClientId() != clientId)
+            return Forbid();
+
         var orders = await _context.Orders
             .Include(o => o.Items)
             .Where(o => o.ClientId == clientId)
@@ -293,11 +291,14 @@ public class ClientAuthController : ControllerBase
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    // ADMIN — liste clients
+    // ADMIN — liste clients (protégé) ✅
     // ══════════════════════════════════════════════════════════════════════
     [HttpGet("/api/clients")]
+    [Authorize]
     public async Task<IActionResult> GetAllClients()
     {
+        // Seul un admin peut lister tous les clients
+        // (à compléter avec [Authorize(Roles = "admin")] quand l'auth admin sera en place)
         var clients = await _context.Clients
             .OrderByDescending(c => c.CreatedAt)
             .Select(c => new {
@@ -316,11 +317,14 @@ public class ClientAuthController : ControllerBase
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    // PROFIL — mise à jour
+    // PROFIL — protégé ✅
     // ══════════════════════════════════════════════════════════════════════
     [HttpPut("update/{clientId}")]
+    [Authorize]
     public async Task<IActionResult> UpdateProfile(int clientId, [FromBody] UpdateProfileDto dto)
     {
+        if (User.GetClientId() != clientId) return Forbid();
+
         var client = await _context.Clients.FindAsync(clientId);
         if (client == null) return NotFound();
 
@@ -333,15 +337,17 @@ public class ClientAuthController : ControllerBase
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    // CHANGEMENT MOT DE PASSE — vérifie l'ancien ✅
+    // CHANGEMENT MOT DE PASSE — protégé ✅
     // ══════════════════════════════════════════════════════════════════════
     [HttpPut("change-password/{clientId}")]
+    [Authorize]
     public async Task<IActionResult> ChangePassword(int clientId, [FromBody] ChangePasswordDto dto)
     {
+        if (User.GetClientId() != clientId) return Forbid();
+
         var client = await _context.Clients.FindAsync(clientId);
         if (client == null) return NotFound();
 
-        // ✅ Vérifie l'ancien mot de passe avant d'autoriser le changement
         if (!VerifyPassword(dto.OldPassword, client.PasswordHash))
             return BadRequest("Ancien mot de passe incorrect");
 
@@ -368,7 +374,7 @@ public class ClientAuthController : ControllerBase
 
     public class ChangePasswordDto
     {
-        public string OldPassword { get; set; } = "";   // ✅ Nouveau champ requis
+        public string OldPassword { get; set; } = "";
         public string NewPassword { get; set; } = "";
     }
 }

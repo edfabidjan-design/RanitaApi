@@ -1,9 +1,12 @@
 // ═══════════════════════════════════════════════════════════════
 // RANITA MARKET — Program.cs
-// Sécurité : Rate Limiting + CORS HTTPS uniquement
+// Sécurité : Rate Limiting + CORS + JWT ✅
 // ═══════════════════════════════════════════════════════════════
-using Microsoft.AspNetCore.RateLimiting;   // ✅ NOUVEAU
-using System.Threading.RateLimiting;        // ✅ NOUVEAU
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;  // ✅ NOUVEAU
+using Microsoft.IdentityModel.Tokens;                  // ✅ NOUVEAU
+using System.Text;                                     // ✅ NOUVEAU
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
@@ -14,10 +17,48 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddHostedService<FlashStockService>();
 
+// ── JWT SERVICE ✅ ──────────────────────────────────────────────
+builder.Services.AddScoped<RanitaApi.Services.JwtService>();
+
+// ── JWT AUTHENTICATION ✅ ───────────────────────────────────────
+var jwtSecret = builder.Configuration["JWT_SECRET"]
+    ?? throw new InvalidOperationException("JWT_SECRET manquant dans les variables Railway");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "ranita-shop.com",
+            ValidAudience = "ranita-shop.com",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                                           Encoding.UTF8.GetBytes(jwtSecret)),
+            ClockSkew = TimeSpan.Zero
+        };
+
+        // Réponse JSON propre sur 401
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(
+                    "{\"message\":\"Token manquant ou invalide. Veuillez vous connecter.\"}");
+            }
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 // ── RATE LIMITING ✅ ────────────────────────────────────────────
 builder.Services.AddRateLimiter(options =>
 {
-    // Auth : 5 tentatives / minute / IP — login, register, forgot, reset
     options.AddFixedWindowLimiter("auth", opt =>
     {
         opt.PermitLimit = 5;
@@ -26,7 +67,6 @@ builder.Services.AddRateLimiter(options =>
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
 
-    // API générale : 60 req / minute / IP
     options.AddFixedWindowLimiter("api", opt =>
     {
         opt.PermitLimit = 60;
@@ -53,7 +93,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         npgsqlOptions => npgsqlOptions.EnableRetryOnFailure()
     ));
 
-// ── CORS — HTTPS uniquement en production ✅ ────────────────────
+// ── CORS — HTTPS uniquement ✅ ──────────────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowRanitaShop", policy =>
@@ -61,7 +101,6 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
             "https://ranita-shop.com",
             "https://www.ranita-shop.com"
-        // ❌ Retiré : http:// — Railway gère le certificat SSL
         )
         .AllowAnyHeader()
         .AllowAnyMethod();
@@ -81,7 +120,7 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
-// ── PIPELINE MIDDLEWARE — ordre important ───────────────────────
+// ── PIPELINE MIDDLEWARE — ordre obligatoire ─────────────────────
 app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -95,7 +134,8 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseCors("AllowRanitaShop");
-app.UseRateLimiter();     // ✅ NOUVEAU — après UseCors, avant UseAuthorization
+app.UseRateLimiter();
+app.UseAuthentication();   // ✅ NOUVEAU — avant UseAuthorization
 app.UseAuthorization();
 app.MapControllers();
 
@@ -717,10 +757,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Clients referral error: " + ex.Message); }
 
-// ── Migration BCrypt — génère ReferralCode ET re-hache les anciens mdp ✅ ──
-// Les clients avec un hash SHA-256 (sans préfixe $2) sont migrés ici.
-// Leur PasswordHash est remplacé par une valeur marquée "LEGACY:SHA256:<hash>"
-// Le ClientAuthController détecte ce préfixe et gère la compatibilité.
+// ── Migration BCrypt ───────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -731,7 +768,6 @@ try
 
     foreach (var c in clients)
     {
-        // Générer ReferralCode si manquant
         if (string.IsNullOrEmpty(c.ReferralCode))
         {
             var first = c.FullName.Split(' ')[0].ToUpper();
@@ -739,8 +775,6 @@ try
             c.ReferralCode = first + rnd.Next(1000, 9999).ToString();
         }
 
-        // Marquer les hash SHA-256 existants pour migration silencieuse
-        // Un hash BCrypt commence toujours par "$2a$" ou "$2b$"
         if (!c.PasswordHash.StartsWith("$2") && !c.PasswordHash.StartsWith("LEGACY:"))
         {
             c.PasswordHash = "LEGACY:SHA256:" + c.PasswordHash;
