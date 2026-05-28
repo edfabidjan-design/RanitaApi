@@ -16,9 +16,6 @@
             overflow-x: hidden;
         }
 
-
-
-
         .nav-badge {
             background: #ef4444;
             color: white;
@@ -112,7 +109,7 @@
             color: #6b7280;
             cursor: pointer;
             border-bottom: 3px solid transparent;
-            transition: all 0.2s;
+            transition: all .2s;
             display: flex;
             align-items: center;
             gap: 7px;
@@ -159,7 +156,7 @@
             font-weight: 600;
             color: #6b7280;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all .2s;
         }
 
             .filter-btn:hover {
@@ -190,12 +187,12 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            transition: box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+            transition: box-shadow .2s;
         }
 
             .seller-card:hover {
-                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                box-shadow: 0 4px 16px rgba(0,0,0,.08);
             }
 
         .seller-avatar {
@@ -238,7 +235,7 @@
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: .5px;
             white-space: nowrap;
         }
 
@@ -276,7 +273,7 @@
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all .2s;
             white-space: nowrap;
         }
 
@@ -319,7 +316,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
         }
 
         .product-img {
@@ -398,7 +395,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,.5);
             z-index: 2000;
             align-items: center;
             justify-content: center;
@@ -415,7 +412,7 @@
             padding: 28px;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            box-shadow: 0 20px 60px rgba(0,0,0,.25);
         }
 
             .modal h3 {
@@ -520,7 +517,7 @@
             font-weight: 600;
             transform: translateY(80px);
             opacity: 0;
-            transition: all 0.3s;
+            transition: all .3s;
             z-index: 9999;
             max-width: 300px;
         }
@@ -583,14 +580,14 @@
                 <div class="stat-pill"><span class="dot dot-red"></span><span id="stat-products">0</span> produits à valider</div>
             </div>
         </div>
+
         <div class="tabs">
             <div class="tab active" onclick="switchTab('sellers',this)">Demandes vendeurs <span class="tab-badge hidden" id="badge-sellers">0</span></div>
             <div class="tab" onclick="switchTab('products',this)">Produits à valider <span class="tab-badge hidden" id="badge-products">0</span></div>
             <div class="tab" onclick="switchTab('payouts',this)">Paiements vendeurs <span class="tab-badge hidden" id="badge-payouts">0</span></div>
-
-
         </div>
 
+        <!-- VENDEURS -->
         <div class="section active" id="section-sellers">
             <div class="filters">
                 <button class="filter-btn active" onclick="filterSellers('all',this)">Tous</button>
@@ -599,16 +596,31 @@
                 <button class="filter-btn" onclick="filterSellers('Rejected',this)">Refusés</button>
                 <button class="filter-btn" onclick="filterSellers('Suspended',this)">Suspendus</button>
             </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                <span id="sellers-count" style="font-size:13px;color:#6b7280;font-weight:600;"></span>
+                <input type="text" placeholder="🔍 Nom boutique, email..."
+                       oninput="sellersSearch=this.value;sellersPage=1;renderSellersFiltered()"
+                       style="padding:8px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;width:220px;outline:none;">
+            </div>
+            <div id="sellers-pagination" style="display:flex;justify-content:center;gap:6px;margin:0 0 12px;flex-wrap:wrap;"></div>
             <div id="sellers-list"><div class="loading">Chargement...</div></div>
         </div>
+
+        <!-- PRODUITS -->
         <div class="section" id="section-products">
             <div class="filters">
                 <button class="filter-btn active" onclick="filterProducts('Pending',this)">En attente</button>
                 <button class="filter-btn" onclick="filterProducts('Approved',this)">Approuvés</button>
                 <button class="filter-btn" onclick="filterProducts('Rejected',this)">Refusés</button>
             </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                <span id="products-count" style="font-size:13px;color:#6b7280;font-weight:600;"></span>
+            </div>
+            <div id="products-pagination" style="display:flex;justify-content:center;gap:6px;margin:0 0 12px;flex-wrap:wrap;"></div>
             <div id="products-list"><div class="loading">Chargement...</div></div>
         </div>
+
+        <!-- PAYOUTS -->
         <div class="section" id="section-payouts">
             <div class="filters">
                 <button class="filter-btn active" onclick="filterPayouts('Pending',this)">À payer</button>
@@ -618,27 +630,34 @@
         </div>
     </div>
 
-
-
+    <!-- MODALS -->
     <div class="modal-overlay" id="modal-approve"><div class="modal"><h3>✅ Approuver cette boutique</h3><div class="commission-row"><label>Commission Ranita (%)</label><input type="number" id="approve-commission" value="10" min="0" max="50"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-approve')">Annuler</button><button class="btn-modal-approve" onclick="confirmApprove()">Approuver</button></div></div></div>
     <div class="modal-overlay" id="modal-reject"><div class="modal"><h3>❌ Refuser cette boutique</h3><textarea id="reject-reason" rows="3" placeholder="Motif du refus (obligatoire)..."></textarea><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-reject')">Annuler</button><button class="btn-modal-reject" onclick="confirmReject()">Confirmer le refus</button></div></div></div>
     <div class="modal-overlay" id="modal-reject-product"><div class="modal"><h3>❌ Refuser ce produit</h3><textarea id="reject-product-reason" rows="3" placeholder="Motif du refus..."></textarea><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-reject-product')">Annuler</button><button class="btn-modal-reject" onclick="confirmRejectProduct()">Confirmer</button></div></div></div>
     <div class="modal-overlay" id="modal-product-detail"><div class="modal" style="max-width:700px;max-height:85vh;overflow-y:auto;"><h3>📦 Détail du produit</h3><div id="product-detail-content"></div><div class="modal-actions"><button class="btn-modal-cancel" onclick="closeModal('modal-product-detail')">Fermer</button></div></div></div>
+    <div class="modal-overlay" id="modal-seller-products"><div class="modal" style="max-width:800px;max-height:85vh;overflow-y:auto;"><h3 id="modal-seller-products-title">Produits de la boutique</h3><div id="seller-products-content"></div><div class="modal-actions" style="margin-top:16px;"><button class="btn-modal-cancel" onclick="closeModal('modal-seller-products')">Fermer</button></div></div></div>
+
     <div class="toast" id="toast"></div>
-
-
-    <
+    <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
 
     <script>
         checkPageAccess('sellers');
         buildAdminNav('sellers');
 
         const API = '/api';
-        let allSellers = [], allProducts = [], allPayouts = [], currentSellerId = null, currentProductId = null;
+        let allSellers = [], allProducts = [], allPayouts = [];
+        let currentSellerId = null, currentProductId = null;
 
-        window.addEventListener('DOMContentLoaded', () => { loadAll(); });
+        // Pagination
+        let sellersPage = 1, productsPage = 1;
+        const PAGE_SIZE_S = 10;
+        let sellersSearch = '', sellersStatusFilter = 'all', productsStatusFilter = 'Pending';
 
-        async function loadAll() { await Promise.all([loadSellers(), loadProducts(), loadPayouts()]); }
+        window.addEventListener('DOMContentLoaded', function () { loadAll(); });
+
+        async function loadAll() {
+            await Promise.all([loadSellers(), loadProducts(), loadPayouts()]);
+        }
 
         function switchTab(tab, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -647,48 +666,83 @@
             document.getElementById('section-' + tab).classList.add('active');
         }
 
+        // ── VENDEURS ──────────────────────────────────────────────
         async function loadSellers() {
             try {
-                const res = await fetch(`${API}/admin/sellers`); allSellers = await res.json();
+                const res = await fetch(`${API}/admin/sellers`);
+                allSellers = await res.json();
                 const pending = allSellers.filter(s => s.status === 'Pending').length;
                 const approved = allSellers.filter(s => s.status === 'Approved').length;
                 document.getElementById('stat-pending').textContent = pending;
                 document.getElementById('stat-approved').textContent = approved;
-                const b = document.getElementById('badge-sellers'); b.textContent = pending; b.classList.toggle('hidden', pending === 0);
-                renderSellers(allSellers);
-            } catch (e) { document.getElementById('sellers-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>'; }
+                const b = document.getElementById('badge-sellers');
+                b.textContent = pending; b.classList.toggle('hidden', pending === 0);
+                renderSellersFiltered();
+            } catch (e) {
+                document.getElementById('sellers-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
+            }
         }
 
         function filterSellers(status, btn) {
-            document.querySelectorAll('#section-sellers .filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-            renderSellers(status === 'all' ? allSellers : allSellers.filter(s => s.status === status));
+            document.querySelectorAll('#section-sellers .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            sellersStatusFilter = status;
+            sellersPage = 1;
+            renderSellersFiltered();
+        }
+
+        function renderSellersFiltered() {
+            var list = sellersStatusFilter === 'all' ? allSellers : allSellers.filter(s => s.status === sellersStatusFilter);
+            if (sellersSearch) {
+                list = list.filter(s =>
+                    s.shopName.toLowerCase().includes(sellersSearch.toLowerCase()) ||
+                    (s.clientEmail || '').toLowerCase().includes(sellersSearch.toLowerCase())
+                );
+            }
+            const totalPages = Math.ceil(list.length / PAGE_SIZE_S) || 1;
+            if (sellersPage > totalPages) sellersPage = 1;
+            const paginated = list.slice((sellersPage - 1) * PAGE_SIZE_S, sellersPage * PAGE_SIZE_S);
+            document.getElementById('sellers-count').textContent =
+                list.length + ' vendeur' + (list.length !== 1 ? 's' : '') +
+                (totalPages > 1 ? ' — Page ' + sellersPage + '/' + totalPages : '');
+            renderSellers(paginated);
+            renderPagBar('sellers-pagination', sellersPage, totalPages, 'sellersGoPage');
+        }
+
+        function sellersGoPage(p) {
+            var list = sellersStatusFilter === 'all' ? allSellers : allSellers.filter(s => s.status === sellersStatusFilter);
+            var total = Math.ceil(list.length / PAGE_SIZE_S) || 1;
+            if (p < 1 || p > total) return;
+            sellersPage = p;
+            renderSellersFiltered();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderSellers(list) {
             const el = document.getElementById('sellers-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">🏪</div><p>Aucun vendeur trouvé</p></div>'; return; }
-            el.innerHTML = list.map(s => `
-                                            <div class="seller-card">
-                                                <div class="seller-avatar">${s.shopName.charAt(0).toUpperCase()}</div>
-                                                <div class="seller-info">
-                                                    <div class="seller-name">${s.shopName}</div>
-                                                    <div class="seller-meta">
-                                                        <span>👤 ${s.clientName}</span><span>📧 ${s.clientEmail}</span>
-                                                        <span>📞 ${s.phoneNumber}</span><span>🪪 CNI: ${s.nationalIdNumber}</span>
-                                                        <span>💰 ${Math.round(s.commissionRate * 100)}% commission</span>
-                                                        ${s.paymentMethod ? `<span>💳 ${s.paymentMethod.replace(/_/g, ' ')}${s.paymentDetails ? ' — ' + s.paymentDetails : ''}</span>` : ''}
-                                                        <span>📅 ${new Date(s.createdAt).toLocaleDateString('fr-FR')}</span>
-                                                    </div>
-                                                    ${s.shopDescription ? `<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ${s.shopDescription}</div>` : ''}
-                                                </div>
-                                                <span class="status-badge s-${s.status}">${statusLabel(s.status)}</span>
-                                                <div class="seller-actions">
-                                                <button class="btn" onclick="viewSellerProducts(${s.id},'${s.shopName.replace(/'/g, "\\'")}')" style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;">📦 Produits</button>
-                                                ${s.status === 'Pending' ? `<button class="btn btn-approve" onclick="openApprove(${s.id})">✓ Approuver</button><button class="btn btn-reject" onclick="openReject(${s.id})">✗ Refuser</button>` : ''}
-                                                    ${s.status === 'Approved' ? `<button class="btn btn-suspend" onclick="suspendSeller(${s.id})">⏸ Suspendre</button>` : ''}
-                                                    ${s.status === 'Suspended' ? `<button class="btn btn-approve" onclick="suspendSeller(${s.id})">▶ Réactiver</button>` : ''}
-                                                </div>
-                                            </div>`).join('');
+            el.innerHTML = list.map(s =>
+                '<div class="seller-card">' +
+                '<div class="seller-avatar">' + s.shopName.charAt(0).toUpperCase() + '</div>' +
+                '<div class="seller-info">' +
+                '<div class="seller-name">' + s.shopName + '</div>' +
+                '<div class="seller-meta">' +
+                '<span>👤 ' + s.clientName + '</span><span>📧 ' + s.clientEmail + '</span>' +
+                '<span>📞 ' + s.phoneNumber + '</span><span>🪪 CNI: ' + s.nationalIdNumber + '</span>' +
+                '<span>💰 ' + Math.round(s.commissionRate * 100) + '% commission</span>' +
+                (s.paymentMethod ? '<span>💳 ' + s.paymentMethod.replace(/_/g, ' ') + (s.paymentDetails ? ' — ' + s.paymentDetails : '') + '</span>' : '') +
+                '<span>📅 ' + new Date(s.createdAt).toLocaleDateString('fr-FR') + '</span>' +
+                '</div>' +
+                (s.shopDescription ? '<div style="font-size:13px;color:#374151;margin-top:6px;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid #10b981;">📝 ' + s.shopDescription + '</div>' : '') +
+                '</div>' +
+                '<span class="status-badge s-' + s.status + '">' + statusLabel(s.status) + '</span>' +
+                '<div class="seller-actions">' +
+                '<button class="btn" onclick="viewSellerProducts(' + s.id + ',\'' + s.shopName.replace(/'/g, "\\'") + '\')" style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;">📦 Produits</button>' +
+                (s.status === 'Pending' ? '<button class="btn btn-approve" onclick="openApprove(' + s.id + ')">✓ Approuver</button><button class="btn btn-reject" onclick="openReject(' + s.id + ')">✗ Refuser</button>' : '') +
+                (s.status === 'Approved' ? '<button class="btn btn-suspend" onclick="suspendSeller(' + s.id + ')">⏸ Suspendre</button>' : '') +
+                (s.status === 'Suspended' ? '<button class="btn btn-approve" onclick="suspendSeller(' + s.id + ')">▶ Réactiver</button>' : '') +
+                '</div></div>'
+            ).join('');
         }
 
         function statusLabel(s) { return { Pending: 'En attente', Approved: 'Approuvé', Rejected: 'Refusé', Suspended: 'Suspendu' }[s] || s; }
@@ -699,7 +753,9 @@
 
         async function reviewSeller(id, approved, reason, commission) {
             try {
-                const body = { approved }; if (reason) body.rejectionReason = reason; if (commission !== null) body.commissionRate = commission;
+                const body = { approved };
+                if (reason) body.rejectionReason = reason;
+                if (commission !== null) body.commissionRate = commission;
                 const res = await fetch(`${API}/admin/sellers/${id}/review`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
                 if (res.ok) { showToast(approved ? 'Boutique approuvée ✓' : 'Boutique refusée', approved ? 'success' : ''); loadSellers(); }
             } catch (e) { showToast('Erreur réseau', 'error'); }
@@ -712,55 +768,87 @@
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
+        // ── PRODUITS ──────────────────────────────────────────────
         async function loadProducts() {
             try {
-                const res = await fetch(`${API}/admin/sellers/products`); allProducts = await res.json();
+                const res = await fetch(`${API}/admin/sellers/products`);
+                allProducts = await res.json();
                 const pending = allProducts.filter(p => p.approvalStatus === 'Pending').length;
                 document.getElementById('stat-products').textContent = pending;
-                const b = document.getElementById('badge-products'); b.textContent = pending; b.classList.toggle('hidden', pending === 0);
-                renderProducts(allProducts.filter(p => p.approvalStatus === 'Pending'));
-            } catch (e) { document.getElementById('products-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>'; }
+                const b = document.getElementById('badge-products');
+                b.textContent = pending; b.classList.toggle('hidden', pending === 0);
+                renderProductsFiltered();
+            } catch (e) {
+                document.getElementById('products-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Erreur de chargement</p></div>';
+            }
         }
 
         function filterProducts(status, btn) {
-            document.querySelectorAll('#section-products .filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-            renderProducts(allProducts.filter(p => p.approvalStatus === status));
+            document.querySelectorAll('#section-products .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            productsStatusFilter = status;
+            productsPage = 1;
+            renderProductsFiltered();
+        }
+
+        function renderProductsFiltered() {
+            var list = allProducts.filter(p => p.approvalStatus === productsStatusFilter);
+            const totalPages = Math.ceil(list.length / PAGE_SIZE_S) || 1;
+            if (productsPage > totalPages) productsPage = 1;
+            const paginated = list.slice((productsPage - 1) * PAGE_SIZE_S, productsPage * PAGE_SIZE_S);
+            document.getElementById('products-count').textContent =
+                list.length + ' produit' + (list.length !== 1 ? 's' : '') +
+                (totalPages > 1 ? ' — Page ' + productsPage + '/' + totalPages : '');
+            renderProducts(paginated);
+            renderPagBar('products-pagination', productsPage, totalPages, 'productsGoPage');
+        }
+
+        function productsGoPage(p) {
+            var list = allProducts.filter(x => x.approvalStatus === productsStatusFilter);
+            var total = Math.ceil(list.length / PAGE_SIZE_S) || 1;
+            if (p < 1 || p > total) return;
+            productsPage = p;
+            renderProductsFiltered();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderProducts(list) {
             const el = document.getElementById('products-list');
             if (!list.length) { el.innerHTML = '<div class="empty"><div class="icon">📦</div><p>Aucun produit trouvé</p></div>'; return; }
-            el.innerHTML = list.map(p => `
-                                            <div class="product-card">
-                                                <div class="product-img">${p.images && p.images.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-                                                <div class="product-info">
-                                                    <div class="product-name">${p.name}</div>
-                                                    <div class="product-meta"><span>🏪 ${p.shopName}</span><span>📦 Stock: ${p.stock}</span><span>🏷️ ${p.category || 'Sans catégorie'}</span><span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                                                </div>
-                                                <div class="product-price">${formatPrice(p.price)}</div>
-                                                <span class="status-badge s-${p.approvalStatus}">${statusLabel(p.approvalStatus)}</span>
-                                                <div class="seller-actions">
-                                                    <button class="btn" onclick="viewProduct(${p.id})" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;">👁 Détails</button>
-                                                    ${p.approvalStatus === 'Pending' ? `<button class="btn btn-approve" onclick="approveProduct(${p.id})">✓ Publier</button><button class="btn btn-reject" onclick="openRejectProduct(${p.id})">✗ Refuser</button>` : ''}
-                                                </div>
-                                            </div>`).join('');
+            el.innerHTML = list.map(p =>
+                '<div class="product-card">' +
+                '<div class="product-img">' + (p.images && p.images.length ? '<img src="' + p.images[0] + '" onerror="this.style.display=\'none\'">' : '📦') + '</div>' +
+                '<div class="product-info">' +
+                '<div class="product-name">' + p.name + '</div>' +
+                '<div class="product-meta"><span>🏪 ' + p.shopName + '</span><span>📦 Stock: ' + p.stock + '</span><span>🏷️ ' + (p.category || 'Sans catégorie') + '</span><span>📅 ' + new Date(p.createdAt).toLocaleDateString('fr-FR') + '</span></div>' +
+                '</div>' +
+                '<div class="product-price">' + formatPrice(p.price) + '</div>' +
+                '<span class="status-badge s-' + p.approvalStatus + '">' + statusLabel(p.approvalStatus) + '</span>' +
+                '<div class="seller-actions">' +
+                '<button class="btn" onclick="viewProduct(' + p.id + ')" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;">👁 Détails</button>' +
+                (p.approvalStatus === 'Pending' ? '<button class="btn btn-approve" onclick="approveProduct(' + p.id + ')">✓ Publier</button><button class="btn btn-reject" onclick="openRejectProduct(' + p.id + ')">✗ Refuser</button>' : '') +
+                '</div></div>'
+            ).join('');
         }
 
         function viewProduct(id) {
             const p = allProducts.find(x => x.id === id); if (!p) return;
             const imgs = Array.isArray(p.images) ? p.images : [];
-            document.getElementById('product-detail-content').innerHTML = `
-                                            <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">${imgs.map(img => `<img src="${img}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">`).join('')}${!imgs.length ? '<div style="width:100px;height:100px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>' : ''}</div>
-                                            <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                                                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;width:140px;">Boutique</td><td style="padding:8px 0;font-weight:600;">${p.shopName}</td></tr>
-                                                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Nom</td><td style="padding:8px 0;font-weight:600;">${p.name}</td></tr>
-                                                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">SKU</td><td style="padding:8px 0;">${p.sku || '—'}</td></tr>
-                                                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Catégorie</td><td style="padding:8px 0;">${p.category || '—'}</td></tr>
-                                                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix</td><td style="padding:8px 0;font-weight:700;color:#059669;">${formatPrice(p.price)}</td></tr>
-                                                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Stock</td><td style="padding:8px 0;">${p.stock}</td></tr>
-                                                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description</td><td style="padding:8px 0;">${p.shortDescription || '—'}</td></tr>
-                                                <tr><td style="padding:8px 0;color:#6b7280;">Soumis le</td><td style="padding:8px 0;">${new Date(p.createdAt).toLocaleDateString('fr-FR')}</td></tr>
-                                            </table>`;
+            document.getElementById('product-detail-content').innerHTML =
+                '<div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">' +
+                imgs.map(img => '<img src="' + img + '" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">').join('') +
+                (!imgs.length ? '<div style="width:100px;height:100px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📦</div>' : '') +
+                '</div>' +
+                '<table style="width:100%;border-collapse:collapse;font-size:14px;">' +
+                '<tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;width:140px;">Boutique</td><td style="padding:8px 0;font-weight:600;">' + p.shopName + '</td></tr>' +
+                '<tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Nom</td><td style="padding:8px 0;font-weight:600;">' + p.name + '</td></tr>' +
+                '<tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">SKU</td><td style="padding:8px 0;">' + (p.sku || '—') + '</td></tr>' +
+                '<tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Catégorie</td><td style="padding:8px 0;">' + (p.category || '—') + '</td></tr>' +
+                '<tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Prix</td><td style="padding:8px 0;font-weight:700;color:#059669;">' + formatPrice(p.price) + '</td></tr>' +
+                '<tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Stock</td><td style="padding:8px 0;">' + p.stock + '</td></tr>' +
+                '<tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:8px 0;color:#6b7280;">Description</td><td style="padding:8px 0;">' + (p.shortDescription || '—') + '</td></tr>' +
+                '<tr><td style="padding:8px 0;color:#6b7280;">Soumis le</td><td style="padding:8px 0;">' + new Date(p.createdAt).toLocaleDateString('fr-FR') + '</td></tr>' +
+                '</table>';
             openModal('modal-product-detail');
         }
 
@@ -772,6 +860,7 @@
         }
 
         function openRejectProduct(id) { currentProductId = id; document.getElementById('reject-product-reason').value = ''; openModal('modal-reject-product'); }
+
         async function confirmRejectProduct() {
             try {
                 const res = await fetch(`${API}/admin/sellers/products/${currentProductId}/review`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approved: false, rejectionReason: document.getElementById('reject-product-reason').value.trim() }) });
@@ -779,22 +868,21 @@
             } catch (e) { showToast('Erreur réseau', 'error'); }
         }
 
+        // ── PAYOUTS ───────────────────────────────────────────────
         async function loadPayouts() {
             try {
-                const res = await fetch(`${API}/admin/sellers/payouts`); allPayouts = await res.json();
+                const res = await fetch(`${API}/admin/sellers/payouts`);
+                allPayouts = await res.json();
                 const pending = allPayouts.filter(p => p.status === 'Pending').length;
-                const b = document.getElementById('badge-payouts'); b.textContent = pending; b.classList.toggle('hidden', pending === 0);
+                const b = document.getElementById('badge-payouts');
+                b.textContent = pending; b.classList.toggle('hidden', pending === 0);
                 renderPayouts(allPayouts.filter(p => p.status === 'Pending'));
             } catch (e) { }
         }
 
-
-
-
-
-
         function filterPayouts(status, btn) {
-            document.querySelectorAll('#section-payouts .filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            document.querySelectorAll('#section-payouts .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             renderPayouts(allPayouts.filter(p => p.status === status));
         }
 
@@ -802,43 +890,61 @@
             const el = document.getElementById('payouts-list');
             if (!payouts.length) { el.innerHTML = '<div class="empty"><div class="icon">💸</div><p>Aucun paiement.</p></div>'; return; }
             const byVendor = {};
-            payouts.forEach(p => { if (!byVendor[p.sellerId]) byVendor[p.sellerId] = { sellerId: p.sellerId, shopName: p.shopName, payouts: [], total: 0, status: p.status }; byVendor[p.sellerId].payouts.push(p); byVendor[p.sellerId].total += p.netAmount; });
-            el.innerHTML = Object.values(byVendor).map(vendor => `
-                                            <div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">
-                                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-                                                    <div style="display:flex;align-items:center;gap:12px;">
-                                                        <div style="width:44px;height:44px;background:#10b981;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">${vendor.shopName[0]}</div>
-                                                        <div><div style="font-weight:800;font-size:16px;">${vendor.shopName}</div><div style="font-size:12px;color:#6b7280;">${vendor.payouts.length} commande(s)</div></div>
-                                                    </div>
-                                                    <div style="text-align:right;"><div style="font-size:20px;font-weight:800;color:#10b981;">${formatPrice(vendor.total)}</div><div style="font-size:12px;color:#6b7280;">Net après commission</div></div>
-                                                </div>
-                                                <div style="border-top:1px solid #f3f4f6;padding-top:12px;margin-bottom:14px;">
-                                                    ${vendor.payouts.map(p => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;font-size:13px;">
-                                                        <div><span style="font-weight:600;">Commande #${p.orderId}</span><span style="color:#6b7280;margin-left:8px;">📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                                                        <div style="text-align:right;"><div style="font-weight:700;color:#10b981;">${formatPrice(p.netAmount)}</div><div style="font-size:11px;color:#9ca3af;">Brut: ${formatPrice(p.grossAmount)} · Commission: ${formatPrice(p.commissionAmount)}</div></div>
-                                                    </div>`).join('')}
-                                                </div>
-                                                ${vendor.status === 'Pending' ? `
-                                                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                                                    <input type="text" id="ref-${vendor.sellerId}" value="${generateTransactionRef()}" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">
-                                                    <button onclick="payAllVendor(${vendor.sellerId},'${vendor.shopName}')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ${formatPrice(vendor.total)}</button>
-                                                </div>`: `<div style="font-size:13px;color:#6b7280;">✅ Payé le ${new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR')}${vendor.payouts[0].transactionReference ? ` · Réf: ${vendor.payouts[0].transactionReference}` : ''}</div>`}
-                                            </div>`).join('');
+            payouts.forEach(p => {
+                if (!byVendor[p.sellerId]) byVendor[p.sellerId] = { sellerId: p.sellerId, shopName: p.shopName, payouts: [], total: 0, status: p.status };
+                byVendor[p.sellerId].payouts.push(p);
+                byVendor[p.sellerId].total += p.netAmount;
+            });
+            el.innerHTML = Object.values(byVendor).map(vendor =>
+                '<div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">' +
+                '<div style="display:flex;align-items:center;gap:12px;">' +
+                '<div style="width:44px;height:44px;background:#10b981;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;">' + vendor.shopName[0] + '</div>' +
+                '<div><div style="font-weight:800;font-size:16px;">' + vendor.shopName + '</div><div style="font-size:12px;color:#6b7280;">' + vendor.payouts.length + ' commande(s)</div></div>' +
+                '</div>' +
+                '<div style="text-align:right;"><div style="font-size:20px;font-weight:800;color:#10b981;">' + formatPrice(vendor.total) + '</div><div style="font-size:12px;color:#6b7280;">Net après commission</div></div>' +
+                '</div>' +
+                '<div style="border-top:1px solid #f3f4f6;padding-top:12px;margin-bottom:14px;">' +
+                vendor.payouts.map(p =>
+                    '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;font-size:13px;">' +
+                    '<div><span style="font-weight:600;">Commande #' + p.orderId + '</span><span style="color:#6b7280;margin-left:8px;">📅 ' + new Date(p.createdAt).toLocaleDateString('fr-FR') + '</span></div>' +
+                    '<div style="text-align:right;"><div style="font-weight:700;color:#10b981;">' + formatPrice(p.netAmount) + '</div><div style="font-size:11px;color:#9ca3af;">Brut: ' + formatPrice(p.grossAmount) + ' · Commission: ' + formatPrice(p.commissionAmount) + '</div></div>' +
+                    '</div>'
+                ).join('') +
+                '</div>' +
+                (vendor.status === 'Pending' ?
+                    '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">' +
+                    '<input type="text" id="ref-' + vendor.sellerId + '" value="' + generateTransactionRef() + '" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">' +
+                    '<button onclick="payAllVendor(' + vendor.sellerId + ',\'' + vendor.shopName + '\')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ' + formatPrice(vendor.total) + '</button>' +
+                    '</div>' :
+                    '<div style="font-size:13px;color:#6b7280;">✅ Payé le ' + new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR') + (vendor.payouts[0].transactionReference ? ' · Réf: ' + vendor.payouts[0].transactionReference : '') + '</div>'
+                ) +
+                '</div>'
+            ).join('');
         }
 
-        function generateTransactionRef() { const now = new Date(); const date = now.toISOString().slice(0, 10).replace(/-/g, ''); const rand = Math.random().toString(36).substring(2, 7).toUpperCase(); return `OM-${date}-${rand}`; }
+        function generateTransactionRef() {
+            const now = new Date();
+            const date = now.toISOString().slice(0, 10).replace(/-/g, '');
+            const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+            return 'OM-' + date + '-' + rand;
+        }
 
         async function payAllVendor(sellerId, shopName) {
-            const ref = document.getElementById(`ref-${sellerId}`).value.trim();
+            const ref = document.getElementById('ref-' + sellerId).value.trim();
             if (!ref) { showToast('Entrez une référence de transaction', 'error'); return; }
-            if (!confirm(`Confirmer le paiement de tous les payouts de ${shopName} ?`)) return;
+            if (!confirm('Confirmer le paiement de tous les payouts de ' + shopName + ' ?')) return;
             const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending');
             let success = 0;
-            for (const p of pending) { try { const res = await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transactionReference: ref, notes: `Paiement groupé - ${shopName}` }) }); if (res.ok) success++; } catch (e) { } }
-            if (success > 0) { showToast(`${success} paiement(s) marqués comme payés ✓`, 'success'); loadPayouts(); }
+            for (const p of pending) {
+                try {
+                    const res = await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transactionReference: ref, notes: 'Paiement groupé - ' + shopName }) });
+                    if (res.ok) success++;
+                } catch (e) { }
+            }
+            if (success > 0) { showToast(success + ' paiement(s) marqués comme payés ✓', 'success'); loadPayouts(); }
             else showToast('Erreur lors du paiement', 'error');
         }
-
 
         async function viewSellerProducts(sellerId, shopName) {
             document.getElementById('modal-seller-products-title').textContent = '📦 ' + shopName;
@@ -850,43 +956,53 @@
                 if (!products.length) { document.getElementById('seller-products-content').innerHTML = '<div class="empty"><div class="icon">📦</div><p>Aucun produit</p></div>'; return; }
                 const labels = { Pending: 'En attente', Approved: 'Publié', Rejected: 'Refusé' };
                 const bclass = { Pending: 's-Pending', Approved: 's-Approved', Rejected: 's-Rejected' };
-                document.getElementById('seller-products-content').innerHTML = products.map(p => `
-            <div class="product-card">
-                <div class="product-img">${p.images?.length ? `<img src="${p.images[0]}" onerror="this.style.display='none'">` : '📦'}</div>
-                <div class="product-info">
-                    <div class="product-name">${p.name}</div>
-                    <div class="product-meta"><span>🏷️ ${p.category || '—'}</span><span>📦 Stock: ${p.stock}</span><span>📅 ${new Date(p.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                </div>
-                <div class="product-price">${formatPrice(p.price)}</div>
-                <span class="status-badge ${bclass[p.approvalStatus] || ''}">${labels[p.approvalStatus] || p.approvalStatus}</span>
-                <div class="seller-actions">
-                    ${p.approvalStatus === 'Pending' ? `<button class="btn btn-approve" onclick="approveProduct(${p.id});setTimeout(()=>viewSellerProducts(${sellerId},'${shopName}'),800)">✓ Publier</button><button class="btn btn-reject" onclick="openRejectProduct(${p.id})">✗ Refuser</button>` : ''}
-                    ${p.approvalStatus === 'Approved' && p.productId ? `<a href="product-details.html?id=${p.productId}" target="_blank" class="btn" style="background:#dbeafe;color:#1e40af;">🌐 Voir</a>` : ''}
-                </div>
-            </div>`).join('');
-            } catch (e) { document.getElementById('seller-products-content').innerHTML = '<div class="empty"><p>Erreur</p></div>'; }
+                document.getElementById('seller-products-content').innerHTML = products.map(p =>
+                    '<div class="product-card">' +
+                    '<div class="product-img">' + (p.images?.length ? '<img src="' + p.images[0] + '" onerror="this.style.display=\'none\'">' : '📦') + '</div>' +
+                    '<div class="product-info">' +
+                    '<div class="product-name">' + p.name + '</div>' +
+                    '<div class="product-meta"><span>🏷️ ' + (p.category || '—') + '</span><span>📦 Stock: ' + p.stock + '</span><span>📅 ' + new Date(p.createdAt).toLocaleDateString('fr-FR') + '</span></div>' +
+                    '</div>' +
+                    '<div class="product-price">' + formatPrice(p.price) + '</div>' +
+                    '<span class="status-badge ' + (bclass[p.approvalStatus] || '') + '">' + (labels[p.approvalStatus] || p.approvalStatus) + '</span>' +
+                    '<div class="seller-actions">' +
+                    (p.approvalStatus === 'Pending' ? '<button class="btn btn-approve" onclick="approveProduct(' + p.id + ');setTimeout(()=>viewSellerProducts(' + sellerId + ',\'' + shopName + '\'),800)">✓ Publier</button><button class="btn btn-reject" onclick="openRejectProduct(' + p.id + ')">✗ Refuser</button>' : '') +
+                    (p.approvalStatus === 'Approved' && p.productId ? '<a href="product-details.html?id=' + p.productId + '" target="_blank" class="btn" style="background:#dbeafe;color:#1e40af;">🌐 Voir</a>' : '') +
+                    '</div></div>'
+                ).join('');
+            } catch (e) {
+                document.getElementById('seller-products-content').innerHTML = '<div class="empty"><p>Erreur</p></div>';
+            }
         }
 
+        // ── PAGINATION HELPER ─────────────────────────────────────
+        function renderPagBar(barId, currentPage, totalPages, goFn) {
+            var bar = document.getElementById(barId);
+            if (!bar) return;
+            if (totalPages <= 1) { bar.innerHTML = ''; return; }
+            var btnS = 'padding:8px 16px;min-width:60px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:#374151;font-weight:700;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;';
+            var pages = [];
+            pages.push('<button onclick="' + goFn + '(' + (currentPage - 1) + ')" ' + (currentPage === 1 ? 'disabled' : '') + ' style="' + btnS + (currentPage === 1 ? 'opacity:.4;cursor:not-allowed;' : '') + '">Prec</button>');
+            for (var i = 1; i <= totalPages; i++) {
+                var isActive = currentPage === i;
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    pages.push('<button onclick="' + goFn + '(' + i + ')" style="' + btnS + (isActive ? 'background:#111827;color:white;border-color:#111827;' : '') + '">' + i + '</button>');
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
+                }
+            }
+            pages.push('<button onclick="' + goFn + '(' + (currentPage + 1) + ')" ' + (currentPage === totalPages ? 'disabled' : '') + ' style="' + btnS + (currentPage === totalPages ? 'opacity:.4;cursor:not-allowed;' : '') + '">Suiv</button>');
+            bar.innerHTML = pages.join('');
+        }
 
-
+        // ── UTILS ─────────────────────────────────────────────────
         function openModal(id) { document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-        document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+            m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+        });
         function formatPrice(p) { return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 }).format(p || 0); }
-        function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3000); }
+        function showToast(msg, type) { type = type || ''; const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => { t.className = 'toast'; }, 3000); }
     </script>
-    <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
-
-
-    <div class="modal-overlay" id="modal-seller-products">
-        <div class="modal" style="max-width:800px;max-height:85vh;overflow-y:auto;">
-            <h3 id="modal-seller-products-title">Produits de la boutique</h3>
-            <div id="seller-products-content"></div>
-            <div class="modal-actions" style="margin-top:16px;">
-                <button class="btn-modal-cancel" onclick="closeModal('modal-seller-products')">Fermer</button>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>
