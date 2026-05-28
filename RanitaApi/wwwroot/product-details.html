@@ -15,6 +15,9 @@
     <meta property="og:locale" content="fr_FR">
     <meta name="twitter:card" content="summary_large_image">
 
+    <meta name="geo.region" content="CI">
+    <meta name="geo.placename" content="Abidjan, Côte d'Ivoire">
+    <meta name="keywords" content="acheter en ligne Côte d'Ivoire, livraison Abidjan, boutique en ligne CI, Ranita Market">
     <style>
         * {
             box-sizing: border-box;
@@ -1020,6 +1023,7 @@
                 font-size: 18px;
             }
         }
+
         #similarProducts {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -1033,20 +1037,21 @@
                 gap: 10px;
             }
         }
-            #similarProducts .p-card {
+
+        #similarProducts .p-card {
+            width: 100%;
+        }
+
+        #similarProducts .p-img {
+            height: 160px;
+            overflow: hidden;
+        }
+
+            #similarProducts .p-img img {
                 width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
-
-            #similarProducts .p-img {
-                height: 160px;
-                overflow: hidden;
-            }
-
-                #similarProducts .p-img img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
 
 
 
