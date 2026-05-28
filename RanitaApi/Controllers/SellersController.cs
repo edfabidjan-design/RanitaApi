@@ -35,7 +35,6 @@ namespace RanitaApi.Controllers
             {
                 if (existing.Status == "Rejected")
                 {
-                    // Mettre à jour la demande existante plutôt qu'en créer une nouvelle
                     existing.ShopName = dto.ShopName.Trim();
                     existing.ShopDescription = dto.ShopDescription?.Trim();
                     existing.PhoneNumber = dto.PhoneNumber.Trim();
@@ -46,6 +45,32 @@ namespace RanitaApi.Controllers
                     existing.RejectionReason = null;
                     existing.UpdatedAt = DateTime.UtcNow;
                     await _db.SaveChangesAsync();
+
+                    try
+                    {
+                        var adminSubs = await _db.PushSubscriptions.ToListAsync();
+                        var pushAdmin = new WebPush.WebPushClient();
+                        var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com",
+                            "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY",
+                            "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs");
+                        var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            title = "🏪 Nouvelle demande vendeur !",
+                            body = $"\"{dto.ShopName}\" a soumis une nouvelle demande après refus."
+                        });
+                        foreach (var s in adminSubs)
+                        {
+                            try
+                            {
+                                await pushAdmin.SendNotificationAsync(
+                                new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth),
+                                payloadAdmin, vapidAdmin);
+                            }
+                            catch { }
+                        }
+                    }
+                    catch { }
+
                     return Ok(new { message = "Nouvelle demande envoyée, en attente de validation", sellerId = existing.Id });
                 }
                 return BadRequest(new { message = "Vous avez déjà soumis une demande de boutique", status = existing.Status });
@@ -71,10 +96,10 @@ namespace RanitaApi.Controllers
             try
             {
                 var adminSubs = await _db.PushSubscriptions.ToListAsync();
-                var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
-                var vapidPrivateKey = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
                 var pushAdmin = new WebPush.WebPushClient();
-                var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com", vapidPublicKey, vapidPrivateKey);
+                var vapidAdmin = new WebPush.VapidDetails("mailto:contact@ranita-shop.com",
+                    "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY",
+                    "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs");
                 var payloadAdmin = System.Text.Json.JsonSerializer.Serialize(new
                 {
                     title = "🏪 Nouveau vendeur !",
@@ -82,7 +107,12 @@ namespace RanitaApi.Controllers
                 });
                 foreach (var s in adminSubs)
                 {
-                    try { await pushAdmin.SendNotificationAsync(new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth), payloadAdmin, vapidAdmin); }
+                    try
+                    {
+                        await pushAdmin.SendNotificationAsync(
+                        new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth),
+                        payloadAdmin, vapidAdmin);
+                    }
                     catch { }
                 }
             }
