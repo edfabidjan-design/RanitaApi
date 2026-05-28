@@ -2364,7 +2364,12 @@
             } else {
                 nav.innerHTML = '<a href="login.html" style="color:var(--g);font-weight:700;" class="btn-outline">Connexion</a><a href="register.html" class="btn-primary" style="margin-left:6px;">Inscription</a>';
             }
-            window.toggleMenu = function () { var m = document.getElementById('cMenu'); if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none'; };
+            window.toggleMenu = function (e) {
+                if (e) e.stopPropagation();
+                var m = document.getElementById('cMenu');
+                if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+            };
+
             window.doLogout = function () { localStorage.removeItem('client'); location.reload(); };
             document.addEventListener('click', function (e) { var m = document.getElementById('cMenu'); if (m && !e.target.closest('#authNav')) m.style.display = 'none'; });
 
