@@ -659,7 +659,9 @@
             if (currentPage > totalPages) currentPage = 1;
             const paginated = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-            productsCount.textContent = `${sorted.length} produit${sorted.length !== 1 ? 's' : ''} trouvé${sorted.length !== 1 ? 's' : ''}`;
+            var debut = (currentPage - 1) * PAGE_SIZE + 1;
+            var fin = Math.min(currentPage * PAGE_SIZE, sorted.length);
+            productsCount.textContent = sorted.length + ' produit' + (sorted.length !== 1 ? 's' : '') + ' trouvé' + (sorted.length !== 1 ? 's' : '') + (totalPages > 1 ? ' — Page ' + currentPage + ' sur ' + totalPages + ' (' + debut + '-' + fin + ')' : '');
 
             const bar = document.getElementById('paginationBar');
             if (totalPages <= 1) { bar.innerHTML = ''; }
