@@ -1303,16 +1303,13 @@
                 '<button onclick="navigator.clipboard.writeText(\'0757415197\').then(function(){' +
                 'var b=document.getElementById(\'copyWaveBtn\');' +
                 'b.textContent=\'✅ Numéro copié !\';b.style.background=\'#dbeafe\';b.style.borderColor=\'#1d4ed8\';b.style.color=\'#1e40af\';' +
-                'document.getElementById(\'openWaveBtn\').style.display=\'flex\';' +
                 'var c=document.getElementById(\'confirmWaveBtn\');' +
                 'c.disabled=false;c.style.background=\'#f3f4f6\';c.style.color=\'#374151\';c.style.cursor=\'pointer\';c.textContent=\'✅ Commande enregistrée\';' +
                 '});" id="copyWaveBtn" style="width:100%;background:#eff6ff;border:2px solid #bfdbfe;color:#1d4ed8;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:8px;">📋 Copier le numéro</button>' +
-               '<a href="intent://send#Intent;scheme=wave;package=com.wave.money;end" id="openWaveBtn" style="display:none;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:white;padding:12px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:16px;">🌊 Ouvrir Wave</a>' +
-                '<p style="font-size:11px;color:#9ca3af;margin-bottom:12px;">Envoyer → collez le numéro → tapez le montant → indiquez <strong>CMD-' + orderId + '</strong> comme motif</p>' +
+                '<p style="font-size:11px;color:#9ca3af;margin-bottom:12px;margin-top:8px;">Ouvrez Wave → Envoyer → collez le numéro → tapez le montant → indiquez <strong>CMD-' + orderId + '</strong> comme motif</p>' +
                 '<button id="confirmWaveBtn" disabled onclick="this.closest(\'div[style*=fixed]\').remove();location.href=\'thank-you.html\';" style="width:100%;background:#e5e7eb;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:not-allowed;font-size:14px;color:#9ca3af;">⚠️ Copiez le numéro d\'abord</button>' +
                 '<p style="font-size:11px;color:#9ca3af;margin-top:8px;">Votre commande sera validée après réception du paiement Wave.</p></div>';
             document.body.appendChild(modal);
         }
-    </script>
 </body>
 </html>
