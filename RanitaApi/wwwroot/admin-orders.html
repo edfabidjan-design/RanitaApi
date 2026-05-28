@@ -210,6 +210,28 @@
     <div class="admin-container">
         <h1>📦 Gestion des commandes</h1>
         <div class="stats-bar" id="statsBar"></div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <span id="adminOrdersCount" style="font-size:14px;color:#6b7280;font-weight:600;"></span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <input type="text" placeholder="🔍 Nom, téléphone, #ID..."
+                       oninput="adminOrdersSearch=this.value;adminOrdersPage=1;renderOrders()"
+                       style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;width:220px;outline:none;">
+                <select onchange="adminOrdersFilter=this.value;adminOrdersPage=1;renderOrders()"
+                        style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;outline:none;cursor:pointer;">
+                    <option value="">Tous les statuts</option>
+                    <option value="En attente">En attente</option>
+                    <option value="Validée">Validée</option>
+                    <option value="Livrée">Livrée</option>
+                    <option value="Annulée">Annulée</option>
+                    <option value="Remboursement demandé">Remb. demandé</option>
+                    <option value="Remboursé">Remboursé</option>
+                </select>
+            </div>
+        </div>
+        <div id="adminOrdersPaginationBar" style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap;"></div>
+
+
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead>
@@ -217,6 +239,7 @@
                 </thead>
                 <tbody id="ordersTable"></tbody>
             </table>
+            <div id="adminOrdersPaginationBar" style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap;"></div>
         </div>
     </div>
 
@@ -262,58 +285,118 @@
             loadOrders();
         }
 
+        let adminAllOrders = [];
+        let adminOrdersPage = 1;
+        const ORDERS_PAGE_SIZE = 20;
+        let adminOrdersSearch = '';
+        let adminOrdersFilter = '';
+
         async function loadOrders() {
             const res = await fetch(`${API_BASE}/orders`, { headers: { 'Authorization': `Bearer ${token}` } });
-            const orders = await res.json();
+            adminAllOrders = await res.json();
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const filtered = adminAllOrders.filter(o => {
+                const matchSearch = !adminOrdersSearch ||
+                    o.customerName.toLowerCase().includes(adminOrdersSearch.toLowerCase()) ||
+                    o.customerPhone.includes(adminOrdersSearch) ||
+                    String(o.id).includes(adminOrdersSearch);
+                const matchFilter = !adminOrdersFilter || o.status === adminOrdersFilter;
+                return matchSearch && matchFilter;
+            });
+
+            // Stats
             const stats = {
-                total: orders.length,
-                attente: orders.filter(o => o.status === "En attente").length,
-                validee: orders.filter(o => o.status === "Validée").length,
-                livree: orders.filter(o => o.status === "Livrée").length,
-                ca: orders.filter(o => !["Annulée", "Échec livraison", "Remboursé"].includes(o.status)).reduce((s, o) => s + o.total, 0)
+                total: adminAllOrders.length,
+                attente: adminAllOrders.filter(o => o.status === "En attente").length,
+                validee: adminAllOrders.filter(o => o.status === "Validée").length,
+                livree: adminAllOrders.filter(o => o.status === "Livrée").length,
+                ca: adminAllOrders.filter(o => !["Annulée", "Échec livraison", "Remboursé"].includes(o.status)).reduce((s, o) => s + o.total, 0)
             };
             document.getElementById("statsBar").innerHTML = `
-                            <div class="stat-card"><div class="stat-num">${stats.total}</div><div class="stat-label">Total</div></div>
-                            <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${stats.attente}</div><div class="stat-label">Attente</div></div>
-                            <div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${stats.validee}</div><div class="stat-label">Validées</div></div>
-                            <div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${stats.livree}</div><div class="stat-label">Livrées</div></div>
-                            <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${orders.filter(o => o.status === "Annulée").length}</div><div class="stat-label">Annulées</div></div>
-                            <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${orders.filter(o => o.status === "Remboursé").length}</div><div class="stat-label">Remb.</div></div>
-                            <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${orders.filter(o => o.status === "Remboursement demandé").length}</div><div class="stat-label">Remb.dem.</div></div>
-                            <div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num" style="font-size:13px;">${Number(stats.ca).toLocaleString()} F</div><div class="stat-label">CA</div></div>`;
-            window._adminOrders = orders;
-            document.getElementById("ordersTable").innerHTML = orders.map(o => `
-                            <tr>
-                                <td><strong>#${o.id}</strong></td>
-                                <td>${o.customerName}</td>
-                                <td>${o.customerPhone}</td>
-                                <td style="max-width:150px;font-size:12px;">${o.customerAddress}</td>
-                                <td>${o.paymentMethod}</td>
-                                <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
-                                <td>
-                                    ${o.status === "Remboursement demandé" ? `
-                                    <div style="display:flex;flex-direction:column;gap:6px;">
-                                        <span class="status-badge status-refund">💰 Remb. demandé</span>
-                                        <button onclick="approveRefund(${o.id})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ Valider</button>
-                                        <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
-                                    </div>`: `
-                                    <select class="status-select" style="${getStatusStyle(o.status)}" onchange="updateStatus(${o.id},this.value,this)">
-                                        <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                                        <option ${o.status === "Confirmée par vendeur" ? "selected" : ""}>Confirmée par vendeur</option>
-                                        <option ${o.status === "Indisponible vendeur" ? "selected" : ""}>Indisponible vendeur</option>
-                                        <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-                                        <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-                                        <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-                                        <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
-                                        <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
-                                        <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
-                                    </select>
-                                    ${o.status === "Confirmée par vendeur" ? `<div style="margin-top:4px;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;">✅ Prêt à livrer !</div>` : ''}
-                                    ${(o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMotif ? `<div style="margin-top:4px;background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:6px;font-size:11px;">${o.refundMotif}</div>` : ''}`}
-                                </td>
-                                <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
-                                <td><button onclick="showDetails(${o.id})">👁 Voir</button></td>
-                            </tr>`).join('');
+        <div class="stat-card"><div class="stat-num">${stats.total}</div><div class="stat-label">Total</div></div>
+        <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${stats.attente}</div><div class="stat-label">Attente</div></div>
+        <div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${stats.validee}</div><div class="stat-label">Validées</div></div>
+        <div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${stats.livree}</div><div class="stat-label">Livrées</div></div>
+        <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${adminAllOrders.filter(o => o.status === "Annulée").length}</div><div class="stat-label">Annulées</div></div>
+        <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${adminAllOrders.filter(o => o.status === "Remboursé").length}</div><div class="stat-label">Remb.</div></div>
+        <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${adminAllOrders.filter(o => o.status === "Remboursement demandé").length}</div><div class="stat-label">Remb.dem.</div></div>
+        <div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num" style="font-size:13px;">${Number(stats.ca).toLocaleString()} F</div><div class="stat-label">CA</div></div>`;
+
+            // Pagination
+            const totalPages = Math.ceil(filtered.length / ORDERS_PAGE_SIZE);
+            if (adminOrdersPage > totalPages) adminOrdersPage = 1;
+            const paginated = filtered.slice(
+                (adminOrdersPage - 1) * ORDERS_PAGE_SIZE,
+                adminOrdersPage * ORDERS_PAGE_SIZE
+            );
+
+            // Compteur
+            document.getElementById('adminOrdersCount').textContent =
+                filtered.length + ' commande' + (filtered.length !== 1 ? 's' : '') +
+                (totalPages > 1 ? ' — Page ' + adminOrdersPage + '/' + totalPages : '');
+
+            window._adminOrders = adminAllOrders;
+
+            // Tableau
+            document.getElementById("ordersTable").innerHTML = paginated.map(o => `
+        <tr>
+            <td><strong>#${o.id}</strong></td>
+            <td>${o.customerName}</td>
+            <td>${o.customerPhone}</td>
+            <td style="max-width:150px;font-size:12px;">${o.customerAddress}</td>
+            <td>${o.paymentMethod}</td>
+            <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
+            <td>
+                ${o.status === "Remboursement demandé" ? `
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <span class="status-badge status-refund">💰 Remb. demandé</span>
+                    <button onclick="approveRefund(${o.id})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ Valider</button>
+                    <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
+                </div>` : `
+                <select class="status-select" style="${getStatusStyle(o.status)}" onchange="updateStatus(${o.id},this.value,this)">
+                    <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+                    <option ${o.status === "Confirmée par vendeur" ? "selected" : ""}>Confirmée par vendeur</option>
+                    <option ${o.status === "Indisponible vendeur" ? "selected" : ""}>Indisponible vendeur</option>
+                    <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
+                    <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
+                    <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
+                    <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
+                    <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
+                    <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
+                </select>
+                ${o.status === "Confirmée par vendeur" ? `<div style="margin-top:4px;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;">✅ Prêt à livrer !</div>` : ''}
+                ${(o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMotif ? `<div style="margin-top:4px;background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:6px;font-size:11px;">${o.refundMotif}</div>` : ''}`}
+            </td>
+            <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
+            <td><button onclick="showDetails(${o.id})">👁 Voir</button></td>
+        </tr>`).join('');
+
+            // Barre pagination
+            var bar = document.getElementById('adminOrdersPaginationBar');
+            if (totalPages <= 1) { bar.innerHTML = ''; return; }
+            var pages = [];
+            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage - 1) + ')" ' + (adminOrdersPage === 1 ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (adminOrdersPage === 1 ? 'opacity:.4;' : '') + '">&larr; Préc</button>');
+            for (var i = 1; i <= totalPages; i++) {
+                var isActive = adminOrdersPage === i;
+                if (i === 1 || i === totalPages || (i >= adminOrdersPage - 1 && i <= adminOrdersPage + 1)) {
+                    pages.push('<button onclick="ordersGoPage(' + i + ')" style="padding:8px 14px;border-radius:8px;border:1px solid ' + (isActive ? '#10b981' : '#e5e7eb') + ';background:' + (isActive ? '#10b981' : 'white') + ';color:' + (isActive ? 'white' : '#374151') + ';font-weight:700;cursor:pointer;">' + i + '</button>');
+                } else if (i === adminOrdersPage - 2 || i === adminOrdersPage + 2) {
+                    pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
+                }
+            }
+            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage + 1) + ')" ' + (adminOrdersPage === totalPages ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (adminOrdersPage === totalPages ? 'opacity:.4;' : '') + ' ">Suiv &rarr;</button>');
+            bar.innerHTML = pages.join('');
+        }
+
+        function ordersGoPage(p) {
+            var total = Math.ceil(adminAllOrders.length / ORDERS_PAGE_SIZE);
+            if (p < 1 || p > total) return;
+            adminOrdersPage = p;
+            renderOrders();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function updateStatus(id, status, selectEl) {
