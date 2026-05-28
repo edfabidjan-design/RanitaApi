@@ -2419,7 +2419,9 @@
 
     <!-- Produits + settings -->
     <script>
-        localStorage.setItem('_pwa_ts', Date.now());
+        localStorage.setItem('_pwa_last_time', Date.now());
+        localStorage.setItem('_pwa_last_page', '/index.html');
+
         window.scrollTo(0, 0);  // ← ligne 2422
 
         const API = '/api/products';
