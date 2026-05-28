@@ -1,0 +1,699 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - Ranita Market</title>
+    <link rel="stylesheet" href="products.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <style>
+        :root {
+            --g: #10b981;
+            --gd: #059669;
+            --t: #111827;
+            --t2: #6b7280;
+            --t3: #9ca3af;
+            --w: #ffffff;
+            --w2: #f9fafb;
+            --w3: #f3f4f6;
+            --wb: #e5e7eb;
+            --red: #ef4444;
+            --mob-h: 56px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--w2);
+            color: var(--t);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .site-header {
+            background: rgba(13,17,23,.97);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .site-logo {
+            font-size: 17px;
+            font-weight: 800;
+            color: #F0F6FC;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .site-logo span {
+                color: var(--g);
+            }
+
+        .site-header nav a {
+            color: #8B949E;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            margin-left: 16px;
+            transition: color .2s;
+        }
+
+            .site-header nav a:hover {
+                color: var(--g);
+            }
+
+        /* Mobile header */
+        .mob-header {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(13,17,23,.97);
+            height: var(--mob-h);
+            padding: 0 14px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .mob-logo {
+            font-size: 15px;
+            font-weight: 800;
+            color: #F0F6FC;
+            text-decoration: none;
+        }
+
+            .mob-logo span {
+                color: var(--g);
+            }
+
+        /* Page */
+        .profile-page {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 32px 16px 80px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--t);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-sub {
+            font-size: 13px;
+            color: var(--t2);
+            margin-bottom: 28px;
+        }
+
+        /* Avatar */
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--wb);
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+        }
+
+        .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--g), var(--gd));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .avatar-info h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--t);
+            margin-bottom: 4px;
+        }
+
+        .avatar-info p {
+            font-size: 13px;
+            color: var(--t2);
+        }
+
+        .avatar-badge {
+            margin-left: auto;
+            background: #d1fae5;
+            color: #065f46;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid var(--wb);
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--t);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--w3);
+        }
+
+        /* Form */
+        .field {
+            margin-bottom: 14px;
+        }
+
+            .field label {
+                display: block;
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--t3);
+                text-transform: uppercase;
+                letter-spacing: .6px;
+                margin-bottom: 6px;
+            }
+
+            .field input {
+                width: 100%;
+                padding: 11px 14px;
+                border: 1px solid var(--wb);
+                border-radius: 10px;
+                font-size: 14px;
+                font-family: inherit;
+                background: var(--w3);
+                color: var(--t);
+                outline: none;
+                transition: border-color .2s, background .2s;
+            }
+
+                .field input:focus {
+                    border-color: var(--g);
+                    background: white;
+                }
+
+                .field input:disabled {
+                    opacity: .6;
+                    cursor: not-allowed;
+                }
+
+            .field .hint {
+                font-size: 11px;
+                color: var(--t3);
+                margin-top: 4px;
+            }
+
+        /* Buttons */
+        .btn-save {
+            width: 100%;
+            background: linear-gradient(135deg, var(--g), var(--gd));
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity .2s, transform .1s;
+            margin-top: 4px;
+        }
+
+            .btn-save:hover {
+                opacity: .9;
+                transform: translateY(-1px);
+            }
+
+            .btn-save:disabled {
+                opacity: .6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .btn-danger {
+            width: 100%;
+            background: #fee2e2;
+            color: var(--red);
+            border: 1px solid #fca5a5;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s;
+        }
+
+            .btn-danger:hover {
+                background: var(--red);
+                color: white;
+            }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #111827;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 9999;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all .3s;
+            max-width: 300px;
+        }
+
+            .toast.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .toast.success {
+                background: var(--gd);
+            }
+
+            .toast.error {
+                background: var(--red);
+            }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--wb);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,.04);
+        }
+
+        .stat-num {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--t);
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--t2);
+        }
+
+        /* Auth modal */
+        .auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .auth-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+            .auth-modal h2 {
+                font-size: 20px;
+                margin-bottom: 8px;
+            }
+
+            .auth-modal p {
+                font-size: 14px;
+                color: var(--t2);
+                margin-bottom: 24px;
+            }
+
+        .btn-login {
+            display: block;
+            background: var(--g);
+            color: white;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            .site-header {
+                display: none;
+            }
+
+            .mob-header {
+                display: flex;
+            }
+
+            .profile-page {
+                padding: calc(var(--mob-h) + 16px) 12px 80px;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .stat-num {
+                font-size: 18px;
+            }
+
+            .avatar-badge {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Desktop -->
+    <header class="site-header">
+        <a href="index.html" class="site-logo">🛒 Ranita<span>Market</span></a>
+        <nav>
+            <a href="products.html">Produits</a>
+            <a href="client-orders.html">Mes commandes</a>
+            <a href="index.html">← Accueil</a>
+        </nav>
+    </header>
+
+    <!-- Header Mobile -->
+    <nav class="mob-header">
+        <a href="index.html" class="mob-logo">🛒 Ranita<span>Market</span></a>
+        <a href="index.html" style="color:#8B949E;font-size:13px;text-decoration:none;">← Accueil</a>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div class="auth-overlay" id="authOverlay" style="display:none;">
+        <div class="auth-modal">
+            <div style="font-size:48px;margin-bottom:12px;">🔒</div>
+            <h2>Connexion requise</h2>
+            <p>Connectez-vous pour accéder à votre profil.</p>
+            <a href="login.html?redirect=profile.html" class="btn-login">Se connecter</a>
+            <a href="index.html" style="display:block;color:var(--t2);font-size:13px;text-decoration:none;">← Retour à la boutique</a>
+        </div>
+    </div>
+
+    <div class="profile-page" id="profilePage" style="display:none;">
+
+        <div class="page-title">👤 Mon Profil</div>
+        <p class="page-sub">Gérez vos informations personnelles</p>
+
+        <!-- Avatar -->
+        <div class="avatar-section">
+            <div class="avatar" id="avatarInitial">?</div>
+            <div class="avatar-info">
+                <h3 id="avatarName">—</h3>
+                <p id="avatarEmail">—</p>
+            </div>
+            <span class="avatar-badge">✅ Compte actif</span>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num" id="statOrders">—</div>
+                <div class="stat-label">Commandes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="statCredits">—</div>
+                <div class="stat-label">Crédits F</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="statReferrals">—</div>
+                <div class="stat-label">Parrainages</div>
+            </div>
+        </div>
+
+        <!-- Infos personnelles -->
+        <div class="card">
+            <div class="card-title">✏️ Informations personnelles</div>
+            <div class="field">
+                <label>Nom complet</label>
+                <input type="text" id="fieldName" placeholder="Votre nom complet">
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="fieldEmail" placeholder="votre@email.com" disabled>
+                <span class="hint">L'email ne peut pas être modifié</span>
+            </div>
+            <div class="field">
+                <label>Téléphone</label>
+                <input type="tel" id="fieldPhone" placeholder="07 00 00 00 00">
+            </div>
+            <div class="field">
+                <label>Adresse par défaut</label>
+                <input type="text" id="fieldAddress" placeholder="Ex: Cocody, Rue des Jardins...">
+                <span class="hint">Pré-remplie automatiquement au checkout</span>
+            </div>
+            <button class="btn-save" id="btnSaveInfo" onclick="saveInfo()">💾 Enregistrer les modifications</button>
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="card">
+            <div class="card-title">🔒 Changer le mot de passe</div>
+            <div class="field">
+                <label>Nouveau mot de passe</label>
+                <input type="password" id="fieldNewPwd" placeholder="Nouveau mot de passe">
+            </div>
+            <div class="field">
+                <label>Confirmer le mot de passe</label>
+                <input type="password" id="fieldConfirmPwd" placeholder="Confirmer le mot de passe">
+            </div>
+            <button class="btn-save" id="btnSavePwd" onclick="savePassword()">🔒 Mettre à jour le mot de passe</button>
+        </div>
+
+        <!-- Parrainage -->
+        <div class="card" id="referralCard" style="display:none;">
+            <div class="card-title">🎁 Mon code parrainage</div>
+            <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <div>
+                    <div style="font-size:11px;color:#065f46;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Votre code</div>
+                    <div id="referralCode" style="font-size:22px;font-weight:800;color:#059669;letter-spacing:3px;"></div>
+                </div>
+                <button onclick="copyReferral()" style="background:#10b981;color:white;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">📋 Copier</button>
+            </div>
+            <p style="font-size:13px;color:var(--t2);line-height:1.6;">Partagez ce code avec vos amis. Pour chaque ami qui effectue son premier achat, vous recevez des crédits sur votre compte.</p>
+        </div>
+
+        <!-- Déconnexion -->
+        <div class="card">
+            <div class="card-title" style="color:var(--red);">⚠️ Zone de danger</div>
+            <button class="btn-danger" onclick="doLogout()">🚪 Se déconnecter</button>
+        </div>
+
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API = '/api/client-auth';
+        var client = JSON.parse(localStorage.getItem('client') || 'null');
+
+        // Auth check
+        if (!client) {
+            document.getElementById('authOverlay').style.display = 'flex';
+        } else {
+            document.getElementById('profilePage').style.display = 'block';
+            initProfile();
+        }
+
+        function initProfile() {
+            // Avatar
+            var initial = (client.name || client.fullName || '?')[0].toUpperCase();
+            document.getElementById('avatarInitial').textContent = initial;
+            document.getElementById('avatarName').textContent = client.name || client.fullName || '—';
+            document.getElementById('avatarEmail').textContent = client.email || '—';
+
+            // Champs
+            document.getElementById('fieldName').value = client.name || client.fullName || '';
+            document.getElementById('fieldEmail').value = client.email || '';
+            document.getElementById('fieldPhone').value = client.phone || '';
+            document.getElementById('fieldAddress').value = client.address || '';
+
+            // Stats + parrainage
+            loadStats();
+        }
+
+        async function loadStats() {
+            try {
+                var res = await fetch(API + '/referral/' + client.id);
+                var data = await res.json();
+
+                document.getElementById('statCredits').textContent = Number(data.referralCredits || 0).toLocaleString('fr-FR');
+                document.getElementById('statReferrals').textContent = data.referralCount || 0;
+
+                if (data.referralCode) {
+                    document.getElementById('referralCode').textContent = data.referralCode;
+                    document.getElementById('referralCard').style.display = 'block';
+                }
+            } catch(e) {
+                document.getElementById('statCredits').textContent = '0';
+                document.getElementById('statReferrals').textContent = '0';
+            }
+
+            // Nombre de commandes
+            try {
+                var res2 = await fetch('/api/orders/client/' + client.id);
+                var orders = await res2.json();
+                document.getElementById('statOrders').textContent = Array.isArray(orders) ? orders.length : '—';
+            } catch(e) {
+                document.getElementById('statOrders').textContent = '—';
+            }
+        }
+
+        async function saveInfo() {
+            var name = document.getElementById('fieldName').value.trim();
+            var phone = document.getElementById('fieldPhone').value.trim();
+            var address = document.getElementById('fieldAddress').value.trim();
+
+            if (!name) { showToast('Le nom est obligatoire', 'error'); return; }
+
+            var btn = document.getElementById('btnSaveInfo');
+            btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
+
+            try {
+                var res = await fetch(API + '/update/' + client.id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName: name, phone: phone, address: address })
+                });
+
+                if (res.ok) {
+                    // Mettre à jour le localStorage
+                    client.name = name;
+                    client.fullName = name;
+                    client.phone = phone;
+                    client.address = address;
+                    localStorage.setItem('client', JSON.stringify(client));
+
+                    // Mettre à jour l'avatar
+                    document.getElementById('avatarInitial').textContent = name[0].toUpperCase();
+                    document.getElementById('avatarName').textContent = name;
+
+                    showToast('Profil mis à jour ✓', 'success');
+                } else {
+                    var err = await res.text();
+                    showToast('Erreur : ' + err, 'error');
+                }
+            } catch(e) {
+                showToast('Erreur réseau', 'error');
+            }
+
+            btn.disabled = false; btn.textContent = '💾 Enregistrer les modifications';
+        }
+
+        async function savePassword() {
+            var newPwd = document.getElementById('fieldNewPwd').value;
+            var confirmPwd = document.getElementById('fieldConfirmPwd').value;
+
+            if (!newPwd) { showToast('Entrez un nouveau mot de passe', 'error'); return; }
+            if (newPwd.length < 6) { showToast('Minimum 6 caractères', 'error'); return; }
+            if (newPwd !== confirmPwd) { showToast('Les mots de passe ne correspondent pas', 'error'); return; }
+
+            var btn = document.getElementById('btnSavePwd');
+            btn.disabled = true; btn.textContent = '⏳ Mise à jour...';
+
+            try {
+                var res = await fetch(API + '/change-password/' + client.id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newPassword: newPwd })
+                });
+
+                if (res.ok) {
+                    document.getElementById('fieldNewPwd').value = '';
+                    document.getElementById('fieldConfirmPwd').value = '';
+                    showToast('Mot de passe mis à jour ✓', 'success');
+                } else {
+                    showToast('Erreur lors de la mise à jour', 'error');
+                }
+            } catch(e) {
+                showToast('Erreur réseau', 'error');
+            }
+
+            btn.disabled = false; btn.textContent = '🔒 Mettre à jour le mot de passe';
+        }
+
+        function copyReferral() {
+            var code = document.getElementById('referralCode').textContent;
+            var url = window.location.origin + '/register.html?ref=' + code;
+            navigator.clipboard.writeText(url).then(function() {
+                showToast('Lien de parrainage copié ✓', 'success');
+            }).catch(function() {
+                navigator.clipboard.writeText(code).then(function() {
+                    showToast('Code copié : ' + code, 'success');
+                });
+            });
+        }
+
+        function doLogout() {
+            if (confirm('Voulez-vous vous déconnecter ?')) {
+                localStorage.removeItem('client');
+                location.href = 'index.html';
+            }
+        }
+
+        function showToast(msg, type) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show ' + (type || '');
+            setTimeout(function() { t.className = 'toast'; }, 3000);
+        }
+    </script>
+
+    <script src="/install-prompt.js"></script>
+    <script src="/cart-badge.js"></script>
+</body>
+</html>
