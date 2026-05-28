@@ -552,18 +552,6 @@
 
     <script>
 
-        // Redirection vers home au lancement PWA
-        (function () {
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                if (!sessionStorage.getItem('_started')) {
-                    sessionStorage.setItem('_started', '1');
-                    if (window.location.pathname !== '/index.html' && window.location.pathname !== '/') {
-                        window.location.replace('/index.html');
-                    }
-                }
-            }
-        })();
-
 
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
         let cart = JSON.parse(localStorage.getItem("cart")) || [];

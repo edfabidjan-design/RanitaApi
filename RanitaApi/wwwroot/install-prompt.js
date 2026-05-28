@@ -1,3 +1,19 @@
+// Redirection PWA vers homepage au relancement
+(function () {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        var t = localStorage.getItem('_pwa_ts');
+        var now = Date.now();
+        if (!t || (now - parseInt(t)) > 10000) {
+            localStorage.setItem('_pwa_ts', now);
+            if (window.location.pathname !== '/index.html' &&
+                window.location.pathname !== '/') {
+                window.location.replace('/index.html');
+            }
+        }
+        localStorage.setItem('_pwa_ts', now);
+    }
+})();
+
 let deferredPrompt;
 
 window.addEventListener('beforeinstallprompt', (e) => {
