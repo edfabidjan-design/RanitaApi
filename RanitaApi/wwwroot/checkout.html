@@ -1271,8 +1271,15 @@
                 '<div style="background:#f0fdf4;border:2px solid #a7f3d0;border-radius:14px;padding:16px;margin-bottom:20px;">' +
                 '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;"><span style="color:#6b7280;">Montant exact</span><strong style="color:#059669;font-size:18px;">' + Number(amount).toLocaleString('fr-FR') + ' FCFA</strong></div>' +
                 '<div style="display:flex;justify-content:space-between;font-size:14px;"><span style="color:#6b7280;">Référence</span><strong style="color:#111827;">CMD-' + orderId + '</strong></div></div>' +
-                '<button onclick="navigator.clipboard.writeText(\'0757415197\').then(function(){var b=document.getElementById(\'copyOmBtn\');b.textContent=\'✅ Numéro copié !\';b.style.background=\'#d1fae5\';b.style.borderColor=\'#10b981\';b.style.color=\'#065f46\';var c=document.getElementById(\'confirmOmBtn\');c.disabled=false;c.style.background=\'#f3f4f6\';c.style.color=\'#374151\';c.style.cursor=\'pointer\';c.textContent=\'✅ Commande enregistrée\'});" id="copyOmBtn" style="width:100%;background:#fff7ed;border:2px solid #fed7aa;color:#c2410c;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:16px;">📋 Copier le numéro</button>' +
-                '<p style="font-size:11px;color:#9ca3af;margin-bottom:12px;">Ouvrez Orange Money → Envoyer → collez le numéro → tapez le montant exact → indiquez <strong>CMD-' + orderId + '</strong> comme motif</p>' +
+                '<button onclick="navigator.clipboard.writeText(\'0757415197\').then(function(){' +
+                'var b=document.getElementById(\'copyOmBtn\');' +
+                'b.textContent=\'✅ Numéro copié !\';b.style.background=\'#d1fae5\';b.style.borderColor=\'#10b981\';b.style.color=\'#065f46\';' +
+                'document.getElementById(\'openOmBtn\').style.display=\'flex\';' +
+                'var c=document.getElementById(\'confirmOmBtn\');' +
+                'c.disabled=false;c.style.background=\'#f3f4f6\';c.style.color=\'#374151\';c.style.cursor=\'pointer\';c.textContent=\'✅ Commande enregistrée\';' +
+                '});" id="copyOmBtn" style="width:100%;background:#fff7ed;border:2px solid #fed7aa;color:#c2410c;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:8px;">📋 Copier le numéro</button>' +
+                '<a href="tel:*144%23" id="openOmBtn" style="display:none;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#f97316,#ea580c);color:white;padding:12px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:16px;">📱 Ouvrir Orange Money (*144#)</a>' +
+                '<p style="font-size:11px;color:#9ca3af;margin-bottom:12px;">Envoyer → collez le numéro → tapez le montant → indiquez <strong>CMD-' + orderId + '</strong> comme motif</p>' +
                 '<button id="confirmOmBtn" disabled onclick="this.closest(\'div[style*=fixed]\').remove();location.href=\'thank-you.html\';" style="width:100%;background:#e5e7eb;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:not-allowed;font-size:14px;color:#9ca3af;">⚠️ Copiez le numéro d\'abord</button>' +
                 '<p style="font-size:11px;color:#9ca3af;margin-top:8px;">Votre commande sera validée après réception du paiement.</p></div>';
             document.body.appendChild(modal);
@@ -1293,8 +1300,15 @@
                 '<div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:14px;padding:16px;margin-bottom:20px;">' +
                 '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;"><span style="color:#6b7280;">Montant exact</span><strong style="color:#1d4ed8;font-size:18px;">' + Number(amount).toLocaleString('fr-FR') + ' FCFA</strong></div>' +
                 '<div style="display:flex;justify-content:space-between;font-size:14px;"><span style="color:#6b7280;">Référence</span><strong style="color:#111827;">CMD-' + orderId + '</strong></div></div>' +
-                '<button onclick="navigator.clipboard.writeText(\'0757415197\').then(function(){var b=document.getElementById(\'copyWaveBtn\');b.textContent=\'✅ Numéro copié !\';b.style.background=\'#dbeafe\';b.style.borderColor=\'#1d4ed8\';b.style.color=\'#1e40af\';var c=document.getElementById(\'confirmWaveBtn\');c.disabled=false;c.style.background=\'#f3f4f6\';c.style.color=\'#374151\';c.style.cursor=\'pointer\';c.textContent=\'✅ Commande enregistrée\'});" id="copyWaveBtn" style="width:100%;background:#eff6ff;border:2px solid #bfdbfe;color:#1d4ed8;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:16px;">📋 Copier le numéro</button>' +
-                '<p style="font-size:11px;color:#9ca3af;margin-bottom:12px;">Ouvrez Wave → Envoyer → collez le numéro → tapez le montant exact → indiquez <strong>CMD-' + orderId + '</strong> comme motif</p>' +
+                '<button onclick="navigator.clipboard.writeText(\'0757415197\').then(function(){' +
+                'var b=document.getElementById(\'copyWaveBtn\');' +
+                'b.textContent=\'✅ Numéro copié !\';b.style.background=\'#dbeafe\';b.style.borderColor=\'#1d4ed8\';b.style.color=\'#1e40af\';' +
+                'document.getElementById(\'openWaveBtn\').style.display=\'flex\';' +
+                'var c=document.getElementById(\'confirmWaveBtn\');' +
+                'c.disabled=false;c.style.background=\'#f3f4f6\';c.style.color=\'#374151\';c.style.cursor=\'pointer\';c.textContent=\'✅ Commande enregistrée\';' +
+                '});" id="copyWaveBtn" style="width:100%;background:#eff6ff;border:2px solid #bfdbfe;color:#1d4ed8;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:8px;">📋 Copier le numéro</button>' +
+                '<a href="wave://" id="openWaveBtn" style="display:none;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:white;padding:12px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:16px;">🌊 Ouvrir Wave</a>' +
+                '<p style="font-size:11px;color:#9ca3af;margin-bottom:12px;">Envoyer → collez le numéro → tapez le montant → indiquez <strong>CMD-' + orderId + '</strong> comme motif</p>' +
                 '<button id="confirmWaveBtn" disabled onclick="this.closest(\'div[style*=fixed]\').remove();location.href=\'thank-you.html\';" style="width:100%;background:#e5e7eb;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:not-allowed;font-size:14px;color:#9ca3af;">⚠️ Copiez le numéro d\'abord</button>' +
                 '<p style="font-size:11px;color:#9ca3af;margin-top:8px;">Votre commande sera validée après réception du paiement Wave.</p></div>';
             document.body.appendChild(modal);
