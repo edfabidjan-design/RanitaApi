@@ -170,12 +170,22 @@
     <div class="admin-container">
         <h1>👥 Gestion des clients</h1>
         <div class="stats-bar" id="statsBar"></div>
-        <div class="search-bar"><input type="text" id="searchInput" placeholder="🔍 Rechercher un client..." oninput="filterClients()"></div>
+
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <span id="clientsCount" style="font-size:14px;color:#6b7280;font-weight:600;"></span>
+            <input type="text" id="searchInput" placeholder="🔍 Nom, email, téléphone..."
+                   oninput="filterClients()"
+                   style="padding:10px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;width:280px;outline:none;">
+        </div>
+        <div id="clientsPaginationBar" style="display:flex;justify-content:center;gap:8px;margin:0 0 16px;flex-wrap:wrap;"></div>
+
         <div class="table-wrap">
             <table border="1" cellpadding="8">
                 <thead><tr><th>#</th><th>Client</th><th>Email</th><th>Téléphone</th><th>Commandes</th><th>Total dépensé</th><th>Inscrit le</th><th>Actions</th></tr></thead>
                 <tbody id="clientsTable"></tbody>
             </table>
+            <div id="clientsPaginationBar" style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap;"></div>
         </div>
     </div>
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)"><div class="modal" id="modalContent"></div></div>
@@ -185,8 +195,105 @@
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
         const { token } = getAdminInfo();
         let allClients = [], allOrders = [];
-        async function loadData() { const [clientsRes, ordersRes] = await Promise.all([fetch(`${API_BASE}/clients`, { headers: { 'Authorization': `Bearer ${token}` } }), fetch(`${API_BASE}/orders`, { headers: { 'Authorization': `Bearer ${token}` } })]); allClients = await clientsRes.json(); allOrders = await ordersRes.json(); document.getElementById("statsBar").innerHTML = `<div class="stat-card"><div class="stat-num">${allClients.length}</div><div class="stat-label">Total clients</div></div><div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${allClients.filter(c => allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Clients actifs</div></div><div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${allClients.filter(c => !allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Jamais commandé</div></div>`; renderClients(allClients); }
-        function renderClients(clients) { const tbody = document.getElementById("clientsTable"); if (!clients.length) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`; return; } tbody.innerHTML = clients.map(c => { const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulée"); const totalDepense = orders.reduce((s, o) => s + o.total, 0); const initiale = (c.fullName || c.email || "?")[0].toUpperCase(); return `<tr><td><strong>#${c.id}</strong></td><td><div class="client-info"><div class="client-avatar">${initiale}</div><span>${c.fullName}</span></div></td><td>${c.email}</td><td>${c.phone || "—"}</td><td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td><td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td><td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td><td><button onclick="showClientDetails(${c.id})">👁 Voir</button></td></tr>`; }).join(''); }
+
+
+        let allClients = [], allOrders = [];
+        let clientsPage = 1;
+        const CLIENTS_PAGE_SIZE = 20;
+        let clientsSearch = '';
+
+        async function loadData() {
+            const [clientsRes, ordersRes] = await Promise.all([
+                fetch(`${API_BASE}/clients`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch(`${API_BASE}/orders`, { headers: { 'Authorization': `Bearer ${token}` } })
+            ]);
+            allClients = await clientsRes.json();
+            allOrders = await ordersRes.json();
+
+            document.getElementById("statsBar").innerHTML = `
+        <div class="stat-card"><div class="stat-num">${allClients.length}</div><div class="stat-label">Total clients</div></div>
+        <div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${allClients.filter(c => allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Clients actifs</div></div>
+        <div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${allClients.filter(c => !allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Jamais commandé</div></div>`;
+
+            renderClients();
+        }
+
+        function renderClients() {
+            const filtered = allClients.filter(c =>
+                (c.fullName || '').toLowerCase().includes(clientsSearch.toLowerCase()) ||
+                (c.email || '').toLowerCase().includes(clientsSearch.toLowerCase()) ||
+                (c.phone || '').toLowerCase().includes(clientsSearch)
+            );
+
+            const totalPages = Math.ceil(filtered.length / CLIENTS_PAGE_SIZE);
+            if (clientsPage > totalPages) clientsPage = 1;
+            const paginated = filtered.slice(
+                (clientsPage - 1) * CLIENTS_PAGE_SIZE,
+                clientsPage * CLIENTS_PAGE_SIZE
+            );
+
+            // Compteur
+            document.getElementById('clientsCount').textContent =
+                filtered.length + ' client' + (filtered.length !== 1 ? 's' : '') +
+                (totalPages > 1 ? ' — Page ' + clientsPage + '/' + totalPages : '');
+
+            // Tableau
+            const tbody = document.getElementById("clientsTable");
+            if (!filtered.length) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:40px;">Aucun client trouvé</td></tr>`;
+            } else {
+                tbody.innerHTML = paginated.map(c => {
+                    const orders = allOrders.filter(o => o.clientId === c.id && o.status !== "Annulée");
+                    const totalDepense = orders.reduce((s, o) => s + o.total, 0);
+                    const initiale = (c.fullName || c.email || "?")[0].toUpperCase();
+                    return `<tr>
+                <td><strong>#${c.id}</strong></td>
+                <td><div class="client-info"><div class="client-avatar">${initiale}</div><span>${c.fullName}</span></div></td>
+                <td>${c.email}</td>
+                <td>${c.phone || "—"}</td>
+                <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
+                <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
+                <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
+                <td><button onclick="showClientDetails(${c.id})">👁 Voir</button></td>
+            </tr>`;
+                }).join('');
+            }
+
+            // Pagination
+            var bar = document.getElementById('clientsPaginationBar');
+            if (totalPages <= 1) { bar.innerHTML = ''; return; }
+            var pages = [];
+            pages.push('<button onclick="clientsGoPage(' + (clientsPage - 1) + ')" ' + (clientsPage === 1 ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (clientsPage === 1 ? 'opacity:.4;' : '') + '">&larr; Préc</button>');
+            for (var i = 1; i <= totalPages; i++) {
+                var isActive = clientsPage === i;
+                if (i === 1 || i === totalPages || (i >= clientsPage - 1 && i <= clientsPage + 1)) {
+                    pages.push('<button onclick="clientsGoPage(' + i + ')" style="padding:8px 14px;border-radius:8px;border:1px solid ' + (isActive ? '#10b981' : '#e5e7eb') + ';background:' + (isActive ? '#10b981' : 'white') + ';color:' + (isActive ? 'white' : '#374151') + ';font-weight:700;cursor:pointer;">' + i + '</button>');
+                } else if (i === clientsPage - 2 || i === clientsPage + 2) {
+                    pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
+                }
+            }
+            pages.push('<button onclick="clientsGoPage(' + (clientsPage + 1) + ')" ' + (clientsPage === totalPages ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (clientsPage === totalPages ? 'opacity:.4;' : '') + ' ">Suiv &rarr;</button>');
+            bar.innerHTML = pages.join('');
+        }
+
+        function clientsGoPage(p) {
+            var total = Math.ceil(allClients.filter(c =>
+                (c.fullName || '').toLowerCase().includes(clientsSearch.toLowerCase()) ||
+                (c.email || '').toLowerCase().includes(clientsSearch.toLowerCase())
+            ).length / CLIENTS_PAGE_SIZE);
+            if (p < 1 || p > total) return;
+            clientsPage = p;
+            renderClients();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterClients() {
+            clientsSearch = document.getElementById("searchInput").value;
+            clientsPage = 1;
+            renderClients();
+        }
+
+
         function filterClients() { const search = document.getElementById("searchInput").value.toLowerCase(); renderClients(allClients.filter(c => (c.fullName || "").toLowerCase().includes(search) || (c.email || "").toLowerCase().includes(search) || (c.phone || "").toLowerCase().includes(search))); }
         function showClientDetails(clientId) { const c = allClients.find(c => c.id === clientId); if (!c) return; const orders = allOrders.filter(o => o.clientId === clientId); const totalDepense = orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0); const getBadge = s => ({ 'En attente': 'badge-attente', 'Validée': 'badge-validee', 'Livrée': 'badge-livree', 'Annulée': 'badge-annulee' }[s] || ''); document.getElementById("modalContent").innerHTML = `<h3>👤 ${c.fullName}</h3><div class="modal-info"><strong>Email :</strong> ${c.email}<br><strong>Téléphone :</strong> ${c.phone || "—"}<br><strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br><strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA</div><div style="margin:16px 0 8px;font-size:13px;font-weight:700;">📦 Commandes (${orders.length})</div>${!orders.length ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` : orders.map(o => `<div class="order-row"><span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span><span><span class="status-badge ${getBadge(o.status)}">${o.status}</span> &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong></span></div>`).join('')}<button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>`; document.getElementById("modalOverlay").classList.add("open"); }
         function closeModal(e) { if (e.target === document.getElementById("modalOverlay")) document.getElementById("modalOverlay").classList.remove("open"); }
