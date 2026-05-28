@@ -1,23 +1,3 @@
-// Redirection PWA vers homepage au relancement
-(function () {
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        var lastPage = localStorage.getItem('_pwa_last_page');
-        var lastTime = parseInt(localStorage.getItem('_pwa_last_time') || '0');
-        var now = Date.now();
-        var currentPage = window.location.pathname;
-        var isHome = currentPage === '/index.html' || currentPage === '/';
-
-        // Si plus de 30 secondes depuis dernière activité = nouveau lancement
-        if (!isHome && (now - lastTime) > 30000) {
-            window.location.replace('/index.html');
-            return;
-        }
-
-        // Mettre à jour le timestamp à chaque navigation
-        localStorage.setItem('_pwa_last_time', now);
-        localStorage.setItem('_pwa_last_page', currentPage);
-    }
-})();
 
 let deferredPrompt;
 
