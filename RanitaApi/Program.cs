@@ -1,35 +1,70 @@
+// ═══════════════════════════════════════════════════════════════
+// RANITA MARKET — Program.cs
+// Sécurité : Rate Limiting + CORS HTTPS uniquement
+// ═══════════════════════════════════════════════════════════════
+using Microsoft.AspNetCore.RateLimiting;   // ✅ NOUVEAU
+using System.Threading.RateLimiting;        // ✅ NOUVEAU
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
 using RanitaApi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddHostedService<FlashStockService>();
 
+// ── RATE LIMITING ✅ ────────────────────────────────────────────
+builder.Services.AddRateLimiter(options =>
+{
+    // Auth : 5 tentatives / minute / IP — login, register, forgot, reset
+    options.AddFixedWindowLimiter("auth", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueLimit = 0;
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+
+    // API générale : 60 req / minute / IP
+    options.AddFixedWindowLimiter("api", opt =>
+    {
+        opt.PermitLimit = 60;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueLimit = 2;
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+
+    options.RejectionStatusCode = 429;
+
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync(
+            "{\"message\":\"Trop de tentatives. Veuillez patienter avant de réessayer.\"}",
+            cancellationToken
+        );
+    };
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        npgsqlOptions =>
-        {
-            npgsqlOptions.EnableRetryOnFailure();
-        }
+        npgsqlOptions => npgsqlOptions.EnableRetryOnFailure()
     ));
 
+// ── CORS — HTTPS uniquement en production ✅ ────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowRanitaShop", policy =>
     {
         policy.WithOrigins(
             "https://ranita-shop.com",
-            "https://www.ranita-shop.com",
-            "http://ranita-shop.com",
-            "http://www.ranita-shop.com"
+            "https://www.ranita-shop.com"
+        // ❌ Retiré : http:// — Railway gère le certificat SSL
         )
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
@@ -40,15 +75,13 @@ builder.Services.AddControllers()
     })
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
 var app = builder.Build();
 
-
-
-
-
+// ── PIPELINE MIDDLEWARE — ordre important ───────────────────────
 app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -62,9 +95,8 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseCors("AllowRanitaShop");
-
+app.UseRateLimiter();     // ✅ NOUVEAU — après UseCors, avant UseAuthorization
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.MapGet("/", context =>
@@ -73,6 +105,9 @@ app.MapGet("/", context =>
     return Task.CompletedTask;
 });
 
+// ═══════════════════════════════════════════════════════════════
+// MIGRATIONS SQL AU DÉMARRAGE
+// ═══════════════════════════════════════════════════════════════
 
 try
 {
@@ -83,8 +118,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("EnsureCreated error: " + ex.Message); }
 
-
-// Test connexion DB au démarrage
 try
 {
     using var scope = app.Services.CreateScope();
@@ -94,17 +127,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("STARTUP DB ERROR: " + ex.Message); }
 
-
-
-
-
-
-
-
-
-
-
-// ── ProductVariants table ──────────────────────────────────────────────────
+// ── ProductVariants table ──────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -121,7 +144,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("ProductVariants error: " + ex.Message); }
 
-// ── Products columns (chaque ALTER séparé pour éviter l'échec silencieux) ──
+// ── Products columns ───────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -178,8 +201,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Products.MetaDescription error: " + ex.Message); }
 
-
-
 try
 {
     using var scope = app.Services.CreateScope();
@@ -196,7 +217,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Products.ImageUrl error: " + ex.Message); }
 
-// ── CategoryAttributes table ───────────────────────────────────────────────
+// ── CategoryAttributes table ───────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -213,7 +234,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("CategoryAttributes error: " + ex.Message); }
 
-// ── Categories.ParentId ────────────────────────────────────────────────────
+// ── Categories.ParentId ────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -222,7 +243,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Categories.ParentId error: " + ex.Message); }
 
-// ── Users table + seed ─────────────────────────────────────────────────────
+// ── Users table + seed ─────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -242,7 +263,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Users error: " + ex.Message); }
 
-// ── Orders + OrderItems tables ─────────────────────────────────────────────
+// ── Orders + OrderItems tables ─────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -273,7 +294,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Orders error: " + ex.Message); }
 
-// ── Clients table + Orders.ClientId ───────────────────────────────────────
+// ── Clients table ──────────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -301,9 +322,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Orders.ClientId error: " + ex.Message); }
 
-
-
-// ── OrderItems.VariantId ───────────────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -312,7 +330,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("OrderItems.VariantId error: " + ex.Message); }
 
-// ── Orders.ShippingFee ─────────────────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -320,9 +337,6 @@ try
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""ShippingFee"" NUMERIC(18,2) NOT NULL DEFAULT 0;");
 }
 catch (Exception ex) { Console.WriteLine("Orders.ShippingFee error: " + ex.Message); }
-
-
-
 
 try
 {
@@ -332,11 +346,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("OrderItems.VariantName error: " + ex.Message); }
 
-
-
-
-
-// ── Reviews table ──────────────────────────────────────────────────────────
+// ── Reviews table ──────────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -356,11 +366,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Reviews error: " + ex.Message); }
 
-
-
-
-
-// ── Products.Brand nullable ────────────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -369,9 +374,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Products.Brand nullable error: " + ex.Message); }
 
-
-
-// ── Fix Brand null values ──────────────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -379,8 +381,6 @@ try
     db.Database.ExecuteSqlRaw(@"UPDATE ""Products"" SET ""Brand"" = '' WHERE ""Brand"" IS NULL;");
 }
 catch (Exception ex) { Console.WriteLine("Fix Brand null error: " + ex.Message); }
-
-
 
 try
 {
@@ -390,9 +390,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Orders.RefundMotif error: " + ex.Message); }
 
-
-
-// ── PushSubscriptions table ─────────────────────────────────────────────
+// ── PushSubscriptions tables ───────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -407,9 +405,6 @@ try
     ");
 }
 catch (Exception ex) { Console.WriteLine("PushSubscriptions error: " + ex.Message); }
-
-
-
 
 try
 {
@@ -426,9 +421,6 @@ try
     ");
 }
 catch (Exception ex) { Console.WriteLine("ClientPushSubscriptions error: " + ex.Message); }
-
-
-
 
 // ── Sellers table ──────────────────────────────────────────────
 try
@@ -506,8 +498,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("SellerProducts.ShortDescription error: " + ex.Message); }
 
-
-
 // ── SellerPayouts table ────────────────────────────────────────
 try
 {
@@ -531,9 +521,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("SellerPayouts error: " + ex.Message); }
 
-
-
-
 try
 {
     using var scope = app.Services.CreateScope();
@@ -541,9 +528,6 @@ try
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""SellerProducts"" ADD COLUMN IF NOT EXISTS ""Variants"" TEXT NOT NULL DEFAULT '[]';");
 }
 catch (Exception ex) { Console.WriteLine("SellerProducts.Variants error: " + ex.Message); }
-
-
-
 
 // ── SellerPushSubscriptions table ─────────────────────────────
 try
@@ -563,19 +547,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("SellerPushSubscriptions error: " + ex.Message); }
 
-
-
-
-
-
-
-
-// ═══════════════════════════════════════════════════════════════════
-// FICHIER 2 : Program.cs
-// Ajoute ce bloc à la fin, avant app.Run() :
-// ═══════════════════════════════════════════════════════════════════
-
-// ── CommissionSettings table ───────────────────────────────────────
+// ── CommissionSettings table ───────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -589,7 +561,6 @@ try
             ""UpdatedAt""   TIMESTAMP NOT NULL DEFAULT NOW()
         );
     ");
-    // Seed : taux global par défaut si pas encore en base
     db.Database.ExecuteSqlRaw(@"
         INSERT INTO ""CommissionSettings"" (""Key"", ""Label"", ""Rate"", ""UpdatedAt"")
         VALUES ('global', 'Global', 0.10, NOW())
@@ -598,15 +569,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("CommissionSettings error: " + ex.Message); }
 
-
-
-
-
-// ═══════════════════════════════════════════════════════════════
-// AJOUTER dans Program.cs avant app.Run()
-// ═══════════════════════════════════════════════════════════════
-
-// ── Users — ajouter colonnes Role, Email, IsActive, CreatedAt ──
+// ── Users — colonnes Role, Email, IsActive, CreatedAt ──────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -616,19 +579,12 @@ try
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE;");
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW();");
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""CreatedBy"" TEXT NULL;");
-
-    // Mettre à jour l'admin existant en SuperAdmin
     db.Database.ExecuteSqlRaw(@"UPDATE ""Users"" SET ""Role"" = 'SuperAdmin' WHERE ""Role"" = '' OR ""Role"" IS NULL;");
-
     Console.WriteLine("Users migration OK");
 }
 catch (Exception ex) { Console.WriteLine("Users migration error: " + ex.Message); }
 
-
-
-
-
-// ── SiteSettings table + seed ─────────────────────────────────────────────
+// ── SiteSettings table + seed ──────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -640,7 +596,6 @@ try
             ""Value"" TEXT NOT NULL DEFAULT ''
         );
     ");
-    // Seed des valeurs par défaut
     var defaults = new Dictionary<string, string>
     {
         ["hero_title"] = "Mode & Style",
@@ -688,10 +643,26 @@ try
         ["urgency_subtitle"] = "Profitez de nos meilleures réductions avant qu''il ne soit trop tard",
         ["urgency_link"] = "products.html",
         ["urgency_hide"] = "false",
-        ["bc1_tag"] = "Tendances", ["bc1_name"] = "Mode & Vêtements", ["bc1_desc"] = "Les dernières tendances africaines et internationales pour femme et homme.", ["bc1_img"] = "", ["bc1_link"] = "products.html?cat=mode",
-        ["bc2_tag"] = "High-Tech", ["bc2_name"] = "Électronique & Gadgets", ["bc2_desc"] = "Smartphones, accessoires et gadgets tech aux meilleurs prix d\'Abidjan.", ["bc2_img"] = "", ["bc2_link"] = "products.html?cat=elec",
-        ["bc3_tag"] = "Produits frais", ["bc3_name"] = "Alimentation & Épicerie", ["bc3_desc"] = "Épices, céréales, boissons — le meilleur du marché local livré chez vous.", ["bc3_img"] = "", ["bc3_link"] = "products.html?cat=alim",
-        ["bc4_tag"] = "Bien-être", ["bc4_name"] = "Beauté & Santé", ["bc4_desc"] = "Soins, parfums, cosmétiques et produits de santé pour toute la famille.", ["bc4_img"] = "", ["bc4_link"] = "products.html?cat=beau",
+        ["bc1_tag"] = "Tendances",
+        ["bc1_name"] = "Mode & Vêtements",
+        ["bc1_desc"] = "Les dernières tendances africaines et internationales pour femme et homme.",
+        ["bc1_img"] = "",
+        ["bc1_link"] = "products.html?cat=mode",
+        ["bc2_tag"] = "High-Tech",
+        ["bc2_name"] = "Électronique & Gadgets",
+        ["bc2_desc"] = "Smartphones, accessoires et gadgets tech aux meilleurs prix d'Abidjan.",
+        ["bc2_img"] = "",
+        ["bc2_link"] = "products.html?cat=elec",
+        ["bc3_tag"] = "Produits frais",
+        ["bc3_name"] = "Alimentation & Épicerie",
+        ["bc3_desc"] = "Épices, céréales, boissons — le meilleur du marché local livré chez vous.",
+        ["bc3_img"] = "",
+        ["bc3_link"] = "products.html?cat=alim",
+        ["bc4_tag"] = "Bien-être",
+        ["bc4_name"] = "Beauté & Santé",
+        ["bc4_desc"] = "Soins, parfums, cosmétiques et produits de santé pour toute la famille.",
+        ["bc4_img"] = "",
+        ["bc4_link"] = "products.html?cat=beau",
     };
     foreach (var (key, value) in defaults)
     {
@@ -705,15 +676,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("SiteSettings error: " + ex.Message); }
 
-
-
-
-// ════════════════════════════════════════════════════
-// FICHIER 2 : Program.cs
-// Ajoute ce bloc avant app.Run() :
-// ════════════════════════════════════════════════════
-
-// ── SiteEvents table ───────────────────────────────
+// ── SiteEvents table ───────────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -740,10 +703,7 @@ try
 }
 catch (Exception ex) { Console.WriteLine("SiteEvents error: " + ex.Message); }
 
-
-
-
-// ── Clients — colonnes parrainage ─────────────────────────────
+// ── Clients — colonnes parrainage ──────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -757,29 +717,41 @@ try
 }
 catch (Exception ex) { Console.WriteLine("Clients referral error: " + ex.Message); }
 
-
-
-
-// Générer ReferralCode pour les clients existants qui n'en ont pas
+// ── Migration BCrypt — génère ReferralCode ET re-hache les anciens mdp ✅ ──
+// Les clients avec un hash SHA-256 (sans préfixe $2) sont migrés ici.
+// Leur PasswordHash est remplacé par une valeur marquée "LEGACY:SHA256:<hash>"
+// Le ClientAuthController détecte ce préfixe et gère la compatibilité.
 try
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var clients = db.Clients.Where(c => c.ReferralCode == "").ToList();
+    var clients = db.Clients.ToList();
     var rnd = new Random();
+    int migrated = 0;
+
     foreach (var c in clients)
     {
-        var first = c.FullName.Split(' ')[0].ToUpper();
-        if (first.Length > 6) first = first.Substring(0, 6);
-        c.ReferralCode = first + rnd.Next(1000, 9999).ToString();
+        // Générer ReferralCode si manquant
+        if (string.IsNullOrEmpty(c.ReferralCode))
+        {
+            var first = c.FullName.Split(' ')[0].ToUpper();
+            if (first.Length > 6) first = first[..6];
+            c.ReferralCode = first + rnd.Next(1000, 9999).ToString();
+        }
+
+        // Marquer les hash SHA-256 existants pour migration silencieuse
+        // Un hash BCrypt commence toujours par "$2a$" ou "$2b$"
+        if (!c.PasswordHash.StartsWith("$2") && !c.PasswordHash.StartsWith("LEGACY:"))
+        {
+            c.PasswordHash = "LEGACY:SHA256:" + c.PasswordHash;
+            migrated++;
+        }
     }
+
     db.SaveChanges();
-    Console.WriteLine($"ReferralCode généré pour {clients.Count} clients existants");
+    Console.WriteLine($"BCrypt migration : {migrated} client(s) marqués pour migration silencieuse");
 }
-catch (Exception ex) { Console.WriteLine("ReferralCode seed error: " + ex.Message); }
-
-
-
+catch (Exception ex) { Console.WriteLine("BCrypt migration error: " + ex.Message); }
 
 // ── FlashSales table ───────────────────────────────────────────
 try
@@ -804,10 +776,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("FlashSales error: " + ex.Message); }
 
-
-
-
-// ── FlashSales.VariantId ───────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
@@ -821,15 +789,12 @@ try
 }
 catch (Exception ex) { Console.WriteLine("FlashSales.VariantId error: " + ex.Message); }
 
-
-
-// ── Restituer stock des flash expirés ─────────────────────────
+// ── Restituer stock des flash expirés ──────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var now = DateTime.UtcNow;
-
     var expiredFlashes = db.Set<FlashSale>()
         .Where(f => f.EndDate < now && f.FlashStock > f.FlashStockSold)
         .ToList();
@@ -837,39 +802,23 @@ try
     foreach (var flash in expiredFlashes)
     {
         var stockNonVendu = flash.FlashStock - flash.FlashStockSold;
-
         if (flash.VariantId.HasValue)
         {
             var variant = db.Set<ProductVariant>().Find(flash.VariantId.Value);
-            if (variant != null)
-            {
-                variant.Stock += stockNonVendu;
-                Console.WriteLine($"Flash #{flash.Id} expiré — {stockNonVendu} unités restituées à variante #{flash.VariantId}");
-            }
+            if (variant != null) variant.Stock += stockNonVendu;
         }
         else
         {
             var product = db.Set<Product>().Find(flash.ProductId);
-            if (product != null)
-            {
-                product.Stock += stockNonVendu;
-                Console.WriteLine($"Flash #{flash.Id} expiré — {stockNonVendu} unités restituées au produit #{flash.ProductId}");
-            }
+            if (product != null) product.Stock += stockNonVendu;
         }
-
-        // Marquer comme traité en mettant FlashStock = FlashStockSold
         flash.FlashStock = flash.FlashStockSold;
     }
 
-    if (expiredFlashes.Any())
-        db.SaveChanges();
-
+    if (expiredFlashes.Any()) db.SaveChanges();
     Console.WriteLine($"Restitution stock flash expirés : {expiredFlashes.Count} flash(s) traité(s)");
 }
 catch (Exception ex) { Console.WriteLine("Restitution flash error: " + ex.Message); }
-
-
-
 
 // ── FlashSaleRequests table ────────────────────────────────────
 try
@@ -892,46 +841,15 @@ try
             ""CreatedAt""       TIMESTAMP NOT NULL DEFAULT NOW()
         );
     ");
-    // Settings flash vendeur
-
-    // DANS le bloc SiteSettings seed, AJOUTE :
-    db.Database.ExecuteSqlRaw(@"
-    INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
-    VALUES ('flash_period_start', '') ON CONFLICT (""Key"") DO NOTHING;
-");
-    db.Database.ExecuteSqlRaw(@"
-    INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
-    VALUES ('flash_period_end', '') ON CONFLICT (""Key"") DO NOTHING;
-");
-    db.Database.ExecuteSqlRaw(@"
-    INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
-    VALUES ('flash_period_label', '') ON CONFLICT (""Key"") DO NOTHING;
-");
-    db.Database.ExecuteSqlRaw(@"
-        INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
-        VALUES ('flash_max_duration_hours', '48')
-        ON CONFLICT (""Key"") DO NOTHING;
-    ");
-    db.Database.ExecuteSqlRaw(@"
-        INSERT INTO ""SiteSettings"" (""Key"", ""Value"")
-        VALUES ('flash_min_discount_pct', '10')
-        ON CONFLICT (""Key"") DO NOTHING;
-    ");
-
-    // AJOUTE dans le bloc migrations :
-    db.Database.ExecuteSqlRaw(@"
-    ALTER TABLE ""FlashSaleRequests"" 
-    ADD COLUMN IF NOT EXISTS ""OriginalVariantStock"" integer NOT NULL DEFAULT 0;
-");
-
+    db.Database.ExecuteSqlRaw(@"INSERT INTO ""SiteSettings"" (""Key"", ""Value"") VALUES ('flash_period_start', '') ON CONFLICT (""Key"") DO NOTHING;");
+    db.Database.ExecuteSqlRaw(@"INSERT INTO ""SiteSettings"" (""Key"", ""Value"") VALUES ('flash_period_end', '') ON CONFLICT (""Key"") DO NOTHING;");
+    db.Database.ExecuteSqlRaw(@"INSERT INTO ""SiteSettings"" (""Key"", ""Value"") VALUES ('flash_period_label', '') ON CONFLICT (""Key"") DO NOTHING;");
+    db.Database.ExecuteSqlRaw(@"INSERT INTO ""SiteSettings"" (""Key"", ""Value"") VALUES ('flash_max_duration_hours', '48') ON CONFLICT (""Key"") DO NOTHING;");
+    db.Database.ExecuteSqlRaw(@"INSERT INTO ""SiteSettings"" (""Key"", ""Value"") VALUES ('flash_min_discount_pct', '10') ON CONFLICT (""Key"") DO NOTHING;");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""FlashSaleRequests"" ADD COLUMN IF NOT EXISTS ""OriginalVariantStock"" integer NOT NULL DEFAULT 0;");
     Console.WriteLine("FlashSaleRequests OK");
 }
 catch (Exception ex) { Console.WriteLine("FlashSaleRequests error: " + ex.Message); }
-
-
-
-
-
 
 // ── Wishlists table ────────────────────────────────────────────
 try
@@ -950,8 +868,6 @@ try
     Console.WriteLine("Wishlists OK");
 }
 catch (Exception ex) { Console.WriteLine("Wishlists error: " + ex.Message); }
-
-
 
 // ── PromoCodes table ───────────────────────────────────────────
 try
@@ -976,33 +892,17 @@ try
 }
 catch (Exception ex) { Console.WriteLine("PromoCodes error: " + ex.Message); }
 
-
-
-
-
-// ── Colonnes PromoDiscount / PromoCode / ReferralCreditUsed sur Orders ──
+// ── Orders discount columns ────────────────────────────────────
 try
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.ExecuteSqlRaw(@"
-        ALTER TABLE ""Orders""
-        ADD COLUMN IF NOT EXISTS ""PromoDiscount""      NUMERIC(18,2) NOT NULL DEFAULT 0;
-    ");
-    db.Database.ExecuteSqlRaw(@"
-        ALTER TABLE ""Orders""
-        ADD COLUMN IF NOT EXISTS ""PromoCode""          TEXT NULL;
-    ");
-    db.Database.ExecuteSqlRaw(@"
-        ALTER TABLE ""Orders""
-        ADD COLUMN IF NOT EXISTS ""ReferralCreditUsed"" NUMERIC(18,2) NOT NULL DEFAULT 0;
-    ");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""PromoDiscount"" NUMERIC(18,2) NOT NULL DEFAULT 0;");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""PromoCode"" TEXT NULL;");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""ReferralCreditUsed"" NUMERIC(18,2) NOT NULL DEFAULT 0;");
     Console.WriteLine("Orders discount columns OK");
 }
 catch (Exception ex) { Console.WriteLine("Orders discount columns error: " + ex.Message); }
-
-
-
 
 // ── ProductPromoCodes table ────────────────────────────────────
 try
@@ -1025,10 +925,6 @@ try
 }
 catch (Exception ex) { Console.WriteLine("ProductPromoCodes error: " + ex.Message); }
 
-
-
-
-
 try
 {
     using var scope = app.Services.CreateScope();
@@ -1037,6 +933,5 @@ try
     Console.WriteLine("ProductPromoCodes.Color OK");
 }
 catch (Exception ex) { Console.WriteLine("ProductPromoCodes.Color error: " + ex.Message); }
-
 
 app.Run();
