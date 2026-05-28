@@ -393,7 +393,15 @@
         }
 
         function ordersGoPage(p) {
-            var total = Math.ceil(adminAllOrders.length / ORDERS_PAGE_SIZE);
+            var filtered = adminAllOrders.filter(function (o) {
+                var matchSearch = !adminOrdersSearch ||
+                    o.customerName.toLowerCase().includes(adminOrdersSearch.toLowerCase()) ||
+                    o.customerPhone.includes(adminOrdersSearch) ||
+                    String(o.id).includes(adminOrdersSearch);
+                var matchFilter = !adminOrdersFilter || o.status === adminOrdersFilter;
+                return matchSearch && matchFilter;
+            });
+            var total = Math.ceil(filtered.length / ORDERS_PAGE_SIZE);
             if (p < 1 || p > total) return;
             adminOrdersPage = p;
             renderOrders();
