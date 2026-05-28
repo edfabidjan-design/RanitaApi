@@ -240,7 +240,7 @@
                 </thead>
                 <tbody id="ordersTable"></tbody>
             </table>
-            <div id="adminOrdersPaginationBar" style="display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap;"></div>
+          
         </div>
     </div>
 
@@ -379,7 +379,7 @@
             var bar = document.getElementById('adminOrdersPaginationBar');
             if (totalPages <= 1) { bar.innerHTML = ''; return; }
             var pages = [];
-            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage - 1) + ')" ' + (adminOrdersPage === 1 ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (adminOrdersPage === 1 ? 'opacity:.4;' : '') + '">&larr; Préc</button>');
+            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage - 1) + ')" ' + (adminOrdersPage === 1 ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (adminOrdersPage === 1 ? 'opacity:.4;' : '') + '">← Préc</button>');
             for (var i = 1; i <= totalPages; i++) {
                 var isActive = adminOrdersPage === i;
                 if (i === 1 || i === totalPages || (i >= adminOrdersPage - 1 && i <= adminOrdersPage + 1)) {
@@ -388,7 +388,7 @@
                     pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
                 }
             }
-            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage + 1) + ')" ' + (adminOrdersPage === totalPages ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (adminOrdersPage === totalPages ? 'opacity:.4;' : '') + ' ">Suiv &rarr;</button>');
+            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage + 1) + ')" ' + (adminOrdersPage === totalPages ? 'disabled' : '') + ' style="padding:8px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;font-weight:700;cursor:pointer;' + (adminOrdersPage === totalPages ? 'opacity:.4;' : '') + '">Suiv →</button>');
             bar.innerHTML = pages.join('');
         }
 
