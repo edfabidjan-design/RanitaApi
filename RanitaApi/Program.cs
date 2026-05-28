@@ -752,6 +752,7 @@ try
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""ReferredById"" INT NULL;");
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""ReferralCredits"" INT NOT NULL DEFAULT 0;");
     db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""ReferralCount"" INT NOT NULL DEFAULT 0;");
+    db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Clients"" ADD COLUMN IF NOT EXISTS ""Address"" TEXT NOT NULL DEFAULT '';");
     Console.WriteLine("Clients referral columns OK");
 }
 catch (Exception ex) { Console.WriteLine("Clients referral error: " + ex.Message); }

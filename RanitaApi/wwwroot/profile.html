@@ -585,7 +585,7 @@
 
             // Nombre de commandes
             try {
-                var res2 = await fetch('/api/orders/client/' + client.id);
+                var res2 = await fetch('/api/client-auth/orders/' + client.id);
                 var orders = await res2.json();
                 document.getElementById('statOrders').textContent = Array.isArray(orders) ? orders.length : '—';
             } catch(e) {

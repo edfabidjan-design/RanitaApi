@@ -257,4 +257,42 @@ public class ClientAuthController : ControllerBase
     {
         return Redirect($"/register.html?ref={code}");
     }
+
+
+    [HttpPut("update/{clientId}")]
+    public async Task<IActionResult> UpdateProfile(int clientId, [FromBody] UpdateProfileDto dto)
+    {
+        var client = await _context.Clients.FindAsync(clientId);
+        if (client == null) return NotFound();
+
+        if (!string.IsNullOrEmpty(dto.FullName)) client.FullName = dto.FullName;
+        if (dto.Phone != null) client.Phone = dto.Phone;
+        if (dto.Address != null) client.Address = dto.Address;
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Profil mis à jour" });
+    }
+
+    [HttpPut("change-password/{clientId}")]
+    public async Task<IActionResult> ChangePassword(int clientId, [FromBody] ChangePasswordDto dto)
+    {
+        var client = await _context.Clients.FindAsync(clientId);
+        if (client == null) return NotFound();
+
+        client.PasswordHash = HashPassword(dto.NewPassword);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Mot de passe mis à jour" });
+    }
+
+    public class UpdateProfileDto
+    {
+        public string? FullName { get; set; }
+        public string? Phone { get; set; }
+        public string? Address { get; set; }
+    }
+
+    public class ChangePasswordDto
+    {
+        public string NewPassword { get; set; } = "";
+    }
 }

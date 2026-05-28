@@ -17,5 +17,6 @@
         public Client? ReferredBy { get; set; }
         public int ReferralCredits { get; set; } = 0; // en F CFA
         public int ReferralCount { get; set; } = 0;
+        public string Address { get; set; } = "";
     }
 }
