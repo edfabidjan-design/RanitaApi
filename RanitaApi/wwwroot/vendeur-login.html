@@ -97,7 +97,7 @@
                     })
                 });
                 console.log('Push vendeur enregistré !');
-            } catch(e) {
+            } catch (e) {
                 console.error('Push vendeur error:', e);
             }
         }
@@ -105,8 +105,12 @@
         document.getElementById('loginForm').addEventListener('submit', async e => {
             e.preventDefault();
             const btn = document.getElementById('btn-login');
+            const modal = document.getElementById('loadingModal');
+            const msg = document.getElementById('loadingMsg');
+
             btn.disabled = true;
-            btn.textContent = 'Connexion...';
+            modal.style.display = 'flex';
+            msg.textContent = 'Vérification de vos identifiants...';
             document.getElementById('errorMsg').style.display = 'none';
 
             try {
@@ -122,27 +126,48 @@
                 const data = await res.json();
 
                 if (!res.ok) {
+                    modal.style.display = 'none';
                     showError(data.message || 'Erreur de connexion');
                     btn.disabled = false;
                     btn.textContent = 'Se connecter →';
                     return;
                 }
 
-                // Sauvegarder session vendeur
+                msg.textContent = 'Connexion réussie ! Redirection...';
                 localStorage.setItem('seller', JSON.stringify(data));
-
-                // Enregistrer push vendeur
                 await registerSellerPush(data.sellerId);
 
-                // Rediriger vers dashboard
-                window.location.href = 'vendeur.html';
+                setTimeout(function () {
+                    window.location.href = 'vendeur.html';
+                }, 800);
 
-            } catch(e) {
+            } catch (e) {
+                modal.style.display = 'none';
                 showError('Erreur réseau — réessayez');
                 btn.disabled = false;
                 btn.textContent = 'Se connecter →';
             }
         });
     </script>
+
+
+    <!-- Modal chargement -->
+    <div id="loadingModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+        <div style="background:white;border-radius:20px;padding:40px 32px;text-align:center;max-width:280px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+            <div style="font-size:42px;margin-bottom:16px;">🏪</div>
+            <div style="font-size:16px;font-weight:700;color:#111827;margin-bottom:8px;">Connexion en cours...</div>
+            <div style="font-size:13px;color:#6b7280;margin-bottom:20px;" id="loadingMsg">Vérification de vos identifiants</div>
+            <div style="width:40px;height:40px;border:3px solid #e5e7eb;border-top-color:#10b981;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;"></div>
+        </div>
+    </div>
+    <style>
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+
 </body>
 </html>
