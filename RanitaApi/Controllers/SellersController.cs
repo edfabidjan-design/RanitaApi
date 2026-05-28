@@ -46,6 +46,15 @@ namespace RanitaApi.Controllers
                     existing.UpdatedAt = DateTime.UtcNow;
                     await _db.SaveChangesAsync();
 
+
+                    try
+                    {
+                        await _emailService.SendNewSellerApplicationAsync(
+                            dto.ShopName, client.FullName, client.Email, dto.PhoneNumber);
+                    }
+                    catch (Exception ex) { Console.WriteLine("EMAIL SELLER ERROR: " + ex.Message); }
+
+
                     try
                     {
                         var adminSubs = await _db.PushSubscriptions.ToListAsync();
@@ -92,6 +101,16 @@ namespace RanitaApi.Controllers
 
             _db.Sellers.Add(seller);
             await _db.SaveChangesAsync();
+
+            // ── Email admin ──
+            try
+            {
+                await _emailService.SendNewSellerApplicationAsync(
+                    seller.ShopName, client.FullName, client.Email, seller.PhoneNumber);
+            }
+            catch (Exception ex) { Console.WriteLine("EMAIL SELLER ERROR: " + ex.Message); }
+
+
 
             try
             {

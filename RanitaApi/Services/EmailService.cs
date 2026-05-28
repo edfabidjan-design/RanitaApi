@@ -396,6 +396,37 @@ namespace RanitaApi.Services
 
 
 
+        // ✅ Nouvelle demande vendeur → admin
+        public async Task SendNewSellerApplicationAsync(string shopName, string clientName, string clientEmail, string phone)
+        {
+            var payload = new
+            {
+                sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
+                to = new[] { new { email = ADMIN_EMAIL } },
+                subject = $"🏪 Nouvelle demande vendeur - {shopName}",
+                htmlContent = $@"
+<div style='font-family:Arial;padding:20px;background:#f4f4f4'>
+  <div style='max-width:500px;margin:auto;background:white;padding:24px;border-radius:10px;'>
+    <h2 style='color:#10b981;margin:0 0 16px'>🏪 Nouvelle demande vendeur !</h2>
+    <table style='width:100%;font-size:15px;'>
+      <tr><td style='padding:6px 0;color:#666'>Boutique</td><td><strong>{shopName}</strong></td></tr>
+      <tr><td style='padding:6px 0;color:#666'>Nom</td><td><strong>{clientName}</strong></td></tr>
+      <tr><td style='padding:6px 0;color:#666'>Email</td><td>{clientEmail}</td></tr>
+      <tr><td style='padding:6px 0;color:#666'>Téléphone</td><td>{phone}</td></tr>
+    </table>
+    <a href='https://www.ranita-shop.com/admin-sellers.html'
+       style='display:inline-block;margin-top:20px;background:#10b981;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>
+      Voir la demande
+    </a>
+    {FOOTER}
+  </div>
+</div>"
+            };
+            await SendBrevoEmail(payload);
+        }
+
+
+
 
         // ✅ MÉTHODE PRIVÉE — Brevo API
         private async Task SendBrevoEmail(object payload)
