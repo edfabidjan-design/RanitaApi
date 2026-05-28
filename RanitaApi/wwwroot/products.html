@@ -552,6 +552,17 @@
 
     <script>
 
+        (function () {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                var t = localStorage.getItem('_pwa_ts');
+                var now = Date.now();
+                if (!t || (now - parseInt(t)) > 5000) {
+                    window.location.replace('/index.html');
+                    return;
+                }
+                localStorage.setItem('_pwa_ts', now);
+            }
+        })();
 
         const API_BASE = "https://ranitaapi-production.up.railway.app/api";
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
