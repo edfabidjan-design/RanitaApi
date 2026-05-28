@@ -562,21 +562,64 @@
     <script src="/cart-badge.js"></script>
     <script>
     // Auth
-    (function() {
-        var client = JSON.parse(localStorage.getItem('client') || 'null');
-        var nav = document.getElementById('authNav');
-        if (nav) {
+        (function () {
+            var client = JSON.parse(localStorage.getItem('client') || 'null');
+            var nav = document.getElementById('authNav');
+            if (!nav) return;
+
             if (client) {
-                nav.innerHTML = '<a href="client-orders.html" style="color:var(--g);font-weight:700;font-size:13px;">📦 ' + (client.name ? client.name.split(' ')[0] : 'Mon compte') + '</a>';
+                nav.innerHTML = '<button onclick="toggleMenu(event)" style="background:#10b981;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">👤 ' + (client.name ? client.name.split(' ')[0] : 'Mon compte') + ' ▾</button>';
+                var cMenu = document.createElement('div');
+                cMenu.id = 'cMenu';
+                cMenu.style.cssText = 'display:none;position:fixed;top:64px;right:20px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:200px;z-index:99999;';
+                cMenu.innerHTML =
+                    '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">👤 Mon profil</a>' +
+                    '<a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">📦 Mes commandes</a>' +
+                    '<a href="wishlist.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">❤️ Mes favoris</a>' +
+                    '<div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">🚪 Déconnexion</div>';
+                document.body.appendChild(cMenu);
             } else {
                 nav.innerHTML = '<a href="login.html" style="color:var(--g);font-weight:700;" class="btn-outline">Connexion</a><a href="register.html" class="btn-primary" style="margin-left:6px;">Inscription</a>';
             }
-        }
-        // Badge panier
-        var c = JSON.parse(localStorage.getItem('cart') || '[]');
-        var t = c.reduce(function(s,i){ return s+(i.qty||1); }, 0);
-        ['cartBadge','mobCartBadge'].forEach(function(id){ var b=document.getElementById(id); if(b&&t>0){b.textContent=t;b.style.display='flex';} });
-    })();
+
+            window.toggleMenu = function (e) {
+                if (e) e.stopPropagation();
+                var m = document.getElementById('cMenu');
+                if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+            };
+            window.doLogout = function () { localStorage.removeItem('client'); location.href = 'index.html'; };
+            document.addEventListener('click', function (e) {
+                var m = document.getElementById('cMenu');
+                if (m && !e.target.closest('#authNav') && !e.target.closest('#cMenu')) m.style.display = 'none';
+            });
+
+            var mobAuth = document.getElementById('mobAuthIcon');
+            if (mobAuth && client) {
+                mobAuth.removeAttribute('href');
+                mobAuth.style.cursor = 'pointer';
+                mobAuth.innerHTML = '<div style="background:#10b981;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">' + (client.name ? client.name[0].toUpperCase() : '?') + '</div>';
+                var mobMenu = document.createElement('div');
+                mobMenu.style.cssText = 'display:none;position:fixed;top:60px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:180px;z-index:99999;';
+                mobMenu.innerHTML =
+                    '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">👤 Mon profil</a>' +
+                    '<a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>' +
+                    '<a href="wishlist.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">❤️ Mes favoris</a>' +
+                    '<div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;">🚪 Déconnexion</div>';
+                document.body.appendChild(mobMenu);
+                mobAuth.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    mobMenu.style.display = mobMenu.style.display === 'none' ? 'block' : 'none';
+                });
+                document.addEventListener('click', function (e) {
+                    if (!e.target.closest('#mobAuthIcon')) mobMenu.style.display = 'none';
+                });
+            }
+
+            // Badge panier
+            var c = JSON.parse(localStorage.getItem('cart') || '[]');
+            var t = c.reduce(function (s, i) { return s + (i.qty || 1); }, 0);
+            ['cartBadge', 'mobCartBadge'].forEach(function (id) { var b = document.getElementById(id); if (b && t > 0) { b.textContent = t; b.style.display = 'flex'; } });
+        })();
 
     // Wishlist
     var API = '/api/products';
