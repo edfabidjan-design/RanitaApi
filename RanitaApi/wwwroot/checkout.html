@@ -756,10 +756,9 @@
                         <input type="radio" name="payment" id="pay-livraison" value="Paiement à la livraison" checked>
                         <label for="pay-livraison">💵 Paiement à la livraison</label>
                     </div>
-                    <div class="payment-option disabled">
-                        <input type="radio" name="payment" id="pay-orange" value="Orange Money" disabled>
+                    <div class="payment-option" onclick="selectPayment(this)">
+                        <input type="radio" name="payment" id="pay-orange" value="Orange Money">
                         <label for="pay-orange">🟠 Orange Money</label>
-                        <span class="badge-soon">Bientôt</span>
                     </div>
                     <div class="payment-option disabled">
                         <input type="radio" name="payment" id="pay-wave" value="Wave" disabled>
@@ -1128,13 +1127,52 @@
                 var data = await res.json();
                 localStorage.removeItem("cart");
                 localStorage.setItem("lastOrderId", data.id);
-                window.location.href = "thank-you.html";
+                localStorage.removeItem("cart");
+                localStorage.setItem("lastOrderId", data.id);
+                var selectedPay = document.querySelector('input[name="payment"]:checked')?.value;
+                if (selectedPay === 'Orange Money') {
+                    showOrangeMoneyInstructions(data.id, window._grandTotal);
+                } else {
+                    window.location.href = "thank-you.html";
+                }
+
             } catch (err) {
                 alert("Erreur réseau. Veuillez réessayer ou commander via WhatsApp.");
                 btn.disabled = false;
                 btn.innerHTML = '✅ Confirmer la commande';
             }
         });
+
+
+
+        function showOrangeMoneyInstructions(orderId, amount) {
+            var omLink = 'tel:%2A144%2A1%2A0757415197%2A' + Math.round(amount) + '%23';
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+            modal.innerHTML =
+                '<div style="background:white;border-radius:20px;padding:28px 24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.2);">' +
+                '<div style="font-size:48px;margin-bottom:12px;">🟠</div>' +
+                '<h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:#111827;">Paiement Orange Money</h2>' +
+                '<p style="font-size:14px;color:#6b7280;margin-bottom:20px;">Commande <strong>#' + orderId + '</strong> confirmée ! Finalisez votre paiement :</p>' +
+                '<div style="background:#fff7ed;border:2px solid #fed7aa;border-radius:14px;padding:16px;margin-bottom:16px;">' +
+                '<div style="font-size:12px;color:#c2410c;font-weight:700;margin-bottom:6px;">NUMÉRO À PAYER</div>' +
+                '<div style="font-size:28px;font-weight:800;color:#ea580c;letter-spacing:2px;">0757415197</div>' +
+                '<div style="font-size:12px;color:#9a3412;margin-top:4px;">Orange Money CI</div>' +
+                '</div>' +
+                '<div style="background:#f0fdf4;border:2px solid #a7f3d0;border-radius:14px;padding:16px;margin-bottom:20px;">' +
+                '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;">' +
+                '<span style="color:#6b7280;">Montant exact</span>' +
+                '<strong style="color:#059669;font-size:18px;">' + Number(amount).toLocaleString('fr-FR') + ' FCFA</strong></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:14px;">' +
+                '<span style="color:#6b7280;">Référence</span>' +
+                '<strong style="color:#111827;">CMD-' + orderId + '</strong></div></div>' +
+                '<a href="' + omLink + '" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#f97316,#ea580c);color:white;padding:14px;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:10px;">📱 Payer avec Orange Money</a>' +
+                '<p style="font-size:11px;color:#9ca3af;margin-bottom:16px;">Indiquez <strong>CMD-' + orderId + '</strong> comme motif de paiement</p>' +
+                '<button onclick="this.closest(\'div[style*=fixed]\').remove();location.href=\'thank-you.html\';" ' +
+                'style="width:100%;background:#f3f4f6;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;color:#374151;">' +
+                'J\'ai effectué le paiement ✓</button></div>';
+            document.body.appendChild(modal);
+        }
     </script>
 
     <style>
