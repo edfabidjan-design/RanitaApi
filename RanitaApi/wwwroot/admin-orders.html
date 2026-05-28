@@ -323,16 +323,15 @@
         }
 
         function renderOrders() {
-            const filtered = adminAllOrders.filter(o => {
-                const matchSearch = !adminOrdersSearch ||
+            const filtered = adminAllOrders.filter(function (o) {
+                var matchSearch = !adminOrdersSearch ||
                     o.customerName.toLowerCase().includes(adminOrdersSearch.toLowerCase()) ||
                     o.customerPhone.includes(adminOrdersSearch) ||
                     String(o.id).includes(adminOrdersSearch);
-                const matchFilter = !adminOrdersFilter || o.status === adminOrdersFilter;
+                var matchFilter = !adminOrdersFilter || o.status === adminOrdersFilter;
                 return matchSearch && matchFilter;
             });
 
-            // Stats
             const stats = {
                 total: adminAllOrders.length,
                 attente: adminAllOrders.filter(o => o.status === "En attente").length,
@@ -340,84 +339,80 @@
                 livree: adminAllOrders.filter(o => o.status === "Livrée").length,
                 ca: adminAllOrders.filter(o => !["Annulée", "Échec livraison", "Remboursé"].includes(o.status)).reduce((s, o) => s + o.total, 0)
             };
-            document.getElementById("statsBar").innerHTML = `
-        <div class="stat-card"><div class="stat-num">${stats.total}</div><div class="stat-label">Total</div></div>
-        <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${stats.attente}</div><div class="stat-label">Attente</div></div>
-        <div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${stats.validee}</div><div class="stat-label">Validées</div></div>
-        <div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${stats.livree}</div><div class="stat-label">Livrées</div></div>
-        <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${adminAllOrders.filter(o => o.status === "Annulée").length}</div><div class="stat-label">Annulées</div></div>
-        <div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">${adminAllOrders.filter(o => o.status === "Remboursé").length}</div><div class="stat-label">Remb.</div></div>
-        <div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">${adminAllOrders.filter(o => o.status === "Remboursement demandé").length}</div><div class="stat-label">Remb.dem.</div></div>
-        <div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num" style="font-size:13px;">${Number(stats.ca).toLocaleString()} F</div><div class="stat-label">CA</div></div>`;
 
-            // Pagination
+            document.getElementById("statsBar").innerHTML =
+                '<div class="stat-card"><div class="stat-num">' + stats.total + '</div><div class="stat-label">Total</div></div>' +
+                '<div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">' + stats.attente + '</div><div class="stat-label">Attente</div></div>' +
+                '<div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">' + stats.validee + '</div><div class="stat-label">Validées</div></div>' +
+                '<div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">' + stats.livree + '</div><div class="stat-label">Livrées</div></div>' +
+                '<div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">' + adminAllOrders.filter(o => o.status === "Annulée").length + '</div><div class="stat-label">Annulées</div></div>' +
+                '<div class="stat-card" style="border-top:3px solid #ef4444;"><div class="stat-num">' + adminAllOrders.filter(o => o.status === "Remboursé").length + '</div><div class="stat-label">Remb.</div></div>' +
+                '<div class="stat-card" style="border-top:3px solid #f59e0b;"><div class="stat-num">' + adminAllOrders.filter(o => o.status === "Remboursement demandé").length + '</div><div class="stat-label">Remb.dem.</div></div>' +
+                '<div class="stat-card" style="border-top:3px solid #8b5cf6;"><div class="stat-num" style="font-size:13px;">' + Number(stats.ca).toLocaleString() + ' F</div><div class="stat-label">CA</div></div>';
+
             const totalPages = Math.ceil(filtered.length / ORDERS_PAGE_SIZE);
             if (adminOrdersPage > totalPages) adminOrdersPage = 1;
-            const paginated = filtered.slice(
-                (adminOrdersPage - 1) * ORDERS_PAGE_SIZE,
-                adminOrdersPage * ORDERS_PAGE_SIZE
-            );
+            const paginated = filtered.slice((adminOrdersPage - 1) * ORDERS_PAGE_SIZE, adminOrdersPage * ORDERS_PAGE_SIZE);
 
-            // Compteur
             document.getElementById('adminOrdersCount').textContent =
                 filtered.length + ' commande' + (filtered.length !== 1 ? 's' : '') +
                 (totalPages > 1 ? ' — Page ' + adminOrdersPage + '/' + totalPages : '');
 
             window._adminOrders = adminAllOrders;
 
-            // Tableau
-            document.getElementById("ordersTable").innerHTML = paginated.map(o => `
-        <tr>
-            <td><strong>#${o.id}</strong></td>
-            <td>${o.customerName}</td>
-            <td>${o.customerPhone}</td>
-            <td style="max-width:150px;font-size:12px;">${o.customerAddress}</td>
-            <td>${o.paymentMethod}</td>
-            <td><strong>${Number(o.total).toLocaleString()} FCFA</strong></td>
-            <td>
-                ${o.status === "Remboursement demandé" ? `
-                <div style="display:flex;flex-direction:column;gap:6px;">
-                    <span class="status-badge status-refund">💰 Remb. demandé</span>
-                    <button onclick="approveRefund(${o.id})" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">✅ Valider</button>
-                    <button onclick="rejectRefund(${o.id})" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">❌ Rejeter</button>
-                </div>` : `
-                <select class="status-select" style="${getStatusStyle(o.status)}" onchange="updateStatus(${o.id},this.value,this)">
-                    <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                    <option ${o.status === "Confirmée par vendeur" ? "selected" : ""}>Confirmée par vendeur</option>
-                    <option ${o.status === "Indisponible vendeur" ? "selected" : ""}>Indisponible vendeur</option>
-                    <option ${o.status === "Validée" ? "selected" : ""}>Validée</option>
-                    <option ${o.status === "Livrée" ? "selected" : ""}>Livrée</option>
-                    <option ${o.status === "Annulée" ? "selected" : ""}>Annulée</option>
-                    <option ${o.status === "Échec livraison" ? "selected" : ""}>Échec livraison</option>
-                    <option ${o.status === "Remboursé" ? "selected" : ""}>Remboursé</option>
-                    <option ${o.status === "Remboursement rejeté" ? "selected" : ""}>Remboursement rejeté</option>
-                </select>
-                ${o.status === "Confirmée par vendeur" ? `<div style="margin-top:4px;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;">✅ Prêt à livrer !</div>` : ''}
-                ${(o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMotif ? `<div style="margin-top:4px;background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:6px;font-size:11px;">${o.refundMotif}</div>` : ''}`}
-            </td>
-            <td style="font-size:12px;">${new Date(o.createdAt).toLocaleString('fr-FR')}</td>
-            <td><button onclick="showDetails(${o.id})">👁 Voir</button></td>
-        </tr>`).join('');
+            document.getElementById("ordersTable").innerHTML = paginated.map(function (o) {
+                return '<tr>' +
+                    '<td><strong>#' + o.id + '</strong></td>' +
+                    '<td>' + o.customerName + '</td>' +
+                    '<td>' + o.customerPhone + '</td>' +
+                    '<td style="max-width:150px;font-size:12px;">' + o.customerAddress + '</td>' +
+                    '<td>' + o.paymentMethod + '</td>' +
+                    '<td><strong>' + Number(o.total).toLocaleString() + ' FCFA</strong></td>' +
+                    '<td>' + (o.status === "Remboursement demandé" ?
+                        '<div style="display:flex;flex-direction:column;gap:6px;">' +
+                        '<span class="status-badge status-refund">Remb. demandé</span>' +
+                        '<button onclick="approveRefund(' + o.id + ')" style="background:#10b981;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">Valider</button>' +
+                        '<button onclick="rejectRefund(' + o.id + ')" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;">Rejeter</button>' +
+                        '</div>' :
+                        '<select class="status-select" style="' + getStatusStyle(o.status) + '" onchange="updateStatus(' + o.id + ',this.value,this)">' +
+                        '<option' + (o.status === "En attente" ? " selected" : "") + '>En attente</option>' +
+                        '<option' + (o.status === "Confirmée par vendeur" ? " selected" : "") + '>Confirmée par vendeur</option>' +
+                        '<option' + (o.status === "Indisponible vendeur" ? " selected" : "") + '>Indisponible vendeur</option>' +
+                        '<option' + (o.status === "Validée" ? " selected" : "") + '>Validée</option>' +
+                        '<option' + (o.status === "Livrée" ? " selected" : "") + '>Livrée</option>' +
+                        '<option' + (o.status === "Annulée" ? " selected" : "") + '>Annulée</option>' +
+                        '<option' + (o.status === "Échec livraison" ? " selected" : "") + '>Échec livraison</option>' +
+                        '<option' + (o.status === "Remboursé" ? " selected" : "") + '>Remboursé</option>' +
+                        '<option' + (o.status === "Remboursement rejeté" ? " selected" : "") + '>Remboursement rejeté</option>' +
+                        '</select>' +
+                        (o.status === "Confirmée par vendeur" ? '<div style="margin-top:4px;background:#e0e7ff;color:#3730a3;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;">Pret a livrer</div>' : '') +
+                        ((o.status === "Annulée" || o.status === "Indisponible vendeur") && o.refundMotif ? '<div style="margin-top:4px;background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:6px;font-size:11px;">' + o.refundMotif + '</div>' : '')
+                    ) + '</td>' +
+                    '<td style="font-size:12px;">' + new Date(o.createdAt).toLocaleString('fr-FR') + '</td>' +
+                    '<td><button onclick="showDetails(' + o.id + ')">Voir</button></td>' +
+                    '</tr>';
+            }).join('');
 
-            // Barre pagination
             var bar = document.getElementById('adminOrdersPaginationBar');
             if (totalPages <= 1) { bar.innerHTML = ''; return; }
             var pages = [];
+            var btnS = 'padding:8px 16px;min-width:60px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:#374151;font-weight:700;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;';
 
-            pages.push('<button class="pg-btn" onclick="ordersGoPage(' + (adminOrdersPage - 1) + ')" ' + (adminOrdersPage === 1 ? 'disabled' : '') + '>Prec</button>');
+            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage - 1) + ')" ' + (adminOrdersPage === 1 ? 'disabled' : '') + ' style="' + btnS + (adminOrdersPage === 1 ? 'opacity:.4;cursor:not-allowed;' : '') + '">Prec</button>');
 
             for (var i = 1; i <= totalPages; i++) {
                 var isActive = adminOrdersPage === i;
                 if (i === 1 || i === totalPages || (i >= adminOrdersPage - 1 && i <= adminOrdersPage + 1)) {
-                    pages.push('<button class="pg-btn' + (isActive ? ' active' : '') + '" onclick="ordersGoPage(' + i + ')">' + i + '</button>');
+                    pages.push('<button onclick="ordersGoPage(' + i + ')" style="' + btnS + (isActive ? 'background:#10b981;color:white;border-color:#10b981;' : '') + '">' + i + '</button>');
                 } else if (i === adminOrdersPage - 2 || i === adminOrdersPage + 2) {
                     pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
                 }
             }
 
-            pages.push('<button class="pg-btn" onclick="ordersGoPage(' + (adminOrdersPage + 1) + ')" ' + (adminOrdersPage === totalPages ? 'disabled' : '') + '>Suiv</button>');
+            pages.push('<button onclick="ordersGoPage(' + (adminOrdersPage + 1) + ')" ' + (adminOrdersPage === totalPages ? 'disabled' : '') + ' style="' + btnS + (adminOrdersPage === totalPages ? 'opacity:.4;cursor:not-allowed;' : '') + '">Suiv</button>');
 
             bar.innerHTML = pages.join('');
+        }
 
         function ordersGoPage(p) {
             var filtered = adminAllOrders.filter(function (o) {
@@ -443,20 +438,26 @@
         }
 
         function showDetails(orderId) {
-            const o = window._adminOrders.find(o => o.id === orderId); if (!o) return;
+            const o = window._adminOrders.find(o => o.id === orderId);
+            if (!o) return;
             const subtotal = o.items.reduce((s, i) => s + i.price * i.quantity, 0);
-            document.getElementById("modalContent").innerHTML = `
-                            <h3>Commande #${o.id}</h3>
-                            <div class="order-info"><strong>Client :</strong> ${o.customerName}<br><strong>Téléphone :</strong> ${o.customerPhone}<br><strong>Adresse :</strong> ${o.customerAddress}<br><strong>Paiement :</strong> ${o.paymentMethod}<br><strong>Date :</strong> ${new Date(o.createdAt).toLocaleString('fr-FR')}</div>
-                            ${o.refundMotif ? `<div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:12px;margin-bottom:12px;"><strong style="color:#92400e;">💰 Motif :</strong><p style="margin-top:4px;font-size:13px;">${o.refundMotif}</p></div>` : ''}
-                            ${o.items.map(i => `<div class="modal-item"><img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}"><div class="modal-item-info"><div class="modal-item-name">${i.productName}</div><div class="modal-item-qty">x${i.quantity}${i.variantName ? ` · ${i.variantName}` : ''}</div></div><div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div></div>`).join('')}
-                            <div class="modal-total"><span>Sous-total</span><span>${Number(subtotal).toLocaleString()} FCFA</span></div>
-                            <div class="modal-total"><span>Total payé</span><span style="color:#10b981;">${Number(o.total).toLocaleString()} FCFA</span></div>
-                            <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>`;
+            document.getElementById("modalContent").innerHTML =
+                '<h3>Commande #' + o.id + '</h3>' +
+                '<div class="order-info"><strong>Client :</strong> ' + o.customerName + '<br><strong>Telephone :</strong> ' + o.customerPhone + '<br><strong>Adresse :</strong> ' + o.customerAddress + '<br><strong>Paiement :</strong> ' + o.paymentMethod + '<br><strong>Date :</strong> ' + new Date(o.createdAt).toLocaleString('fr-FR') + '</div>' +
+                (o.refundMotif ? '<div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:12px;margin-bottom:12px;"><strong style="color:#92400e;">Motif :</strong><p style="margin-top:4px;font-size:13px;">' + o.refundMotif + '</p></div>' : '') +
+                o.items.map(function (i) {
+                    return '<div class="modal-item"><img src="' + (i.imageUrl || '') + '" alt="' + i.productName + '"><div class="modal-item-info"><div class="modal-item-name">' + i.productName + '</div><div class="modal-item-qty">x' + i.quantity + (i.variantName ? ' · ' + i.variantName : '') + '</div></div><div class="modal-item-price">' + Number(i.price * i.quantity).toLocaleString() + ' FCFA</div></div>';
+                }).join('') +
+                '<div class="modal-total"><span>Sous-total</span><span>' + Number(subtotal).toLocaleString() + ' FCFA</span></div>' +
+                '<div class="modal-total"><span>Total paye</span><span style="color:#10b981;">' + Number(o.total).toLocaleString() + ' FCFA</span></div>' +
+                '<button class="btn-close-modal" onclick="document.getElementById(\'modalOverlay\').classList.remove(\'open\')">Fermer</button>';
             document.getElementById("modalOverlay").classList.add("open");
         }
 
-        function closeModal(e) { if (e.target === document.getElementById("modalOverlay")) document.getElementById("modalOverlay").classList.remove("open"); }
+        function closeModal(e) {
+            if (e.target === document.getElementById("modalOverlay"))
+                document.getElementById("modalOverlay").classList.remove("open");
+        }
 
         loadOrders();
     </script>
