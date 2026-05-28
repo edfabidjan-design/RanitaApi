@@ -300,6 +300,22 @@
             text-decoration: none;
             font-weight: 700;
         }
+
+        @media(max-width: 768px) {
+            .site-header {
+                display: none !important;
+            }
+
+            #mobHeaderOrders {
+                display: flex !important;
+            }
+
+            .orders-page {
+                padding-top: 76px !important;
+            }
+        }
+
+
     </style>
 </head>
 <body>
@@ -396,34 +412,34 @@
 
             if (orders.length === 0) {
                 container.innerHTML = `
-                            <div class="empty-state">
-                                <div style="font-size:60px">📦</div>
-                                <p>Vous n'avez pas encore passé de commande.</p>
-                                <a href="products.html" class="btn-shop">Découvrir les produits</a>
-                            </div>`;
+                                <div class="empty-state">
+                                    <div style="font-size:60px">📦</div>
+                                    <p>Vous n'avez pas encore passé de commande.</p>
+                                    <a href="products.html" class="btn-shop">Découvrir les produits</a>
+                                </div>`;
                 return;
             }
 
             container.innerHTML = orders.map(o => `
-                        <div class="order-card" onclick="showDetails(${o.id})">
-                            <div class="order-head">
-                                <div>
-                                    <div class="order-id">Commande #${o.id}</div>
-                                    <div class="order-date">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                            <div class="order-card" onclick="showDetails(${o.id})">
+                                <div class="order-head">
+                                    <div>
+                                        <div class="order-id">Commande #${o.id}</div>
+                                        <div class="order-date">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                                    </div>
+                                    <span class="order-status ${getStatusClass(o.status)}">${o.status}</span>
                                 </div>
-                                <span class="order-status ${getStatusClass(o.status)}">${o.status}</span>
+                                <div class="order-items-preview">
+                                    ${o.items.map(i => `
+                                        <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}" title="${i.productName}">
+                                    `).join('')}
+                                </div>
+                                <div class="order-summary">
+                                    <span>${o.items.length} article(s) • ${o.paymentMethod}</span>
+                                    <span class="order-total">${Number(o.total).toLocaleString()} FCFA</span>
+                                </div>
                             </div>
-                            <div class="order-items-preview">
-                                ${o.items.map(i => `
-                                    <img src="${i.imageUrl || 'https://via.placeholder.com/50'}" alt="${i.productName}" title="${i.productName}">
-                                `).join('')}
-                            </div>
-                            <div class="order-summary">
-                                <span>${o.items.length} article(s) • ${o.paymentMethod}</span>
-                                <span class="order-total">${Number(o.total).toLocaleString()} FCFA</span>
-                            </div>
-                        </div>
-                    `).join('');
+                        `).join('');
 
             // Stocker les commandes pour la modal
             window._orders = orders;
@@ -446,72 +462,72 @@
                 : Number(shipping).toLocaleString() + ' FCFA';
 
             document.getElementById("modalContent").innerHTML = `
-                        <h3>Commande #${o.id}</h3>
-                        <div class="modal-date">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                            <h3>Commande #${o.id}</h3>
+                            <div class="modal-date">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
 
-                        <div class="modal-info">
-                            <strong>Statut :</strong> ${o.status}<br>
-                            <strong>Livraison :</strong> ${o.customerAddress}<br>
-                            <strong>Paiement :</strong> ${o.paymentMethod}
-                        </div>
-
-                        <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#374151;">Articles commandés</div>
-
-                        ${o.items.map(i => `
-                            <div class="modal-item">
-                                <img src="${i.imageUrl || 'https://via.placeholder.com/60'}" alt="${i.productName}">
-                                <div class="modal-item-info">
-                                    <div class="modal-item-name">${i.productName}</div>
-                                    <div class="modal-item-qty">Quantité : ${i.quantity} × ${Number(i.price).toLocaleString()} FCFA</div>
-                                </div>
-                                <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
+                            <div class="modal-info">
+                                <strong>Statut :</strong> ${o.status}<br>
+                                <strong>Livraison :</strong> ${o.customerAddress}<br>
+                                <strong>Paiement :</strong> ${o.paymentMethod}
                             </div>
-                        `).join('')}
 
-                        <div class="modal-total-row">
-                            <span>Sous-total</span>
-                            <span>${Number(subtotal).toLocaleString()} FCFA</span>
-                        </div>
+                            <div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#374151;">Articles commandés</div>
+
+                            ${o.items.map(i => `
+                                <div class="modal-item">
+                                    <img src="${i.imageUrl || 'https://via.placeholder.com/60'}" alt="${i.productName}">
+                                    <div class="modal-item-info">
+                                        <div class="modal-item-name">${i.productName}</div>
+                                        <div class="modal-item-qty">Quantité : ${i.quantity} × ${Number(i.price).toLocaleString()} FCFA</div>
+                                    </div>
+                                    <div class="modal-item-price">${Number(i.price * i.quantity).toLocaleString()} FCFA</div>
+                                </div>
+                            `).join('')}
+
+                            <div class="modal-total-row">
+                                <span>Sous-total</span>
+                                <span>${Number(subtotal).toLocaleString()} FCFA</span>
+                            </div>
 <div class="modal-total-row">
-        <span>🚚 Livraison</span>
-        <span>${shippingLabel}</span>
+            <span>🚚 Livraison</span>
+            <span>${shippingLabel}</span>
 </div>
 ${referralDiscount > 0 ? `
 <div class="modal-total-row" style="color:#10b981;font-weight:700;">
-        <span>🎁 Crédit parrainage</span>
-        <span>- ${Number(referralDiscount).toLocaleString()} FCFA</span>
+            <span>🎁 Crédit parrainage</span>
+            <span>- ${Number(referralDiscount).toLocaleString()} FCFA</span>
 </div>` : ''}
 ${promoDiscount > 0 ? `
 <div class="modal-total-row" style="color:#10b981;font-weight:700;">
-        <span>🎟️ Code promo${o.promoCode ? ' (' + o.promoCode + ')' : ''}</span>
-        <span>- ${Number(promoDiscount).toLocaleString()} FCFA</span>
+            <span>🎟️ Code promo${o.promoCode ? ' (' + o.promoCode + ')' : ''}</span>
+            <span>- ${Number(promoDiscount).toLocaleString()} FCFA</span>
 </div>` : ''}
-                        <div class="modal-total-row grand">
-                            <span>Total</span>
-                            <span>${Number(o.total).toLocaleString()} FCFA</span>
-                        </div>
+                            <div class="modal-total-row grand">
+                                <span>Total</span>
+                                <span>${Number(o.total).toLocaleString()} FCFA</span>
+                            </div>
 
 ${o.status === "En attente" ? `
-        <button onclick="cancelOrder(${o.id})"
-                style="width:100%;background:#fef2f2;color:#ef4444;border:2px solid #ef4444;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:12px;font-size:14px;">
-            ❌ Annuler la commande
-        </button>
+            <button onclick="cancelOrder(${o.id})"
+                    style="width:100%;background:#fef2f2;color:#ef4444;border:2px solid #ef4444;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:12px;font-size:14px;">
+                ❌ Annuler la commande
+            </button>
 ` : ''}
 ${o.status === "Livrée" ? `
-        <div style="margin-top:12px;">
-            <textarea id="refundMotif_${o.id}" placeholder="Décrivez le motif de votre demande de remboursement..."
-                style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:8px;"></textarea>
-            <button onclick="requestRefund(${o.id})"
-                style="width:100%;background:#fef3c7;color:#92400e;border:2px solid #f59e0b;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;">
-                💰 Demander un remboursement
-            </button>
-        </div>
+            <div style="margin-top:12px;">
+                <textarea id="refundMotif_${o.id}" placeholder="Décrivez le motif de votre demande de remboursement..."
+                    style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:80px;margin-bottom:8px;"></textarea>
+                <button onclick="requestRefund(${o.id})"
+                    style="width:100%;background:#fef3c7;color:#92400e;border:2px solid #f59e0b;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;">
+                    💰 Demander un remboursement
+                </button>
+            </div>
 ` : ''}
 
 <button class="btn-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">
-        Fermer
+            Fermer
 </button>
-                    `;
+                        `;
 
             document.getElementById("modalOverlay").classList.add("open");
         }
@@ -566,6 +582,16 @@ ${o.status === "Livrée" ? `
         })();
     </script>
 
+
+    <nav style="display:none;position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(13,17,23,.97);height:56px;padding:0 14px;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08);" id="mobHeaderOrders" class="mob-header-orders">
+        <a href="index.html" style="font-size:15px;font-weight:800;color:#F0F6FC;text-decoration:none;flex:1;">🛒 Ranita<span style="color:#10b981;">Market</span></a>
+        <a href="cart.html" style="color:#8B949E;padding:6px;display:flex;align-items:center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /></svg>
+        </a>
+        <a href="login.html" class="mob-icon" id="mobAuthIcon" style="color:#8B949E;padding:6px;display:flex;align-items:center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+        </a>
+    </nav>
 
 </body>
 
