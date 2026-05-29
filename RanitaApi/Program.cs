@@ -165,6 +165,8 @@ app.Use(async (context, next) =>
 
 app.UseStaticFiles(new StaticFileOptions
 {
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "application/json",
     OnPrepareResponse = ctx =>
     {
         ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
@@ -172,6 +174,7 @@ app.UseStaticFiles(new StaticFileOptions
         ctx.Context.Response.Headers["Expires"] = "0";
     }
 });
+
 
 app.UseCors("AllowRanitaShop");
 app.UseRateLimiter();

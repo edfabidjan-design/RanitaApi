@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.ranita.market",
+        "sha256_cert_fingerprints": ["12:31:F1:34:BE:04:74:C0:4A:EF:B0:9F:89:F9:03:13:4E:AF:0C:66:79:54:C1:F0:3F:AE:B2:0E:8D:DD:5A:AE"]
+      }
+    }]
