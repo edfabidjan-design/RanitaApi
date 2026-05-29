@@ -177,7 +177,9 @@ app.UseStaticFiles(new StaticFileOptions
 
 
 // ── WELL-KNOWN (assetlinks.json pour Play Store) ✅ ─────────────
-var wellKnownPath = Path.Combine(builder.Environment.WebRootPath ?? "wwwroot", ".well-known");
+var wellKnownPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", ".well-known");
+if (!Directory.Exists(wellKnownPath))
+    wellKnownPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", ".well-known");
 if (Directory.Exists(wellKnownPath))
 {
     app.UseStaticFiles(new StaticFileOptions
