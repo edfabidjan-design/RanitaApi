@@ -134,7 +134,15 @@
                 }
 
                 msg.textContent = 'Connexion réussie ! Redirection...';
-                localStorage.setItem('seller', JSON.stringify(data));
+                localStorage.setItem('sellerToken', data.token);
+                localStorage.setItem('seller', JSON.stringify({
+                    clientId: data.clientId,
+                    sellerId: data.sellerId,
+                    shopName: data.shopName,
+                    status: data.status,
+                    name: data.name,
+                    email: data.email
+                }));
                 await registerSellerPush(data.sellerId);
 
                 setTimeout(function () {
