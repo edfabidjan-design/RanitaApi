@@ -176,20 +176,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 
-// ── WELL-KNOWN (assetlinks.json pour Play Store) ✅ ─────────────
-var wellKnownPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", ".well-known");
-if (!Directory.Exists(wellKnownPath))
-    wellKnownPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", ".well-known");
-if (Directory.Exists(wellKnownPath))
-{
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(wellKnownPath),
-        RequestPath = "/.well-known",
-        ServeUnknownFileTypes = true,
-        DefaultContentType = "application/json"
-    });
-}
+
 
 
 app.UseCors("AllowRanitaShop");
@@ -599,5 +586,21 @@ try { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvid
 try { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""PromoDiscount"" NUMERIC(18,2) NOT NULL DEFAULT 0;"); db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""PromoCode"" TEXT NULL;"); db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Orders"" ADD COLUMN IF NOT EXISTS ""ReferralCreditUsed"" NUMERIC(18,2) NOT NULL DEFAULT 0;"); Console.WriteLine("Orders discount columns OK"); } catch (Exception ex) { Console.WriteLine("Orders discount columns error: " + ex.Message); }
 try { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.ExecuteSqlRaw(@"CREATE TABLE IF NOT EXISTS ""ProductPromoCodes"" (""Id"" SERIAL PRIMARY KEY,""Code"" VARCHAR(50) NOT NULL UNIQUE,""ProductId"" INT NOT NULL REFERENCES ""Products""(""Id"") ON DELETE CASCADE,""Discount"" INT NOT NULL,""StartDate"" TIMESTAMP NULL,""EndDate"" TIMESTAMP NULL,""IsActive"" BOOLEAN NOT NULL DEFAULT TRUE,""CreatedAt"" TIMESTAMP NOT NULL DEFAULT NOW());"); Console.WriteLine("ProductPromoCodes OK"); } catch (Exception ex) { Console.WriteLine("ProductPromoCodes error: " + ex.Message); }
 try { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); db.Database.ExecuteSqlRaw(@"ALTER TABLE ""ProductPromoCodes"" ADD COLUMN IF NOT EXISTS ""Color"" TEXT NULL;"); Console.WriteLine("ProductPromoCodes.Color OK"); } catch (Exception ex) { Console.WriteLine("ProductPromoCodes.Color error: " + ex.Message); }
+
+
+
+// ── ASSETLINKS pour Play Store TWA ✅ ───────────────────────────
+app.MapGet("/.well-known/assetlinks.json", async context =>
+{
+    var filePath = Path.Combine(builder.Environment.WebRootPath ??
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"),
+        ".well-known", "assetlinks.json");
+
+    context.Response.ContentType = "application/json";
+    if (File.Exists(filePath))
+        await context.Response.SendFileAsync(filePath);
+    else
+        await context.Response.WriteAsync("[]");
+});
 
 app.Run();
