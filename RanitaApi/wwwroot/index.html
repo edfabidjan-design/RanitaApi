@@ -2410,7 +2410,9 @@
                 mobMenu.id = 'mobCMenu';
                 mobMenu.style.cssText = 'display:none;position:fixed;top:60px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:180px;z-index:99999;';
                 mobMenu.innerHTML =
+                    '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">👤 Mon profil</a>' +
                     '<a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>' +
+                    '<a href="wishlist.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">❤️ Mes favoris</a>' +
                     '<div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;">🚪 Déconnexion</div>';
                 document.body.appendChild(mobMenu);
 
