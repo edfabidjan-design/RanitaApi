@@ -530,6 +530,17 @@
             <div id="authNav" style="display:inline-flex;align-items:center;"></div>
             <a href="cart.html" class="cart-link">🛒 Panier (<span id="cartCount">0</span>)</a>
         </nav>
+
+
+        <script>
+            // Si PWA lancée directement sur cette page (pas via navigation interne) → redirect accueil
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                if (!sessionStorage.getItem('pwa_launched') && !document.referrer) {
+                    sessionStorage.setItem('pwa_launched', '1');
+                    window.location.replace('/index.html');
+                }
+            }
+        </script>
     </header>
 
     <main class="products-page">
