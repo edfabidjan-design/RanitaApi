@@ -727,24 +727,24 @@
                 }
                 const oldPriceHtml = p.oldPrice && p.oldPrice > p.price ? `<span class="price-old">${Number(p.oldPrice).toLocaleString('fr-FR')} F</span>` : '';
                 return `<div class="product-card" onclick="openProductDetails(${p.id})">
-                        <div class="product-img-list">
-                            ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
-                            ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-                            <button class="wsh-btn" id="wsh-${p.id}" onclick="event.stopPropagation();wshToggle(${p.id})" style="position:absolute;top:8px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#9ca3af;z-index:2;transition:all .2s;">♡</button>
-                        </div>
-                        <div class="product-info">
-                            <span class="product-category">${p.category?.name || ''}</span>
-                            <h3 class="product-name">${p.name}</h3>
-                            ${starsHtml}
-                            <div class="product-prices">
-                                <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
-                                ${oldPriceHtml}
-                                ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                            <div class="product-img-list">
+                                ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
+                                ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                                <button class="wsh-btn" id="wsh-${p.id}" onclick="event.stopPropagation();wshToggle(${p.id})" style="position:absolute;top:8px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#9ca3af;z-index:2;transition:all .2s;">♡</button>
                             </div>
-                            ${stockHtml}
-                            ${btnHtml}
-                        </div>
-                    </div>`;
+                            <div class="product-info">
+                                <span class="product-category">${p.category?.name || ''}</span>
+                                <h3 class="product-name">${p.name}</h3>
+                                ${starsHtml}
+                                <div class="product-prices">
+                                    <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
+                                    ${oldPriceHtml}
+                                    ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                                </div>
+                                ${stockHtml}
+                                ${btnHtml}
+                            </div>
+                        </div>`;
             }).join('');
         }
 
@@ -989,5 +989,39 @@
             }
         })();
     </script>
+
+
+
+
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    </script>
+
+
 </body>
 </html>

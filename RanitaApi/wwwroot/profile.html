@@ -597,7 +597,7 @@
                     }
                 }
 
-            } catch(e) {
+            } catch (e) {
                 document.getElementById('statCredits').textContent = '0';
                 document.getElementById('statReferrals').textContent = '0';
             }
@@ -609,7 +609,7 @@
                 });
                 var orders = await res2.json();
                 document.getElementById('statOrders').textContent = Array.isArray(orders) ? orders.length : '—';
-            } catch(e) {
+            } catch (e) {
                 document.getElementById('statOrders').textContent = '—';
             }
         }
@@ -651,7 +651,7 @@
                     var err = await res.text();
                     showToast('Erreur : ' + err, 'error');
                 }
-            } catch(e) {
+            } catch (e) {
                 showToast('Erreur réseau', 'error');
             }
 
@@ -686,7 +686,7 @@
                 } else {
                     showToast('Erreur lors de la mise à jour', 'error');
                 }
-            } catch(e) {
+            } catch (e) {
                 showToast('Erreur réseau', 'error');
             }
 
@@ -696,10 +696,10 @@
         function copyReferral() {
             var code = document.getElementById('referralCode').textContent;
             var url = window.location.origin + '/register.html?ref=' + code;
-            navigator.clipboard.writeText(url).then(function() {
+            navigator.clipboard.writeText(url).then(function () {
                 showToast('Lien de parrainage copié ✓', 'success');
-            }).catch(function() {
-                navigator.clipboard.writeText(code).then(function() {
+            }).catch(function () {
+                navigator.clipboard.writeText(code).then(function () {
                     showToast('Code copié : ' + code, 'success');
                 });
             });
@@ -717,11 +717,44 @@
             var t = document.getElementById('toast');
             t.textContent = msg;
             t.className = 'toast show ' + (type || '');
-            setTimeout(function() { t.className = 'toast'; }, 3000);
+            setTimeout(function () { t.className = 'toast'; }, 3000);
         }
     </script>
 
     <script src="/install-prompt.js"></script>
     <script src="/cart-badge.js"></script>
+
+
+
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    </script>
+
+
 </body>
 </html>

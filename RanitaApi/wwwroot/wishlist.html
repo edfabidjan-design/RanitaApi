@@ -561,7 +561,7 @@
 
     <script src="/cart-badge.js"></script>
     <script>
-    // Auth
+        // Auth
         (function () {
             var client = JSON.parse(localStorage.getItem('client') || 'null');
             var nav = document.getElementById('authNav');
@@ -621,8 +621,8 @@
             ['cartBadge', 'mobCartBadge'].forEach(function (id) { var b = document.getElementById(id); if (b && t > 0) { b.textContent = t; b.style.display = 'flex'; } });
         })();
 
-    // Wishlist
-    var API = '/api/products';
+        // Wishlist
+        var API = '/api/products';
 
         function removeFav(id) {
             var client = JSON.parse(localStorage.getItem('client') || 'null');
@@ -632,20 +632,20 @@
                 .catch(function () { });
         }
 
-    function clearAll() {
-        if (!confirm('Effacer tous les favoris ?')) return;
-        localStorage.setItem('wishlist', '[]');
-        loadWishlist();
-    }
+        function clearAll() {
+            if (!confirm('Effacer tous les favoris ?')) return;
+            localStorage.setItem('wishlist', '[]');
+            loadWishlist();
+        }
 
-    function addCart(id, name, price, img) {
-        var cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        var idx = cart.findIndex(function(i){ return i.id === id; });
-        if (idx >= 0) { cart[idx].qty++; } else { cart.push({id:id, name:name, price:price, imageUrl:img, qty:1}); }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        var total = cart.reduce(function(s,i){ return s+i.qty; }, 0);
-        ['cartBadge','mobCartBadge'].forEach(function(bid){ var b=document.getElementById(bid); if(b){b.textContent=total;b.style.display='flex';} });
-    }
+        function addCart(id, name, price, img) {
+            var cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            var idx = cart.findIndex(function (i) { return i.id === id; });
+            if (idx >= 0) { cart[idx].qty++; } else { cart.push({ id: id, name: name, price: price, imageUrl: img, qty: 1 }); }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            var total = cart.reduce(function (s, i) { return s + i.qty; }, 0);
+            ['cartBadge', 'mobCartBadge'].forEach(function (bid) { var b = document.getElementById(bid); if (b) { b.textContent = total; b.style.display = 'flex'; } });
+        }
 
         async function loadWishlist() {
             var client = JSON.parse(localStorage.getItem('client') || 'null');
@@ -684,7 +684,43 @@
             }
         }
 
-    loadWishlist();
+        loadWishlist();
     </script>
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
 </body>
 </html>

@@ -810,71 +810,100 @@
 
 
 <script>
-    (function () {
-        var client = JSON.parse(localStorage.getItem('client') || 'null');
-        var nav = document.getElementById('authNav');
-        if (!nav) return;
+        (function () {
+            var client = JSON.parse(localStorage.getItem('client') || 'null');
+            var nav = document.getElementById('authNav');
+            if (!nav) return;
 
-        if (client) {
-            nav.innerHTML = '<button onclick="toggleMenu(event)" style="background:#10b981;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">👤 ' + (client.name ? client.name.split(' ')[0] : 'Mon compte') + ' ▾</button>';
-            var cMenu = document.createElement('div');
-            cMenu.id = 'cMenu';
-            cMenu.style.cssText = 'display:none;position:fixed;top:64px;right:20px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:200px;z-index:99999;';
-            cMenu.innerHTML =
-                '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">👤 Mon profil</a>' +
-                '<a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">📦 Mes commandes</a>' +
-                '<a href="wishlist.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">❤️ Mes favoris</a>' +
-                '<div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">🚪 Déconnexion</div>';
-            document.body.appendChild(cMenu);
-        } else {
-            nav.innerHTML = '<a href="login.html" style="color:#10b981;font-weight:700;font-size:13px;text-decoration:none;">Connexion</a>';
-        }
+            if (client) {
+                nav.innerHTML = '<button onclick="toggleMenu(event)" style="background:#10b981;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">👤 ' + (client.name ? client.name.split(' ')[0] : 'Mon compte') + ' ▾</button>';
+                var cMenu = document.createElement('div');
+                cMenu.id = 'cMenu';
+                cMenu.style.cssText = 'display:none;position:fixed;top:64px;right:20px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:200px;z-index:99999;';
+                cMenu.innerHTML =
+                    '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">👤 Mon profil</a>' +
+                    '<a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">📦 Mes commandes</a>' +
+                    '<a href="wishlist.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;font-family:Arial,sans-serif;">❤️ Mes favoris</a>' +
+                    '<div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;">🚪 Déconnexion</div>';
+                document.body.appendChild(cMenu);
+            } else {
+                nav.innerHTML = '<a href="login.html" style="color:#10b981;font-weight:700;font-size:13px;text-decoration:none;">Connexion</a>';
+            }
 
-        window.toggleMenu = function (e) {
-            if (e) e.stopPropagation();
-            var m = document.getElementById('cMenu');
-            if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
-        };
-        window.doLogout = function () { localStorage.removeItem('client'); location.href = 'index.html'; };
-        document.addEventListener('click', function (e) {
-            var m = document.getElementById('cMenu');
-            if (m && !e.target.closest('#authNav') && !e.target.closest('#cMenu')) m.style.display = 'none';
-        });
-
-        var mobAuth = document.getElementById('mobAuthIcon');
-        if (mobAuth && client) {
-            mobAuth.removeAttribute('href');
-            mobAuth.style.cursor = 'pointer';
-            mobAuth.innerHTML = '<div style="background:#10b981;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">' + (client.name ? client.name[0].toUpperCase() : '?') + '</div>';
-            var mobMenu = document.createElement('div');
-            mobMenu.style.cssText = 'display:none;position:fixed;top:60px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:180px;z-index:99999;';
-            mobMenu.innerHTML =
-                '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">👤 Mon profil</a>' +
-                '<a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>' +
-                '<a href="wishlist.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">❤️ Mes favoris</a>' +
-                '<div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;">🚪 Déconnexion</div>';
-            document.body.appendChild(mobMenu);
-            mobAuth.addEventListener('click', function (e) {
-                e.stopPropagation();
-                mobMenu.style.display = mobMenu.style.display === 'none' ? 'block' : 'none';
-            });
+            window.toggleMenu = function (e) {
+                if (e) e.stopPropagation();
+                var m = document.getElementById('cMenu');
+                if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
+            };
+            window.doLogout = function () { localStorage.removeItem('client'); location.href = 'index.html'; };
             document.addEventListener('click', function (e) {
-                if (!e.target.closest('#mobAuthIcon')) mobMenu.style.display = 'none';
+                var m = document.getElementById('cMenu');
+                if (m && !e.target.closest('#authNav') && !e.target.closest('#cMenu')) m.style.display = 'none';
             });
-        }
 
-        // Nav mobile bas
-        var mobNavAuth = document.getElementById('mobNavAuthIcon');
-        if (mobNavAuth && client) {
-            mobNavAuth.removeAttribute('href');
-            mobNavAuth.style.cursor = 'pointer';
-            mobNavAuth.style.color = '#10b981';
-            mobNavAuth.innerHTML = '<div style="background:#10b981;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">' + (client.name ? client.name[0].toUpperCase() : '?') + '</div>Compte';
-            mobNavAuth.addEventListener('click', function (e) {
-                e.stopPropagation();
-                mobMenu.style.display = mobMenu.style.display === 'none' ? 'block' : 'none';
+            var mobAuth = document.getElementById('mobAuthIcon');
+            if (mobAuth && client) {
+                mobAuth.removeAttribute('href');
+                mobAuth.style.cursor = 'pointer';
+                mobAuth.innerHTML = '<div style="background:#10b981;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">' + (client.name ? client.name[0].toUpperCase() : '?') + '</div>';
+                var mobMenu = document.createElement('div');
+                mobMenu.style.cssText = 'display:none;position:fixed;top:60px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);min-width:180px;z-index:99999;';
+                mobMenu.innerHTML =
+                    '<a href="profile.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">👤 Mon profil</a>' +
+                    '<a href="client-orders.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">📦 Mes commandes</a>' +
+                    '<a href="wishlist.html" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#111827;text-decoration:none;font-weight:600;font-size:13px;border-bottom:1px solid #f3f4f6;">❤️ Mes favoris</a>' +
+                    '<div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:13px 16px;color:#ef4444;font-weight:600;cursor:pointer;font-size:13px;">🚪 Déconnexion</div>';
+                document.body.appendChild(mobMenu);
+                mobAuth.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    mobMenu.style.display = mobMenu.style.display === 'none' ? 'block' : 'none';
+                });
+                document.addEventListener('click', function (e) {
+                    if (!e.target.closest('#mobAuthIcon')) mobMenu.style.display = 'none';
+                });
+            }
+
+            // Nav mobile bas
+            var mobNavAuth = document.getElementById('mobNavAuthIcon');
+            if (mobNavAuth && client) {
+                mobNavAuth.removeAttribute('href');
+                mobNavAuth.style.cursor = 'pointer';
+                mobNavAuth.style.color = '#10b981';
+                mobNavAuth.innerHTML = '<div style="background:#10b981;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">' + (client.name ? client.name[0].toUpperCase() : '?') + '</div>Compte';
+                mobNavAuth.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    mobMenu.style.display = mobMenu.style.display === 'none' ? 'block' : 'none';
+                });
+            }
+        })();
+
+
+            <!-- ── BOUTON RETOUR EN HAUT ── -->
+        <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+            ↑
+        </button>
+        <script>
+            window.addEventListener('load', function () {
+                var scrollBtn = document.getElementById('scrollTopBtn');
+                if (!scrollBtn) return;
+                scrollBtn.style.display = 'none';
+                window.addEventListener('scroll', function () {
+                    if (window.scrollY > 400) {
+                        scrollBtn.style.display = 'flex';
+                        setTimeout(function () {
+                            scrollBtn.style.opacity = '1';
+                            scrollBtn.style.transform = 'scale(1)';
+                        }, 10);
+                    } else {
+                        scrollBtn.style.opacity = '0';
+                        scrollBtn.style.transform = 'scale(.8)';
+                        setTimeout(function () {
+                            if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                        }, 300);
+                    }
+                });
             });
-        }
-    })();
+</script>
+
 </script>
 </html>

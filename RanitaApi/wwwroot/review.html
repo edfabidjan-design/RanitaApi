@@ -141,112 +141,148 @@
     </div>
 
     <script>
-    const API_BASE = "https://ranitaapi-production.up.railway.app/api";
-    const params = new URLSearchParams(window.location.search);
-    const orderId = parseInt(params.get("orderId"));
-    const productId = parseInt(params.get("productId"));
+        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+        const params = new URLSearchParams(window.location.search);
+        const orderId = parseInt(params.get("orderId"));
+        const productId = parseInt(params.get("productId"));
         const client = JSON.parse(localStorage.getItem("client") || "null");
 
-    async function init() {
-        const container = document.getElementById("reviewContainer");
+        async function init() {
+            const container = document.getElementById("reviewContainer");
 
-        if (!client) {
-            // Sauvegarder l'URL et rediriger vers login
-            const currentUrl = encodeURIComponent(window.location.href);
+            if (!client) {
+                // Sauvegarder l'URL et rediriger vers login
+                const currentUrl = encodeURIComponent(window.location.href);
+                container.innerHTML = `
+        <div class="review-card" style="text-align:center;padding:40px;">
+            <p style="font-size:18px;">🔒 Connectez-vous pour laisser un avis</p>
+            <a href="login.html?redirect=${currentUrl}" class="btn-submit"
+               style="display:inline-block;margin-top:16px;text-decoration:none;padding:12px 24px;width:auto;">
+                Se connecter
+            </a>
+        </div>`;
+                return;
+            }
+
+            if (!orderId || !productId) {
+                container.innerHTML = `<div class="review-card"><p>Lien invalide.</p></div>`;
+                return;
+            }
+
+            // Charger les infos du produit
+            const res = await fetch(`${API_BASE}/products/${productId}`);
+            const product = await res.json();
+
             container.innerHTML = `
-    <div class="review-card" style="text-align:center;padding:40px;">
-        <p style="font-size:18px;">🔒 Connectez-vous pour laisser un avis</p>
-        <a href="login.html?redirect=${currentUrl}" class="btn-submit" 
-           style="display:inline-block;margin-top:16px;text-decoration:none;padding:12px 24px;width:auto;">
-            Se connecter
-        </a>
-    </div>`;
-            return;
-        }
+                <div class="review-card">
+                    <h2>⭐ Donnez votre avis</h2>
+                    <p>Commande #${orderId}</p>
+                    <div class="product-info">
+                        <img src="${product.imageUrl}" alt="${product.name}">
+                        <span>${product.name}</span>
+                    </div>
+                    <div class="stars" id="stars">
+                        <span class="star" data-note="1">★</span>
+                        <span class="star" data-note="2">★</span>
+                        <span class="star" data-note="3">★</span>
+                        <span class="star" data-note="4">★</span>
+                        <span class="star" data-note="5">★</span>
+                    </div>
+                    <textarea id="commentaire" placeholder="Partagez votre expérience avec ce produit..."></textarea>
+                    <button class="btn-submit" onclick="submitReview()">✅ Envoyer mon avis</button>
+                </div>`;
 
-        if (!orderId || !productId) {
-            container.innerHTML = `<div class="review-card"><p>Lien invalide.</p></div>`;
-            return;
-        }
-
-        // Charger les infos du produit
-        const res = await fetch(`${API_BASE}/products/${productId}`);
-        const product = await res.json();
-
-        container.innerHTML = `
-            <div class="review-card">
-                <h2>⭐ Donnez votre avis</h2>
-                <p>Commande #${orderId}</p>
-                <div class="product-info">
-                    <img src="${product.imageUrl}" alt="${product.name}">
-                    <span>${product.name}</span>
-                </div>
-                <div class="stars" id="stars">
-                    <span class="star" data-note="1">★</span>
-                    <span class="star" data-note="2">★</span>
-                    <span class="star" data-note="3">★</span>
-                    <span class="star" data-note="4">★</span>
-                    <span class="star" data-note="5">★</span>
-                </div>
-                <textarea id="commentaire" placeholder="Partagez votre expérience avec ce produit..."></textarea>
-                <button class="btn-submit" onclick="submitReview()">✅ Envoyer mon avis</button>
-            </div>`;
-
-        // Gestion étoiles
-        let selectedNote = 0;
-        document.querySelectorAll(".star").forEach(star => {
-            star.addEventListener("mouseover", () => {
-                document.querySelectorAll(".star").forEach(s => {
-                    s.classList.toggle("active", parseInt(s.dataset.note) <= parseInt(star.dataset.note));
+            // Gestion étoiles
+            let selectedNote = 0;
+            document.querySelectorAll(".star").forEach(star => {
+                star.addEventListener("mouseover", () => {
+                    document.querySelectorAll(".star").forEach(s => {
+                        s.classList.toggle("active", parseInt(s.dataset.note) <= parseInt(star.dataset.note));
+                    });
+                });
+                star.addEventListener("mouseout", () => {
+                    document.querySelectorAll(".star").forEach(s => {
+                        s.classList.toggle("active", parseInt(s.dataset.note) <= selectedNote);
+                    });
+                });
+                star.addEventListener("click", () => {
+                    selectedNote = parseInt(star.dataset.note);
+                    document.querySelectorAll(".star").forEach(s => {
+                        s.classList.toggle("active", parseInt(s.dataset.note) <= selectedNote);
+                    });
                 });
             });
-            star.addEventListener("mouseout", () => {
-                document.querySelectorAll(".star").forEach(s => {
-                    s.classList.toggle("active", parseInt(s.dataset.note) <= selectedNote);
+
+            window.submitReview = async () => {
+                if (selectedNote === 0) { alert("Veuillez choisir une note."); return; }
+                const commentaire = document.getElementById("commentaire").value.trim();
+
+                const res = await fetch(`${API_BASE}/reviews`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        productId,
+                        clientId: client.id,
+                        orderId,
+                        note: selectedNote,
+                        commentaire
+                    })
                 });
-            });
-            star.addEventListener("click", () => {
-                selectedNote = parseInt(star.dataset.note);
-                document.querySelectorAll(".star").forEach(s => {
-                    s.classList.toggle("active", parseInt(s.dataset.note) <= selectedNote);
-                });
+
+                if (res.ok) {
+                    container.innerHTML = `
+                        <div class="review-card success-msg">
+                            <div class="icon">🎉</div>
+                            <h2>Merci pour votre avis !</h2>
+                            <p>Votre avis aide d'autres clients à faire le bon choix.</p>
+                            <a href="index.html" style="display:inline-block;margin-top:20px;color:#059669;font-weight:700;text-decoration:none;">
+                                ← Retour à la boutique
+                            </a>
+                        </div>`;
+                } else {
+                    const err = await res.text();
+                    alert(err || "Une erreur est survenue.");
+                }
+            };
+        }
+
+        init();
+    </script>
+
+
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
             });
         });
-
-        window.submitReview = async () => {
-            if (selectedNote === 0) { alert("Veuillez choisir une note."); return; }
-            const commentaire = document.getElementById("commentaire").value.trim();
-
-            const res = await fetch(`${API_BASE}/reviews`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    productId,
-                    clientId: client.id,
-                    orderId,
-                    note: selectedNote,
-                    commentaire
-                })
-            });
-
-            if (res.ok) {
-                container.innerHTML = `
-                    <div class="review-card success-msg">
-                        <div class="icon">🎉</div>
-                        <h2>Merci pour votre avis !</h2>
-                        <p>Votre avis aide d'autres clients à faire le bon choix.</p>
-                        <a href="index.html" style="display:inline-block;margin-top:20px;color:#059669;font-weight:700;text-decoration:none;">
-                            ← Retour à la boutique
-                        </a>
-                    </div>`;
-            } else {
-                const err = await res.text();
-                alert(err || "Une erreur est survenue.");
-            }
-        };
-    }
-
-    init();
     </script>
+
+
+
+
+
+
 </body>
 </html>

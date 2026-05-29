@@ -347,9 +347,9 @@
 
     <script>
         // Badge panier
-        (function() {
+        (function () {
             var c = JSON.parse(localStorage.getItem('cart') || '[]');
-            var t = c.reduce(function(s,i){ return s+(i.qty||i.quantity||1); }, 0);
+            var t = c.reduce(function (s, i) { return s + (i.qty || i.quantity || 1); }, 0);
             var b = document.getElementById('cartBadge');
             if (b && t > 0) { b.textContent = t; b.style.display = 'flex'; }
         })();
@@ -364,11 +364,11 @@
 
         function startTimer(endDate) {
             if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(function() {
+            timerInterval = setInterval(function () {
                 var diff = Math.max(0, Math.floor((new Date(endDate) - new Date()) / 1000));
-                document.getElementById('fh').textContent = String(Math.floor(diff / 3600)).padStart(2,'0');
-                document.getElementById('fm').textContent = String(Math.floor((diff % 3600) / 60)).padStart(2,'0');
-                document.getElementById('fs').textContent = String(diff % 60).padStart(2,'0');
+                document.getElementById('fh').textContent = String(Math.floor(diff / 3600)).padStart(2, '0');
+                document.getElementById('fm').textContent = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+                document.getElementById('fs').textContent = String(diff % 60).padStart(2, '0');
                 if (diff <= 0) { clearInterval(timerInterval); loadFlash(); }
             }, 1000);
         }
@@ -388,9 +388,9 @@
 
                 startTimer(sales[0].endDate);
 
-                grid.innerHTML = sales.map(function(s) {
+                grid.innerHTML = sales.map(function (s) {
                     var p = s.product;
-                    var imgs = (function(){ try { return JSON.parse(p.images||'[]'); } catch { return p.imageUrl ? [p.imageUrl] : []; } })();
+                    var imgs = (function () { try { return JSON.parse(p.images || '[]'); } catch { return p.imageUrl ? [p.imageUrl] : []; } })();
                     var img = imgs[0] || p.imageUrl || '';
                     var stockLeft = s.stockLeft;
                     var oos = stockLeft <= 0;
@@ -398,7 +398,7 @@
                     var stockLabel = oos ? '🚫 Épuisé' : stockLeft <= 3 ? '⚠️ Plus que ' + stockLeft + ' restants' : stockLeft + ' restants';
 
                     // APRÈS
-                    return '<div class="flash-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ')">' +                        '<div class="flash-card-img">' +
+                    return '<div class="flash-card" onclick="goFlash(' + p.id + ',' + s.flashPrice + ',' + s.id + ')">' + '<div class="flash-card-img">' +
                         (img ? '<img src="' + img + '" alt="' + p.name + '" loading="lazy">' : '<div style="font-size:60px">🛍️</div>') +
                         '<span class="flash-disc-badge">-' + s.discount + '%</span>' +
                         '</div>' +
@@ -412,12 +412,12 @@
                         '</div>' +
                         (oos ?
                             '<button class="flash-add-btn" disabled>Épuisé</button>' :
-                            '<button class="flash-add-btn" onclick="event.stopPropagation();addCart(event,' + p.id + ',\'' + p.name.replace(/'/g,"\\'") + '\',' + s.flashPrice + ',\'' + img + '\')">+ Ajouter au panier</button>'
+                            '<button class="flash-add-btn" onclick="event.stopPropagation();addCart(event,' + p.id + ',\'' + p.name.replace(/'/g, "\\'") + '\',' + s.flashPrice + ',\'' + img + '\')">+ Ajouter au panier</button>'
                         ) +
                         '</div></div>';
                 }).join('');
 
-            } catch(e) {
+            } catch (e) {
                 grid.innerHTML = '<div class="empty-flash"><div>❌</div><p>Erreur de chargement.</p><button onclick="loadFlash()" style="background:var(--flash);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-weight:700;cursor:pointer;">Réessayer</button></div>';
             }
         }
@@ -425,15 +425,15 @@
         function addCart(e, id, name, price, img) {
             e.stopPropagation();
             var cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            var idx = cart.findIndex(function(i){ return i.id === id; });
-            if (idx >= 0) { cart[idx].qty++; } else { cart.push({ id:id, name:name, price:price, imageUrl:img, qty:1 }); }
+            var idx = cart.findIndex(function (i) { return i.id === id; });
+            if (idx >= 0) { cart[idx].qty++; } else { cart.push({ id: id, name: name, price: price, imageUrl: img, qty: 1 }); }
             localStorage.setItem('cart', JSON.stringify(cart));
-            var total = cart.reduce(function(s,i){ return s+i.qty; }, 0);
+            var total = cart.reduce(function (s, i) { return s + i.qty; }, 0);
             var b = document.getElementById('cartBadge');
             if (b) { b.textContent = total; b.style.display = 'flex'; }
             var btn = e.currentTarget;
             btn.textContent = '✓ Ajouté'; btn.style.background = '#059669';
-            setTimeout(function(){ btn.textContent = '+ Ajouter au panier'; btn.style.background = ''; }, 1200);
+            setTimeout(function () { btn.textContent = '+ Ajouter au panier'; btn.style.background = ''; }, 1200);
         }
 
 
@@ -446,5 +446,39 @@
 
         loadFlash();
     </script>
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    </script>
+
+
+
+
+
+
 </body>
 </html>
