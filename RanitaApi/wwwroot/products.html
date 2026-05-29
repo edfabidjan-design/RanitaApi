@@ -3,10 +3,9 @@
 <head>
 
     <script>
-        // Si PWA lancée directement sur cette page (pas via navigation interne) → redirect accueil
         if (window.matchMedia('(display-mode: standalone)').matches) {
-            if (!sessionStorage.getItem('pwa_launched') && !document.referrer) {
-                sessionStorage.setItem('pwa_launched', '1');
+            var nav = performance.getEntriesByType('navigation')[0];
+            if (nav && nav.type === 'navigate' && !document.referrer) {
                 window.location.replace('/index.html');
             }
         }
