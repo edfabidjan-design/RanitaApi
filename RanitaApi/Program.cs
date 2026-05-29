@@ -176,6 +176,17 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 
+// ── WELL-KNOWN (assetlinks.json pour Play Store) ✅ ─────────────
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(builder.Environment.WebRootPath, ".well-known")),
+    RequestPath = "/.well-known",
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "application/json"
+});
+
+
 app.UseCors("AllowRanitaShop");
 app.UseRateLimiter();
 app.UseAuthentication();
