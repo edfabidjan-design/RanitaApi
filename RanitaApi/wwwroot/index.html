@@ -2964,7 +2964,7 @@
 
         async function initPromoPopup() {
             // Une seule fois par session
-           // if (sessionStorage.getItem('ranita_popup_shown')) return;
+            // if (sessionStorage.getItem('ranita_popup_shown')) return;
 
             try {
                 var res = await fetch('/api/product-promo-codes/active');
@@ -3020,7 +3020,7 @@
                     overlay.style.opacity = '0';
                     overlay.style.transition = 'opacity .4s';
                     setTimeout(function () { overlay.style.opacity = '1'; }, 10);
-                   // sessionStorage.setItem('ranita_popup_shown', '1');
+                    // sessionStorage.setItem('ranita_popup_shown', '1');
                 }, 4000);
 
             } catch (e) { }
@@ -3292,5 +3292,46 @@
     </style>
 
 
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="
+    display:none;
+    position:fixed;
+    bottom:90px;
+    right:16px;
+    width:42px;
+    height:42px;
+    background:var(--g);
+    color:white;
+    border:none;
+    border-radius:50%;
+    font-size:20px;
+    cursor:pointer;
+    z-index:900;
+    box-shadow:0 4px 16px rgba(16,185,129,.4);
+    align-items:center;
+    justify-content:center;
+    transition:opacity .3s,transform .3s;
+">
+        ↑
+    </button>
+
+    <script>
+        var scrollBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 400) {
+                scrollBtn.style.display = 'flex';
+                scrollBtn.style.opacity = '1';
+                scrollBtn.style.transform = 'scale(1)';
+            } else {
+                scrollBtn.style.opacity = '0';
+                scrollBtn.style.transform = 'scale(.8)';
+                setTimeout(function () {
+                    if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                }, 300);
+            }
+        });
+    </script>
 </body>
 </html>
