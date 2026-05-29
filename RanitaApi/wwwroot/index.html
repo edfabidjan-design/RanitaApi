@@ -23,6 +23,17 @@
     <meta name="geo.region" content="CI">
     <meta name="geo.placename" content="Abidjan, Côte d'Ivoire">
     <link rel="canonical" href="https://www.ranita-shop.com/">
+
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+
+
     <style>
         /* ── VARIABLES ─────────────────────────────────────────── */
         :root {
