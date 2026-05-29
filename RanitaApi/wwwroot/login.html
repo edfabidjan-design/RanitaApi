@@ -124,7 +124,16 @@
                 }
 
                 msg.textContent = 'Connexion réussie ! Redirection...';
-                localStorage.setItem("client", JSON.stringify(data));
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("client", JSON.stringify({
+                    id: data.id,
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    referralCode: data.referralCode,
+                    referralCredits: data.referralCredits,
+                    referralCount: data.referralCount
+                }));
 
                 if (refCode && !data.referredById) {
                     try {

@@ -568,7 +568,9 @@
 
         async function loadStats() {
             try {
-                var res = await fetch(API + '/referral/' + client.id);
+                var res = await fetch(API + '/referral/' + client.id, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
                 var data = await res.json();
 
                 document.getElementById('statCredits').textContent = Number(data.referralCredits || 0).toLocaleString('fr-FR');
@@ -602,7 +604,9 @@
 
             // Nombre de commandes
             try {
-                var res2 = await fetch('/api/client-auth/orders/' + client.id);
+                var res2 = await fetch('/api/client-auth/orders/' + client.id, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
                 var orders = await res2.json();
                 document.getElementById('statOrders').textContent = Array.isArray(orders) ? orders.length : '—';
             } catch(e) {
@@ -623,7 +627,10 @@
             try {
                 var res = await fetch(API + '/update/' + client.id, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
                     body: JSON.stringify({ fullName: name, phone: phone, address: address })
                 });
 
@@ -665,7 +672,10 @@
             try {
                 var res = await fetch(API + '/change-password/' + client.id, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
                     body: JSON.stringify({ newPassword: newPwd })
                 });
 
@@ -698,6 +708,7 @@
         function doLogout() {
             if (confirm('Voulez-vous vous déconnecter ?')) {
                 localStorage.removeItem('client');
+                localStorage.removeItem('token');
                 location.href = 'index.html';
             }
         }

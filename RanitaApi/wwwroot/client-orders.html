@@ -356,7 +356,10 @@
 
             const res = await fetch(`${API_BASE}/orders/${orderId}/refund-request`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
                 body: JSON.stringify({ motif })
             });
 
@@ -400,7 +403,9 @@
         async function loadOrders() {
             const container = document.getElementById("ordersContainer");
 
-            const res = await fetch(`${API_BASE}/client-auth/orders/${client.id}`);
+            const res = await fetch(`${API_BASE}/client-auth/orders/${client.id}`, {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            });
             if (!res.ok) {
                 container.innerHTML = "<p>Impossible de charger vos commandes.</p>";
                 return;
@@ -582,7 +587,11 @@ ${o.status === "Livrée" ? `
                 var m = document.getElementById('cMenu');
                 if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
             };
-            window.doLogout = function () { localStorage.removeItem('client'); location.href = 'index.html'; };
+            window.doLogout = function () {
+                localStorage.removeItem('client');
+                localStorage.removeItem('token');
+                location.href = 'index.html';
+            };
             document.addEventListener('click', function (e) {
                 var m = document.getElementById('cMenu');
                 if (m && !e.target.closest('#authNav') && !e.target.closest('#cMenu')) m.style.display = 'none';

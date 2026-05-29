@@ -1057,7 +1057,9 @@
         async function loadReferralCredit() {
             if (!client) return;
             try {
-                var res = await fetch('/api/client-auth/referral/' + client.id);
+                var res = await fetch('/api/client-auth/referral/' + client.id, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
                 var data = await res.json();
                 REFERRAL_CREDIT = data.referralCredits || 0;
                 var banner = document.getElementById("referralCreditBanner");
@@ -1115,7 +1117,10 @@
             try {
                 var res = await fetch(API_BASE + '/orders', {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem('token')
+                    },
                     body: JSON.stringify(order)
                 });
                 if (!res.ok) {
@@ -1215,7 +1220,11 @@
                 var m = document.getElementById('cMenu');
                 if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none';
             };
-            window.doLogout = function () { localStorage.removeItem('client'); location.href = 'index.html'; };
+            window.doLogout = function () {
+                localStorage.removeItem('client');
+                localStorage.removeItem('token');
+                location.href = 'index.html';
+            };
             document.addEventListener('click', function (e) {
                 var m = document.getElementById('cMenu');
                 if (m && !e.target.closest('#authNav') && !e.target.closest('#cMenu')) m.style.display = 'none';
