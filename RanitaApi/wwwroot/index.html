@@ -2786,9 +2786,9 @@
                         '<div style="display:inline-flex;align-items:center;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;width:fit-content;text-transform:uppercase;">🎉 ' + (ev.name || '') + '</div>' +
                         '<div style="font-size:28px;font-weight:800;color:white;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.4);">' + (ev.slideTitle || '') + '</div>' +
                         '<div style="font-size:14px;color:rgba(255,255,255,.9);line-height:1.5;">' + (ev.slideSub || '') + '</div>' +
-                        '<div style="display:flex;align-items:center;gap:10px;">' +
+                        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
                         '<a href="' + (ev.slideLink || 'products.html') + '" style="display:inline-flex;align-items:center;gap:6px;background:white;color:' + color + ';font-weight:800;font-size:13px;padding:10px 22px;border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:nowrap;">' + (ev.slideCta || 'Voir les offres →') + '</a>' +
-                        (disc ? '<span style="background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);backdrop-filter:blur(6px);color:white;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px;white-space:nowrap;letter-spacing:.3px;">' + disc + '</span>' : '') +
+                        (disc ? '<span style="background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);backdrop-filter:blur(6px);color:white;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px;white-space:nowrap;letter-spacing:.3px;flex-shrink:0; + disc + '</span>' : '') +
                         '</div></div></div>';
                     container.appendChild(card);
                 });
