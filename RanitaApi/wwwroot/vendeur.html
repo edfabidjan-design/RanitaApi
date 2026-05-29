@@ -1054,7 +1054,29 @@
     <div class="toast" id="toast"></div>
 
     <script>
+       
+
         const API = 'https://ranitaapi-production.up.railway.app/api';
+
+        // ✅ Fetch authentifié vendeur
+        function sellerFetch(url, options = {}) {
+            const token = localStorage.getItem('sellerToken');
+            return fetch(url, {
+                ...options,
+                headers: {
+                    'Authorization': token ? 'Bearer ' + token : '',
+                    ...(options.headers || {})
+                }
+            }).then(res => {
+                if (res.status === 401) {
+                    localStorage.removeItem('sellerToken');
+                    localStorage.removeItem('seller');
+                    window.location.href = 'vendeur-login.html';
+                    return Promise.reject('Session expirée');
+                }
+                return res;
+            });
+        }
         let clientId = null, sellerId = null;
         let productImages = [], newImageFiles = [];
         let sellerData = null;
@@ -1083,7 +1105,11 @@
         }
 
         function toggleMenu() { const m = document.getElementById('clientMenu'); if (m) m.style.display = m.style.display === 'none' ? 'block' : 'none'; }
-        function logout() { localStorage.removeItem('seller'); window.location.href = 'index.html'; }
+        function logout() {
+            localStorage.removeItem('seller');
+            localStorage.removeItem('sellerToken');
+            window.location.href = 'index.html';
+        }
         document.addEventListener('click', e => { const m = document.getElementById('clientMenu'); if (m && !e.target.closest('#authNav')) m.style.display = 'none'; });
 
         function checkAndStart() {
@@ -1097,7 +1123,7 @@
         async function loadSellerStatus() {
             if (!clientId) { showPage('page-register'); return; }
             try {
-                const res = await fetch(API + '/sellers/my?clientId=' + clientId);
+                const res = await sellerFetch(API + '/sellers/my?clientId=' + clientId);
                 if (res.status === 404) { showPage('page-register'); return; }
                 const s = await res.json();
                 sellerId = s.id;
@@ -1150,7 +1176,7 @@
 
         async function loadMyProducts() {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/products');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/products');
                 const products = await res.json();
                 const el = document.getElementById('my-products-list');
                 if (!products.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun produit. Ajoutez votre premier produit !</div>'; return; }
@@ -1183,14 +1209,14 @@
         async function deleteProduct(id) {
             if (!confirm('Supprimer ce produit ?')) return;
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/products/' + id, { method: 'DELETE' });
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/products/' + id, { method: 'DELETE' });
                 if (res.ok) { showToast('Produit supprime', 'success'); loadMyProducts(); }
                 else { const d = await res.json(); showToast(d.message || 'Erreur', 'error'); }
             } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
         function editProduct(id) {
-            fetch(API + '/sellers/' + sellerId + '/products').then(r => r.json()).then(products => {
+            sellerFetch(API + '/sellers/' + sellerId + '/products').then(r => r.json()).then(products => {
                 const p = products.find(x => x.id === id); if (!p) return;
                 document.getElementById('modal-product-title').textContent = 'Modifier le produit';
                 document.getElementById('p-id').value = p.id;
@@ -1216,14 +1242,14 @@
 
         async function toggleProduct(spId, isActive) {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/products/' + spId + '/toggle', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive: !isActive }) });
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/products/' + spId + '/toggle', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive: !isActive }) });
                 if (res.ok) { showToast(isActive ? 'Produit desactive' : 'Produit active', 'success'); loadMyProducts(); }
             } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
         async function loadMyOrders() {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
                 const el = document.getElementById('my-orders-list');
                 if (!orders.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#6b7280;font-size:14px">Aucune commande pour le moment.</div>'; return; }
@@ -1254,7 +1280,7 @@
         async function vendorConfirm(orderId) {
             if (!confirm('Confirmer la disponibilite de cette commande ?')) return;
             try {
-                const res = await fetch(API + '/orders/' + orderId + '/vendor-confirm', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: true, motif: null }) });
+                const res = await sellerFetch(API + '/orders/' + orderId + '/vendor-confirm', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: true, motif: null }) });
                 if (res.ok) { showToast('Commande confirmee', 'success'); loadMyOrders(); } else showToast('Erreur', 'error');
             } catch (e) { showToast('Erreur reseau', 'error'); }
         }
@@ -1262,14 +1288,14 @@
         async function vendorConfirmUnavailable(orderId) {
             const motif = prompt("Motif d'indisponibilite (optionnel) :"); if (motif === null) return;
             try {
-                const res = await fetch(API + '/orders/' + orderId + '/vendor-confirm', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: false, motif: motif || 'Produit indisponible' }) });
+                const res = await sellerFetch(API + '/orders/' + orderId + '/vendor-confirm', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available: false, motif: motif || 'Produit indisponible' }) });
                 if (res.ok) { showToast('Commande signalee indisponible', 'success'); loadMyOrders(); } else showToast('Erreur', 'error');
             } catch (e) { showToast('Erreur reseau', 'error'); }
         }
 
         async function loadFailedDeliveries() {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
                 const el = document.getElementById('my-failed-list');
                 const failed = orders.filter(o => o.status === 'Echec livraison' || o.status === 'Annulee');
@@ -1280,7 +1306,7 @@
 
         async function loadMyPayouts() {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/payouts');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/payouts');
                 const payouts = await res.json();
                 const el = document.getElementById('my-payouts-list');
                 if (!payouts.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun paiement pour le moment.</div>'; return; }
@@ -1290,7 +1316,7 @@
 
         async function loadMyReviews() {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/products');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/products');
                 const products = await res.json();
                 const approved = products.filter(p => p.approvalStatus === 'Approved' && p.productId);
                 const el = document.getElementById('my-reviews-list');
@@ -1343,7 +1369,7 @@
         async function openAddFlash() {
             await loadFlashSettings();
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/products');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/products');
                 flashProducts = (await res.json()).filter(p => p.approvalStatus === 'Approved');
             } catch (e) { flashProducts = []; }
 
@@ -1540,7 +1566,7 @@
         // ══════════════════════════════════════════════════════════════
         async function loadBadges() {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/products');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/products');
                 const products = await res.json();
                 const pending = products.filter(p => p.approvalStatus === 'Pending').length;
                 const badgeP = document.getElementById('badge-products');
@@ -1549,7 +1575,7 @@
                 else { badgeP.style.display = pending > last ? 'inline' : 'none'; if (pending > last) badgeP.textContent = pending - last; }
             } catch (e) { }
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
                 const newO = orders.filter(o => o.status === 'En attente').length;
                 const lastO = parseInt(localStorage.getItem('badge-orders-' + sellerId) || '0');
@@ -1581,7 +1607,7 @@
             const body = { shopName: document.getElementById('profile-name').value.trim(), shopDescription: document.getElementById('profile-desc').value.trim(), phoneNumber: document.getElementById('profile-phone').value.trim(), paymentMethod: document.getElementById('profile-payment').value, paymentDetails: document.getElementById('profile-payment-details').value.trim() };
             if (!body.shopName) { showToast('Le nom est obligatoire', 'error'); return; }
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
                 if (res.ok) { showToast('Profil mis a jour', 'success'); closeModal('modal-profile'); document.getElementById('dash-shop-name').textContent = body.shopName; document.getElementById('dash-shop-desc').textContent = body.shopDescription; sellerData.shopName = body.shopName; }
                 else showToast('Erreur', 'error');
             } catch (e) { showToast('Erreur reseau', 'error'); }
@@ -1739,7 +1765,7 @@
                 formData.append('variants', JSON.stringify(variants));
             }
             try {
-                const res = await fetch(url, { method, body: formData });
+                const res = await sellerFetch(url, { method, body: formData });
                 if (res.ok) { showToast('Produit soumis pour validation', 'success'); closeModal('modal-product'); loadMyProducts(); }
                 else { const data = await res.json().catch(() => ({})); showToast(data.message || "Erreur lors de l'envoi", 'error'); }
             } catch (e) { showToast('Erreur reseau', 'error'); }
@@ -1777,7 +1803,7 @@
 
         async function renderSalesChart() {
             try {
-                const res = await fetch(API + '/sellers/' + sellerId + '/orders');
+                const res = await sellerFetch(API + '/sellers/' + sellerId + '/orders');
                 const orders = await res.json();
                 const labels = [], data = [];
                 for (let i = salesChartPeriod - 1; i >= 0; i--) {
@@ -1803,7 +1829,7 @@
             setInterval(async () => {
                 if (!sellerId) return;
                 try {
-                    const res = await fetch(API + '/sellers/my?clientId=' + clientId);
+                    const res = await sellerFetch(API + '/sellers/my?clientId=' + clientId);
                     if (res.ok) {
                         const s = await res.json();
                         document.getElementById('dash-total-products').textContent = s.totalProducts ?? '0';
