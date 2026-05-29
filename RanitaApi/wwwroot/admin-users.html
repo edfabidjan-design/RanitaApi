@@ -551,17 +551,17 @@
             pagesGrid.innerHTML = Object.entries(PAGES_LIST).map(([key, label]) => {
                 const isForced = key === 'dashboard';
                 return `<div class="perm-check ${isForced ? 'forced checked' : ''}" id="page-wrap-${key}" ${!isForced ? `onclick="toggleCheck('page_${key}')"` : ''}>
-                                <input type="checkbox" id="page_${key}" value="${key}" ${isForced ? 'checked disabled' : ''} onclick="event.stopPropagation()">
-                                <label for="page_${key}">${label}${isForced ? ' 🔒' : ''}</label>
-                            </div>`;
+                                    <input type="checkbox" id="page_${key}" value="${key}" ${isForced ? 'checked disabled' : ''} onclick="event.stopPropagation()">
+                                    <label for="page_${key}">${label}${isForced ? ' 🔒' : ''}</label>
+                                </div>`;
             }).join('');
 
             const actionsGrid = document.getElementById('actionsGrid');
             actionsGrid.innerHTML = Object.entries(ACTIONS_LIST).map(([key, label]) => `
-                            <div class="perm-check" id="action-wrap-${key}" onclick="toggleCheck('action_${key}')" style="margin-bottom:6px;">
-                                <input type="checkbox" id="action_${key}" value="${key}" onclick="event.stopPropagation()">
-                                <label for="action_${key}">${label}</label>
-                            </div>`).join('');
+                                <div class="perm-check" id="action-wrap-${key}" onclick="toggleCheck('action_${key}')" style="margin-bottom:6px;">
+                                    <input type="checkbox" id="action_${key}" value="${key}" onclick="event.stopPropagation()">
+                                    <label for="action_${key}">${label}</label>
+                                </div>`).join('');
         }
 
         function toggleCheck(id) {
@@ -616,7 +616,7 @@
                     const p = JSON.parse(roleStr);
                     const color = p.color || '#0891b2';
                     return `<span class="role-badge" style="background:${color}22;color:${color};border:1px solid ${color}44;">${p.label || 'Personnalisé'}</span>
-                                        <div style="font-size:11px;color:#6b7280;margin-top:4px;">${(p.pages || []).length} page(s) autorisée(s)</div>`;
+                                            <div style="font-size:11px;color:#6b7280;margin-top:4px;">${(p.pages || []).length} page(s) autorisée(s)</div>`;
                 } catch (e) { return '<span class="perm-tag">—</span>'; }
             }
             return `<span class="perm-tag">${roleStr}</span>`;
@@ -685,23 +685,23 @@
                     const isMe = a.username === name;
                     const roleEscaped = (a.role || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     return `<tr ${isMe ? 'class="current-user-row"' : ''}>
-                                    <td><strong>#${a.id}</strong>${isMe ? ' <span style="font-size:11px;color:#10b981;font-weight:700;">(vous)</span>' : ''}</td>
-                                    <td><div style="font-weight:700;">${a.username}</div>${a.createdBy ? `<div style="font-size:11px;color:#6b7280;">par: ${a.createdBy}</div>` : ''}</td>
-                                    <td style="color:#6b7280;font-size:13px;">${a.email || '—'}</td>
-                                    <td>${renderPermsBadge(a.role)}</td>
-                                    <td><span class="status-badge ${a.isActive ? 'status-active' : 'status-suspended'}">${a.isActive ? '✅ Actif' : '⏸️ Suspendu'}</span></td>
-                                    <td style="font-size:12px;color:#6b7280;">${new Date(a.createdAt).toLocaleDateString('fr-FR')}</td>
-                                    <td>
-                                        <div class="action-btns">
-                                            ${!isMe ? `
-                                            <button class="btn-action btn-edit" onclick='openEditModal(${a.id},"${a.username}","${a.email || ''}",${JSON.stringify(a.role)})'>✏️ Modifier</button>
-                                            <button class="btn-action ${a.isActive ? 'btn-toggle-suspend' : 'btn-toggle-activate'}" onclick="toggleAdmin(${a.id})">${a.isActive ? '⏸️ Suspendre' : '▶️ Activer'}</button>
-                                            <button class="btn-action btn-pwd" onclick="openPasswordModal(${a.id})">🔑 MDP</button>
-                                            <button class="btn-action btn-delete" onclick="deleteAdmin(${a.id},'${a.username}')">🗑️</button>
-                                            ` : '<span style="font-size:12px;color:#6b7280;">Compte actuel</span>'}
-                                        </div>
-                                    </td>
-                                </tr>`;
+                                        <td><strong>#${a.id}</strong>${isMe ? ' <span style="font-size:11px;color:#10b981;font-weight:700;">(vous)</span>' : ''}</td>
+                                        <td><div style="font-weight:700;">${a.username}</div>${a.createdBy ? `<div style="font-size:11px;color:#6b7280;">par: ${a.createdBy}</div>` : ''}</td>
+                                        <td style="color:#6b7280;font-size:13px;">${a.email || '—'}</td>
+                                        <td>${renderPermsBadge(a.role)}</td>
+                                        <td><span class="status-badge ${a.isActive ? 'status-active' : 'status-suspended'}">${a.isActive ? '✅ Actif' : '⏸️ Suspendu'}</span></td>
+                                        <td style="font-size:12px;color:#6b7280;">${new Date(a.createdAt).toLocaleDateString('fr-FR')}</td>
+                                        <td>
+                                            <div class="action-btns">
+                                                ${!isMe ? `
+                                                <button class="btn-action btn-edit" onclick='openEditModal(${a.id},"${a.username}","${a.email || ''}",${JSON.stringify(a.role)})'>✏️ Modifier</button>
+                                                <button class="btn-action ${a.isActive ? 'btn-toggle-suspend' : 'btn-toggle-activate'}" onclick="toggleAdmin(${a.id})">${a.isActive ? '⏸️ Suspendre' : '▶️ Activer'}</button>
+                                                <button class="btn-action btn-pwd" onclick="openPasswordModal(${a.id})">🔑 MDP</button>
+                                                <button class="btn-action btn-delete" onclick="deleteAdmin(${a.id},'${a.username}')">🗑️</button>
+                                                ` : '<span style="font-size:12px;color:#6b7280;">Compte actuel</span>'}
+                                            </div>
+                                        </td>
+                                    </tr>`;
                 }).join('');
             } catch (e) { console.error(e); }
         }
@@ -804,5 +804,34 @@
         loadAdmins();
     </script>
     <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

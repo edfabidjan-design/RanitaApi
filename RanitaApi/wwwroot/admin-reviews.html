@@ -41,121 +41,151 @@
 
 
 
-            <div class="table-wrap">
-                <table border="1" cellpadding="8">
-                    <thead>
-                        <tr><th>ID</th><th>Produit</th><th>Client</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Statut</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody id="reviewsTable"></tbody>
-                </table>
-            </div>
+        <div class="table-wrap">
+            <table border="1" cellpadding="8">
+                <thead>
+                    <tr><th>ID</th><th>Produit</th><th>Client</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Statut</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="reviewsTable"></tbody>
+            </table>
         </div>
+    </div>
 
-        <script>
-            checkPageAccess('reviews');
-            buildAdminNav('reviews');
-            applyReadOnlyMode();
+    <script>
+        checkPageAccess('reviews');
+        buildAdminNav('reviews');
+        applyReadOnlyMode();
 
-            const API_BASE = "https://ranitaapi-production.up.railway.app/api";
+        const API_BASE = "https://ranitaapi-production.up.railway.app/api";
 
-            let allReviews = [];
-            let reviewsPage = 1;
-            const REVIEWS_PAGE_SIZE = 20;
-            let reviewsSearch = '';
-            let reviewsFilter = '';
+        let allReviews = [];
+        let reviewsPage = 1;
+        const REVIEWS_PAGE_SIZE = 20;
+        let reviewsSearch = '';
+        let reviewsFilter = '';
 
-            async function loadReviews() {
-                const res = await fetch(`${API_BASE}/reviews`);
-                allReviews = await res.json();
-                renderReviews();
-            }
+        async function loadReviews() {
+            const res = await fetch(`${API_BASE}/reviews`);
+            allReviews = await res.json();
+            renderReviews();
+        }
 
-            function renderReviews() {
-                const filtered = allReviews.filter(function (r) {
-                    var matchSearch = !reviewsSearch ||
-                        (r.produit || '').toLowerCase().includes(reviewsSearch.toLowerCase()) ||
-                        (r.client || '').toLowerCase().includes(reviewsSearch.toLowerCase());
-                    var matchFilter = !reviewsFilter ||
-                        (reviewsFilter === 'approuve' && r.approuve) ||
-                        (reviewsFilter === 'attente' && !r.approuve);
-                    return matchSearch && matchFilter;
-                });
+        function renderReviews() {
+            const filtered = allReviews.filter(function (r) {
+                var matchSearch = !reviewsSearch ||
+                    (r.produit || '').toLowerCase().includes(reviewsSearch.toLowerCase()) ||
+                    (r.client || '').toLowerCase().includes(reviewsSearch.toLowerCase());
+                var matchFilter = !reviewsFilter ||
+                    (reviewsFilter === 'approuve' && r.approuve) ||
+                    (reviewsFilter === 'attente' && !r.approuve);
+                return matchSearch && matchFilter;
+            });
 
-                const totalPages = Math.ceil(filtered.length / REVIEWS_PAGE_SIZE);
-                if (reviewsPage > totalPages) reviewsPage = 1;
-                const paginated = filtered.slice(
-                    (reviewsPage - 1) * REVIEWS_PAGE_SIZE,
-                    reviewsPage * REVIEWS_PAGE_SIZE
-                );
+            const totalPages = Math.ceil(filtered.length / REVIEWS_PAGE_SIZE);
+            if (reviewsPage > totalPages) reviewsPage = 1;
+            const paginated = filtered.slice(
+                (reviewsPage - 1) * REVIEWS_PAGE_SIZE,
+                reviewsPage * REVIEWS_PAGE_SIZE
+            );
 
-                document.getElementById('reviewsCount').textContent =
-                    filtered.length + ' avis' +
-                    (totalPages > 1 ? ' — Page ' + reviewsPage + '/' + totalPages : '');
+            document.getElementById('reviewsCount').textContent =
+                filtered.length + ' avis' +
+                (totalPages > 1 ? ' — Page ' + reviewsPage + '/' + totalPages : '');
 
-                document.getElementById("reviewsTable").innerHTML = paginated.map(function (r) {
-                    return '<tr>' +
-                        '<td>' + r.id + '</td>' +
-                        '<td>' + r.produit + '</td>' +
-                        '<td>' + r.client + '</td>' +
-                        '<td style="color:#f59e0b;font-size:16px;">' + '★'.repeat(r.note) + '☆'.repeat(5 - r.note) + '</td>' +
-                        '<td>' + (r.commentaire || '—') + '</td>' +
-                        '<td>' + new Date(r.createdAt).toLocaleDateString('fr-FR') + '</td>' +
-                        '<td>' + (r.approuve ?
-                            '<span style="color:#10b981;font-weight:700;">Approuve</span>' :
-                            '<span style="color:#f59e0b;font-weight:700;">En attente</span>') + '</td>' +
-                        '<td style="display:flex;gap:8px;">' +
-                        (!r.approuve ? '<button onclick="approve(' + r.id + ')" style="background:#10b981;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">Approuver</button>' : '') +
-                        '<button onclick="deleteReview(' + r.id + ')" style="background:#ef4444;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">Supprimer</button>' +
-                        '</td></tr>';
-                }).join('');
+            document.getElementById("reviewsTable").innerHTML = paginated.map(function (r) {
+                return '<tr>' +
+                    '<td>' + r.id + '</td>' +
+                    '<td>' + r.produit + '</td>' +
+                    '<td>' + r.client + '</td>' +
+                    '<td style="color:#f59e0b;font-size:16px;">' + '★'.repeat(r.note) + '☆'.repeat(5 - r.note) + '</td>' +
+                    '<td>' + (r.commentaire || '—') + '</td>' +
+                    '<td>' + new Date(r.createdAt).toLocaleDateString('fr-FR') + '</td>' +
+                    '<td>' + (r.approuve ?
+                        '<span style="color:#10b981;font-weight:700;">Approuve</span>' :
+                        '<span style="color:#f59e0b;font-weight:700;">En attente</span>') + '</td>' +
+                    '<td style="display:flex;gap:8px;">' +
+                    (!r.approuve ? '<button onclick="approve(' + r.id + ')" style="background:#10b981;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">Approuver</button>' : '') +
+                    '<button onclick="deleteReview(' + r.id + ')" style="background:#ef4444;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:700;">Supprimer</button>' +
+                    '</td></tr>';
+            }).join('');
 
-                var bar = document.getElementById('reviewsPaginationBar');
-                if (totalPages <= 1) { bar.innerHTML = ''; return; }
-                var btnS = 'padding:8px 16px;min-width:60px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:#374151;font-weight:700;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;';
-                var pages = [];
-                pages.push('<button onclick="reviewsGoPage(' + (reviewsPage - 1) + ')" ' + (reviewsPage === 1 ? 'disabled' : '') + ' style="' + btnS + (reviewsPage === 1 ? 'opacity:.4;cursor:not-allowed;' : '') + '">Prec</button>');
-                for (var i = 1; i <= totalPages; i++) {
-                    var isActive = reviewsPage === i;
-                    if (i === 1 || i === totalPages || (i >= reviewsPage - 1 && i <= reviewsPage + 1)) {
-                        pages.push('<button onclick="reviewsGoPage(' + i + ')" style="' + btnS + (isActive ? 'background:#10b981;color:white;border-color:#10b981;' : '') + '">' + i + '</button>');
-                    } else if (i === reviewsPage - 2 || i === reviewsPage + 2) {
-                        pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
-                    }
+            var bar = document.getElementById('reviewsPaginationBar');
+            if (totalPages <= 1) { bar.innerHTML = ''; return; }
+            var btnS = 'padding:8px 16px;min-width:60px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:#374151;font-weight:700;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;';
+            var pages = [];
+            pages.push('<button onclick="reviewsGoPage(' + (reviewsPage - 1) + ')" ' + (reviewsPage === 1 ? 'disabled' : '') + ' style="' + btnS + (reviewsPage === 1 ? 'opacity:.4;cursor:not-allowed;' : '') + '">Prec</button>');
+            for (var i = 1; i <= totalPages; i++) {
+                var isActive = reviewsPage === i;
+                if (i === 1 || i === totalPages || (i >= reviewsPage - 1 && i <= reviewsPage + 1)) {
+                    pages.push('<button onclick="reviewsGoPage(' + i + ')" style="' + btnS + (isActive ? 'background:#10b981;color:white;border-color:#10b981;' : '') + '">' + i + '</button>');
+                } else if (i === reviewsPage - 2 || i === reviewsPage + 2) {
+                    pages.push('<span style="padding:8px 4px;color:#9ca3af;">...</span>');
                 }
-                pages.push('<button onclick="reviewsGoPage(' + (reviewsPage + 1) + ')" ' + (reviewsPage === totalPages ? 'disabled' : '') + ' style="' + btnS + (reviewsPage === totalPages ? 'opacity:.4;cursor:not-allowed;' : '') + '">Suiv</button>');
-                bar.innerHTML = pages.join('');
             }
+            pages.push('<button onclick="reviewsGoPage(' + (reviewsPage + 1) + ')" ' + (reviewsPage === totalPages ? 'disabled' : '') + ' style="' + btnS + (reviewsPage === totalPages ? 'opacity:.4;cursor:not-allowed;' : '') + '">Suiv</button>');
+            bar.innerHTML = pages.join('');
+        }
 
-            function reviewsGoPage(p) {
-                var filtered = allReviews.filter(function (r) {
-                    var matchSearch = !reviewsSearch ||
-                        (r.produit || '').toLowerCase().includes(reviewsSearch.toLowerCase()) ||
-                        (r.client || '').toLowerCase().includes(reviewsSearch.toLowerCase());
-                    var matchFilter = !reviewsFilter ||
-                        (reviewsFilter === 'approuve' && r.approuve) ||
-                        (reviewsFilter === 'attente' && !r.approuve);
-                    return matchSearch && matchFilter;
-                });
-                var total = Math.ceil(filtered.length / REVIEWS_PAGE_SIZE);
-                if (p < 1 || p > total) return;
-                reviewsPage = p;
-                renderReviews();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        function reviewsGoPage(p) {
+            var filtered = allReviews.filter(function (r) {
+                var matchSearch = !reviewsSearch ||
+                    (r.produit || '').toLowerCase().includes(reviewsSearch.toLowerCase()) ||
+                    (r.client || '').toLowerCase().includes(reviewsSearch.toLowerCase());
+                var matchFilter = !reviewsFilter ||
+                    (reviewsFilter === 'approuve' && r.approuve) ||
+                    (reviewsFilter === 'attente' && !r.approuve);
+                return matchSearch && matchFilter;
+            });
+            var total = Math.ceil(filtered.length / REVIEWS_PAGE_SIZE);
+            if (p < 1 || p > total) return;
+            reviewsPage = p;
+            renderReviews();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-            async function approve(id) {
-                await fetch(`${API_BASE}/reviews/${id}/approve`, { method: "PATCH" });
-                loadReviews();
-            }
-
-            async function deleteReview(id) {
-                if (!confirm("Supprimer cet avis ?")) return;
-                await fetch(`${API_BASE}/reviews/${id}`, { method: "DELETE" });
-                loadReviews();
-            }
-
+        async function approve(id) {
+            await fetch(`${API_BASE}/reviews/${id}/approve`, { method: "PATCH" });
             loadReviews();
-        </script>
-        <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
+        }
+
+        async function deleteReview(id) {
+            if (!confirm("Supprimer cet avis ?")) return;
+            await fetch(`${API_BASE}/reviews/${id}`, { method: "DELETE" });
+            loadReviews();
+        }
+
+        loadReviews();
+    </script>
+    <div id="mobileNav"><div id="mobileNavLinks"></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="adminLogout()" style="width:100%;background:#ef4444;color:white;border:none;padding:16px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">🚪 Déconnexion</button></div></div>
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    </script>
+
+
 </body>
 </html>

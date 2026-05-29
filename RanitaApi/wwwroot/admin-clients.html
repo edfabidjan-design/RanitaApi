@@ -208,9 +208,9 @@
             allClients = await clientsRes.json();
             allOrders = await ordersRes.json();
             document.getElementById("statsBar").innerHTML = `
-        <div class="stat-card"><div class="stat-num">${allClients.length}</div><div class="stat-label">Total clients</div></div>
-        <div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${allClients.filter(c => allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Clients actifs</div></div>
-        <div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${allClients.filter(c => !allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Jamais commandé</div></div>`;
+            <div class="stat-card"><div class="stat-num">${allClients.length}</div><div class="stat-label">Total clients</div></div>
+            <div class="stat-card" style="border-top:3px solid #10b981;"><div class="stat-num">${allClients.filter(c => allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Clients actifs</div></div>
+            <div class="stat-card" style="border-top:3px solid #3b82f6;"><div class="stat-num">${allClients.filter(c => !allOrders.some(o => o.clientId === c.id)).length}</div><div class="stat-label">Jamais commandé</div></div>`;
             renderClients();
         }
 
@@ -240,15 +240,15 @@
                     const totalDepense = orders.reduce((s, o) => s + o.total, 0);
                     const initiale = (c.fullName || c.email || "?")[0].toUpperCase();
                     return `<tr>
-                <td><strong>#${c.id}</strong></td>
-                <td><div class="client-info"><div class="client-avatar">${initiale}</div><span>${c.fullName}</span></div></td>
-                <td>${c.email}</td>
-                <td>${c.phone || "—"}</td>
-                <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
-                <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
-                <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
-                <td><button onclick="showClientDetails(${c.id})">👁 Voir</button></td>
-            </tr>`;
+                    <td><strong>#${c.id}</strong></td>
+                    <td><div class="client-info"><div class="client-avatar">${initiale}</div><span>${c.fullName}</span></div></td>
+                    <td>${c.email}</td>
+                    <td>${c.phone || "—"}</td>
+                    <td style="text-align:center;">${allOrders.filter(o => o.clientId === c.id).length}</td>
+                    <td><strong>${Number(totalDepense).toLocaleString()} FCFA</strong></td>
+                    <td style="font-size:12px;">${new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
+                    <td><button onclick="showClientDetails(${c.id})">👁 Voir</button></td>
+                </tr>`;
                 }).join('');
             }
 
@@ -292,11 +292,11 @@
             const totalDepense = orders.filter(o => o.status !== "Annulée").reduce((s, o) => s + o.total, 0);
             const getBadge = s => ({ 'En attente': 'badge-attente', 'Validée': 'badge-validee', 'Livrée': 'badge-livree', 'Annulée': 'badge-annulee' }[s] || '');
             document.getElementById("modalContent").innerHTML = `
-        <h3>👤 ${c.fullName}</h3>
-        <div class="modal-info"><strong>Email :</strong> ${c.email}<br><strong>Téléphone :</strong> ${c.phone || "—"}<br><strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br><strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA</div>
-        <div style="margin:16px 0 8px;font-size:13px;font-weight:700;">📦 Commandes (${orders.length})</div>
-        ${!orders.length ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` : orders.map(o => `<div class="order-row"><span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span><span><span class="status-badge ${getBadge(o.status)}">${o.status}</span> &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong></span></div>`).join('')}
-        <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>`;
+            <h3>👤 ${c.fullName}</h3>
+            <div class="modal-info"><strong>Email :</strong> ${c.email}<br><strong>Téléphone :</strong> ${c.phone || "—"}<br><strong>Inscrit le :</strong> ${new Date(c.createdAt).toLocaleDateString('fr-FR')}<br><strong>Total dépensé :</strong> ${Number(totalDepense).toLocaleString()} FCFA</div>
+            <div style="margin:16px 0 8px;font-size:13px;font-weight:700;">📦 Commandes (${orders.length})</div>
+            ${!orders.length ? `<p style="color:#9ca3af;font-size:13px;">Aucune commande</p>` : orders.map(o => `<div class="order-row"><span><strong>#${o.id}</strong> — ${new Date(o.createdAt).toLocaleDateString('fr-FR')}</span><span><span class="status-badge ${getBadge(o.status)}">${o.status}</span> &nbsp;<strong>${Number(o.total).toLocaleString()} FCFA</strong></span></div>`).join('')}
+            <button class="btn-close-modal" onclick="document.getElementById('modalOverlay').classList.remove('open')">Fermer</button>`;
             document.getElementById("modalOverlay").classList.add("open");
         }
 
@@ -306,6 +306,34 @@
         }
 
         loadData();
+    </script>
+
+
+    <!-- ── BOUTON RETOUR EN HAUT ── -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
+        ↑
+    </button>
+    <script>
+        window.addEventListener('load', function () {
+            var scrollBtn = document.getElementById('scrollTopBtn');
+            if (!scrollBtn) return;
+            scrollBtn.style.display = 'none';
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 400) {
+                    scrollBtn.style.display = 'flex';
+                    setTimeout(function () {
+                        scrollBtn.style.opacity = '1';
+                        scrollBtn.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    scrollBtn.style.opacity = '0';
+                    scrollBtn.style.transform = 'scale(.8)';
+                    setTimeout(function () {
+                        if (window.scrollY <= 400) scrollBtn.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
     </script>
 </body>
 </html>
