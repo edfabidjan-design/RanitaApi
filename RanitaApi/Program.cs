@@ -123,6 +123,42 @@ var app = builder.Build();
 // ── PIPELINE MIDDLEWARE — ordre obligatoire ─────────────────────
 app.UseHttpsRedirection();
 
+// ── HEADERS SÉCURITÉ ✅ ─────────────────────────────────────
+app.Use(async (context, next) =>
+{
+    var headers = context.Response.Headers;
+
+    // Empêche l'intégration dans un iframe (clickjacking)
+    headers["X-Frame-Options"] = "DENY";
+
+    // Empêche le MIME sniffing
+    headers["X-Content-Type-Options"] = "nosniff";
+
+    // Limite les infos de referrer envoyées aux tiers
+    headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+
+    // Désactive fonctionnalités non utilisées
+    headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+
+    // Force HTTPS pour 1 an (HSTS)
+    headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+
+    // Content Security Policy — adapté à ton stack
+    // Autorise : même origine + Cloudinary (images) + Google Fonts
+    headers["Content-Security-Policy"] =
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline'; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
+        "img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com; " +
+        "connect-src 'self' https://ranitaapi-production.up.railway.app; " +
+        "frame-ancestors 'none';";
+
+    await next();
+});
+
+
+
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
