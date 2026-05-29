@@ -2,12 +2,15 @@
   "name": "Ranita Market",
   "short_name": "Ranita",
   "description": "Votre boutique en ligne Ranita Market",
-  "start_url": "/index.html?source=pwa",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#10b981",
   "orientation": "portrait",
+  "launch_handler": {
+    "client_mode": "navigate-new"
+  },
   "icons": [
     {
       "src": "/images/logo.png",
