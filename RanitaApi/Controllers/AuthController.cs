@@ -1,39 +1,83 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RanitaApi.Data;
 using RanitaApi.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using RanitaApi.Services;
 
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private readonly IConfiguration _config;
+    private readonly JwtService _jwt;
 
-    public AuthController(AppDbContext context, IConfiguration config)
+    public AuthController(AppDbContext context, JwtService jwt)
     {
         _context = context;
-        _config = config;
+        _jwt = jwt;
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] User login)
+    public IActionResult Login([FromBody] AdminLoginDto dto)
     {
         try
         {
+            // 1. Trouver l'admin par username
             var user = _context.Users
-                .FirstOrDefault(u => u.Username == login.Username && u.Password == login.Password);
+                .FirstOrDefault(u => u.Username == dto.Username);
 
             if (user == null)
+            {
+                // Anti-timing : effectuer une vérification factice
+                BCrypt.Net.BCrypt.Verify(dto.Password, "$2a$12$dummy.hash.for.timing.only.xxxxxxxxxxxxxxxxxx");
                 return Unauthorized("Identifiants incorrects");
+            }
 
             if (!user.IsActive)
                 return Unauthorized("Compte suspendu. Contactez le Super Admin.");
 
-            var token = GenerateJwtToken(user);
+            // 2. Vérifier le mot de passe
+            bool isValid;
+
+            if (user.Password.StartsWith("$2"))
+            {
+                // Hash BCrypt normal
+                isValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.Password);
+            }
+            else if (user.Password.StartsWith("LEGACY:SHA256:"))
+            {
+                // Migration depuis SHA-256 (anciens comptes)
+                var oldHash = user.Password["LEGACY:SHA256:".Length..];
+                var inputHash = Convert.ToBase64String(
+                    System.Security.Cryptography.SHA256.HashData(
+                        System.Text.Encoding.UTF8.GetBytes(dto.Password)
+                    )
+                );
+                isValid = oldHash == inputHash;
+                if (isValid)
+                {
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password, workFactor: 12);
+                    _context.SaveChanges();
+                    Console.WriteLine($"Migration BCrypt admin OK pour user #{user.Id}");
+                }
+            }
+            else
+            {
+                // Mot de passe en clair (legacy — admin "1234")
+                isValid = user.Password == dto.Password;
+                if (isValid)
+                {
+                    // Re-hacher immédiatement en BCrypt
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password, workFactor: 12);
+                    _context.SaveChanges();
+                    Console.WriteLine($"Migration BCrypt admin (plain text) OK pour user #{user.Id}");
+                }
+            }
+
+            if (!isValid)
+                return Unauthorized("Identifiants incorrects");
+
+            // 3. Générer le token JWT admin (même service que les clients)
+            var token = _jwt.GenerateAdminToken(user.Id, user.Username, user.Role, user.Email);
 
             return Ok(new
             {
@@ -46,29 +90,14 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ex.Message);
+            Console.WriteLine("AUTH ERROR: " + ex.Message);
+            return StatusCode(500, "Erreur serveur");
         }
     }
+}
 
-    private string GenerateJwtToken(User user)
-    {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role),          // ← rôle dans le token
-            new Claim("adminId", user.Id.ToString()),
-            new Claim("email", user.Email ?? "")
-        };
-
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.Now.AddHours(8),              // ← 8h au lieu de 2h
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
+public class AdminLoginDto
+{
+    public string Username { get; set; } = "";
+    public string Password { get; set; } = "";
 }

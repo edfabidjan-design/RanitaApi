@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.Models;
@@ -7,6 +8,7 @@ namespace RanitaApi.Controllers
 {
     [ApiController]
     [Route("api/admins")]
+    [Authorize]   // ✅ Tous les endpoints nécessitent un token JWT valide
     public class AdminsController : ControllerBase
     {
         private readonly AppDbContext _db;
@@ -43,11 +45,13 @@ namespace RanitaApi.Controllers
             if (string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
                 return BadRequest(new { message = "Username et mot de passe obligatoires" });
 
+            if (dto.Password.Length < 8)
+                return BadRequest(new { message = "Mot de passe trop court (min 8 caractères)" });
+
             var exists = await _db.Users.AnyAsync(u => u.Username == dto.Username);
             if (exists)
                 return BadRequest(new { message = "Ce username existe déjà" });
 
-            // Valider le rôle — accepte prédéfini OU JSON
             if (!IsValidRole(dto.Role))
                 return BadRequest(new { message = "Rôle invalide" });
 
@@ -55,7 +59,7 @@ namespace RanitaApi.Controllers
             {
                 Username = dto.Username.Trim(),
                 Email = dto.Email?.Trim() ?? "",
-                Password = dto.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password, workFactor: 12), // ✅ BCrypt
                 Role = dto.Role,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
@@ -97,14 +101,15 @@ namespace RanitaApi.Controllers
 
         // ── PUT /api/admins/{id}/password ─────────────────────────────
         [HttpPut("{id}/password")]
-        public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDto dto)
+        public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangeAdminPasswordDto dto)
         {
             var admin = await _db.Users.FindAsync(id);
             if (admin == null) return NotFound(new { message = "Admin introuvable" });
-            if (string.IsNullOrEmpty(dto.NewPassword) || dto.NewPassword.Length < 6)
-                return BadRequest(new { message = "Mot de passe trop court (min 6 caractères)" });
 
-            admin.Password = dto.NewPassword;
+            if (string.IsNullOrEmpty(dto.NewPassword) || dto.NewPassword.Length < 8)
+                return BadRequest(new { message = "Mot de passe trop court (min 8 caractères)" });
+
+            admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword, workFactor: 12); // ✅ BCrypt
             await _db.SaveChangesAsync();
             return Ok(new { message = "Mot de passe mis à jour ✓" });
         }
@@ -129,22 +134,18 @@ namespace RanitaApi.Controllers
         }
 
         // ── VALIDATION RÔLE ───────────────────────────────────────────
-        // Accepte : rôle prédéfini OU JSON valide avec "pages"
         private static bool IsValidRole(string? role)
         {
             if (string.IsNullOrEmpty(role)) return false;
 
-            // Rôles prédéfinis acceptés
             var presets = new[] { "SuperAdmin", "Analyste" };
             if (presets.Contains(role)) return true;
 
-            // JSON de permissions custom
             if (role.TrimStart().StartsWith("{"))
             {
                 try
                 {
                     var doc = System.Text.Json.JsonDocument.Parse(role);
-                    // Doit contenir au moins "pages"
                     return doc.RootElement.TryGetProperty("pages", out _);
                 }
                 catch { return false; }
@@ -169,7 +170,7 @@ namespace RanitaApi.Controllers
         public string Role { get; set; } = "";
     }
 
-    public class ChangePasswordDto
+    public class ChangeAdminPasswordDto
     {
         public string NewPassword { get; set; } = "";
     }

@@ -1,6 +1,5 @@
 ﻿// ═══════════════════════════════════════════════════════════════
 // RANITA MARKET — Services/JwtService.cs
-// Nouveau fichier à créer dans le dossier Services/
 // ═══════════════════════════════════════════════════════════════
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,7 +11,8 @@ namespace RanitaApi.Services
     public class JwtService
     {
         private readonly string _secret;
-        private readonly int _expiryDays = 30; // Token valide 30 jours
+        private readonly int _clientExpiryDays = 30;
+        private readonly int _adminExpiryHours = 8;
 
         public JwtService(IConfiguration config)
         {
@@ -21,12 +21,9 @@ namespace RanitaApi.Services
                     "JWT_SECRET manquant dans les variables d'environnement Railway");
         }
 
-        // ── Génère un token pour un client ────────────────────────────
+        // ── Token CLIENT ──────────────────────────────────────────────
         public string GenerateClientToken(int clientId, string email)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             var claims = new[]
             {
                 new Claim("clientId", clientId.ToString()),
@@ -34,45 +31,40 @@ namespace RanitaApi.Services
                 new Claim("role", "client"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-
-            var token = new JwtSecurityToken(
-                issuer: "ranita-shop.com",
-                audience: "ranita-shop.com",
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(_expiryDays),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return BuildToken(claims, TimeSpan.FromDays(_clientExpiryDays));
         }
 
-        // ── Génère un token pour un vendeur ───────────────────────────
+        // ── Token VENDEUR ─────────────────────────────────────────────
         public string GenerateSellerToken(int sellerId, int clientId, string email)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             var claims = new[]
             {
-                new Claim("sellerId", sellerId.ToString()),
-                new Claim("clientId", clientId.ToString()),
+                new Claim("sellerId",  sellerId.ToString()),
+                new Claim("clientId",  clientId.ToString()),
                 new Claim(ClaimTypes.Email, email),
                 new Claim("role", "seller"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-
-            var token = new JwtSecurityToken(
-                issuer: "ranita-shop.com",
-                audience: "ranita-shop.com",
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(_expiryDays),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return BuildToken(claims, TimeSpan.FromDays(_clientExpiryDays));
         }
 
-        // ── Valide un token et retourne les claims ────────────────────
+        // ── Token ADMIN ✅ ────────────────────────────────────────────
+        public string GenerateAdminToken(int adminId, string username, string role, string? email)
+        {
+            var claims = new[]
+            {
+                new Claim("adminId",            adminId.ToString()),
+                new Claim(ClaimTypes.Name,      username),
+                new Claim(ClaimTypes.Role,      role),
+                new Claim("role",               "admin"),
+                new Claim("adminRole",          role),
+                new Claim(ClaimTypes.Email,     email ?? ""),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+            return BuildToken(claims, TimeSpan.FromHours(_adminExpiryHours));
+        }
+
+        // ── Validation token ──────────────────────────────────────────
         public ClaimsPrincipal? ValidateToken(string token)
         {
             try
@@ -80,7 +72,7 @@ namespace RanitaApi.Services
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
                 var handler = new JwtSecurityTokenHandler();
 
-                var principal = handler.ValidateToken(token, new TokenValidationParameters
+                return handler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -91,17 +83,29 @@ namespace RanitaApi.Services
                     IssuerSigningKey = key,
                     ClockSkew = TimeSpan.Zero
                 }, out _);
+            }
+            catch { return null; }
+        }
 
-                return principal;
-            }
-            catch
-            {
-                return null;
-            }
+        // ── Builder interne ───────────────────────────────────────────
+        private string BuildToken(Claim[] claims, TimeSpan expiry)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "ranita-shop.com",
+                audience: "ranita-shop.com",
+                claims: claims,
+                expires: DateTime.UtcNow.Add(expiry),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 
-    // ── Extension pour lire facilement les claims dans les controllers ──
+    // ── Extensions claims ─────────────────────────────────────────────
     public static class ClaimsPrincipalExtensions
     {
         public static int GetClientId(this ClaimsPrincipal user)
@@ -110,7 +114,13 @@ namespace RanitaApi.Services
         public static int GetSellerId(this ClaimsPrincipal user)
             => int.Parse(user.FindFirstValue("sellerId") ?? "0");
 
+        public static int GetAdminId(this ClaimsPrincipal user)
+            => int.Parse(user.FindFirstValue("adminId") ?? "0");
+
         public static string GetRole(this ClaimsPrincipal user)
             => user.FindFirstValue("role") ?? "";
+
+        public static string GetAdminRole(this ClaimsPrincipal user)
+            => user.FindFirstValue("adminRole") ?? "";
     }
 }
