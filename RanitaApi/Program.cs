@@ -592,15 +592,15 @@ try { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvid
 // ── ASSETLINKS pour Play Store TWA ✅ ───────────────────────────
 app.MapGet("/.well-known/assetlinks.json", async context =>
 {
-    var filePath = Path.Combine(builder.Environment.WebRootPath ??
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"),
-        ".well-known", "assetlinks.json");
-
     context.Response.ContentType = "application/json";
-    if (File.Exists(filePath))
-        await context.Response.SendFileAsync(filePath);
-    else
-        await context.Response.WriteAsync("[]");
+    await context.Response.WriteAsync(@"[{
+  ""relation"": [""delegate_permission/common.handle_all_urls""],
+  ""target"": {
+    ""namespace"": ""android_app"",
+    ""package_name"": ""com.ranita.market"",
+    ""sha256_cert_fingerprints"": [""12:31:F1:34:BE:04:74:C0:4A:EF:B0:9F:89:F9:03:13:4E:AF:0C:66:79:54:C1:F0:3F:AE:B2:0E:8D:DD:5A:AE""]
+  }
+}]");
 });
 
 app.Run();
