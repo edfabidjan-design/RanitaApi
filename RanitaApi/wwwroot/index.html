@@ -1,6 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
+
+    <script>
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            sessionStorage.setItem('pwa_launched', '1');
+        }
+    </script>
+
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -2065,13 +2072,7 @@
             </a>
         </nav>
 
-        <script>
-            // Si ouvert depuis la PWA et que ce n'est pas déjà index.html → redirige
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                // PWA ouverte — on est bien sur index.html, pas de redirection nécessaire
-                sessionStorage.setItem('pwa_launched', '1');
-            }
-        </script>
+
 
     </header>
 

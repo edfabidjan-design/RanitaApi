@@ -1,6 +1,17 @@
 ﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
+
+    <script>
+        // Si PWA lancée directement sur cette page (pas via navigation interne) → redirect accueil
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            if (!sessionStorage.getItem('pwa_launched') && !document.referrer) {
+                sessionStorage.setItem('pwa_launched', '1');
+                window.location.replace('/index.html');
+            }
+        }
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tous nos produits — Ranita Market | Boutique en ligne Abidjan CI</title>
@@ -532,15 +543,7 @@
         </nav>
 
 
-        <script>
-            // Si PWA lancée directement sur cette page (pas via navigation interne) → redirect accueil
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                if (!sessionStorage.getItem('pwa_launched') && !document.referrer) {
-                    sessionStorage.setItem('pwa_launched', '1');
-                    window.location.replace('/index.html');
-                }
-            }
-        </script>
+
     </header>
 
     <main class="products-page">
