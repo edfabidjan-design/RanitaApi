@@ -12,7 +12,7 @@ namespace RanitaApi.Services
     {
         private readonly string _secret;
         private readonly int _clientExpiryDays = 30;
-        private readonly int _adminExpiryHours = 8;
+        private readonly int _adminExpiryHours = 168;
 
         public JwtService(IConfiguration config)
         {

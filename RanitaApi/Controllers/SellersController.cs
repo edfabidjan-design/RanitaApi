@@ -552,6 +552,22 @@ namespace RanitaApi.Controllers
             return Ok(new { SellerId = sellerProduct.SellerId, ShopName = sellerProduct.Seller.ShopName });
         }
 
+
+        // GET /api/sellers/seller-products/pending — admin
+        [HttpGet("seller-products/pending")]
+        [Authorize]
+        public async Task<IActionResult> GetPendingSellerProducts()
+        {
+            var pending = await _db.SellerProducts
+                .Include(p => p.Seller)
+                .Where(p => p.ApprovalStatus == "Pending")
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new { p.Id, p.Name, p.SellerId, ShopName = p.Seller!.ShopName, p.CreatedAt })
+                .ToListAsync();
+            return Ok(pending);
+        }
+
+
         // GET /api/sellers/payouts/all — admin
         [HttpGet("payouts/all")]
         [Authorize]
