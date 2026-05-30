@@ -475,14 +475,34 @@
         async function loadOrders() { try { const res = await fetch(`${API}/orders`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return; allOrders = await res.json(); computeKPIs(); renderSalesChart(7); renderStatusChart(); renderTopProducts(); renderRecentOrders(); renderMapFromOrders(); } catch (e) { console.error(e); } }
         async function loadPayouts() { try { const res = await fetch(`${API}/sellers/payouts/all`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return; const payouts = await res.json(); document.getElementById('kpi-commission').textContent = fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0)); renderTopSellers(payouts); } catch (e) { } }
         async function loadClients() { try { const res = await fetch(`${API}/clients`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return; const clients = await res.json(); document.getElementById('kpi-clients').textContent = clients.length; const now = new Date(); const newM = clients.filter(c => { const d = new Date(c.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length; document.getElementById('kpi-clients-new').textContent = `+${newM} ce mois`; renderTopClients(clients); } catch (e) { } }
+
         async function loadAlerts() {
-            const alertsBar = document.getElementById('alertsBar'); let html = ''; const pending = allOrders.filter(o => o.status === 'En attente').length;
-            if (pending > 0) html += `<a href="admin-orders.html" class="alert-chip red"><div class="dot"></div>${pending} commande(s) en attente</a>`;
+            const alertsBar = document.getElementById('alertsBar');
+            let html = '';
+
+            const pending = allOrders.filter(o => o.status === 'En attente').length;
+            if (pending > 0) html += `<a href="admin-orders.html" class="alert-chip red"><div class="dot"></div>🛒 ${pending} commande(s) en attente</a>`;
 
             const refunds = allOrders.filter(o => o.status === 'Remboursement demandé').length;
             if (refunds > 0) html += `<a href="admin-orders.html" class="alert-chip orange"><div class="dot"></div>💸 ${refunds} remboursement(s) à traiter</a>`;
-            try { const res = await fetch(`${API}/sellers/seller-products/pending`, { headers: { 'Authorization': `Bearer ${token}` } }); if (res.ok) { const p = await res.json(); if (p.length > 0) html += `<a href="admin-sellers.html" class="alert-chip orange"><div class="dot"></div>${p.length} produit(s) à valider</a>`; } } catch (e) { } alertsBar.innerHTML = html || '<div style="font-size:12px;color:var(--gray-500);">✅ Aucune alerte en cours</div>';
+
+            const vendorConfirmed = allOrders.filter(o => o.status === 'Confirmée par vendeur').length;
+            if (vendorConfirmed > 0) html += `<a href="admin-orders.html" class="alert-chip blue"><div class="dot"></div>🚚 ${vendorConfirmed} commande(s) prête(s) à livrer</a>`;
+
+            const unavailable = allOrders.filter(o => o.status === 'Indisponible vendeur').length;
+            if (unavailable > 0) html += `<a href="admin-orders.html" class="alert-chip orange"><div class="dot"></div>⚠️ ${unavailable} produit(s) indisponible(s)</a>`;
+
+            try {
+                const res = await fetch(`${API}/sellers/seller-products/pending`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) {
+                    const p = await res.json();
+                    if (p.length > 0) html += `<a href="admin-sellers.html" class="alert-chip blue"><div class="dot"></div>📦 ${p.length} produit(s) à valider</a>`;
+                }
+            } catch (e) { }
+
+            alertsBar.innerHTML = html || '<div style="font-size:12px;color:var(--gray-500);">✅ Aucune alerte en cours</div>';
         }
+
         function computeKPIs() { const now = new Date(); const today = allOrders.filter(o => new Date(o.createdAt).toDateString() === now.toDateString() && validStatuses(o)); const month = allOrders.filter(o => { const d = new Date(o.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && validStatuses(o); }); const all = allOrders.filter(validStatuses); document.getElementById('kpi-today').textContent = fmt(today.reduce((s, o) => s + o.total, 0)); document.getElementById('kpi-today-count').textContent = `${today.length} cmd`; document.getElementById('kpi-month').textContent = fmt(month.reduce((s, o) => s + o.total, 0)); document.getElementById('kpi-month-count').textContent = `${month.length} cmd`; document.getElementById('kpi-total').textContent = fmt(all.reduce((s, o) => s + o.total, 0)); document.getElementById('kpi-total-count').textContent = `${all.length} commandes`; document.getElementById('kpi-pending').textContent = allOrders.filter(o => o.status === 'En attente').length; }
         function setChartPeriod(mode, btn) { document.querySelectorAll('.pbtn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderSalesChart(mode); }
         function renderSalesChart(mode) { const labels = [], data = [], now = new Date(); if (mode === 12) { for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); labels.push(d.toLocaleDateString('fr-FR', { month: 'short' })); data.push(allOrders.filter(o => { const od = new Date(o.createdAt); return od.getMonth() === d.getMonth() && od.getFullYear() === d.getFullYear() && validStatuses(o); }).reduce((s, o) => s + o.total, 0)); } } else { for (let i = mode - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })); data.push(allOrders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString() && validStatuses(o)).reduce((s, o) => s + o.total, 0)); } } const ctx = document.getElementById('salesChart').getContext('2d'); if (salesChartInstance) salesChartInstance.destroy(); salesChartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'CA', data, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', borderWidth: 2.5, pointBackgroundColor: '#10b981', pointRadius: 3, tension: 0.4, fill: true }] }, options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmt(c.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => new Intl.NumberFormat('fr-CI', { maximumFractionDigits: 0 }).format(v) + ' F', font: { size: 9 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 9 } }, grid: { display: false } } } } }); }
@@ -492,7 +512,7 @@
         function renderTopClients(clients) { const clientOrders = {}; allOrders.filter(o => validStatuses(o) && o.clientId).forEach(o => { if (!clientOrders[o.clientId]) clientOrders[o.clientId] = { name: o.customerName, total: 0, count: 0 }; clientOrders[o.clientId].total += o.total; clientOrders[o.clientId].count++; }); const sorted = Object.entries(clientOrders).sort((a, b) => b[1].total - a[1].total).slice(0, 5); const el = document.getElementById('topClients'); if (!sorted.length) { el.innerHTML = '<div class="empty">Aucune donnée</div>'; return; } el.innerHTML = sorted.map(([id, data], i) => `<div class="top-item"><div class="top-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${i + 1}</div><div class="top-info"><div class="top-name">${data.name || 'Client #' + id}</div><div class="top-sub">${data.count} commande(s)</div></div><div class="top-val">${fmt(data.total)}</div></div>`).join(''); }
         function renderRecentOrders() { const recent = [...allOrders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 8); const sc = { 'En attente': 'status-pending', 'Confirmée': 'status-confirmed', 'Livrée': 'status-delivered', 'Annulée': 'status-cancelled', 'En cours': 'status-confirmed' }; const el = document.getElementById('recentOrders'); if (!recent.length) { el.innerHTML = '<div class="empty">Aucune commande</div>'; return; } el.innerHTML = recent.map(o => `<div class="order-row"><div><div class="order-id">#${o.id} — ${o.customerName}</div><div class="order-customer">${new Date(o.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</div></div><div style="display:flex;align-items:center;gap:8px;"><span class="order-status ${sc[o.status] || 'status-pending'}">${o.status}</span><span class="order-amount">${fmt(o.total)}</span></div></div>`).join(''); }
         function renderMapFromOrders() { const cityData = {}; allOrders.filter(validStatuses).forEach(o => { const addr = (o.customerAddress || '').toLowerCase(); for (const [key, info] of Object.entries(CI_CITIES)) { if (addr.includes(key)) { if (!cityData[key]) cityData[key] = { count: 0, total: 0, label: info.label }; cityData[key].count++; cityData[key].total += o.total; break; } } }); updateMapMarkers(cityData); }
-        setInterval(async () => { await loadOrders(); await loadAlerts(); }, 60000);
+        setInterval(async () => { await loadOrders(); await loadAlerts(); }, 15000);
     </script>
    
     <!-- ── BOUTON RETOUR EN HAUT ── -->

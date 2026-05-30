@@ -11,12 +11,7 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
             try {
                 const res = await fetch(API_BASE_NOTIF + "/orders", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
                 const orders = await res.json();
-                const total = orders.filter(o =>
-                    o.status === "En attente" ||
-                    o.status === "Confirmée par vendeur" ||
-                    o.status === "Indisponible vendeur" ||
-                    o.status === "Remboursement demandé"
-                ).length;
+                const total = orders.filter(o => o.status === "En attente").length;
             
             } catch (e) { }
         }
@@ -59,12 +54,7 @@ async function loadNavBadges() {
         try {
             const res = await fetch(API_BASE_NOTIF + "/orders", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
             const orders = await res.json();
-            const total = orders.filter(o =>
-                o.status === "En attente" ||
-                o.status === "Confirmée par vendeur" ||
-                o.status === "Indisponible vendeur" ||
-                o.status === "Remboursement demandé"
-            ).length;
+            const total = orders.filter(o => o.status === "En attente").length;
             countOrders = total;
         } catch (e) { }
 
