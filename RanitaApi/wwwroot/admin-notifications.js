@@ -31,7 +31,7 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
 
         if (currentPage.indexOf('admin-sellers') !== -1) {
             try {
-                const r1 = await fetch(API_BASE_NOTIF + "/admin/sellers?status=Pending");
+                const r1 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
                 const v = await r1.json();
                 const r2 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
                 const p = await r2.json();
