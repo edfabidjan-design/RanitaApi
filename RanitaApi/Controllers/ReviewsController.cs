@@ -139,12 +139,21 @@ namespace RanitaApi.Controllers
                     r.Note,
                     r.Commentaire,
                     r.CreatedAt,
-                    client = r.Client != null ? r.Client.FullName : "Client",
+                    client = r.Client != null ? MaskName(r.Client.FullName) : "Client",
                     productName = r.Product != null ? r.Product.Name : null
                 })
                 .ToListAsync();
 
             return Ok(reviews);
+        }
+
+
+        private static string MaskName(string fullName)
+        {
+            if (string.IsNullOrWhiteSpace(fullName)) return "Client";
+            var parts = fullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var masked = parts.Select(p => p.Length > 0 ? p[0] + "***" : "***");
+            return string.Join(" ", masked);
         }
     }
 
