@@ -17,7 +17,7 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
                     o.status === "Indisponible vendeur" ||
                     o.status === "Remboursement demandé"
                 ).length;
-                localStorage.setItem('badge-orders-seen', total);
+            
             } catch (e) { }
         }
 
@@ -65,8 +65,7 @@ async function loadNavBadges() {
                 o.status === "Indisponible vendeur" ||
                 o.status === "Remboursement demandé"
             ).length;
-            const lastSeen = parseInt(localStorage.getItem('badge-orders-seen') || '0');
-            countOrders = total > lastSeen ? total - lastSeen : 0;
+            countOrders = total;
         } catch (e) { }
 
         // ── Avis ──
@@ -156,7 +155,7 @@ async function loadNavBadges() {
 }
 
 window.addEventListener("load", loadNavBadges);
-setInterval(loadNavBadges, 20000);
+setInterval(loadNavBadges, 15000);
 
 // ── Push notifications admin ──
 async function registerPush() {
