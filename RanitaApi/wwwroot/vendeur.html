@@ -1602,8 +1602,15 @@
                 const newO = orders.filter(o => o.status === 'En attente').length;
                 const lastO = parseInt(localStorage.getItem('badge-orders-' + sellerId) || '0');
                 const badgeO = document.getElementById('badge-orders');
-                if (document.getElementById('section-orders').style.display !== 'none') { localStorage.setItem('badge-orders-' + sellerId, newO); badgeO.style.display = 'none'; }
-                else { badgeO.style.display = newO > lastO ? 'inline' : 'none'; if (newO > lastO) badgeO.textContent = newO - lastO; }
+                if (document.getElementById('section-orders').style.display !== 'none') {
+                    localStorage.setItem('badge-orders-' + sellerId, newO);
+                    badgeO.style.display = 'none';
+                } else if (newO > 0) {
+                    badgeO.style.display = 'inline';
+                    badgeO.textContent = newO;
+                } else {
+                    badgeO.style.display = 'none';
+                }
                 const failed = orders.filter(o => o.status === 'Echec livraison').length;
                 const lastF = parseInt(localStorage.getItem('badge-failed-' + sellerId) || '0');
                 const badgeF = document.getElementById('badge-failed');
