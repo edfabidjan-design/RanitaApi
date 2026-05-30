@@ -71,13 +71,25 @@ async function loadNavBadges() {
         // ── Vendeurs ──
         let displayVendors = 0;
         try {
-            const r1 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
-            const vendors = await r1.json();
-            const r2 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
+            const token = getAdminInfo()?.token || '';
+            const headers = { 'Authorization': 'Bearer ' + token };
+
+            // Vendeurs en attente
+            const r1 = await fetch(API_BASE_NOTIF + "/sellers?status=Pending", { headers });
+            const sellers = await r1.json();
+            const pendingSellers = Array.isArray(sellers) ? sellers.filter(s => s.status === 'Pending').length : 0;
+
+            // Produits à valider
+            const r2 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers });
             const products = await r2.json();
-            const total = vendors.length + products.length;
-            const lastSeen = parseInt(localStorage.getItem('badge-vendors-seen') || '0');
-            displayVendors = total > lastSeen ? total - lastSeen : 0;
+            const pendingProducts = Array.isArray(products) ? products.length : 0;
+
+            // Paiements en attente
+            const r3 = await fetch(API_BASE_NOTIF + "/sellers/payouts/all", { headers });
+            const payouts = await r3.json();
+            const pendingPayouts = Array.isArray(payouts) ? payouts.filter(p => p.status === 'Pending').length : 0;
+
+            displayVendors = pendingSellers + pendingProducts + pendingPayouts;
         } catch (e) { }
 
         // ── Clients ──
