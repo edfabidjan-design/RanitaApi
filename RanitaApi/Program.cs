@@ -154,12 +154,12 @@ app.Use(async (context, next) =>
     headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
     headers["Content-Security-Policy"] =
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline'; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "font-src 'self' https://fonts.gstatic.com; " +
-        "img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com; " +
-        "connect-src 'self' https://ranitaapi-production.up.railway.app; " +
-        "frame-ancestors 'none';";
+        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
+        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; " +
+        "img-src 'self' data: blob: https://res.cloudinary.com https://via.placeholder.com https://tile.openstreetmap.org; " +
+        "connect-src 'self' https://ranitaapi-production.up.railway.app https://tile.openstreetmap.org; " +
+        "frame-ancestors 'none';"; ;
     await next();
 });
 
