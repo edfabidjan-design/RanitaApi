@@ -175,7 +175,7 @@ app.UseStaticFiles(new StaticFileOptions
     }
 });
 
-
+app.UseStatusCodePagesWithReExecute("/404.html");
 
 
 

@@ -1,0 +1,494 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page introuvable - Ranita Market</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+        :root {
+            --g: #10b981;
+            --gd: #059669;
+            --dk: #0D1117;
+            --dk2: #161B22;
+            --dkt: #F0F6FC;
+            --dkt2: #8B949E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--dk);
+            color: var(--dkt);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Grille de fond animée */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(16,185,129,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(60px);
+            }
+        }
+
+        /* Orbes lumineux */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(16,185,129,.08);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(5,150,105,.06);
+            bottom: -80px;
+            right: -80px;
+            animation-delay: -4s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(20px, 20px) scale(1.05);
+            }
+        }
+
+        /* Contenu principal */
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px 24px;
+            max-width: 600px;
+        }
+
+        /* 404 géant */
+        .four-o-four {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(100px, 22vw, 200px);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -8px;
+            background: linear-gradient(135deg, var(--g) 0%, rgba(16,185,129,.3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glitch 4s ease-in-out infinite;
+            position: relative;
+            margin-bottom: -10px;
+        }
+
+            .four-o-four::before,
+            .four-o-four::after {
+                content: '404';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                font-family: 'Space Mono', monospace;
+                font-size: inherit;
+                font-weight: inherit;
+                letter-spacing: inherit;
+            }
+
+            .four-o-four::before {
+                background: linear-gradient(135deg, #ef4444, transparent);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                animation: glitchBefore 4s ease-in-out infinite;
+                clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+            }
+
+            .four-o-four::after {
+                background: linear-gradient(135deg, #3b82f6, transparent);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                animation: glitchAfter 4s ease-in-out infinite;
+                clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+            }
+
+        @keyframes glitch {
+            0%, 90%, 100% {
+                transform: translate(0);
+            }
+
+            92% {
+                transform: translate(-2px, 1px);
+            }
+
+            94% {
+                transform: translate(2px, -1px);
+            }
+
+            96% {
+                transform: translate(-1px, 2px);
+            }
+        }
+
+        @keyframes glitchBefore {
+            0%, 90%, 100% {
+                transform: translate(0);
+                opacity: 0;
+            }
+
+            92% {
+                transform: translate(-4px, 0);
+                opacity: 0.5;
+            }
+
+            94% {
+                transform: translate(4px, 0);
+                opacity: 0.3;
+            }
+
+            96% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes glitchAfter {
+            0%, 90%, 100% {
+                transform: translate(0);
+                opacity: 0;
+            }
+
+            92% {
+                transform: translate(4px, 0);
+                opacity: 0.5;
+            }
+
+            94% {
+                transform: translate(-4px, 0);
+                opacity: 0.3;
+            }
+
+            96% {
+                opacity: 0;
+            }
+        }
+
+        /* Ligne décorative */
+        .deco-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+            .deco-line::before,
+            .deco-line::after {
+                content: '';
+                flex: 1;
+                max-width: 80px;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--g));
+            }
+
+            .deco-line::after {
+                background: linear-gradient(90deg, var(--g), transparent);
+            }
+
+        .deco-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--g);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.6;
+            }
+        }
+
+        /* Titre */
+        .title {
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 800;
+            color: var(--dkt);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--dkt2);
+            line-height: 1.6;
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        /* Boutons */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--g);
+            color: white;
+            text-decoration: none;
+            padding: 13px 28px;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all .2s;
+            border: none;
+            cursor: pointer;
+        }
+
+            .btn-primary:hover {
+                background: var(--gd);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(16,185,129,.3);
+            }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,.06);
+            color: var(--dkt2);
+            text-decoration: none;
+            padding: 13px 28px;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all .2s;
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+            .btn-secondary:hover {
+                background: rgba(255,255,255,.1);
+                color: var(--dkt);
+                transform: translateY(-2px);
+            }
+
+        /* Liens rapides */
+        .quick-links {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16,185,129,.08);
+            border: 1px solid rgba(16,185,129,.15);
+            color: var(--g);
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all .2s;
+        }
+
+            .quick-link:hover {
+                background: rgba(16,185,129,.15);
+                border-color: rgba(16,185,129,.3);
+                transform: translateY(-1px);
+            }
+
+        /* Logo */
+        .logo {
+            position: fixed;
+            top: 20px;
+            left: 24px;
+            font-family: 'Syne', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--dkt);
+            text-decoration: none;
+            z-index: 10;
+        }
+
+            .logo span {
+                color: var(--g);
+            }
+
+        /* Code erreur */
+        .error-code {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: rgba(16,185,129,.4);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Particules flottantes */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--g);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(-100px) translateX(var(--drift));
+                opacity: 0;
+            }
+        }
+
+        @media(max-width: 480px) {
+            .four-o-four {
+                letter-spacing: -4px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="particles" id="particles"></div>
+
+    <a href="index.html" class="logo">🛒 Ranita<span>Market</span></a>
+
+    <div class="content">
+        <div class="error-code">Erreur · Page introuvable</div>
+        <div class="four-o-four">404</div>
+
+        <div class="deco-line">
+            <div class="deco-dot"></div>
+        </div>
+
+        <h1 class="title">Cette page a disparu dans la nature</h1>
+        <p class="subtitle">
+            La page que vous cherchez n'existe pas ou a été déplacée.<br>
+            Retournez à l'accueil pour continuer vos achats.
+        </p>
+
+        <div class="btn-group">
+            <a href="index.html" class="btn-primary">
+                🏠 Retour à l'accueil
+            </a>
+            <a href="products.html" class="btn-secondary">
+                🛍️ Voir les produits
+            </a>
+        </div>
+
+        <div class="quick-links">
+            <a href="cart.html" class="quick-link">🛒 Mon panier</a>
+            <a href="login.html" class="quick-link">👤 Connexion</a>
+            <a href="flash.html" class="quick-link">⚡ Ventes flash</a>
+            <a href="vendeur.html" class="quick-link">🏪 Vendre</a>
+        </div>
+    </div>
+
+    <script>
+        // Génère des particules flottantes
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.cssText = `
+                left: ${Math.random() * 100}%;
+                --drift: ${(Math.random() - 0.5) * 100}px;
+                animation-duration: ${6 + Math.random() * 10}s;
+                animation-delay: ${Math.random() * 8}s;
+                width: ${1 + Math.random() * 2}px;
+                height: ${1 + Math.random() * 2}px;
+            `;
+            container.appendChild(p);
+        }
+    </script>
+</body>
+</html>
