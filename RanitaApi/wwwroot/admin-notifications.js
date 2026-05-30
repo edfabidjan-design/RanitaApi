@@ -33,7 +33,7 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
             try {
                 const r1 = await fetch(API_BASE_NOTIF + "/admin/sellers?status=Pending");
                 const v = await r1.json();
-                const r2 = await fetch(API_BASE_NOTIF + "/admin/sellers/products?status=Pending");
+                const r2 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
                 const p = await r2.json();
                 localStorage.setItem('badge-vendors-seen', v.length + p.length);
             } catch (e) { }
@@ -92,7 +92,7 @@ async function loadNavBadges() {
         // ── Clients ──
         let countClients = 0;
         try {
-            const res = await fetch(API_BASE_NOTIF + "/clients");
+            const res = await fetch(API_BASE_NOTIF + "/clients", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
             const clients = await res.json();
             const today = new Date().toDateString();
             const total = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
