@@ -9,12 +9,13 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
 
         if (currentPage.indexOf('admin-orders') !== -1) {
             try {
-                const res = await fetch(API_BASE_NOTIF + "/orders");
+                const res = await fetch(API_BASE_NOTIF + "/orders", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
                 const orders = await res.json();
                 const total = orders.filter(o =>
                     o.status === "En attente" ||
                     o.status === "Confirmée par vendeur" ||
-                    o.status === "Indisponible vendeur"
+                    o.status === "Indisponible vendeur" ||
+                    o.status === "Remboursement demandé"
                 ).length;
                 localStorage.setItem('badge-orders-seen', total);
             } catch (e) { }
@@ -56,12 +57,13 @@ async function loadNavBadges() {
         // ── Commandes ──
         let countOrders = 0;
         try {
-            const res = await fetch(API_BASE_NOTIF + "/orders");
+            const res = await fetch(API_BASE_NOTIF + "/orders", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
             const orders = await res.json();
             const total = orders.filter(o =>
                 o.status === "En attente" ||
                 o.status === "Confirmée par vendeur" ||
-                o.status === "Indisponible vendeur"
+                o.status === "Indisponible vendeur" ||
+                o.status === "Remboursement demandé"
             ).length;
             const lastSeen = parseInt(localStorage.getItem('badge-orders-seen') || '0');
             countOrders = total > lastSeen ? total - lastSeen : 0;
