@@ -80,7 +80,7 @@ async function loadNavBadges() {
         // ── Vendeurs ──
         let displayVendors = 0;
         try {
-            const r1 = await fetch(API_BASE_NOTIF + "/admin/sellers?status=Pending");
+            const r1 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
             const vendors = await r1.json();
             const r2 = await fetch(API_BASE_NOTIF + "/sellers?status=Pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
             const products = await r2.json();
