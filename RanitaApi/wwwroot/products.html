@@ -744,24 +744,24 @@
                 }
                 const oldPriceHtml = p.oldPrice && p.oldPrice > p.price ? `<span class="price-old">${Number(p.oldPrice).toLocaleString('fr-FR')} F</span>` : '';
                 return `<div class="product-card" onclick="openProductDetails(${p.id})">
-                            <div class="product-img-list">
-                                ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
-                                ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-                                <button class="wsh-btn" id="wsh-${p.id}" onclick="event.stopPropagation();wshToggle(${p.id})" style="position:absolute;top:8px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#9ca3af;z-index:2;transition:all .2s;">♡</button>
-                            </div>
-                            <div class="product-info">
-                                <span class="product-category">${p.category?.name || ''}</span>
-                                <h3 class="product-name">${p.name}</h3>
-                                ${starsHtml}
-                                <div class="product-prices">
-                                    <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
-                                    ${oldPriceHtml}
-                                    ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                                <div class="product-img-list">
+                                    ${imgUrl ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:48px">🛍️</span>`}
+                                    ${discount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+                                    <button class="wsh-btn" id="wsh-${p.id}" onclick="event.stopPropagation();wshToggle(${p.id})" style="position:absolute;top:8px;right:8px;background:white;border:1px solid #e5e7eb;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#9ca3af;z-index:2;transition:all .2s;">♡</button>
                                 </div>
-                                ${stockHtml}
-                                ${btnHtml}
-                            </div>
-                        </div>`;
+                                <div class="product-info">
+                                    <span class="product-category">${p.category?.name || ''}</span>
+                                    <h3 class="product-name">${p.name}</h3>
+                                    ${starsHtml}
+                                    <div class="product-prices">
+                                        <span class="price-current">${Number(p.price).toLocaleString('fr-FR')} FCFA</span>
+                                        ${oldPriceHtml}
+                                        ${discount ? `<span class="price-badge">-${discount}%</span>` : ''}
+                                    </div>
+                                    ${stockHtml}
+                                    ${btnHtml}
+                                </div>
+                            </div>`;
             }).join('');
         }
 
