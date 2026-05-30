@@ -494,7 +494,7 @@
         function renderMapFromOrders() { const cityData = {}; allOrders.filter(validStatuses).forEach(o => { const addr = (o.customerAddress || '').toLowerCase(); for (const [key, info] of Object.entries(CI_CITIES)) { if (addr.includes(key)) { if (!cityData[key]) cityData[key] = { count: 0, total: 0, label: info.label }; cityData[key].count++; cityData[key].total += o.total; break; } } }); updateMapMarkers(cityData); }
         setInterval(async () => { await loadOrders(); await loadAlerts(); }, 60000);
     </script>
-    const res = await fetch(`${API}/seller-products/pending`, { headers: { 'Authorization': `Bearer ${token}` } });
+   
     <!-- ── BOUTON RETOUR EN HAUT ── -->
     <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style=" display: none; position: fixed; bottom: 90px; right: 16px; width: 34px; height: 34px; background: rgba(16,185,129,.45); backdrop-filter: blur(6px); color: white; border: 1px solid rgba(16,185,129,.5); border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 900; box-shadow: 0 2px 8px rgba(0,0,0,.2); align-items: center; justify-content: center; transition: opacity .3s,transform .3s; ">
         ↑
