@@ -1355,11 +1355,12 @@
             } catch (e) { console.error('loadMyReviews:', e); }
         }
 
-        function maskName(n) { if (!n) return 'Client'; const p = n.trim().split(' ').filter(x => x); return p.map(w => w.charAt(0) + '***').join(' '); } }
+        function maskName(n) { if (!n) return 'Client'; const p = n.trim().split(' ').filter(x => x); return p.map(w => w.charAt(0) + '***').join(' '); }
 
         function switchTab(tab) {
             ['products', 'orders', 'failed', 'payouts', 'reviews', 'flash'].forEach(t => {
                 document.getElementById('section-' + t).style.display = 'none';
+
                 const btn = document.getElementById('tab-' + t);
                 btn.style.color = '#6b7280'; btn.style.borderBottom = '3px solid transparent';
             });
