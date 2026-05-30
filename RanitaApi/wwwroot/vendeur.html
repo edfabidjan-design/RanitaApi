@@ -1355,7 +1355,7 @@
             } catch (e) { console.error('loadMyReviews:', e); }
         }
 
-        function maskName(n) { if (!n) return 'Client'; const p = n.trim().split(' '); return p.length === 1 ? p[0].charAt(0) + '***' : p[0] + ' ' + p[1].charAt(0) + '***'; }
+        function maskName(n) { if (!n) return 'Client'; const p = n.trim().split(' ').filter(x => x); return p.map(w => w.charAt(0) + '***').join(' '); } }
 
         function switchTab(tab) {
             ['products', 'orders', 'failed', 'payouts', 'reviews', 'flash'].forEach(t => {
