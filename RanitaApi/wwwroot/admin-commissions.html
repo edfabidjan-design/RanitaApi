@@ -532,7 +532,8 @@
 
             async function loadPayouts() {
                 try {
-                    const res = await fetch(`${API}/sellers/payouts/all`); if (!res.ok) return; allPayouts = await res.json();
+                    const { token } = getAdminInfo();
+                    const res = await fetch(`${API}/sellers/payouts/all`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return; allPayouts = await res.json();
                     setPeriod('today', document.querySelector('.period-bar .period-btn.active'));
                     setChartView(7, document.getElementById('chart-7j'));
                 } catch (e) { console.error(e); }
