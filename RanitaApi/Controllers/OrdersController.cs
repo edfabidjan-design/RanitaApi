@@ -681,6 +681,13 @@ namespace RanitaApi.Controllers
                 }
             }
             order.Status = "Remboursé";
+
+            // Annuler les payouts vendeur associés
+            var payouts = await _context.SellerPayouts
+                .Where(p => p.OrderId == order.Id && p.Status == "Pending")
+                .ToListAsync();
+            _context.SellerPayouts.RemoveRange(payouts);
+
             await _context.SaveChangesAsync();
             return Ok("Remboursement validé.");
         }
