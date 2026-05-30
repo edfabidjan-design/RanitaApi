@@ -82,7 +82,7 @@ async function loadNavBadges() {
         try {
             const r1 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
             const vendors = await r1.json();
-            const r2 = await fetch(API_BASE_NOTIF + "/sellers?status=Pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
+            const r2 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
             const products = await r2.json();
             const total = vendors.length + products.length;
             const lastSeen = parseInt(localStorage.getItem('badge-vendors-seen') || '0');
