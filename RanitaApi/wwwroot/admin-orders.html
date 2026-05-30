@@ -296,7 +296,7 @@
 
         async function approveRefund(id) {
             if (!confirm("Valider le remboursement ?")) return;
-            const res = await fetch(`${API_BASE}/orders/${id}/refund-approve`, { method: "POST" });
+            const res = await fetch(`${API_BASE}/orders/${id}/refund-approve`, { method: "POST", headers: { 'Authorization': `Bearer ${token}` } });
             if (!res.ok) { alert(await res.text()); return; }
             document.getElementById("modalOverlay").classList.remove("open");
             loadOrders();
@@ -304,7 +304,7 @@
 
         async function rejectRefund(id) {
             if (!confirm("Rejeter la demande ?")) return;
-            const res = await fetch(`${API_BASE}/orders/${id}/refund-reject`, { method: "POST" });
+            const res = await fetch(`${API_BASE}/orders/${id}/refund-reject`, { method: "POST", headers: { 'Authorization': `Bearer ${token}` } });
             if (!res.ok) { alert(await res.text()); return; }
             document.getElementById("modalOverlay").classList.remove("open");
             loadOrders();
