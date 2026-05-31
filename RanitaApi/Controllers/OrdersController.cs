@@ -688,6 +688,26 @@ namespace RanitaApi.Controllers
                 .ToListAsync();
             _context.SellerPayouts.RemoveRange(payouts);
 
+
+            // Si payout déjà Paid → créer une dette
+            var paidPayouts = await _context.SellerPayouts
+                .Where(p => p.OrderId == order.Id && p.Status == "Paid")
+                .ToListAsync();
+
+            foreach (var paid in paidPayouts)
+            {
+                _context.SellerPayouts.Add(new SellerPayout
+                {
+                    SellerId = paid.SellerId,
+                    OrderId = order.Id,
+                    GrossAmount = -paid.GrossAmount,
+                    CommissionAmount = -paid.CommissionAmount,
+                    NetAmount = -paid.NetAmount,
+                    Status = "Pending",
+                    Notes = $"⚠️ Remboursement commande #{order.Id} — à déduire du prochain paiement",
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
             await _context.SaveChangesAsync();
             return Ok("Remboursement validé.");
         }
