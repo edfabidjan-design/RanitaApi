@@ -410,13 +410,6 @@ namespace RanitaApi.Controllers
 
 
 
-            payout.Status = "Paid";
-            payout.TransactionReference = dto.TransactionReference;
-            payout.Notes = dto.Notes;
-            payout.PaidAt = DateTime.UtcNow;
-            await _db.SaveChangesAsync();
-
-            // Email vendeur uniquement pour les payouts positifs
             if (payout.NetAmount > 0)
             {
                 var seller = await _db.Sellers
@@ -425,15 +418,14 @@ namespace RanitaApi.Controllers
 
                 if (seller?.Client?.Email != null)
                 {
-                    // Calculer vrai montant après déduction des dettes du même groupe
-                    var debtsDeducted = await _db.SellerPayouts
+                    // Total net réel = somme algébrique de TOUS les payouts de ce groupe
+                    var allGroupPayouts = await _db.SellerPayouts
                         .Where(p => p.SellerId == payout.SellerId
                                  && p.TransactionReference == dto.TransactionReference
-                                 && p.NetAmount < 0
                                  && p.Status == "Paid")
-                        .SumAsync(p => Math.Abs(p.NetAmount));
+                        .ToListAsync();
 
-                    var realAmount = payout.NetAmount - debtsDeducted;
+                    var realAmount = allGroupPayouts.Sum(p => p.NetAmount);
 
                     try
                     {
@@ -448,6 +440,8 @@ namespace RanitaApi.Controllers
                     catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
                 }
             }
+
+
             // Notifier le vendeur
             try
             {
