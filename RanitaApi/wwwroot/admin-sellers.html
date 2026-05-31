@@ -943,14 +943,35 @@
             const ref = document.getElementById('ref-' + sellerId).value.trim();
             if (!ref) { showToast('Entrez une référence de transaction', 'error'); return; }
             if (!confirm('Confirmer le paiement de tous les payouts de ' + shopName + ' ?')) return;
+
             const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending');
-            let success = 0;
-            for (const p of pending) {
+
+            // 1. Solder les dettes EN PREMIER
+            const debts = pending.filter(p => p.netAmount < 0);
+            for (const p of debts) {
                 try {
-                    const res = await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transactionReference: ref, notes: 'Paiement groupé - ' + shopName }) });
+                    await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ transactionReference: ref, notes: 'Paiement groupé - ' + shopName })
+                    });
+                } catch (e) { }
+            }
+
+            // 2. Ensuite payer les payouts positifs
+            const positives = pending.filter(p => p.netAmount > 0);
+            let success = 0;
+            for (const p of positives) {
+                try {
+                    const res = await fetch(`${API}/admin/sellers/payouts/${p.id}/paid`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ transactionReference: ref, notes: 'Paiement groupé - ' + shopName })
+                    });
                     if (res.ok) success++;
                 } catch (e) { }
             }
+
             if (success > 0) { showToast(success + ' paiement(s) marqués comme payés ✓', 'success'); loadPayouts(); }
             else showToast('Erreur lors du paiement', 'error');
         }
