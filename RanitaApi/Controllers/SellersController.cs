@@ -340,24 +340,47 @@ namespace RanitaApi.Controllers
             payout.Status = "Paid";
             payout.PaidAt = DateTime.UtcNow;
             payout.TransactionReference = dto.TransactionReference;
+            payout.Notes = dto.Notes ?? payout.Notes;
             await _db.SaveChangesAsync();
 
             if (payout.NetAmount > 0)
             {
+                // Calculer le vrai montant reçu (net - dettes soldées dans ce même paiement groupé)
+                var debtsDeducted = await _db.SellerPayouts
+                    .Where(p => p.SellerId == payout.SellerId
+                             && p.TransactionReference == dto.TransactionReference
+                             && p.NetAmount < 0
+                             && p.Status == "Paid")
+                    .SumAsync(p => Math.Abs(p.NetAmount));
+
+                var realAmount = payout.NetAmount - debtsDeducted;
+
                 var sellerEmail = payout.Seller?.Client?.Email;
-            if (!string.IsNullOrEmpty(sellerEmail))
-            {
-                try
+                if (!string.IsNullOrEmpty(sellerEmail))
                 {
-                    await _emailService.SendPayoutToSellerAsync(
-                        sellerEmail, payout.Seller!.ShopName, payout.OrderId ?? 0,
-                        payout.NetAmount, payout.Seller.PaymentMethod, payout.Seller.PaymentDetails);
+                    try
+                    {
+                        await _emailService.SendPayoutToSellerAsync(
+                            sellerEmail,
+                            payout.Seller!.ShopName,
+                            payout.OrderId ?? 0,
+                            realAmount > 0 ? realAmount : payout.NetAmount,
+                            payout.Seller.PaymentMethod,
+                            payout.Seller.PaymentDetails);
+                    }
+                    catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
                 }
-                catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
+
+                await SendSellerPush(payout.SellerId, "💸 Paiement reçu !",
+                    $"{(realAmount > 0 ? realAmount : payout.NetAmount):N0} FCFA vient d'être envoyé sur votre compte.");
+            }
+            else
+            {
+                // Dette soldée — notif discrète sans email
+                await SendSellerPush(payout.SellerId, "✅ Dette soldée",
+                    $"Déduction de {Math.Abs(payout.NetAmount):N0} FCFA appliquée sur votre paiement.");
             }
 
-            await SendSellerPush(payout.SellerId, "💸 Paiement reçu !", $"{payout.NetAmount:N0} FCFA vient d'être envoyé sur votre compte.");
-            }
             return Ok(new { message = "Paiement enregistré ✓", payoutId, netAmount = payout.NetAmount });
         }
 
