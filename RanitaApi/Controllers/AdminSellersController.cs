@@ -425,14 +425,21 @@ namespace RanitaApi.Controllers
 
                     if (!remainingPositivePending)
                     {
+                        // Récupérer TOUS les payouts du groupe (Paid ET ceux qui viennent d'être mis à jour)
                         var allGroupPayouts = await _db.SellerPayouts
                             .Where(p => p.SellerId == payout.SellerId
-                                     && p.TransactionReference == dto.TransactionReference
-                                     && p.Status == "Paid")
+                                     && p.TransactionReference == dto.TransactionReference)
                             .ToListAsync();
 
-                        var totalDebts = allGroupPayouts.Where(p => p.NetAmount < 0).Sum(p => Math.Abs(p.NetAmount));
-                        var realAmount = allGroupPayouts.Sum(p => p.NetAmount);
+                        var totalDebts = allGroupPayouts
+                            .Where(p => p.NetAmount < 0)
+                            .Sum(p => Math.Abs(p.NetAmount));
+
+                        var grossPositive = allGroupPayouts
+                            .Where(p => p.NetAmount > 0)
+                            .Sum(p => p.NetAmount);
+
+                        var realAmount = grossPositive - totalDebts;
 
                         try
                         {
