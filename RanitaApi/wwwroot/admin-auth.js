@@ -155,3 +155,8 @@ function adminLogout() {
     localStorage.removeItem('adminEmail');
     window.location.href = 'admin-login.html';
 }
+
+function handleUnauthorized() {
+    adminLogout();
+    alert('Session expirée. Veuillez vous reconnecter.');
+}

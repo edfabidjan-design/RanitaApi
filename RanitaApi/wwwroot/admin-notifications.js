@@ -48,6 +48,12 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
 })();
 
 async function loadNavBadges() {
+    const { token } = getAdminInfo();
+    if (!token) { window.location.href = 'admin-login.html'; return; }
+    try {
+
+
+async function loadNavBadges() {
     try {
         // ── Commandes ──
         let countOrders = 0;

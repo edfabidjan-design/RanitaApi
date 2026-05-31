@@ -473,8 +473,16 @@
         function updateMapMarkers(cityData) { if (!leafletMap) return; leafletMap.eachLayer(layer => { if (layer instanceof L.CircleMarker || layer instanceof L.Marker) leafletMap.removeLayer(layer); }); Object.entries(cityData).forEach(([city, data]) => { const info = CI_CITIES[city]; if (!info) return; const count = data.count, radius = Math.min(6 + count * 2, 30); const color = count >= 50 ? '#065f46' : count >= 21 ? '#10b981' : count >= 6 ? '#6ee7b7' : '#bbf7d0'; const circle = L.circleMarker([info.lat, info.lng], { radius, fillColor: color, color: 'white', weight: 2, opacity: 1, fillOpacity: 0.85 }).addTo(leafletMap); circle.bindPopup(`<div style="text-align:center;padding:4px;"><strong>${info.label}</strong><br><span style="color:#10b981;font-weight:700;">${count} commande(s)</span><br><span style="font-size:12px;color:#6b7280;">${fmt(data.total)}</span></div>`, { closeButton: false }); circle.on('mouseover', function () { this.openPopup(); }); circle.on('mouseout', function () { this.closePopup(); }); }); }
         const validStatuses = o => !['Annulée', 'Échec livraison', 'Remboursé'].includes(o.status);
         async function loadOrders() { try { const res = await fetch(`${API}/orders`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return; allOrders = await res.json(); computeKPIs(); renderSalesChart(7); renderStatusChart(); renderTopProducts(); renderRecentOrders(); renderMapFromOrders(); } catch (e) { console.error(e); } }
-        async function loadPayouts() { try { const res = await fetch(`${API}/sellers/payouts/all`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return; const payouts = await res.json(); document.getElementById('kpi-commission').textContent = fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0)); renderTopSellers(payouts); } catch (e) { } }
-        async function loadClients() { try { const res = await fetch(`${API}/clients`, { headers: { 'Authorization': `Bearer ${token}` } }); if (!res.ok) return; const clients = await res.json(); document.getElementById('kpi-clients').textContent = clients.length; const now = new Date(); const newM = clients.filter(c => { const d = new Date(c.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length; document.getElementById('kpi-clients-new').textContent = `+${newM} ce mois`; renderTopClients(clients); } catch (e) { } }
+        async function loadPayouts() {
+            try {
+                const res = await fetch(`${API}/sellers/payouts/all`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.status === 401) { handleUnauthorized(); return; }
+                if (!res.ok) return; if (!res.ok) return; const payouts = await res.json(); document.getElementById('kpi-commission').textContent = fmt(payouts.reduce((s, p) => s + (p.commissionAmount || 0), 0)); renderTopSellers(payouts); } catch (e) { } }
+        async function loadClients() {
+            try {
+                const res = await fetch(`${API}/clients`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.status === 401) { handleUnauthorized(); return; }
+                if (!res.ok) return; if (!res.ok) return; const clients = await res.json(); document.getElementById('kpi-clients').textContent = clients.length; const now = new Date(); const newM = clients.filter(c => { const d = new Date(c.createdAt); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length; document.getElementById('kpi-clients-new').textContent = `+${newM} ce mois`; renderTopClients(clients); } catch (e) { } }
 
         async function loadAlerts() {
             const alertsBar = document.getElementById('alertsBar');
