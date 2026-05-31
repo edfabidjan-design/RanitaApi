@@ -126,6 +126,7 @@ namespace RanitaApi.DTOs
         public decimal NetAmount { get; set; }
         public string Status { get; set; } = string.Empty;
         public string? TransactionReference { get; set; }
+        public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? PaidAt { get; set; }
     }

@@ -317,6 +317,7 @@ namespace RanitaApi.Controllers
                 NetAmount = p.NetAmount,
                 Status = p.Status,
                 TransactionReference = p.TransactionReference,
+                Notes = p.Notes,
                 CreatedAt = p.CreatedAt,
                 PaidAt = p.PaidAt
             }).ToList();
