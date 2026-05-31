@@ -1329,11 +1329,10 @@
         async function loadMyPayouts() {
             try {
                 const res = await sellerFetch(API + '/sellers/' + sellerId + '/payouts');
-                const payouts = await res.json();
+                const allPayouts = await res.json();
 
-                // Masquer les dettes Pending — afficher seulement après déduction
-                const payouts = (await res.json()).filter(p => !(p.netAmount < 0 && p.status === 'Pending'));
-
+                // Masquer les dettes Pending — visible seulement après déduction effective
+                const payouts = allPayouts.filter(p => !(p.netAmount < 0 && p.status === 'Pending'));
 
                 const el = document.getElementById('my-payouts-list');
                 if (!payouts.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun paiement pour le moment.</div>'; return; }
@@ -1355,7 +1354,6 @@
                     const netColor = isDebt ? '#ef4444' : '#065f46';
                     const netBg = isDebt ? '#fee2e2' : '#d1fae5';
 
-                    // Note correcte pour les dettes
                     let noteHtml = '';
                     if (isDebt) {
                         const note = p.notes && !p.notes.startsWith('Paiement groupé')
@@ -1364,7 +1362,6 @@
                         noteHtml = '<div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991b1b;font-weight:600;margin-bottom:12px;">' + note + '</div>';
                     }
 
-                    // Mention déduction pour les payouts positifs payés dans un groupe avec dette
                     let deductionHtml = '';
                     if (p.status === 'Paid' && !isDebt && p.transactionReference) {
                         const group = groups[p.transactionReference] || [];
