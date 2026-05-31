@@ -67,7 +67,7 @@ async function loadNavBadges() {
             // Paiements en attente
             const r3 = await fetch(API_BASE_NOTIF + "/admin/sellers/payouts", { headers });
             const payouts = await r3.json();
-            const pendingPayouts = Array.isArray(payouts) ? payouts.filter(p => p.status === 'Pending' && p.netAmount > 0).length : 0; const pendingPayouts = Array.isArray(payouts) ? payouts.filter(p => p.status === 'Pending').length : 0;
+            const pendingPayouts = Array.isArray(payouts) ? payouts.filter(p => p.status === 'Pending' && p.netAmount > 0).length : 0;
 
             displayVendors = pendingSellers + pendingProducts + pendingPayouts;
         } catch (e) { }
