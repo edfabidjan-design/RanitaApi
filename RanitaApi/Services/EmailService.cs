@@ -134,8 +134,18 @@ namespace RanitaApi.Services
         }
 
         // ✅ Paiement effectué → vendeur
-        public async Task SendPayoutToSellerAsync(string sellerEmail, string shopName, int orderId, decimal netAmount, string paymentMethod, string paymentDetails)
+        public async Task SendPayoutToSellerAsync(string sellerEmail, string shopName, int orderId, decimal netAmount, string paymentMethod, string paymentDetails, decimal deductedAmount = 0)
         {
+            var deductionHtml = deductedAmount > 0 ? $@"
+    <tr style='border-top:2px solid #fee2e2;'>
+        <td style='padding:8px 0;color:#991b1b;'>⚠️ Remboursement déduit</td>
+        <td><strong style='color:#ef4444;'>-{deductedAmount.ToString("N0")} FCFA</strong></td>
+    </tr>
+    <tr>
+        <td style='padding:8px 0;color:#6b7280;'>Montant réellement reçu</td>
+        <td><strong style='color:#10b981;font-size:16px;'>{netAmount.ToString("N0")} FCFA</strong></td>
+    </tr>" : "";
+
             var payload = new
             {
                 sender = new { name = _config["Brevo:SenderName"], email = _config["Brevo:SenderEmail"] },
@@ -156,7 +166,7 @@ namespace RanitaApi.Services
         <tr><td style='padding:6px 0;color:#6b7280;'>Commande</td><td><strong>#{orderId}</strong></td></tr>
         <tr><td style='padding:6px 0;color:#6b7280;'>Moyen de paiement</td><td><strong>{paymentMethod?.Replace("_", " ")}</strong></td></tr>
         <tr><td style='padding:6px 0;color:#6b7280;'>Numéro</td><td><strong>{paymentDetails}</strong></td></tr>
-        <tr><td style='padding:6px 0;color:#6b7280;'>Montant</td><td><strong style='color:#10b981;font-size:16px;'>{netAmount.ToString("N0")} FCFA</strong></td></tr>
+        {deductionHtml}
     </table>
     <a href='https://www.ranita-shop.com/vendeur.html'
        style='display:inline-block;margin-top:20px;background:#059669;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;'>

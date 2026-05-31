@@ -425,13 +425,13 @@ namespace RanitaApi.Controllers
 
                     if (!remainingPositivePending)
                     {
-                        // Calculer le vrai montant total du groupe
                         var allGroupPayouts = await _db.SellerPayouts
                             .Where(p => p.SellerId == payout.SellerId
                                      && p.TransactionReference == dto.TransactionReference
                                      && p.Status == "Paid")
                             .ToListAsync();
 
+                        var totalDebts = allGroupPayouts.Where(p => p.NetAmount < 0).Sum(p => Math.Abs(p.NetAmount));
                         var realAmount = allGroupPayouts.Sum(p => p.NetAmount);
 
                         try
@@ -442,7 +442,8 @@ namespace RanitaApi.Controllers
                                 payout.OrderId ?? 0,
                                 realAmount > 0 ? realAmount : payout.NetAmount,
                                 seller.PaymentMethod,
-                                seller.PaymentDetails);
+                                seller.PaymentDetails,
+                                totalDebts);
                         }
                         catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
                     }
