@@ -408,8 +408,6 @@ namespace RanitaApi.Controllers
 
             await _db.SaveChangesAsync();
 
-
-
             if (payout.NetAmount > 0)
             {
                 var seller = await _db.Sellers
@@ -418,67 +416,67 @@ namespace RanitaApi.Controllers
 
                 if (seller?.Client?.Email != null)
                 {
-                    // Total net réel = somme algébrique de TOUS les payouts de ce groupe
-                    var allGroupPayouts = await _db.SellerPayouts
-                        .Where(p => p.SellerId == payout.SellerId
-                                 && p.TransactionReference == dto.TransactionReference
-                                 && p.Status == "Paid")
-                        .ToListAsync();
+                    // Envoyer email seulement si c'est le DERNIER payout positif Pending
+                    var remainingPositivePending = await _db.SellerPayouts
+                        .AnyAsync(p => p.SellerId == payout.SellerId
+                                     && p.Status == "Pending"
+                                     && p.NetAmount > 0
+                                     && p.Id != id);
 
-                    var realAmount = allGroupPayouts.Sum(p => p.NetAmount);
-
-                    try
+                    if (!remainingPositivePending)
                     {
-                        await _emailService.SendPayoutToSellerAsync(
-                            seller.Client.Email,
-                            seller.ShopName,
-                            payout.OrderId ?? 0,
-                            realAmount > 0 ? realAmount : payout.NetAmount,
-                            seller.PaymentMethod,
-                            seller.PaymentDetails);
-                    }
-                    catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
-                }
-            }
+                        // Calculer le vrai montant total du groupe
+                        var allGroupPayouts = await _db.SellerPayouts
+                            .Where(p => p.SellerId == payout.SellerId
+                                     && p.TransactionReference == dto.TransactionReference
+                                     && p.Status == "Paid")
+                            .ToListAsync();
 
+                        var realAmount = allGroupPayouts.Sum(p => p.NetAmount);
 
-            // Notifier le vendeur
-            try
-            {
-                if (payout.Seller != null)
-                {
-                    var vendorSubs = await _db.ClientPushSubscriptions
-                        .Where(s => s.ClientId == payout.Seller.ClientId)
-                        .ToListAsync();
-
-                    var vapidPublicKey = "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY";
-                    var vapidPrivateKey = "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs";
-                    var vapidSubject = "mailto:contact@ranita-shop.com";
-
-                    var pushClient = new WebPush.WebPushClient();
-                    var vapidDetails = new WebPush.VapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
-                    var payload = System.Text.Json.JsonSerializer.Serialize(new
-                    {
-                        title = "💸 Paiement reçu !",
-                        body = $"Votre paiement de {payout.NetAmount.ToString("N0")} FCFA a été effectué. Réf: {dto.TransactionReference}"
-                    });
-
-                    foreach (var s in vendorSubs)
-                    {
                         try
                         {
-                            var sub = new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth);
-                            await pushClient.SendNotificationAsync(sub, payload, vapidDetails);
+                            await _emailService.SendPayoutToSellerAsync(
+                                seller.Client.Email,
+                                seller.ShopName,
+                                payout.OrderId ?? 0,
+                                realAmount > 0 ? realAmount : payout.NetAmount,
+                                seller.PaymentMethod,
+                                seller.PaymentDetails);
                         }
-                        catch { }
+                        catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
                     }
                 }
+
+                // Push notif
+                try
+                {
+                    if (payout.Seller != null)
+                    {
+                        var vendorSubs = await _db.ClientPushSubscriptions
+                            .Where(s => s.ClientId == payout.Seller.ClientId)
+                            .ToListAsync();
+
+                        var pushClient = new WebPush.WebPushClient();
+                        var vapidDetails = new WebPush.VapidDetails(
+                            "mailto:contact@ranita-shop.com",
+                            "BK0OMo2QWE4SuKh0RTa6yvHfpkBXcPzL5sZkaJe3nNLesXQjRDhMzyimA8UNBCGvB9AOYpv_Q0RQrmgmA9YdNdY",
+                            "lBGZ5H6iym-tYNbvfp-XOhNIFhDbdLO1Qjq6WqtBVLs");
+                        var payload = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            title = "💸 Paiement reçu !",
+                            body = $"Votre paiement de {payout.NetAmount:N0} FCFA a été effectué. Réf: {dto.TransactionReference}"
+                        });
+
+                        foreach (var s in vendorSubs)
+                            try { await pushClient.SendNotificationAsync(new WebPush.PushSubscription(s.Endpoint, s.P256dh, s.Auth), payload, vapidDetails); } catch { }
+                    }
+                }
+                catch { }
             }
-            catch { }
 
             return Ok(new { message = "Payout marqué comme payé" });
         }
-
 
         // ══════════════════════════════════════════════════════════════════
         // DÉCLENCHEMENT PAYOUT (à appeler quand commande = "Livré")
