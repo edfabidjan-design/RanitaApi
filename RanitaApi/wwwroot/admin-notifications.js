@@ -51,18 +51,21 @@ async function loadNavBadges() {
         // ── Vendeurs ──
         let displayVendors = 0;
         try {
+            const token = getAdminInfo()?.token || '';
+            const headers = { 'Authorization': 'Bearer ' + token };
+
             // Vendeurs en attente
-            const r1 = await fetch(API_BASE_NOTIF + "/sellers", { headers });
+            const r1 = await fetch(API_BASE_NOTIF + "/admin/sellers", { headers });
             const sellers = await r1.json();
             const pendingSellers = Array.isArray(sellers) ? sellers.filter(s => s.status === 'Pending').length : 0;
 
             // Produits à valider
-            const r2 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers });
+            const r2 = await fetch(API_BASE_NOTIF + "/admin/sellers/products", { headers });
             const products = await r2.json();
-            const pendingProducts = Array.isArray(products) ? products.length : 0;
+            const pendingProducts = Array.isArray(products) ? products.filter(p => p.approvalStatus === 'Pending').length : 0;
 
             // Paiements en attente
-            const r3 = await fetch(API_BASE_NOTIF + "/sellers/payouts/all", { headers });
+            const r3 = await fetch(API_BASE_NOTIF + "/admin/sellers/payouts", { headers });
             const payouts = await r3.json();
             const pendingPayouts = Array.isArray(payouts) ? payouts.filter(p => p.status === 'Pending').length : 0;
 
