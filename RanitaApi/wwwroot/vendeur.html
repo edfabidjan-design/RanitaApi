@@ -1330,6 +1330,11 @@
             try {
                 const res = await sellerFetch(API + '/sellers/' + sellerId + '/payouts');
                 const payouts = await res.json();
+
+                // Masquer les dettes Pending — afficher seulement après déduction
+                const payouts = (await res.json()).filter(p => !(p.netAmount < 0 && p.status === 'Pending'));
+
+
                 const el = document.getElementById('my-payouts-list');
                 if (!payouts.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun paiement pour le moment.</div>'; return; }
 
