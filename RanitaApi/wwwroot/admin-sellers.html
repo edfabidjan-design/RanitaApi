@@ -873,7 +873,13 @@
             try {
                 const res = await fetch(`${API}/admin/sellers/payouts`);
                 allPayouts = await res.json();
-                const pending = allPayouts.filter(p => p.status === 'Pending' && p.netAmount > 0).length;
+                const byVendorPending = {};
+                allPayouts.filter(p => p.status === 'Pending').forEach(p => {
+                    if (!byVendorPending[p.sellerId]) byVendorPending[p.sellerId] = 0;
+                    byVendorPending[p.sellerId] += p.netAmount;
+                });
+                const pending = Object.values(byVendorPending).filter(total => total > 0).length;
+
                 const b = document.getElementById('badge-payouts');
                 b.textContent = pending; b.classList.toggle('hidden', pending === 0);
                 renderPayouts(allPayouts.filter(p => p.status === 'Pending'));
@@ -920,7 +926,7 @@
                     '<input type="text" id="ref-' + vendor.sellerId + '" value="' + generateTransactionRef() + '" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">' +
                     '<button onclick="payAllVendor(' + vendor.sellerId + ',\'' + vendor.shopName + '\')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ' + formatPrice(vendor.total) + '</button>' +
                     '</div>' :
-                    (vendor.total < 0 ? '' : '<div style="font-size:13px;color:#6b7280;">✅ Payé le ' + new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR') + (vendor.payouts[0].transactionReference ? ' · Réf: ' + vendor.payouts[0].transactionReference : '') + '</div>')
+                    (vendor.total < 0 ? '' : '<div style="font-size:13px;color:#6b7280;">✅ Payé le ' + (vendor.payouts[0].paidAt ? new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR') : '—') + (vendor.payouts[0].transactionReference ? ' · Réf: ' + vendor.payouts[0].transactionReference : '') + '</div>')
                 ) +
                 '</div>'
             ).join('');
@@ -937,7 +943,7 @@
             const ref = document.getElementById('ref-' + sellerId).value.trim();
             if (!ref) { showToast('Entrez une référence de transaction', 'error'); return; }
             if (!confirm('Confirmer le paiement de tous les payouts de ' + shopName + ' ?')) return;
-            const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending' && p.netAmount > 0);
+            const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending');
             let success = 0;
             for (const p of pending) {
                 try {

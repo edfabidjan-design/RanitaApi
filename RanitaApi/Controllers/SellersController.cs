@@ -342,7 +342,9 @@ namespace RanitaApi.Controllers
             payout.TransactionReference = dto.TransactionReference;
             await _db.SaveChangesAsync();
 
-            var sellerEmail = payout.Seller?.Client?.Email;
+            if (payout.NetAmount > 0)
+            {
+                var sellerEmail = payout.Seller?.Client?.Email;
             if (!string.IsNullOrEmpty(sellerEmail))
             {
                 try
@@ -355,7 +357,7 @@ namespace RanitaApi.Controllers
             }
 
             await SendSellerPush(payout.SellerId, "💸 Paiement reçu !", $"{payout.NetAmount:N0} FCFA vient d'être envoyé sur votre compte.");
-
+            }
             return Ok(new { message = "Paiement enregistré ✓", payoutId, netAmount = payout.NetAmount });
         }
 
