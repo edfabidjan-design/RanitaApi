@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RanitaApi.Data;
 using RanitaApi.DTOs;
 using RanitaApi.Models;
+using RanitaApi.Services;
 using System.Text.Json;
 
 namespace RanitaApi.Controllers
@@ -12,10 +13,12 @@ namespace RanitaApi.Controllers
     public class AdminSellersController : ControllerBase
     {
         private readonly AppDbContext _db;
+        private readonly EmailService _emailService;
 
-        public AdminSellersController(AppDbContext db)
+        public AdminSellersController(AppDbContext db, EmailService emailService)
         {
             _db = db;
+            _emailService = emailService;
         }
 
         // ── LISTE VENDEURS ────────────────────────────────────────────────
@@ -405,6 +408,46 @@ namespace RanitaApi.Controllers
 
             await _db.SaveChangesAsync();
 
+
+
+            payout.Status = "Paid";
+            payout.TransactionReference = dto.TransactionReference;
+            payout.Notes = dto.Notes;
+            payout.PaidAt = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+
+            // Email vendeur uniquement pour les payouts positifs
+            if (payout.NetAmount > 0)
+            {
+                var seller = await _db.Sellers
+                    .Include(s => s.Client)
+                    .FirstOrDefaultAsync(s => s.Id == payout.SellerId);
+
+                if (seller?.Client?.Email != null)
+                {
+                    // Calculer vrai montant après déduction des dettes du même groupe
+                    var debtsDeducted = await _db.SellerPayouts
+                        .Where(p => p.SellerId == payout.SellerId
+                                 && p.TransactionReference == dto.TransactionReference
+                                 && p.NetAmount < 0
+                                 && p.Status == "Paid")
+                        .SumAsync(p => Math.Abs(p.NetAmount));
+
+                    var realAmount = payout.NetAmount - debtsDeducted;
+
+                    try
+                    {
+                        await _emailService.SendPayoutToSellerAsync(
+                            seller.Client.Email,
+                            seller.ShopName,
+                            payout.OrderId ?? 0,
+                            realAmount > 0 ? realAmount : payout.NetAmount,
+                            seller.PaymentMethod,
+                            seller.PaymentDetails);
+                    }
+                    catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
+                }
+            }
             // Notifier le vendeur
             try
             {
