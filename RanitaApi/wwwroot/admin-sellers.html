@@ -895,6 +895,9 @@
                 byVendor[p.sellerId].payouts.push(p);
                 byVendor[p.sellerId].total += p.netAmount;
             });
+
+            // Ne pas afficher les vendeurs avec seulement des dettes
+            const vendors = Object.values(byVendor).filter(v => v.payouts.some(p => p.netAmount > 0));
             el.innerHTML = Object.values(byVendor).map(vendor =>
                 '<div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">' +
