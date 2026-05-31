@@ -897,7 +897,7 @@
             });
 
             // Ne pas afficher les vendeurs avec seulement des dettes
-            const vendors = Object.values(byVendor).filter(v => v.payouts.some(p => p.netAmount > 0));
+            const vendors = Object.values(byVendor);
             el.innerHTML = vendors.map(vendor =>
                 '<div style="background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px;">' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">' +
@@ -915,7 +915,7 @@
                     '</div>'
                 ).join('') +
                 '</div>' +
-                (vendor.status === 'Pending' ?
+                (vendor.status === 'Pending' && vendor.total > 0 ?
                     '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">' +
                     '<input type="text" id="ref-' + vendor.sellerId + '" value="' + generateTransactionRef() + '" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">' +
                     '<button onclick="payAllVendor(' + vendor.sellerId + ',\'' + vendor.shopName + '\')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ' + formatPrice(vendor.total) + '</button>' +
