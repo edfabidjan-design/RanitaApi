@@ -704,6 +704,27 @@ namespace RanitaApi.Controllers
             }
             catch { }
         }
+
+
+
+        // TEMPORAIRE — à supprimer après usage
+        [HttpPost("fix-debts")]
+        public async Task<IActionResult> FixDebts()
+        {
+            var debts = await _db.SellerPayouts
+                .Where(p => p.Status == "Pending" && p.NetAmount < 0)
+                .ToListAsync();
+
+            foreach (var d in debts)
+            {
+                d.Status = "Paid";
+                d.PaidAt = DateTime.UtcNow;
+                d.Notes = "✅ Dette soldée automatiquement";
+            }
+
+            await _db.SaveChangesAsync();
+            return Ok(new { message = $"{debts.Count} dette(s) soldée(s)" });
+        }
     }
 
     public class MarkPayoutPaidDto
