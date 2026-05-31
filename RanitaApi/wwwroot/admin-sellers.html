@@ -873,7 +873,7 @@
             try {
                 const res = await fetch(`${API}/admin/sellers/payouts`);
                 allPayouts = await res.json();
-                const pending = allPayouts.filter(p => p.status === 'Pending').length;
+                const pending = allPayouts.filter(p => p.status === 'Pending' && p.netAmount > 0).length;
                 const b = document.getElementById('badge-payouts');
                 b.textContent = pending; b.classList.toggle('hidden', pending === 0);
                 renderPayouts(allPayouts.filter(p => p.status === 'Pending'));
