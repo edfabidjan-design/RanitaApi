@@ -934,7 +934,7 @@
             const ref = document.getElementById('ref-' + sellerId).value.trim();
             if (!ref) { showToast('Entrez une référence de transaction', 'error'); return; }
             if (!confirm('Confirmer le paiement de tous les payouts de ' + shopName + ' ?')) return;
-            const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending');
+            const pending = allPayouts.filter(p => p.sellerId === sellerId && p.status === 'Pending' && p.netAmount > 0);
             let success = 0;
             for (const p of pending) {
                 try {
