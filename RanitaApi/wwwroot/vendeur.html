@@ -1332,7 +1332,25 @@
                 const payouts = await res.json();
                 const el = document.getElementById('my-payouts-list');
                 if (!payouts.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px">Aucun paiement pour le moment.</div>'; return; }
-                el.innerHTML = payouts.map(p => '<div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><div><span style="font-weight:700;font-size:15px;">Commande #' + p.orderId + '</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">' + new Date(p.createdAt).toLocaleDateString('fr-FR') + '</span></div><span style="background:' + (p.status === 'Paid' ? '#d1fae5' : '#fef3c7') + ';color:' + (p.status === 'Paid' ? '#065f46' : '#92400e') + ';padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">' + '<div style="font-weight:700;font-size:16px;color:' + (p.netAmount < 0 ? '#ef4444' : '#065f46') + ';">' + (p.netAmount < 0 ? '−' : '') + formatPrice(Math.abs(p.netAmount)) + '</div>' + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;"><div style="text-align:center;background:#f9fafb;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Brut</div><div style="font-weight:700;">' + formatPrice(p.grossAmount) + '</div></div><div style="text-align:center;background:#fee2e2;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Commission</div><div style="font-weight:700;color:#991b1b;">-' + formatPrice(p.commissionAmount) + '</div></div><div style="text-align:center;background:#d1fae5;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Net recu</div><div style="font-weight:700;font-size:16px;color:#065f46;">' + formatPrice(p.netAmount) + '</div></div></div></div>').join('');
+                el.innerHTML = payouts.map(p => {
+                    const isDebt = p.netAmount < 0;
+                    const statusBg = isDebt ? '#fee2e2' : p.status === 'Paid' ? '#d1fae5' : '#fef3c7';
+                    const statusColor = isDebt ? '#991b1b' : p.status === 'Paid' ? '#065f46' : '#92400e';
+                    const statusLabel = isDebt ? '⚠️ Dette' : p.status === 'Paid' ? 'Payé' : 'En attente';
+                    const netColor = isDebt ? '#ef4444' : '#065f46';
+                    const netBg = isDebt ? '#fee2e2' : '#d1fae5';
+                    return '<div style="background:white;border:1px solid ' + (isDebt ? '#fca5a5' : '#e5e7eb') + ';border-radius:12px;padding:16px;margin-bottom:10px;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">' +
+                        '<div><span style="font-weight:700;font-size:15px;">Commande #' + p.orderId + '</span><span style="color:#6b7280;font-size:12px;margin-left:10px;">' + new Date(p.createdAt).toLocaleDateString('fr-FR') + '</span></div>' +
+                        '<span style="background:' + statusBg + ';color:' + statusColor + ';padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">' + statusLabel + '</span>' +
+                        '</div>' +
+                        (isDebt && p.notes ? '<div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991b1b;font-weight:600;margin-bottom:12px;">' + p.notes + '</div>' : '') +
+                        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">' +
+                        '<div style="text-align:center;background:#f9fafb;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Brut</div><div style="font-weight:700;">' + formatPrice(Math.abs(p.grossAmount)) + '</div></div>' +
+                        '<div style="text-align:center;background:#fee2e2;padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Commission</div><div style="font-weight:700;color:#991b1b;">-' + formatPrice(Math.abs(p.commissionAmount)) + '</div></div>' +
+                        '<div style="text-align:center;background:' + netBg + ';padding:10px;border-radius:8px;"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;">Net recu</div><div style="font-weight:700;font-size:16px;color:' + netColor + ';">' + (isDebt ? '−' : '') + formatPrice(Math.abs(p.netAmount)) + '</div></div>' +
+                        '</div></div>';
+                }).join('');
             } catch (e) { console.error('loadMyPayouts:', e); }
         }
 
