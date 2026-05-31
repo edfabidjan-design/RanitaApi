@@ -920,7 +920,7 @@
                     '<input type="text" id="ref-' + vendor.sellerId + '" value="' + generateTransactionRef() + '" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;">' +
                     '<button onclick="payAllVendor(' + vendor.sellerId + ',\'' + vendor.shopName + '\')" style="background:#10b981;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">✓ Payer ' + formatPrice(vendor.total) + '</button>' +
                     '</div>' :
-                    '<div style="font-size:13px;color:#6b7280;">✅ Payé le ' + new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR') + (vendor.payouts[0].transactionReference ? ' · Réf: ' + vendor.payouts[0].transactionReference : '') + '</div>'
+                    (vendor.total < 0 ? '' : '<div style="font-size:13px;color:#6b7280;">✅ Payé le ' + new Date(vendor.payouts[0].paidAt).toLocaleDateString('fr-FR') + (vendor.payouts[0].transactionReference ? ' · Réf: ' + vendor.payouts[0].transactionReference : '') + '</div>')
                 ) +
                 '</div>'
             ).join('');
