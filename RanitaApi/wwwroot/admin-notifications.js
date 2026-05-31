@@ -1,47 +1,21 @@
 const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
 
-// Enregistrer beforeunload une seule fois au chargement
 (function setupBeforeUnload() {
     const currentPage = window.location.href;
-
     window.addEventListener('beforeunload', async () => {
-        // Quand on quitte une page, marquer les items comme vus
-
-        if (currentPage.indexOf('admin-orders') !== -1) {
-            try {
-                const res = await fetch(API_BASE_NOTIF + "/orders", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
-                const orders = await res.json();
-                const total = orders.filter(o => o.status === "En attente").length;
-            
-            } catch (e) { }
-        }
-
         if (currentPage.indexOf('admin-reviews') !== -1) {
             try {
                 const res = await fetch(API_BASE_NOTIF + "/reviews");
                 const reviews = await res.json();
-                const total = reviews.filter(r => r.approuve === false).length;
-                localStorage.setItem('badge-reviews-seen', total);
+                localStorage.setItem('badge-reviews-seen', reviews.filter(r => !r.approuve).length);
             } catch (e) { }
         }
-
-        if (currentPage.indexOf('admin-sellers') !== -1) {
-            try {
-                const r1 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
-                const v = await r1.json();
-                const r2 = await fetch(API_BASE_NOTIF + "/sellers/seller-products/pending", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
-                const p = await r2.json();
-                localStorage.setItem('badge-vendors-seen', v.length + p.length);
-            } catch (e) { }
-        }
-
         if (currentPage.indexOf('admin-clients') !== -1) {
             try {
                 const res = await fetch(API_BASE_NOTIF + "/clients", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
                 const clients = await res.json();
                 const today = new Date().toDateString();
-                const total = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
-                localStorage.setItem('badge-clients-seen', total);
+                localStorage.setItem('badge-clients-seen', clients.filter(c => new Date(c.createdAt).toDateString() === today).length);
             } catch (e) { }
         }
     });
@@ -50,18 +24,18 @@ const API_BASE_NOTIF = "https://ranitaapi-production.up.railway.app/api";
 async function loadNavBadges() {
     const { token } = getAdminInfo();
     if (!token) { window.location.href = 'admin-login.html'; return; }
-    try {
+    const headers = { 'Authorization': 'Bearer ' + token };
 
-
-async function loadNavBadges() {
     try {
         // ── Commandes ──
         let countOrders = 0;
         try {
-            const res = await fetch(API_BASE_NOTIF + "/orders", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
+            const res = await fetch(API_BASE_NOTIF + "/orders", { headers });
+            if (res.status === 401) { window.location.href = 'admin-login.html'; return; }
             const orders = await res.json();
-            const total = orders.filter(o => o.status === "En attente").length;
-            countOrders = total;
+            countOrders = orders.filter(o =>
+                o.status === "En attente" || o.status === "Remboursement demandé"
+            ).length;
         } catch (e) { }
 
         // ── Avis ──
@@ -77,11 +51,8 @@ async function loadNavBadges() {
         // ── Vendeurs ──
         let displayVendors = 0;
         try {
-            const token = getAdminInfo()?.token || '';
-            const headers = { 'Authorization': 'Bearer ' + token };
-
             // Vendeurs en attente
-            const r1 = await fetch(API_BASE_NOTIF + "/sellers?status=Pending", { headers });
+            const r1 = await fetch(API_BASE_NOTIF + "/sellers", { headers });
             const sellers = await r1.json();
             const pendingSellers = Array.isArray(sellers) ? sellers.filter(s => s.status === 'Pending').length : 0;
 
@@ -101,7 +72,7 @@ async function loadNavBadges() {
         // ── Clients ──
         let countClients = 0;
         try {
-            const res = await fetch(API_BASE_NOTIF + "/clients", { headers: { 'Authorization': 'Bearer ' + (getAdminInfo()?.token || '') } });
+            const res = await fetch(API_BASE_NOTIF + "/clients", { headers });
             const clients = await res.json();
             const today = new Date().toDateString();
             const total = clients.filter(c => new Date(c.createdAt).toDateString() === today).length;
