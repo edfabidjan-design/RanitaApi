@@ -425,21 +425,15 @@ namespace RanitaApi.Controllers
 
                     if (!remainingPositivePending)
                     {
-                        // Récupérer TOUS les payouts du groupe (Paid ET ceux qui viennent d'être mis à jour)
-                        var allGroupPayouts = await _db.SellerPayouts
+                        // Chercher les dettes récemment soldées (dans les 10 dernières secondes)
+                        var recentDebts = await _db.SellerPayouts
                             .Where(p => p.SellerId == payout.SellerId
-                                     && p.TransactionReference == dto.TransactionReference)
-                            .ToListAsync();
+                                     && p.NetAmount < 0
+                                     && p.Status == "Paid"
+                                     && p.PaidAt >= DateTime.UtcNow.AddSeconds(-10))
+                            .SumAsync(p => Math.Abs(p.NetAmount));
 
-                        var totalDebts = allGroupPayouts
-                            .Where(p => p.NetAmount < 0)
-                            .Sum(p => Math.Abs(p.NetAmount));
-
-                        var grossPositive = allGroupPayouts
-                            .Where(p => p.NetAmount > 0)
-                            .Sum(p => p.NetAmount);
-
-                        var realAmount = grossPositive - totalDebts;
+                        var realAmount = payout.NetAmount - recentDebts;
 
                         try
                         {
@@ -450,7 +444,7 @@ namespace RanitaApi.Controllers
                                 realAmount > 0 ? realAmount : payout.NetAmount,
                                 seller.PaymentMethod,
                                 seller.PaymentDetails,
-                                totalDebts);
+                                recentDebts);
                         }
                         catch (Exception ex) { Console.WriteLine("EMAIL PAYOUT ERROR: " + ex.Message); }
                     }
